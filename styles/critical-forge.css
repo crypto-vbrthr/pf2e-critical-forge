@@ -1,0 +1,53 @@
+.pf2e-critical-forge .window-content {
+  padding: 0;
+}
+
+.effect-forge-shell {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.effect-forge-hero {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid var(--color-border-light-primary);
+  padding-bottom: 0.75rem;
+}
+
+.effect-forge-hero > i {
+  font-size: 2.4rem;
+}
+
+.effect-forge-hero h1 {
+  margin: 0;
+}
+
+.effect-forge-hero p {
+  margin: 0.35rem 0 0;
+}
+
+.effect-forge-status {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 6px;
+}
+
+.effect-forge-status p {
+  margin: 0;
+}
+
+.effect-forge-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pf2e-critical-forge-open {
+  width: 100%;
+  margin-top: 0.25rem;
+}

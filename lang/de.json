@@ -1,0 +1,36 @@
+{
+  "PF2E_CRITICAL_FORGE": {
+    "Name": "PF2E Critical Forge",
+    "Settings": {
+      "EnableEffectForge": {
+        "Name": "Effect-Forge-Oberfläche aktivieren",
+        "Hint": "Zeigt den Zugang zur Effect Forge im Items-Verzeichnis. Die Effect Engine und ihre API bleiben verfügbar."
+      },
+      "EnableCriticalForge": {
+        "Name": "Critical Forge aktivieren",
+        "Hint": "Aktiviert die spätere Generierung kritischer Treffer und Patzer im Chat."
+      }
+    },
+    "EffectForge": {
+      "Title": "Effect Forge",
+      "Open": "Effect Forge öffnen",
+      "Intro": "Die Effect Engine ist aktiv. Diese erste Oberfläche dient zum Prüfen der Architektur und API.",
+      "Example": "Beispieldefinition prüfen",
+      "ApiReady": "Effect Engine API verfügbar",
+      "ValidationSuccess": "Die Beispieldefinition ist gültig.",
+      "ValidationFailure": "Die Beispieldefinition ist ungültig.",
+      "Compile": "Abstrakt kompilieren",
+      "Close": "Schließen"
+    },
+    "Notifications": {
+      "Initialized": "PF2E Critical Forge initialisiert.",
+      "GmOnly": "Die Effect Forge ist nur für die Spielleitung verfügbar.",
+      "NotImplemented": "Diese Funktion ist im Architekturstand 0.1.0-dev noch nicht implementiert."
+    },
+    "Errors": {
+      "InvalidDefinition": "Die Effektdefinition ist ungültig.",
+      "UnknownComponent": "Unbekannter Komponententyp: {type}",
+      "DuplicateComponent": "Der Komponententyp ist bereits registriert: {type}"
+    }
+  }
+}

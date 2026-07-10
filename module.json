@@ -1,0 +1,46 @@
+{
+  "id": "pf2e-critical-forge",
+  "title": "PF2E Critical Forge",
+  "description": "A modular critical-hit and effect-generation framework for the Pathfinder 2e system.",
+  "version": "0.1.0-dev",
+  "authors": [
+    {
+      "name": "crypto-vbrthr"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "pf2e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "7.0.0"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/critical-forge.css"
+  ],
+  "languages": [
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "license": "LICENSE",
+  "readme": "README.md"
+}

@@ -1,0 +1,36 @@
+<section class="effect-forge-shell">
+  <header class="effect-forge-hero">
+    <i class="fa-solid fa-hammer"></i>
+    <div>
+      <h1>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Title"}}</h1>
+      <p>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Intro"}}</p>
+    </div>
+  </header>
+
+  <div class="effect-forge-status">
+    <p>
+      <strong>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ApiReady"}}:</strong>
+      {{#if apiReady}}✓{{else}}✗{{/if}}
+    </p>
+    <p><strong>API:</strong> {{apiVersion}}</p>
+    <p><strong>Schema:</strong> {{schemaVersion}}</p>
+    <p><strong>Components:</strong> {{components}}</p>
+  </div>
+
+  <div class="effect-forge-actions">
+    <button type="button" data-action="validateExample">
+      <i class="fa-solid fa-check"></i>
+      {{localize "PF2E_CRITICAL_FORGE.EffectForge.Example"}}
+    </button>
+
+    <button type="button" data-action="compileExample">
+      <i class="fa-solid fa-gears"></i>
+      {{localize "PF2E_CRITICAL_FORGE.EffectForge.Compile"}}
+    </button>
+
+    <button type="button" data-action="closeWindow">
+      <i class="fa-solid fa-xmark"></i>
+      {{localize "PF2E_CRITICAL_FORGE.EffectForge.Close"}}
+    </button>
+  </div>
+</section>
