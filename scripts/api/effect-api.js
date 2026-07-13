@@ -1,4 +1,5 @@
 import { validateEffectDefinition } from "../effect-engine/effect-validator.js";
+import { analyzeEffectDefinition } from "../effect-engine/validation/validation-engine.js";
 import { compileEffectDefinition } from "../effect-engine/compiler/effect-compiler.js";
 import { checkEffectCompatibility } from "../effect-engine/effect-compatibility.js";
 import {
@@ -12,6 +13,7 @@ import { NotImplementedError } from "../core/errors.js";
 export function createEffectApi() {
   return Object.freeze({
     validate: (definition) => validateEffectDefinition(definition),
+    analyze: (definition, context = {}) => analyzeEffectDefinition(definition, context),
     compile: (definition, context = {}) => compileEffectDefinition(definition, context),
 
     async toItemSource(definition, context = {}) {

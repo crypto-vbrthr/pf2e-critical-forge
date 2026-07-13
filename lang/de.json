@@ -42,7 +42,9 @@
       "Modifier": "Modifikator",
       "ModifierType": "Modifikatortyp",
       "Validate": "Effekt prüfen",
-      "ConsoleHint": "Die Definition und das kompilierte PF2e-Item werden für die Fehlersuche zusätzlich in der Browserkonsole ausgegeben."
+      "ConsoleHint": "Die Definition und das kompilierte PF2e-Item werden für die Fehlersuche zusätzlich in der Browserkonsole ausgegeben.",
+      "ValidationReport": "Validierungsbericht",
+      "NoValidationIssues": "Keine Probleme oder Hinweise gefunden."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialisiert.",
@@ -71,6 +73,26 @@
       "TurnEnd": "Ende des Zuges",
       "RoundStart": "Beginn der Runde",
       "RoundEnd": "Ende der Runde"
+    },
+    "Validation": {
+      "Schema": {
+        "DefinitionObject": "Die Effektdefinition muss ein Objekt sein.",
+        "Version": "Schema-Version {actual} wird nicht unterstützt; erwartet wird {expected}.",
+        "NameRequired": "Der Effekt benötigt einen Namen.",
+        "DurationObject": "Die Dauer muss als Objekt angegeben werden.",
+        "DurationUnit": "Die Dauereinheit „{unit}“ wird nicht unterstützt.",
+        "DurationValue": "Der Dauerwert muss eine nichtnegative Zahl sein.",
+        "ComponentsRequired": "Der Effekt benötigt mindestens eine Komponente.",
+        "ComponentObject": "Die Komponente muss ein Objekt sein.",
+        "ComponentUnknown": "Der Komponententyp „{type}“ ist nicht registriert."
+      },
+      "Rules": {
+        "FrightenedStatus": "Verängstigt {frightenedValue} erzeugt bereits einen Zustandsmalus auf diesen Wurf. Der zusätzliche Statusmalus {modifierValue} wirkt normalerweise nicht, solange Verängstigt mindestens gleich hoch ist.",
+        "FrightenedCircumstance": "Der Umstandsmalus {modifierValue} kann sich mit dem Zustandsmalus aus Verängstigt {frightenedValue} addieren."
+      },
+      "Compatibility": {
+        "TargetPresent": "Die Zielprüfung wurde für „{targetName}“ vorbereitet. Konkrete Immunitätsprüfungen folgen in einer späteren Version."
+      }
     }
   }
 }

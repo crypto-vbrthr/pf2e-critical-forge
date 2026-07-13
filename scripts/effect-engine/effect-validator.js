@@ -1,72 +1,20 @@
-import { EFFECT_SCHEMA_VERSION } from "../constants.js";
-import { componentRegistry } from "./component-registry.js";
+import { analyzeEffectDefinition } from "./validation/validation-engine.js";
 
-const DURATION_UNITS = new Set(["rounds", "minutes", "hours", "days", "unlimited"]);
-
-function validateDuration(duration, errors) {
-  if (duration == null) return;
-
-  if (typeof duration !== "object" || Array.isArray(duration)) {
-    errors.push("duration must be an object.");
-    return;
+function localizeIssue(issue) {
+  if (issue.message) return issue.message;
+  if (issue.messageKey) {
+    return game.i18n.format(`PF2E_CRITICAL_FORGE.${issue.messageKey}`, issue.data ?? {});
   }
-
-  if (!DURATION_UNITS.has(duration.unit)) {
-    errors.push(`Unsupported duration unit: ${duration.unit}`);
-  }
-
-  if (
-    duration.unit !== "unlimited" &&
-    (typeof duration.value !== "number" || !Number.isFinite(duration.value) || duration.value < 0)
-  ) {
-    errors.push("Duration value must be a non-negative finite number.");
-  }
+  return issue.data?.message ?? issue.code;
 }
 
 export function validateEffectDefinition(definition) {
-  const errors = [];
-  const warnings = [];
-
-  if (!definition || typeof definition !== "object" || Array.isArray(definition)) {
-    return { valid: false, errors: ["Effect definition must be an object."], warnings };
-  }
-
-  if (definition.schemaVersion !== EFFECT_SCHEMA_VERSION) {
-    errors.push(
-      `Unsupported schemaVersion ${definition.schemaVersion}; expected ${EFFECT_SCHEMA_VERSION}.`
-    );
-  }
-
-  if (typeof definition.name !== "string" || !definition.name.trim()) {
-    errors.push("Effect definition requires a non-empty name.");
-  }
-
-  validateDuration(definition.duration, errors);
-
-  if (!Array.isArray(definition.components) || definition.components.length === 0) {
-    errors.push("Effect definition requires at least one component.");
-  } else {
-    definition.components.forEach((component, index) => {
-      if (!component || typeof component !== "object") {
-        errors.push(`Component ${index} must be an object.`);
-        return;
-      }
-
-      const handler = componentRegistry.get(component.type);
-      if (!handler) {
-        errors.push(`Unknown component type at index ${index}: ${component.type}`);
-        return;
-      }
-
-      const result = handler.validate(component, { definition, index }) ?? {};
-      for (const error of result.errors ?? []) {
-        errors.push(`Component ${index}: ${error}`);
-      }
-      for (const warning of result.warnings ?? []) {
-        warnings.push(`Component ${index}: ${warning}`);
-      }
-    });
-  }
-
-  return { valid: errors.length === 0, errors, warnings };
+  const report = analyzeEffectDefinition(definition);
+  return {
+    ...report,
+    errors: report.errors.map(localizeIssue),
+    warnings: report.warnings.map(localizeIssue),
+    hints: report.hints.map(localizeIssue),
+    information: report.information.map(localizeIssue)
+  };
 }

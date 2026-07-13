@@ -42,7 +42,9 @@
       "Modifier": "Modifier",
       "ModifierType": "Modifier type",
       "Validate": "Validate effect",
-      "ConsoleHint": "For diagnostics, the definition and compiled PF2e Item are also written to the browser console."
+      "ConsoleHint": "For diagnostics, the definition and compiled PF2e Item are also written to the browser console.",
+      "ValidationReport": "Validation report",
+      "NoValidationIssues": "No problems or notes were found."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialized.",
@@ -71,6 +73,26 @@
       "TurnEnd": "End of turn",
       "RoundStart": "Start of round",
       "RoundEnd": "End of round"
+    },
+    "Validation": {
+      "Schema": {
+        "DefinitionObject": "The Effect Definition must be an object.",
+        "Version": "Schema version {actual} is unsupported; expected {expected}.",
+        "NameRequired": "The effect requires a name.",
+        "DurationObject": "Duration must be an object.",
+        "DurationUnit": "Duration unit “{unit}” is unsupported.",
+        "DurationValue": "Duration value must be a non-negative number.",
+        "ComponentsRequired": "The effect requires at least one component.",
+        "ComponentObject": "The component must be an object.",
+        "ComponentUnknown": "Component type “{type}” is not registered."
+      },
+      "Rules": {
+        "FrightenedStatus": "Frightened {frightenedValue} already applies a status penalty to this roll. The additional status penalty {modifierValue} normally has no effect while Frightened is at least as high.",
+        "FrightenedCircumstance": "The circumstance penalty {modifierValue} can stack with the status penalty from Frightened {frightenedValue}."
+      },
+      "Compatibility": {
+        "TargetPresent": "Target analysis was prepared for “{targetName}”. Concrete immunity checks will follow in a later version."
+      }
     }
   }
 }

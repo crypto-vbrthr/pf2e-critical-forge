@@ -17,6 +17,10 @@ api.schemaVersion // supported Effect Definition schema
 
 ## Effects
 
+### `api.effects.analyze(definition, context?)`
+
+Runs the structured Validation Engine and returns stable issue codes, severities, localization keys, and data. An optional `context.target` prepares target-aware checks.
+
 ### `api.effects.validate(definition)`
 
 Validates an Effect Definition.
@@ -105,3 +109,59 @@ Opens the GM-only Effect Forge window, independent of sidebar integration.
 ```js
 game.modules.get("pf2e-critical-forge")?.api.ui.openEffectForge();
 ```
+
+## Effect Builder
+
+The public Builder API creates consistent Effect Definitions without exposing their internal structure.
+
+### `api.builders.effect()`
+
+Creates a new fluent Effect Builder.
+
+```js
+const definition = api.builders
+  .effect()
+  .setId("example.shaken-nerves")
+  .setName("Shaken Nerves")
+  .setDescription("<p>The target is rattled.</p>")
+  .setImage("icons/svg/terror.svg")
+  .setDuration(2, "rounds", "turn-end")
+  .addCondition("frightened", 2)
+  .addModifier({
+    selector: "will",
+    value: -1,
+    modifierType: "status"
+  })
+  .setMetadata({ originModule: "example-module" })
+  .build();
+```
+
+### `api.builders.from(definition)`
+
+Creates a Builder from an existing Effect Definition. The source object is cloned and never mutated.
+
+```js
+const stronger = api.builders
+  .from(definition)
+  .setDuration(3, "rounds", "turn-end")
+  .build();
+```
+
+### Builder methods
+
+- `setId(id)`
+- `setName(name)`
+- `setDescription(html)`
+- `setImage(path)`
+- `setDuration(value, unit, expiry)`
+- `setApplication(data)`
+- `setMetadata(data)`
+- `mergeMetadata(data)`
+- `addComponent(component)`
+- `addCondition(slug, value?)`
+- `addModifier(options)`
+- `clearComponents()`
+- `removeComponent(index)`
+- `build()`
+
+`build()` returns a cloned and deeply frozen Effect Definition.

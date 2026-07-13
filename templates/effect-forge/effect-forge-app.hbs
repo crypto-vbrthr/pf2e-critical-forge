@@ -94,8 +94,8 @@
         <label>
           <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ModifierType"}}</span>
           <select name="modifierType">
-            <option value="status" selected>Status</option>
-            <option value="circumstance">Circumstance</option>
+            <option value="status">Status</option>
+            <option value="circumstance" selected>Circumstance</option>
             <option value="item">Item</option>
             <option value="untyped">Untyped</option>
           </select>
@@ -107,6 +107,28 @@
       </div>
     </div>
   </fieldset>
+
+
+  {{#if validationReport}}
+  <section class="effect-forge-validation {{#if validationReport.valid}}is-valid{{else}}is-invalid{{/if}}">
+    <h2>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ValidationReport"}}</h2>
+    {{#if validationReport.issues.length}}
+      <div class="effect-forge-validation-list">
+        {{#each validationReport.issues}}
+          <div class="effect-forge-validation-item severity-{{severity}}">
+            <i class="fa-solid {{icon}}"></i>
+            <div>
+              <strong>{{code}}</strong>
+              <p>{{text}}</p>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    {{else}}
+      <p>{{localize "PF2E_CRITICAL_FORGE.EffectForge.NoValidationIssues"}}</p>
+    {{/if}}
+  </section>
+  {{/if}}
 
   <p class="effect-forge-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.ConsoleHint"}}</p>
 

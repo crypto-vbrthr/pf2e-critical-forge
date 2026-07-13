@@ -3,6 +3,7 @@ import { MODULE_ID } from "../constants.js";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
+  validationReport = null;
   static DEFAULT_OPTIONS = {
     id: "pf2e-critical-forge-effect-forge",
     classes: ["pf2e-critical-forge", "effect-forge"],
@@ -36,7 +37,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       apiReady: Boolean(api),
       apiVersion: api?.version ?? "—",
       schemaVersion: api?.schemaVersion ?? "—",
-      components: api?.components.list() ?? []
+      components: api?.components.list() ?? [],
+      validationReport: this.validationReport
     };
   }
 
@@ -53,68 +55,92 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     const data = Object.fromEntries(new FormData(form).entries());
-    const components = [];
+    const builder = this.constructor.#api().builders
+      .effect()
+      .setId(`pf2e-critical-forge.custom.${foundry.utils.randomID()}`)
+      .setName(data.effectName)
+      .setDescription(
+        `<p>${foundry.utils.escapeHTML(String(data.description ?? "").trim())}</p>`
+      )
+      .setImage(data.img)
+      .setMetadata({
+        originModule: MODULE_ID,
+        originFeature: "effect-forge-test-ui"
+      });
+
+    const durationUnit = String(data.durationUnit ?? "rounds");
+    if (durationUnit === "unlimited") {
+      builder.setDuration(-1, "unlimited", null);
+    } else {
+      builder.setDuration(
+        Number(data.durationValue),
+        durationUnit,
+        String(data.durationExpiry ?? "turn-end")
+      );
+    }
 
     if (data.conditionEnabled === "on") {
-      const condition = {
-        type: "condition",
-        slug: String(data.conditionSlug ?? "").trim()
-      };
-
       const rawValue = String(data.conditionValue ?? "").trim();
-      if (rawValue !== "") condition.value = Number.parseInt(rawValue, 10);
-      components.push(condition);
+      builder.addCondition(
+        String(data.conditionSlug ?? "").trim(),
+        rawValue === "" ? undefined : Number.parseInt(rawValue, 10)
+      );
     }
 
     if (data.modifierEnabled === "on") {
-      components.push({
-        type: "modifier",
+      builder.addModifier({
         selector: String(data.modifierSelector ?? "").trim(),
         value: Number(data.modifierValue),
         modifierType: String(data.modifierType ?? "status")
       });
     }
 
-    const durationUnit = String(data.durationUnit ?? "rounds");
-    const duration = durationUnit === "unlimited"
-      ? { value: -1, unit: "unlimited", expiry: null }
-      : {
-          value: Number(data.durationValue),
-          unit: durationUnit,
-          expiry: String(data.durationExpiry ?? "turn-end")
-        };
+    return builder.build();
+  }
+
+  #localizeIssue(issue) {
+    const text = issue.message
+      ?? (issue.messageKey
+        ? game.i18n.format(`PF2E_CRITICAL_FORGE.${issue.messageKey}`, issue.data ?? {})
+        : issue.data?.message ?? issue.code);
 
     return {
-      schemaVersion: 1,
-      id: `pf2e-critical-forge.custom.${foundry.utils.randomID()}`,
-      name: String(data.effectName ?? "").trim(),
-      description: `<p>${foundry.utils.escapeHTML(String(data.description ?? "").trim())}</p>`,
-      img: String(data.img ?? "icons/svg/aura.svg").trim() || "icons/svg/aura.svg",
-      duration,
-      components,
-      metadata: {
-        originModule: MODULE_ID,
-        originFeature: "effect-forge-test-ui"
-      }
+      ...issue,
+      text,
+      icon: {
+        error: "fa-circle-xmark",
+        warning: "fa-triangle-exclamation",
+        hint: "fa-lightbulb",
+        info: "fa-circle-info"
+      }[issue.severity] ?? "fa-circle-info"
     };
   }
 
   #reportValidation(result) {
+    this.validationReport = {
+      valid: result.valid,
+      issues: result.issues.map((issue) => this.#localizeIssue(issue))
+    };
+
     if (result.valid) {
       ui.notifications.info(
         game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.ValidationSuccess")
       );
-      return;
+    } else {
+      const message = this.validationReport.issues
+        .filter((issue) => issue.severity === "error")
+        .map((issue) => issue.text)
+        .join("\n");
+      ui.notifications.error(message);
     }
 
-    const message = result.errors.join("\n");
-    ui.notifications.error(message);
+    this.render({ force: true });
   }
 
   static #validateEffect() {
     try {
       const definition = this.#readForm();
-      const result = this.constructor.#api().effects.validate(definition);
+      const result = this.constructor.#api().effects.analyze(definition);
       this.#reportValidation(result);
       console.log(`${MODULE_ID} | Effect definition`, definition);
       console.log(`${MODULE_ID} | Validation result`, result);

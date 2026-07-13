@@ -2,7 +2,7 @@
   "id": "pf2e-critical-forge",
   "title": "PF2E Critical Forge",
   "description": "A modular critical-hit and effect-generation framework for the Pathfinder 2e system.",
-  "version": "0.1.4-dev",
+  "version": "0.1.6-dev",
   "authors": [
     {
       "name": "crypto-vbrthr"

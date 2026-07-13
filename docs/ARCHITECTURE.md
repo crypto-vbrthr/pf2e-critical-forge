@@ -47,3 +47,30 @@ effect-engine/compiler/
 - `duration-builder.js` translates the global duration.
 - `flag-builder.js` creates origin and schema metadata.
 - `pf2e-item-builder.js` assembles the PF2e Effect Item source.
+
+
+## Builder layer
+
+```text
+Effect Forge UI / external module
+        ↓
+Effect Builder
+        ↓
+Effect Definition
+        ↓
+Validator and compiler
+```
+
+The Builder is the supported construction path for new Effect Definitions. It clones input data, normalizes common component data, and returns immutable definitions. The GUI uses the same public Builder API as external modules.
+
+
+## Validation Engine
+
+```text
+Effect Definition
+├─ Schema Validator
+├─ Rule Validator
+└─ Compatibility Validator
+```
+
+Validation produces structured reports and never compiles or mutates the definition. Public issue codes are suitable for other modules to make automated decisions.

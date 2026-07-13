@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.1.6-dev
+
+### Added
+- Structured Validation Engine with errors, warnings, hints, and information.
+- Stable validation codes and localization keys.
+- Separate schema, PF2e rule, and target compatibility validators.
+- Stacking analysis for Frightened plus status or circumstance penalties.
+- Validation report panel in the Effect Forge UI.
+- Public `api.effects.analyze()` method.
+- Validation developer documentation.
+
+### Changed
+- The reference Will penalty now defaults to a circumstance penalty.
+- Legacy `validate()` remains available as a compatibility wrapper.
+
+## 0.1.5-dev
+
+### Added
+- Public fluent Effect Builder API.
+- Builder support for IDs, names, descriptions, images, durations, metadata, applications, conditions, modifiers, and arbitrary components.
+- `EffectBuilder.from()` support for cloning and editing existing definitions.
+- Deeply frozen Builder output.
+
+### Changed
+- The Effect Forge GUI now constructs definitions exclusively through the public Builder API.
+
 ## 0.1.4-dev
 
 ### Changed
