@@ -39,13 +39,21 @@ Validates and compiles the definition into an abstract compiled representation.
 
 In `0.1.0-dev`, this does not yet create a PF2e Item.
 
+### `api.effects.toItemSource(definition, context?)`
+
+Compiles an Effect Definition into PF2e Effect Item source data without creating a document.
+
 ### `api.effects.createItem(definition, options?)`
 
-Reserved public method. It currently throws a localized `NotImplementedError`.
+Creates a world-level PF2e Effect Item. `options.renderSheet` defaults to `true`.
 
 ### `api.effects.apply(definition, targets, options?)`
 
-Reserved public method. It currently throws a localized `NotImplementedError`.
+Creates the compiled Effect Item as an embedded Item on one or more Actor or Token targets.
+
+### `api.effects.remove(definitionId, targets)`
+
+Removes effects generated from the supplied Effect Definition ID from the target Actors.
 
 ### `api.effects.checkCompatibility(definition, target, options?)`
 
@@ -87,3 +95,13 @@ Hooks.callAll("pf2eCriticalForgeReady", api);
 ```
 
 External modules should register their components or future card packs from this hook.
+
+## User interface
+
+### `api.ui.openEffectForge()`
+
+Opens the GM-only Effect Forge window, independent of sidebar integration.
+
+```js
+game.modules.get("pf2e-critical-forge")?.api.ui.openEffectForge();
+```

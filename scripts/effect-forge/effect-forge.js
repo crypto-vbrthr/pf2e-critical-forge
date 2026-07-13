@@ -13,35 +13,64 @@ export function openEffectForge() {
   app.render({ force: true });
 }
 
-export function initializeEffectForgeUi() {
-  Hooks.on("renderItemDirectory", (_app, html) => {
-    if (!game.user?.isGM) return;
+function getRoot(html) {
+  if (html instanceof HTMLElement) return html;
+  if (html?.[0] instanceof HTMLElement) return html[0];
+  if (html?.element instanceof HTMLElement) return html.element;
+  return null;
+}
 
-    const root = html instanceof HTMLElement ? html : html?.[0];
-    if (!root || root.querySelector(`[data-${MODULE_ID}-button]`)) return;
+function isItemDirectory(app, root) {
+  const tabName = app?.tabName ?? app?.options?.tabName ?? app?.id ?? "";
+  if (String(tabName).toLowerCase().includes("item")) return true;
+  return Boolean(root?.matches?.("#items, .items-directory") || root?.querySelector?.("#items, .items-directory"));
+}
 
-    const header = root.querySelector(".directory-header .header-actions")
-      ?? root.querySelector(".directory-header");
+function injectButton(app, html) {
+  if (!game.user?.isGM) return;
 
-    if (!header) return;
+  const root = getRoot(html);
+  if (!root || !isItemDirectory(app, root)) return;
+  if (root.querySelector(`[data-${MODULE_ID}-button]`)) return;
 
-    const button = document.createElement("button");
-    button.type = "button";
-    button.dataset[`${MODULE_ID.replaceAll("-", "")}Button`] = "";
-    button.setAttribute(`data-${MODULE_ID}-button`, "");
-    button.className = "pf2e-critical-forge-open";
-    button.innerHTML = `<i class="fa-solid fa-hammer"></i> ${game.i18n.localize(
-      "PF2E_CRITICAL_FORGE.EffectForge.Open"
-    )}`;
-    button.addEventListener("click", openEffectForge);
-    header.append(button);
-  });
+  const selectors = [
+    ".directory-header .header-actions",
+    ".directory-header .action-buttons",
+    ".directory-header",
+    ".header-actions",
+    "header"
+  ];
 
-  const api = game.modules.get(MODULE_ID)?.api;
-  if (api) {
-    Object.defineProperty(api, "openEffectForge", {
-      value: openEffectForge,
-      enumerable: true
-    });
+  const target = selectors.map((selector) => root.querySelector(selector)).find(Boolean);
+  if (!target) {
+    console.debug(`${MODULE_ID} | No suitable Item Directory button target found.`, root);
+    return;
   }
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.setAttribute(`data-${MODULE_ID}-button`, "");
+  button.className = "pf2e-critical-forge-open";
+  button.innerHTML = `<i class="fa-solid fa-hammer"></i> ${game.i18n.localize(
+    "PF2E_CRITICAL_FORGE.EffectForge.Open"
+  )}`;
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    openEffectForge();
+  });
+  target.append(button);
+}
+
+export function initializeEffectForgeUi() {
+  // Legacy directory hook used by Foundry 13 and some system directory implementations.
+  Hooks.on("renderItemDirectory", injectButton);
+
+  // Generic sidebar hook catches the ApplicationV2 sidebar used by newer Foundry versions.
+  Hooks.on("renderSidebarTab", injectButton);
+
+  // If the Items tab is already rendered when ready fires, inject immediately.
+  const current = document.querySelector("#items, .items-directory");
+  if (current) injectButton({ tabName: "items" }, current);
+
+  console.info(`${MODULE_ID} | Effect Forge UI integration initialized.`);
 }

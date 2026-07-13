@@ -51,3 +51,73 @@
   width: 100%;
   margin-top: 0.25rem;
 }
+
+.effect-forge-shell fieldset {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0.85rem;
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 6px;
+}
+
+.effect-forge-shell legend {
+  padding: 0 0.35rem;
+  font-weight: 700;
+}
+
+.effect-forge-shell label {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.effect-forge-shell input,
+.effect-forge-shell select,
+.effect-forge-shell textarea {
+  width: 100%;
+}
+
+.effect-forge-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.effect-forge-grid.two-columns {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.effect-forge-grid.three-columns {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.effect-forge-component {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.75rem;
+  background: color-mix(in srgb, var(--color-bg-option) 80%, transparent);
+  border-radius: 5px;
+}
+
+.effect-forge-toggle {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem !important;
+}
+
+.effect-forge-toggle input {
+  width: auto;
+  margin: 0;
+}
+
+.effect-forge-hint {
+  margin: 0;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+@media (max-width: 650px) {
+  .effect-forge-grid.two-columns,
+  .effect-forge-grid.three-columns {
+    grid-template-columns: 1fr;
+  }
+}

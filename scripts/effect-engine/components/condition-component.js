@@ -1,3 +1,5 @@
+import { resolveConditionUuid } from "../condition-resolver.js";
+
 export const conditionComponent = {
   type: "condition",
 
@@ -19,12 +21,28 @@ export const conditionComponent = {
     return { errors, warnings };
   },
 
-  compile(component, context = {}) {
+  async compile(component) {
+    const uuid = await resolveConditionUuid(component.slug);
+    const rule = {
+      key: "GrantItem",
+      uuid,
+      allowDuplicate: false,
+      onDeleteActions: { grantee: "restrict" }
+    };
+
+    if (component.value !== undefined) {
+      rule.alterations = [{
+        mode: "override",
+        property: "badge-value",
+        value: component.value
+      }];
+    }
+
     return {
       kind: "condition",
       slug: component.slug,
       value: component.value ?? null,
-      duration: context.duration ?? null
+      rules: [rule]
     };
   },
 

@@ -3,34 +3,118 @@
     <i class="fa-solid fa-hammer"></i>
     <div>
       <h1>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Title"}}</h1>
-      <p>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Intro"}}</p>
+      <p>{{localize "PF2E_CRITICAL_FORGE.EffectForge.TestIntro"}}</p>
     </div>
   </header>
 
   <div class="effect-forge-status">
-    <p>
-      <strong>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ApiReady"}}:</strong>
-      {{#if apiReady}}✓{{else}}✗{{/if}}
-    </p>
+    <p><strong>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ApiReady"}}:</strong> {{#if apiReady}}✓{{else}}✗{{/if}}</p>
     <p><strong>API:</strong> {{apiVersion}}</p>
     <p><strong>Schema:</strong> {{schemaVersion}}</p>
     <p><strong>Components:</strong> {{components}}</p>
   </div>
 
+  <fieldset>
+    <legend>{{localize "PF2E_CRITICAL_FORGE.EffectForge.BasicData"}}</legend>
+    <div class="effect-forge-grid two-columns">
+      <label>
+        <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Name"}}</span>
+        <input type="text" name="effectName" value="{{localize 'PF2E_CRITICAL_FORGE.Examples.ShakenNerves.Name'}}" required>
+      </label>
+      <label>
+        <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Image"}}</span>
+        <input type="text" name="img" value="icons/svg/terror.svg">
+      </label>
+    </div>
+    <label>
+      <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Description"}}</span>
+      <textarea name="description" rows="2">{{localize "PF2E_CRITICAL_FORGE.Examples.ShakenNerves.PlainDescription"}}</textarea>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Duration"}}</legend>
+    <div class="effect-forge-grid three-columns">
+      <label>
+        <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Value"}}</span>
+        <input type="number" name="durationValue" value="2" min="0" step="1">
+      </label>
+      <label>
+        <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Unit"}}</span>
+        <select name="durationUnit">
+          <option value="rounds" selected>{{localize "PF2E_CRITICAL_FORGE.Duration.Rounds"}}</option>
+          <option value="minutes">{{localize "PF2E_CRITICAL_FORGE.Duration.Minutes"}}</option>
+          <option value="hours">{{localize "PF2E_CRITICAL_FORGE.Duration.Hours"}}</option>
+          <option value="days">{{localize "PF2E_CRITICAL_FORGE.Duration.Days"}}</option>
+          <option value="unlimited">{{localize "PF2E_CRITICAL_FORGE.Duration.Unlimited"}}</option>
+        </select>
+      </label>
+      <label>
+        <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Expiry"}}</span>
+        <select name="durationExpiry">
+          <option value="turn-start">{{localize "PF2E_CRITICAL_FORGE.Duration.TurnStart"}}</option>
+          <option value="turn-end" selected>{{localize "PF2E_CRITICAL_FORGE.Duration.TurnEnd"}}</option>
+          <option value="round-start">{{localize "PF2E_CRITICAL_FORGE.Duration.RoundStart"}}</option>
+          <option value="round-end">{{localize "PF2E_CRITICAL_FORGE.Duration.RoundEnd"}}</option>
+        </select>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Components"}}</legend>
+
+    <div class="effect-forge-component">
+      <label class="effect-forge-toggle">
+        <input type="checkbox" name="conditionEnabled" checked>
+        <strong>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Condition"}}</strong>
+      </label>
+      <div class="effect-forge-grid two-columns">
+        <label>
+          <span>Slug</span>
+          <input type="text" name="conditionSlug" value="frightened">
+        </label>
+        <label>
+          <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ConditionValue"}}</span>
+          <input type="number" name="conditionValue" value="2" min="0" step="1">
+        </label>
+      </div>
+    </div>
+
+    <div class="effect-forge-component">
+      <label class="effect-forge-toggle">
+        <input type="checkbox" name="modifierEnabled" checked>
+        <strong>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Modifier"}}</strong>
+      </label>
+      <div class="effect-forge-grid three-columns">
+        <label>
+          <span>Selector</span>
+          <input type="text" name="modifierSelector" value="will">
+        </label>
+        <label>
+          <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ModifierType"}}</span>
+          <select name="modifierType">
+            <option value="status" selected>Status</option>
+            <option value="circumstance">Circumstance</option>
+            <option value="item">Item</option>
+            <option value="untyped">Untyped</option>
+          </select>
+        </label>
+        <label>
+          <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Value"}}</span>
+          <input type="number" name="modifierValue" value="-1" step="1">
+        </label>
+      </div>
+    </div>
+  </fieldset>
+
+  <p class="effect-forge-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.ConsoleHint"}}</p>
+
   <div class="effect-forge-actions">
-    <button type="button" data-action="validateExample">
-      <i class="fa-solid fa-check"></i>
-      {{localize "PF2E_CRITICAL_FORGE.EffectForge.Example"}}
-    </button>
-
-    <button type="button" data-action="compileExample">
-      <i class="fa-solid fa-gears"></i>
-      {{localize "PF2E_CRITICAL_FORGE.EffectForge.Compile"}}
-    </button>
-
-    <button type="button" data-action="closeWindow">
-      <i class="fa-solid fa-xmark"></i>
-      {{localize "PF2E_CRITICAL_FORGE.EffectForge.Close"}}
-    </button>
+    <button type="button" data-action="validateEffect"><i class="fa-solid fa-check"></i> {{localize "PF2E_CRITICAL_FORGE.EffectForge.Validate"}}</button>
+    <button type="button" data-action="compileEffect"><i class="fa-solid fa-gears"></i> {{localize "PF2E_CRITICAL_FORGE.EffectForge.Compile"}}</button>
+    <button type="button" data-action="createItem"><i class="fa-solid fa-file-circle-plus"></i> {{localize "PF2E_CRITICAL_FORGE.EffectForge.CreateItem"}}</button>
+    <button type="button" data-action="applySelected"><i class="fa-solid fa-bullseye"></i> {{localize "PF2E_CRITICAL_FORGE.EffectForge.ApplySelected"}}</button>
+    <button type="button" data-action="closeWindow"><i class="fa-solid fa-xmark"></i> {{localize "PF2E_CRITICAL_FORGE.EffectForge.Close"}}</button>
   </div>
 </section>

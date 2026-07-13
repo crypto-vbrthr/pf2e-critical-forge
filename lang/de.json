@@ -20,7 +20,29 @@
       "ValidationSuccess": "Die Beispieldefinition ist gültig.",
       "ValidationFailure": "Die Beispieldefinition ist ungültig.",
       "Compile": "Abstrakt kompilieren",
-      "Close": "Schließen"
+      "Close": "Schließen",
+      "CompileSuccess": "Die Beispieldefinition wurde in ein PF2e-Effect-Item übersetzt.",
+      "CreateItem": "Als Item erstellen",
+      "ApplySelected": "Auf ausgewählte Tokens anwenden",
+      "ItemCreated": "Effect-Item „{name}“ wurde erstellt.",
+      "NoSelectedTokens": "Es sind keine Tokens ausgewählt.",
+      "Applied": "Effekt wurde auf {count} Ziel(e) angewendet.",
+      "TestIntro": "Rudimentäre Testoberfläche für die Effect Engine. Die Felder erzeugen eine echte Effect Definition.",
+      "BasicData": "Grunddaten",
+      "Name": "Name",
+      "Image": "Bildpfad",
+      "Description": "Beschreibung",
+      "Duration": "Dauer",
+      "Value": "Wert",
+      "Unit": "Einheit",
+      "Expiry": "Ablaufzeitpunkt",
+      "Components": "Komponenten",
+      "Condition": "Zustand",
+      "ConditionValue": "Zustandswert",
+      "Modifier": "Modifikator",
+      "ModifierType": "Modifikatortyp",
+      "Validate": "Effekt prüfen",
+      "ConsoleHint": "Die Definition und das kompilierte PF2e-Item werden für die Fehlersuche zusätzlich in der Browserkonsole ausgegeben."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialisiert.",
@@ -31,6 +53,24 @@
       "InvalidDefinition": "Die Effektdefinition ist ungültig.",
       "UnknownComponent": "Unbekannter Komponententyp: {type}",
       "DuplicateComponent": "Der Komponententyp ist bereits registriert: {type}"
+    },
+    "Examples": {
+      "ShakenNerves": {
+        "Name": "Erschütterte Nerven",
+        "Description": "<p>Das Ziel ist verängstigt und geistig verwundbar.</p>",
+        "PlainDescription": "Das Ziel ist verängstigt und geistig verwundbar."
+      }
+    },
+    "Duration": {
+      "Rounds": "Runden",
+      "Minutes": "Minuten",
+      "Hours": "Stunden",
+      "Days": "Tage",
+      "Unlimited": "Unbegrenzt",
+      "TurnStart": "Beginn des Zuges",
+      "TurnEnd": "Ende des Zuges",
+      "RoundStart": "Beginn der Runde",
+      "RoundEnd": "Ende der Runde"
     }
   }
 }

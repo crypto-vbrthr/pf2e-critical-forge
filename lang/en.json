@@ -20,7 +20,29 @@
       "ValidationSuccess": "The example definition is valid.",
       "ValidationFailure": "The example definition is invalid.",
       "Compile": "Compile abstractly",
-      "Close": "Close"
+      "Close": "Close",
+      "CompileSuccess": "The example definition was translated into a PF2e Effect Item source.",
+      "CreateItem": "Create as Item",
+      "ApplySelected": "Apply to selected tokens",
+      "ItemCreated": "Effect Item “{name}” was created.",
+      "NoSelectedTokens": "No tokens are selected.",
+      "Applied": "Effect applied to {count} target(s).",
+      "TestIntro": "Rudimentary test interface for the Effect Engine. The fields produce a real Effect Definition.",
+      "BasicData": "Basic data",
+      "Name": "Name",
+      "Image": "Image path",
+      "Description": "Description",
+      "Duration": "Duration",
+      "Value": "Value",
+      "Unit": "Unit",
+      "Expiry": "Expiry point",
+      "Components": "Components",
+      "Condition": "Condition",
+      "ConditionValue": "Condition value",
+      "Modifier": "Modifier",
+      "ModifierType": "Modifier type",
+      "Validate": "Validate effect",
+      "ConsoleHint": "For diagnostics, the definition and compiled PF2e Item are also written to the browser console."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialized.",
@@ -31,6 +53,24 @@
       "InvalidDefinition": "The effect definition is invalid.",
       "UnknownComponent": "Unknown component type: {type}",
       "DuplicateComponent": "The component type is already registered: {type}"
+    },
+    "Examples": {
+      "ShakenNerves": {
+        "Name": "Shaken Nerves",
+        "Description": "<p>The target is frightened and mentally vulnerable.</p>",
+        "PlainDescription": "The target is frightened and mentally vulnerable."
+      }
+    },
+    "Duration": {
+      "Rounds": "Rounds",
+      "Minutes": "Minutes",
+      "Hours": "Hours",
+      "Days": "Days",
+      "Unlimited": "Unlimited",
+      "TurnStart": "Start of turn",
+      "TurnEnd": "End of turn",
+      "RoundStart": "Start of round",
+      "RoundEnd": "End of round"
     }
   }
 }
