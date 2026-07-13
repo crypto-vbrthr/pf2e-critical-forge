@@ -29,3 +29,21 @@ External modules ┘
 Version `0.1.0-dev` implements schema validation, component registration, abstract compilation, settings, API publication, and a small diagnostic UI.
 
 Concrete PF2e Item creation and Actor application are deliberately isolated behind API methods so they can be implemented without changing the external contract.
+
+
+## Compiler structure
+
+```text
+effect-engine/compiler/
+├─ effect-compiler.js
+├─ pf2e-item-builder.js
+├─ duration-builder.js
+├─ rule-builder.js
+└─ flag-builder.js
+```
+
+- `effect-compiler.js` validates definitions and compiles components.
+- `rule-builder.js` collects Rule Elements.
+- `duration-builder.js` translates the global duration.
+- `flag-builder.js` creates origin and schema metadata.
+- `pf2e-item-builder.js` assembles the PF2e Effect Item source.

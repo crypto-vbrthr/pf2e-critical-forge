@@ -8,7 +8,7 @@ PF2E Critical Forge is being developed as two optional user-facing tools built o
 
 ## Status
 
-`0.1.3-dev` adds a rudimentary test GUI to the functional Effect Engine. It provides:
+`0.1.4-dev` adds a rudimentary test GUI to the functional Effect Engine. It provides:
 
 - independent settings for Effect Forge and Critical Forge;
 - an always-loaded public API;

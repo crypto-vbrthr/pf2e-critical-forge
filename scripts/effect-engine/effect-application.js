@@ -1,5 +1,5 @@
-import { compileEffectDefinition } from "./effect-compiler.js";
-import { buildPf2eEffectSource } from "./pf2e-effect-compiler.js";
+import { compileEffectDefinition } from "./compiler/effect-compiler.js";
+import { buildPf2eEffectSource } from "./compiler/pf2e-item-builder.js";
 
 function resolveActor(target) {
   if (!target) return null;

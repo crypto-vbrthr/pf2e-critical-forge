@@ -1,12 +1,12 @@
 import { validateEffectDefinition } from "../effect-engine/effect-validator.js";
-import { compileEffectDefinition } from "../effect-engine/effect-compiler.js";
+import { compileEffectDefinition } from "../effect-engine/compiler/effect-compiler.js";
 import { checkEffectCompatibility } from "../effect-engine/effect-compatibility.js";
 import {
   applyEffectToTargets,
   createWorldEffectItem,
   removeEffectsByDefinitionId
 } from "../effect-engine/effect-application.js";
-import { buildPf2eEffectSource } from "../effect-engine/pf2e-effect-compiler.js";
+import { buildPf2eEffectSource } from "../effect-engine/compiler/pf2e-item-builder.js";
 import { NotImplementedError } from "../core/errors.js";
 
 export function createEffectApi() {

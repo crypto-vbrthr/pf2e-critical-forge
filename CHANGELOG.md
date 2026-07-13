@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-dev
+
+### Changed
+- Split the Effect compiler into focused compiler services.
+- Separated component compilation, Rule Element collection, duration translation, flag creation, and PF2e Item assembly.
+- Preserved the public API and existing Effect Forge behavior.
+
 ## 0.1.3-dev
 
 ### Fixed
