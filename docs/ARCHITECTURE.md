@@ -51,10 +51,11 @@ It does not decide whether a PF2e condition is meaningful for a target and does 
 ```text
 effect-engine/catalogs/
 ├─ selector-catalog.js
-└─ condition-catalog.js
+├─ condition-catalog.js
+└─ damage-type-catalog.js
 ```
 
-The selector catalog is shared by the GUI and validator. The condition catalog resolves compendium UUIDs and identifies valued conditions.
+The selector catalog is shared by the GUI and validator. The condition catalog resolves compendium UUIDs and identifies valued conditions. The damage-type catalog groups PF2e damage types and incorporates entries registered through `CONFIG.PF2E.damageTypes`.
 
 Catalogs are metadata services, not compilers.
 
@@ -125,7 +126,7 @@ The automated suite runs outside Foundry with a small deterministic mock of:
 
 - `foundry.utils` clone, freeze, merge, and property helpers;
 - `game.i18n`;
-- `CONFIG.PF2E.skills`;
+- `CONFIG.PF2E.skills` and `CONFIG.PF2E.damageTypes`;
 - the PF2e condition compendium.
 
 This keeps Builder, validation, catalogs, and compiler tests fast and reproducible. Document creation and full Foundry UI behavior remain integration-test territory inside Foundry.

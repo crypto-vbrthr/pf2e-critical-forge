@@ -37,7 +37,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The initial stability suite contains 18 tests covering:
+The suite contains 23 tests covering:
 
 - Builder normalization and immutable output;
 - cloning existing definitions without mutation;
@@ -47,6 +47,10 @@ The initial stability suite contains 18 tests covering:
 - valued conditions producing `badge-value` alterations;
 - non-valued conditions omitting those alterations;
 - modifier compilation to `FlatModifier`;
+- persistent-damage Builder normalization and input rejection;
+- damage-type catalog grouping and dynamically registered types;
+- persistent-damage `GrantItem`, formula, damage type, and optional recovery-DC alterations;
+- persistent-damage validation codes and duplicate-type stacking warnings;
 - PF2e Effect Item duration, Rule Elements, and origin flags;
 - compiler rejection through `EffectValidationError`;
 - frightened/status stacking warnings;
@@ -56,7 +60,7 @@ The initial stability suite contains 18 tests covering:
 - schema short-circuit behavior;
 - target context reaching the compatibility validator.
 
-At `0.1.12-dev`, the measured line coverage of the files loaded by the suite is above 90%. Coverage is a diagnostic, not a release gate yet.
+At `0.2.0-dev`, the measured line coverage of the files loaded by the suite is above 90%. Coverage is a diagnostic, not a release gate yet.
 
 ## Foundry mock
 
@@ -93,6 +97,11 @@ createConditionPack([
     slug: "prone",
     isValued: false,
     uuid: "Compendium.pf2e.conditionitems.Item.prone"
+  },
+  {
+    slug: "persistent-damage",
+    isValued: false,
+    uuid: "Compendium.pf2e.conditionitems.Item.persistent-damage"
   }
 ]);
 ```

@@ -35,3 +35,22 @@ export function proneEffect({ includeLegacyValue = false } = {}) {
     metadata: {}
   };
 }
+
+export function persistentBleed({ dc = undefined, formula = "1d6", damageType = "bleed" } = {}) {
+  const component = {
+    type: "persistentDamage",
+    formula,
+    damageType
+  };
+  if (dc !== undefined) component.dc = dc;
+
+  return {
+    schemaVersion: 1,
+    id: "example.persistent-bleed",
+    name: "Blutende Wunde",
+    duration: { value: -1, unit: "unlimited", expiry: null },
+    components: [component],
+    application: {},
+    metadata: { originModule: "test-suite" }
+  };
+}

@@ -164,6 +164,39 @@ Multiple selectors:
 
 Unknown but syntactically valid selectors are allowed and reported as custom selectors. See [`SELECTORS.md`](SELECTORS.md).
 
+## Persistent damage component
+
+```js
+{
+  type: "persistentDamage",
+  formula: "1d6",
+  damageType: "bleed",
+  dc: 17
+}
+```
+
+Fields:
+
+- `formula`: required non-empty PF2e damage formula string;
+- `damageType`: required value registered in the damage-type catalog;
+- `dc`: optional positive integer overriding the normal persistent-damage recovery DC.
+
+Omit `dc` to retain PF2e's regular recovery DC:
+
+```js
+{
+  type: "persistentDamage",
+  formula: "2d4",
+  damageType: "acid"
+}
+```
+
+The compiler grants PF2e's `persistent-damage` condition and applies the `persistent-damage` Item Alteration. When `dc` is supplied, it additionally applies `pd-recovery-dc`.
+
+Persistent damage can be removed by PF2e's normal recovery process without deleting the parent Effect Item. Removing or expiring the parent effect still removes granted persistent damage. The global duration therefore acts as the maximum lifetime of the component, not as a prohibition on early recovery.
+
+Multiple persistent-damage components may coexist when their damage types differ. Repeated components of the same damage type produce `PERSISTENT_DAMAGE_DUPLICATE_TYPE`, because equal damage types normally do not stack. See [`DAMAGE_TYPES.md`](DAMAGE_TYPES.md).
+
 ## Application data
 
 `application` is reserved for policies such as target type, replacement, stacking, and incompatibility behavior. The current compiler preserves the object but does not enforce every proposed policy yet.

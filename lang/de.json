@@ -167,6 +167,34 @@
         "Stealth": "Heimlichkeit",
         "Survival": "Überlebenskunst",
         "Thievery": "Diebeskunst"
+      },
+      "PersistentDamage": "Anhaltender Schaden",
+      "DamageFormula": "Schadensformel",
+      "DamageType": "Schadensart",
+      "RecoveryDC": "Erholungs-SG (optional)",
+      "RecoveryDCHint": "Leer lassen, um den regulären PF2e-Erholungs-SG zu verwenden.",
+      "DamageTypeGroups": {
+        "Physical": "Physisch",
+        "Energy": "Energie",
+        "Other": "Weitere",
+        "Additional": "Zusätzliche System-Schadensarten"
+      },
+      "DamageTypeLabels": {
+        "Acid": "Säure",
+        "Bleed": "Blutung",
+        "Bludgeoning": "Wucht",
+        "Cold": "Kälte",
+        "Electricity": "Elektrizität",
+        "Fire": "Feuer",
+        "Force": "Kraft",
+        "Mental": "Mental",
+        "Piercing": "Stich",
+        "Poison": "Gift",
+        "Slashing": "Hieb",
+        "Sonic": "Schall",
+        "Spirit": "Geist",
+        "Vitality": "Vitalität",
+        "Void": "Leere"
       }
     },
     "Notifications": {
@@ -214,10 +242,18 @@
         "FrightenedCircumstance": "Der Umstandsmalus {modifierValue} kann sich mit dem Zustandsmalus aus Verängstigt {frightenedValue} addieren.",
         "SelectorFormat": "Der Selektor „{selector}“ ist ungültig. Selektoren müssen kleingeschrieben und mit Bindestrichen getrennt sein.",
         "SelectorCustom": "„{selector}“ ist ein benutzerdefinierter Selektor. Prüfe seine Wirkung am besten über „Wurf untersuchen“.",
-        "ConditionValueIgnored": "Der Zustand „{slug}“ besitzt keinen Zustandswert. Der angegebene Wert {value} wird beim Kompilieren ignoriert."
+        "ConditionValueIgnored": "Der Zustand „{slug}“ besitzt keinen Zustandswert. Der angegebene Wert {value} wird beim Kompilieren ignoriert.",
+        "PersistentDamageDuplicateType": "Mehrere Komponenten verursachen anhaltenden Schaden der Art „{damageType}“. Gleichartige Instanzen stapeln normalerweise nicht; relevant ist in der Regel nur die stärkere."
       },
       "Compatibility": {
         "TargetPresent": "Die Zielprüfung wurde für „{targetName}“ vorbereitet. Konkrete Immunitätsprüfungen folgen in einer späteren Version."
+      },
+      "Components": {
+        "PersistentDamage": {
+          "FormulaMissing": "Anhaltender Schaden benötigt eine Schadensformel, zum Beispiel 1d6.",
+          "TypeInvalid": "„{damageType}“ ist keine bekannte PF2e-Schadensart.",
+          "DcInvalid": "Der Erholungs-SG muss leer oder eine positive ganze Zahl sein."
+        }
       }
     }
   }

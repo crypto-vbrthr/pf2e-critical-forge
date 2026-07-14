@@ -25,6 +25,12 @@ import {
   isValuedCondition,
   listConditionDefinitions
 } from "../effect-engine/catalogs/condition-catalog.js";
+import {
+  getDamageTypeDefinition,
+  getDamageTypeGroups,
+  isKnownDamageType,
+  listDamageTypeDefinitions
+} from "../effect-engine/catalogs/damage-type-catalog.js";
 
 export function initializePublicApi() {
   const module = game.modules.get(MODULE_ID);
@@ -55,6 +61,13 @@ export function initializePublicApi() {
       list: () => listConditionDefinitions(),
       get: (slug) => getConditionDefinition(slug),
       isValued: (slug) => isValuedCondition(slug)
+    }),
+
+    damageTypes: Object.freeze({
+      groups: (selected = null) => getDamageTypeGroups(selected),
+      list: () => listDamageTypeDefinitions(),
+      get: (value) => getDamageTypeDefinition(value),
+      has: (value) => isKnownDamageType(value)
     }),
 
     components: Object.freeze({

@@ -59,6 +59,34 @@ export function buildModifier({
   return Object.freeze(component);
 }
 
+export function buildPersistentDamage({ formula, damageType, dc } = {}) {
+  const normalizedFormula = String(formula ?? "").trim();
+  if (!normalizedFormula) {
+    throw new TypeError("Persistent damage formula must not be empty.");
+  }
+
+  const normalizedDamageType = String(damageType ?? "").trim();
+  if (!normalizedDamageType) {
+    throw new TypeError("Persistent damage type must not be empty.");
+  }
+
+  const component = {
+    type: "persistentDamage",
+    formula: normalizedFormula,
+    damageType: normalizedDamageType
+  };
+
+  if (dc !== undefined && dc !== null && dc !== "") {
+    const numericDc = Number(dc);
+    if (!Number.isInteger(numericDc) || numericDc < 1) {
+      throw new TypeError("Persistent damage recovery DC must be a positive integer.");
+    }
+    component.dc = numericDc;
+  }
+
+  return Object.freeze(component);
+}
+
 export function cloneComponent(component) {
   if (!component || typeof component !== "object" || Array.isArray(component)) {
     throw new TypeError("Component must be an object.");

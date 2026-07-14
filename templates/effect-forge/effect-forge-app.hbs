@@ -90,6 +90,10 @@
                   <i class="fa-solid fa-sliders"></i>
                   {{localize "PF2E_CRITICAL_FORGE.EffectForge.Modifier"}}
                 </button>
+                <button type="button" data-action="addPersistentDamage">
+                  <i class="fa-solid fa-droplet"></i>
+                  {{localize "PF2E_CRITICAL_FORGE.EffectForge.PersistentDamage"}}
+                </button>
               </div>
             {{/if}}
           </div>
@@ -104,8 +108,12 @@
                   <strong>
                     {{#if component.isCondition}}
                       {{localize "PF2E_CRITICAL_FORGE.EffectForge.Condition"}}
-                    {{else}}
+                    {{/if}}
+                    {{#if component.isModifier}}
                       {{localize "PF2E_CRITICAL_FORGE.EffectForge.Modifier"}}
+                    {{/if}}
+                    {{#if component.isPersistentDamage}}
+                      {{localize "PF2E_CRITICAL_FORGE.EffectForge.PersistentDamage"}}
                     {{/if}}
                   </strong>
                 </div>
@@ -190,6 +198,47 @@
                   >
                   <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.CustomSelectorHint"}}</small>
                 </label>
+              {{/if}}
+
+              {{#if component.isPersistentDamage}}
+                <div class="effect-forge-grid persistent-damage-grid">
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.DamageFormula"}}</span>
+                    <input
+                      type="text"
+                      name="components.{{component.index}}.formula"
+                      value="{{component.formula}}"
+                      placeholder="1d6"
+                      required
+                    >
+                  </label>
+
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.DamageType"}}</span>
+                    <select name="components.{{component.index}}.damageType">
+                      {{#each component.damageTypeGroups as |group|}}
+                        <optgroup label="{{group.label}}">
+                          {{#each group.options as |option|}}
+                            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                          {{/each}}
+                        </optgroup>
+                      {{/each}}
+                    </select>
+                  </label>
+
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.RecoveryDC"}}</span>
+                    <input
+                      type="number"
+                      name="components.{{component.index}}.dc"
+                      value="{{component.dc}}"
+                      min="1"
+                      step="1"
+                      placeholder="15"
+                    >
+                    <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.RecoveryDCHint"}}</small>
+                  </label>
+                </div>
               {{/if}}
             </article>
           {{else}}

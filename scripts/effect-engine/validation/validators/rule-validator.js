@@ -51,6 +51,23 @@ export function validateRules(definition) {
       }
     }
   });
+  const persistentDamageByType = new Map();
+  definition.components.forEach((component, index) => {
+    if (component.type !== "persistentDamage") return;
+    const previous = persistentDamageByType.get(component.damageType);
+    if (previous !== undefined) {
+      issues.push({
+        severity: "warning",
+        code: "PERSISTENT_DAMAGE_DUPLICATE_TYPE",
+        messageKey: "Validation.Rules.PersistentDamageDuplicateType",
+        data: { damageType: component.damageType, firstComponent: previous + 1 },
+        componentIndex: index
+      });
+    } else {
+      persistentDamageByType.set(component.damageType, index);
+    }
+  });
+
   const frightened = definition.components
     .map((component, index) => ({ component, index }))
     .find(({ component }) => component.type === "condition" && component.slug === "frightened");

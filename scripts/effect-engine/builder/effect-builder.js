@@ -1,5 +1,10 @@
 import { EFFECT_SCHEMA_VERSION } from "../../constants.js";
-import { buildCondition, buildModifier, cloneComponent } from "./component-builder.js";
+import {
+  buildCondition,
+  buildModifier,
+  buildPersistentDamage,
+  cloneComponent
+} from "./component-builder.js";
 import { buildDuration } from "./duration-builder.js";
 
 export class EffectBuilder {
@@ -98,6 +103,11 @@ export class EffectBuilder {
 
   addModifier(options) {
     this.#definition.components.push(buildModifier(options));
+    return this;
+  }
+
+  addPersistentDamage(options) {
+    this.#definition.components.push(buildPersistentDamage(options));
     return this;
   }
 

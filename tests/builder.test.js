@@ -21,6 +21,11 @@ test("EffectBuilder creates an immutable normalized definition", () => {
       modifierType: "circumstance",
       predicate: ["self:condition:frightened"]
     })
+    .addPersistentDamage({
+      formula: "1d6",
+      damageType: "bleed",
+      dc: "17"
+    })
     .setMetadata({ originModule: "tests", nested: { enabled: true } })
     .build();
 
@@ -39,6 +44,12 @@ test("EffectBuilder creates an immutable normalized definition", () => {
     value: 2
   });
   assert.equal(definition.components[1].value, -1);
+  assert.deepEqual(definition.components[2], {
+    type: "persistentDamage",
+    formula: "1d6",
+    damageType: "bleed",
+    dc: 17
+  });
   assertDeepFrozen(definition);
 });
 
@@ -90,6 +101,14 @@ test("builder rejects malformed component and duration input", () => {
   );
   assert.throws(
     () => createEffectBuilder().setDuration(1, "centuries", "turn-end"),
+    TypeError
+  );
+  assert.throws(
+    () => createEffectBuilder().addPersistentDamage({ formula: "", damageType: "fire" }),
+    TypeError
+  );
+  assert.throws(
+    () => createEffectBuilder().addPersistentDamage({ formula: "1d6", damageType: "fire", dc: 0 }),
     TypeError
   );
 });

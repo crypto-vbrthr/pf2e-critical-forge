@@ -1,12 +1,16 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { installFoundryMock } from "./helpers/foundry-mock.js";
-import { proneEffect, shakenNerves } from "./fixtures/effects.js";
+import { persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
 
 installFoundryMock({
   skills: {
     athletics: { label: "PF2E.Skill.Athletics" },
     stealth: { label: "PF2E.Skill.Stealth" }
+  },
+  damageTypes: {
+    bleed: "PF2E.TraitBleed",
+    fire: "PF2E.TraitFire"
   }
 });
 
@@ -98,4 +102,37 @@ test("target context reaches the compatibility phase", () => {
     (candidate) => candidate.code === "COMPATIBILITY_TARGET_PRESENT"
   );
   assert.equal(issue?.data.targetName, "Test Actor");
+});
+
+test("persistent damage validates formula, damage type, and recovery DC", () => {
+  const missingFormula = analyzeEffectDefinition(persistentBleed({ formula: "" }));
+  assert.equal(missingFormula.valid, false);
+  assert.equal(missingFormula.errors.some(
+    (issue) => issue.code === "PERSISTENT_DAMAGE_FORMULA_MISSING"
+  ), true);
+
+  const invalidType = analyzeEffectDefinition(persistentBleed({ damageType: "rainbow" }));
+  assert.equal(invalidType.errors.some(
+    (issue) => issue.code === "PERSISTENT_DAMAGE_TYPE_INVALID"
+  ), true);
+
+  const invalidDc = analyzeEffectDefinition(persistentBleed({ dc: 0 }));
+  assert.equal(invalidDc.errors.some(
+    (issue) => issue.code === "PERSISTENT_DAMAGE_DC_INVALID"
+  ), true);
+});
+
+test("duplicate persistent damage types produce a stacking warning", () => {
+  const definition = persistentBleed();
+  definition.components.push({
+    type: "persistentDamage",
+    formula: "2d6",
+    damageType: "bleed"
+  });
+
+  const report = analyzeEffectDefinition(definition);
+  assert.equal(report.valid, true);
+  assert.equal(report.warnings.some(
+    (issue) => issue.code === "PERSISTENT_DAMAGE_DUPLICATE_TYPE"
+  ), true);
 });

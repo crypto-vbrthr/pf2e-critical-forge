@@ -3,6 +3,7 @@ import {
   initializeConditionCatalog,
   isValuedCondition
 } from "../effect-engine/catalogs/condition-catalog.js";
+import { getDamageTypeGroups } from "../effect-engine/catalogs/damage-type-catalog.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -10,7 +11,7 @@ const FALLBACK_CONDITIONS = [
   "blinded", "clumsy", "concealed", "confused", "controlled", "dazzled",
   "deafened", "doomed", "drained", "dying", "encumbered", "enfeebled",
   "fascinated", "fatigued", "fleeing", "frightened", "grabbed", "hidden",
-  "immobilized", "invisible", "off-guard", "paralyzed", "persistent-damage",
+  "immobilized", "invisible", "off-guard", "paralyzed",
   "prone", "quickened", "restrained", "sickened", "slowed", "stunned",
   "stupefied", "unconscious", "undetected", "wounded"
 ];
@@ -67,6 +68,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       toggleComponentMenu: EffectForgeApp.#toggleComponentMenu,
       addCondition: EffectForgeApp.#addCondition,
       addModifier: EffectForgeApp.#addModifier,
+      addPersistentDamage: EffectForgeApp.#addPersistentDamage,
       removeComponent: EffectForgeApp.#removeComponent,
       browseImage: EffectForgeApp.#browseImage,
       validateEffect: EffectForgeApp.#validateEffect,
@@ -190,7 +192,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       index,
       number: index + 1,
       isCondition: component.type === "condition",
-      isModifier: component.type === "modifier"
+      isModifier: component.type === "modifier",
+      isPersistentDamage: component.type === "persistentDamage"
     };
 
     if (base.isCondition) {
@@ -211,16 +214,23 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }));
     }
 
+    if (base.isPersistentDamage) {
+      base.damageTypeGroups = getDamageTypeGroups(component.damageType);
+      base.dc = component.dc ?? "";
+    }
+
     return base;
   }
 
   #conditionOptions(selected) {
     const configured = CONFIG.PF2E?.conditionTypes ?? {};
-    const entries = Object.entries(configured).map(([value, label]) => ({
-      value,
-      label: game.i18n.localize(label),
-      isValued: isValuedCondition(value)
-    }));
+    const entries = Object.entries(configured)
+      .filter(([value]) => value !== "persistent-damage" || value === selected)
+      .map(([value, label]) => ({
+        value,
+        label: game.i18n.localize(label),
+        isValued: isValuedCondition(value)
+      }));
 
     const source = entries.length > 0
       ? entries
@@ -271,6 +281,16 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         };
       }
 
+      if (component.type === "persistentDamage") {
+        const rawDc = String(data.get(`${prefix}.dc`) ?? "").trim();
+        return {
+          type: "persistentDamage",
+          formula: String(data.get(`${prefix}.formula`) ?? "").trim(),
+          damageType: String(data.get(`${prefix}.damageType`) ?? "").trim(),
+          dc: rawDc === "" ? undefined : Number(rawDc)
+        };
+      }
+
       const selectorChoice = String(
         data.get(`${prefix}.selectorChoice`) ?? component.selector ?? ""
       ).trim();
@@ -318,6 +338,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         builder.addCondition(component.slug, component.value);
       } else if (component.type === "modifier") {
         builder.addModifier(component);
+      } else if (component.type === "persistentDamage") {
+        builder.addPersistentDamage(component);
       }
     }
 
@@ -412,6 +434,19 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       selector: "will",
       value: -1,
       modifierType: "circumstance"
+    });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.render({ force: true });
+  }
+
+  static #addPersistentDamage() {
+    this.#syncStateFromForm();
+    this.state.components.push({
+      type: "persistentDamage",
+      formula: "1d6",
+      damageType: "bleed",
+      dc: undefined
     });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();

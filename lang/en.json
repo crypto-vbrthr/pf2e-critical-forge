@@ -167,6 +167,34 @@
         "Stealth": "Stealth",
         "Survival": "Survival",
         "Thievery": "Thievery"
+      },
+      "PersistentDamage": "Persistent Damage",
+      "DamageFormula": "Damage Formula",
+      "DamageType": "Damage Type",
+      "RecoveryDC": "Recovery DC (optional)",
+      "RecoveryDCHint": "Leave empty to use the regular PF2e recovery DC.",
+      "DamageTypeGroups": {
+        "Physical": "Physical",
+        "Energy": "Energy",
+        "Other": "Other",
+        "Additional": "Additional System Damage Types"
+      },
+      "DamageTypeLabels": {
+        "Acid": "Acid",
+        "Bleed": "Bleed",
+        "Bludgeoning": "Bludgeoning",
+        "Cold": "Cold",
+        "Electricity": "Electricity",
+        "Fire": "Fire",
+        "Force": "Force",
+        "Mental": "Mental",
+        "Piercing": "Piercing",
+        "Poison": "Poison",
+        "Slashing": "Slashing",
+        "Sonic": "Sonic",
+        "Spirit": "Spirit",
+        "Vitality": "Vitality",
+        "Void": "Void"
       }
     },
     "Notifications": {
@@ -214,10 +242,18 @@
         "FrightenedCircumstance": "The circumstance penalty {modifierValue} can stack with the status penalty from Frightened {frightenedValue}.",
         "SelectorFormat": "Selector “{selector}” is invalid. Selectors must be lowercase kebab-case strings.",
         "SelectorCustom": "“{selector}” is a custom selector. Verify its behavior with “Inspect Roll”.",
-        "ConditionValueIgnored": "The condition “{slug}” has no condition value. The supplied value {value} is ignored during compilation."
+        "ConditionValueIgnored": "The condition “{slug}” has no condition value. The supplied value {value} is ignored during compilation.",
+        "PersistentDamageDuplicateType": "Multiple components deal persistent {damageType} damage. Instances of the same type normally do not stack; usually only the stronger one matters."
       },
       "Compatibility": {
         "TargetPresent": "Target analysis was prepared for “{targetName}”. Concrete immunity checks will follow in a later version."
+      },
+      "Components": {
+        "PersistentDamage": {
+          "FormulaMissing": "Persistent damage requires a damage formula, such as 1d6.",
+          "TypeInvalid": "“{damageType}” is not a known PF2e damage type.",
+          "DcInvalid": "The recovery DC must be empty or a positive integer."
+        }
       }
     }
   }

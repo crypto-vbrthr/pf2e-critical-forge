@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.1.12-dev` is a stabilization milestone. It adds an automated Node test suite and refreshes the public developer documentation without introducing new effect components.
+Version `0.2.0-dev` introduces the first advanced effect component: persistent damage. It also adds a central damage-type catalog, dedicated validation, GUI editing, compiler support, and regression tests.
 
 The current engine includes:
 
@@ -17,9 +17,10 @@ The current engine includes:
 - structured schema, rule, and compatibility validation;
 - stable validation codes and severities;
 - a central PF2e selector catalog with grouped selectors and dynamic skills;
+- a central damage-type catalog backed by `CONFIG.PF2E.damageTypes`;
 - a PF2e condition catalog that distinguishes valued and non-valued conditions;
-- `condition` and `modifier` components;
-- compilation to PF2e `GrantItem` and `FlatModifier` Rule Elements;
+- `condition`, `modifier`, and `persistentDamage` components;
+- compilation to PF2e `GrantItem` and `FlatModifier` Rule Elements, including persistent-damage and recovery-DC alterations;
 - PF2e Effect Item source generation;
 - world Item creation, Actor/Token application, and removal by definition ID;
 - a resizable, localized, component-based GM interface;
@@ -64,6 +65,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md): Effect Definition schema
 - [`docs/VALIDATION.md`](docs/VALIDATION.md): report format, phases, and issue codes
 - [`docs/SELECTORS.md`](docs/SELECTORS.md): selector catalog and custom selectors
+- [`docs/DAMAGE_TYPES.md`](docs/DAMAGE_TYPES.md): damage-type catalog and groups
 - [`docs/EXAMPLES.md`](docs/EXAMPLES.md): complete examples
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): subsystem boundaries
 - [`docs/TESTING.md`](docs/TESTING.md): local test execution and conventions

@@ -47,6 +47,38 @@ const prone = api.builders
 
 The compiled `GrantItem` rule contains no `badge-value` alteration.
 
+## Persistent damage
+
+```js
+const bleedingWound = api.builders
+  .effect()
+  .setId("example.bleeding-wound")
+  .setName("Blutende Wunde")
+  .setDuration(-1, "unlimited", null)
+  .addPersistentDamage({
+    formula: "1d6",
+    damageType: "bleed"
+  })
+  .build();
+```
+
+A custom recovery DC is optional:
+
+```js
+const acidBurn = api.builders
+  .effect()
+  .setName("Ätzende Verbrennung")
+  .setDuration(10, "minutes", "turn-end")
+  .addPersistentDamage({
+    formula: "2d4",
+    damageType: "acid",
+    dc: 19
+  })
+  .build();
+```
+
+The first definition uses PF2e's normal recovery DC. The second adds a `pd-recovery-dc` alteration.
+
 ## Multiple selectors
 
 ```js

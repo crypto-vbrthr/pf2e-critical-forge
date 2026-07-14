@@ -222,9 +222,25 @@ The original object is not mutated.
 | `addComponent(component)` | Adds an arbitrary registered component. |
 | `addCondition(slug, value?)` | Adds a PF2e condition component. |
 | `addModifier(options)` | Adds a modifier component. |
+| `addPersistentDamage(options)` | Adds persistent damage with `formula`, `damageType`, and optional `dc`. |
 | `clearComponents()` | Removes all components. |
 | `removeComponent(index)` | Removes one component or throws `RangeError`. |
 | `build()` | Returns the immutable Effect Definition. |
+
+Persistent-damage example:
+
+```js
+const bleeding = api.builders
+  .effect()
+  .setName("Bleeding Wound")
+  .setDuration(-1, "unlimited", null)
+  .addPersistentDamage({
+    formula: "1d6",
+    damageType: "bleed",
+    dc: 17
+  })
+  .build();
+```
 
 ## Selector catalog
 
@@ -253,6 +269,17 @@ api.conditions.list();
 The PF2e condition compendium is the primary metadata source. A fallback valued-condition set keeps Builder and validation behavior available before compendia finish loading.
 
 The compiler emits a `badge-value` alteration only when the resolved condition is valued.
+
+## Damage-type catalog
+
+```js
+api.damageTypes.list();
+api.damageTypes.groups("bleed");
+api.damageTypes.get("fire");
+api.damageTypes.has("spirit");
+```
+
+The catalog combines `CONFIG.PF2E.damageTypes` with standard fallback metadata. The GUI and persistent-damage validator consume the same catalog. See [`DAMAGE_TYPES.md`](DAMAGE_TYPES.md).
 
 ## Component extension API
 

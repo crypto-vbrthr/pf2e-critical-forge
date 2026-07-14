@@ -28,6 +28,11 @@ installFoundryMock({
   skills: {
     athletics: { label: "PF2E.Skill.Athletics" },
     society: { label: "PF2E.Skill.Society" }
+  },
+  damageTypes: {
+    fire: "PF2E.TraitFire",
+    bleed: "PF2E.TraitBleed",
+    "custom-energy": "MY_MODULE.CustomEnergy"
   }
 });
 
@@ -36,6 +41,9 @@ const selectors = await import(
 );
 const conditions = await import(
   "../scripts/effect-engine/catalogs/condition-catalog.js"
+);
+const damageTypes = await import(
+  "../scripts/effect-engine/catalogs/damage-type-catalog.js"
 );
 
 test("selector catalog includes configured PF2e skills and stable groups", () => {
@@ -60,4 +68,16 @@ test("condition catalog reads valued metadata from the PF2e compendium", async (
     conditions.getConditionDefinition("prone").uuid,
     "Compendium.pf2e.conditionitems.Item.prone"
   );
+});
+
+test("damage type catalog groups PF2e and fallback damage types", () => {
+  assert.equal(damageTypes.isKnownDamageType("fire"), true);
+  assert.equal(damageTypes.isKnownDamageType("spirit"), true);
+  assert.equal(damageTypes.isKnownDamageType("not-a-damage-type"), false);
+
+  const groups = damageTypes.getDamageTypeGroups("bleed");
+  assert.equal(groups.find((group) => group.id === "physical")
+    ?.options.some((option) => option.value === "bleed" && option.selected), true);
+  assert.equal(groups.find((group) => group.id === "additional")
+    ?.options.some((option) => option.value === "custom-energy"), true);
 });

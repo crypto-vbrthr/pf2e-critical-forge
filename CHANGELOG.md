@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.2.0-dev
+
+### Added
+- `persistentDamage` component with formula, damage type, and optional recovery DC.
+- Builder method `addPersistentDamage()`.
+- Central damage-type catalog backed by `CONFIG.PF2E.damageTypes` with grouped GUI options and fallbacks.
+- Public `api.damageTypes` catalog helpers.
+- Effect Forge editor card and component-menu entry for persistent damage.
+- Stable validation codes for missing formula, invalid damage type, invalid recovery DC, and duplicate persistent-damage types.
+- Compiler support for PF2e `persistent-damage` and `pd-recovery-dc` GrantItem alterations.
+- Persistent-damage Builder, catalog, validation, and compiler tests.
+- `docs/DAMAGE_TYPES.md`.
+
+### Changed
+- Component handlers may return structured validation entries with stable codes while legacy string errors remain supported.
+- Automated suite expanded from 18 to 23 tests.
+- Public API version increased to `0.2.0`; Effect Definition schema remains version `1`.
+
 ## 0.1.12-dev
 
 ### Added

@@ -80,6 +80,9 @@ When schema or component validation produces an error, later rule and compatibil
 | `SCHEMA_COMPONENT_UNKNOWN` | error | No handler is registered for the component type. |
 | `COMPONENT_INVALID` | error | A component handler rejected its data. |
 | `COMPONENT_WARNING` | warning | A component handler reported a non-blocking issue. |
+| `PERSISTENT_DAMAGE_FORMULA_MISSING` | error | Persistent damage has no formula. |
+| `PERSISTENT_DAMAGE_TYPE_INVALID` | error | Damage type is absent from the central catalog. |
+| `PERSISTENT_DAMAGE_DC_INVALID` | error | Recovery DC is present but not a positive integer. |
 
 ### Rule codes
 
@@ -90,6 +93,7 @@ When schema or component validation produces an error, later rule and compatibil
 | `MODIFIER_SELECTOR_CUSTOM` | info | Selector is syntactically valid but absent from the catalog. |
 | `STACKING_FRIGHTENED_STATUS` | warning | A status penalty overlaps with frightened's status penalty. |
 | `STACKING_FRIGHTENED_CIRCUMSTANCE` | info | A circumstance penalty can stack with frightened. |
+| `PERSISTENT_DAMAGE_DUPLICATE_TYPE` | warning | Multiple components use the same persistent-damage type. |
 
 ### Compatibility codes
 

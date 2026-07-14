@@ -72,11 +72,31 @@ export function validateSchema(definition) {
     }
 
     const result = handler.validate(component, { definition, index }) ?? {};
-    for (const message of result.errors ?? []) {
-      issues.push(issue("error", "COMPONENT_INVALID", null, { message }, index));
+    for (const entry of result.errors ?? []) {
+      if (typeof entry === "string") {
+        issues.push(issue("error", "COMPONENT_INVALID", null, { message: entry }, index));
+      } else {
+        issues.push(issue(
+          entry.severity ?? "error",
+          entry.code ?? "COMPONENT_INVALID",
+          entry.messageKey ?? null,
+          entry.data ?? {},
+          index
+        ));
+      }
     }
-    for (const message of result.warnings ?? []) {
-      issues.push(issue("warning", "COMPONENT_WARNING", null, { message }, index));
+    for (const entry of result.warnings ?? []) {
+      if (typeof entry === "string") {
+        issues.push(issue("warning", "COMPONENT_WARNING", null, { message: entry }, index));
+      } else {
+        issues.push(issue(
+          entry.severity ?? "warning",
+          entry.code ?? "COMPONENT_WARNING",
+          entry.messageKey ?? null,
+          entry.data ?? {},
+          index
+        ));
+      }
     }
   });
 
