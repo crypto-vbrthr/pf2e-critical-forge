@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.1.9-dev
+
+### Changed
+- Rebuilt the Effect Forge UI to match the approved two-panel design.
+- Added localized dropdowns for PF2e conditions, common selectors, and modifier types.
+- Added effect ID editing, image preview and picker, description counter, and unlimited duration toggle.
+- Added grouped validation results with status summary.
+- Added copy-to-clipboard actions for Effect Definition and PF2e Item data.
+- Preserved the fixed action bar, independent scrolling areas, and resizable window.
+
+### Fixed
+- Added all previously missing localization keys.
+- Increased spacing between component fields to prevent controls from touching.
+
+## 0.1.8-dev
+
+### Changed
+- Made the Effect Forge window resizable.
+- Added an independent vertical scrollbar to the component list.
+- Kept the action bar outside all scrolling regions so components cannot overlap it.
+- Added stable scrolling for the preview and validation sidebar.
+- Added minimum window dimensions and responsive single-column behavior.
+
+## 0.1.7-dev
+
+### Changed
+- Reworked Effect Forge into a component-based editor.
+- Added dynamic condition and modifier cards with add/remove controls.
+- Added persistent form state across re-renders.
+- Added Effect Definition and compiled PF2e Item previews.
+- Moved validation feedback into a dedicated sidebar panel.
+
 ## 0.1.6-dev
 
 ### Added
