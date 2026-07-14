@@ -77,6 +77,9 @@ const weaknessTypes = await import(
 const immunityTypes = await import(
   "../scripts/effect-engine/catalogs/immunity-type-catalog.js"
 );
+const movementTypes = await import(
+  "../scripts/effect-engine/catalogs/movement-type-catalog.js"
+);
 
 test("selector catalog includes configured PF2e skills and stable groups", () => {
   const list = selectors.listSelectorDefinitions();
@@ -170,4 +173,16 @@ test("damage-type groups support multiple selected values", async () => {
     .map((option) => option.value)
     .sort();
   assert.deepEqual(selected, ["acid", "fire"]);
+});
+
+
+test("movement type catalog maps modes to native speed selectors", () => {
+  assert.equal(movementTypes.isKnownMovementType("land"), true);
+  assert.equal(movementTypes.isKnownMovementType("teleport"), false);
+  assert.equal(movementTypes.getMovementSelector("all"), "all-speeds");
+  assert.equal(movementTypes.getMovementSelector("fly"), "fly-speed");
+
+  const groups = movementTypes.getMovementTypeGroups("swim");
+  assert.equal(groups.find((group) => group.id === "mode")
+    ?.options.some((option) => option.value === "swim" && option.selected), true);
 });

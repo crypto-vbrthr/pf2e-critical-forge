@@ -229,6 +229,7 @@ The original object is not mutated.
 | `addFastHealing(options)` | Adds fast healing with a positive integer `value`. |
 | `addRegeneration(options)` | Adds regeneration with positive integer `value` and `deactivatedBy` damage types. |
 | `addTemporaryHitPoints(options)` | Adds a one-time grant of temporary Hit Points with a positive integer `value`. |
+| `addMovement(options)` | Adds a Speed modifier with `movementType`, non-zero integer `value`, and `modifierType`. |
 | `clearComponents()` | Removes all components. |
 | `removeComponent(index)` | Removes one component or throws `RangeError`. |
 | `build()` | Returns the immutable Effect Definition. |
@@ -252,6 +253,7 @@ const bleeding = api.builders
   .addFastHealing({ value: 2 })
   .addRegeneration({ value: 5, deactivatedBy: ["acid", "fire"] })
   .addTemporaryHitPoints({ value: 7 })
+  .addMovement({ movementType: "land", value: 10, modifierType: "status" })
   .build();
 ```
 
@@ -445,3 +447,27 @@ const definition = api.builders
 ```
 
 The compiler emits `{ key: "TempHP", value: 5 }`. See [`TEMPORARY_HIT_POINTS.md`](TEMPORARY_HIT_POINTS.md).
+
+
+## Movement catalog and Builder method
+
+```js
+const fleet = api.builders
+  .effect()
+  .setName("Fleet Step")
+  .setDuration(1, "minutes", "turn-end")
+  .addMovement({
+    movementType: "land",
+    value: 10,
+    modifierType: "status"
+  })
+  .build();
+
+api.movementTypes.list();
+api.movementTypes.groups("fly");
+api.movementTypes.get("swim");
+api.movementTypes.has("burrow");
+api.movementTypes.selector("land"); // "land-speed"
+```
+
+See [`MOVEMENT.md`](MOVEMENT.md) for supported movement modes and stacking behavior.

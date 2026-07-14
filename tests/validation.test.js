@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { installFoundryMock } from "./helpers/foundry-mock.js";
-import { fastHealing, fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, regeneration, shakenNerves, temporaryHitPoints } from "./fixtures/effects.js";
+import { fastHealing, fireImmunity, fireResistance, fireWeakness, movement, persistentBleed, proneEffect, regeneration, shakenNerves, temporaryHitPoints } from "./fixtures/effects.js";
 
 installFoundryMock({
   skills: {
@@ -313,5 +313,48 @@ test("multiple temporary-hit-point components produce a non-stacking warning", (
   assert.equal(report.valid, true);
   assert.equal(report.warnings.some(
     (issue) => issue.code === "TEMPORARY_HIT_POINTS_MULTIPLE_SOURCES"
+  ), true);
+});
+
+test("movement validates type, non-zero value, and modifier type", () => {
+  assert.equal(analyzeEffectDefinition(movement()).valid, true);
+
+  const invalidType = analyzeEffectDefinition(movement({ movementType: "teleport" }));
+  assert.equal(invalidType.errors.some(
+    (issue) => issue.code === "MOVEMENT_TYPE_INVALID"
+  ), true);
+
+  const invalidValue = analyzeEffectDefinition(movement({ value: 0 }));
+  assert.equal(invalidValue.errors.some(
+    (issue) => issue.code === "MOVEMENT_VALUE_INVALID"
+  ), true);
+
+  const invalidModifierType = analyzeEffectDefinition(movement({ modifierType: "potency" }));
+  assert.equal(invalidModifierType.errors.some(
+    (issue) => issue.code === "MOVEMENT_MODIFIER_TYPE_INVALID"
+  ), true);
+});
+
+test("unusual movement increments warn without blocking compilation", () => {
+  const report = analyzeEffectDefinition(movement({ value: 7 }));
+  assert.equal(report.valid, true);
+  assert.equal(report.warnings.some(
+    (issue) => issue.code === "MOVEMENT_VALUE_UNUSUAL_INCREMENT"
+  ), true);
+});
+
+test("overlapping movement modifiers of the same type produce a stacking warning", () => {
+  const definition = movement({ movementType: "all", value: 10, modifierType: "status" });
+  definition.components.push({
+    type: "movement",
+    movementType: "land",
+    value: 5,
+    modifierType: "status"
+  });
+
+  const report = analyzeEffectDefinition(definition);
+  assert.equal(report.valid, true);
+  assert.equal(report.warnings.some(
+    (issue) => issue.code === "MOVEMENT_MODIFIER_OVERLAP"
   ), true);
 });

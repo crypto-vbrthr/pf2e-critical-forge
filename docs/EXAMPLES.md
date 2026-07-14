@@ -308,3 +308,33 @@ Compiled rule:
   "value": 7
 }
 ```
+
+
+## Movement bonus and penalty
+
+```js
+const fleet = api.builders
+  .effect()
+  .setId("example.fleet-step")
+  .setName("Fleet Step")
+  .setDuration(1, "minutes", "turn-end")
+  .addMovement({
+    movementType: "land",
+    value: 10,
+    modifierType: "status"
+  })
+  .build();
+```
+
+Compiled rule:
+
+```json
+{
+  "key": "FlatModifier",
+  "selector": "land-speed",
+  "value": 10,
+  "type": "status"
+}
+```
+
+A penalty uses the same component with a negative value. Selecting `all` compiles to `all-speeds`.

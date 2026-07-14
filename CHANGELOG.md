@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.8-dev
+
+### Added
+- `movement` component for all Speeds or one of land, burrow, climb, fly, and swim.
+- Builder method `addMovement()` with movement type, signed integer value, and PF2e modifier type.
+- Central movement-type catalog and public `api.movementTypes` helpers.
+- Effect Forge editor card and component-menu entry for movement modifiers.
+- Validation codes for invalid movement types, values, modifier types, unusual increments, and overlapping modifiers.
+- Compiler support for PF2e `FlatModifier` Rule Elements using native Speed selectors.
+- Builder, catalog, validation, and compiler regression tests.
+- `docs/MOVEMENT.md`.
+
+### Changed
+- Automated suite expanded from 49 to 55 tests.
+- Public API version increased to `0.2.7`; Effect Definition schema remains version `1`.
+
 ## 0.2.7-dev
 
 ### Added

@@ -49,6 +49,13 @@ import {
   isKnownImmunityType,
   listImmunityTypeDefinitions
 } from "../effect-engine/catalogs/immunity-type-catalog.js";
+import {
+  getMovementSelector,
+  getMovementTypeDefinition,
+  getMovementTypeGroups,
+  isKnownMovementType,
+  listMovementTypeDefinitions
+} from "../effect-engine/catalogs/movement-type-catalog.js";
 
 export function initializePublicApi() {
   const module = game.modules.get(MODULE_ID);
@@ -107,6 +114,14 @@ export function initializePublicApi() {
       list: () => listImmunityTypeDefinitions(),
       get: (value) => getImmunityTypeDefinition(value),
       has: (value) => isKnownImmunityType(value)
+    }),
+
+    movementTypes: Object.freeze({
+      groups: (selected = null) => getMovementTypeGroups(selected),
+      list: () => listMovementTypeDefinitions(),
+      get: (value) => getMovementTypeDefinition(value),
+      has: (value) => isKnownMovementType(value),
+      selector: (value) => getMovementSelector(value)
     }),
 
     components: Object.freeze({

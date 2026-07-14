@@ -118,6 +118,10 @@
                   <i class="fa-solid fa-heart-circle-plus"></i>
                   {{localize "PF2E_CRITICAL_FORGE.EffectForge.TemporaryHitPoints"}}
                 </button>
+                <button type="button" data-action="addMovement">
+                  <i class="fa-solid fa-person-running"></i>
+                  {{localize "PF2E_CRITICAL_FORGE.EffectForge.Movement"}}
+                </button>
               </div>
             {{/if}}
           </div>
@@ -156,6 +160,9 @@
                     {{/if}}
                     {{#if component.isTemporaryHitPoints}}
                       {{localize "PF2E_CRITICAL_FORGE.EffectForge.TemporaryHitPoints"}}
+                    {{/if}}
+                    {{#if component.isMovement}}
+                      {{localize "PF2E_CRITICAL_FORGE.EffectForge.Movement"}}
                     {{/if}}
                   </strong>
                 </div>
@@ -389,6 +396,44 @@
                       required
                     >
                     <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.TemporaryHitPointsHint"}}</small>
+                  </label>
+                </div>
+              {{/if}}
+
+              {{#if component.isMovement}}
+                <div class="effect-forge-grid movement-grid">
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.MovementType"}}</span>
+                    <select name="components.{{component.index}}.movementType">
+                      {{#each component.movementTypeGroups as |group|}}
+                        <optgroup label="{{group.label}}">
+                          {{#each group.options as |option|}}
+                            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                          {{/each}}
+                        </optgroup>
+                      {{/each}}
+                    </select>
+                  </label>
+
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ModifierType"}}</span>
+                    <select name="components.{{component.index}}.modifierType">
+                      {{#each component.modifierTypeOptions as |option|}}
+                        <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                      {{/each}}
+                    </select>
+                  </label>
+
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.MovementValue"}}</span>
+                    <input
+                      type="number"
+                      name="components.{{component.index}}.value"
+                      value="{{component.value}}"
+                      step="5"
+                      required
+                    >
+                    <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.MovementHint"}}</small>
                   </label>
                 </div>
               {{/if}}

@@ -37,7 +37,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 49 tests covering:
+The suite contains 55 tests covering:
 
 - Builder normalization and immutable output;
 - cloning existing definitions without mutation;
@@ -55,6 +55,7 @@ The suite contains 49 tests covering:
 - fast-healing Builder normalization, value validation, multi-source diagnostics, and native PF2e `FastHealing`;
 - temporary-Hit-Point Builder normalization, value validation, non-stacking diagnostics, and native PF2e `TempHP`;
 - regeneration normalization, multi-select damage types, validation diagnostics, and native PF2e regeneration output;
+- movement-type catalog mapping, signed Speed modifiers, stacking diagnostics, and native PF2e Speed selectors;
 - PF2e Effect Item duration, Rule Elements, and origin flags;
 - compiler rejection through `EffectValidationError`;
 - frightened/status stacking warnings;
@@ -64,7 +65,7 @@ The suite contains 49 tests covering:
 - schema short-circuit behavior;
 - target context reaching the compatibility validator.
 
-At `0.2.7-dev`, the measured line coverage of files loaded by the suite is about 95.39%. Coverage is a diagnostic, not a release gate yet.
+At `0.2.8-dev`, the measured line coverage of files loaded by the suite is about 95.84%. Coverage is a diagnostic, not a release gate yet.
 
 ## Foundry mock
 

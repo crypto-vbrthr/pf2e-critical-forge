@@ -195,6 +195,7 @@
 
 .effect-forge-grid.three-columns,
 .effect-forge-grid.modifier-grid,
+.effect-forge-grid.movement-grid,
 .effect-forge-grid.persistent-damage-grid {
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(110px, 0.72fr);
 }
@@ -337,6 +338,10 @@
   border-color: rgba(111, 164, 232, 0.92);
 }
 
+.effect-forge-component-card.component-movement {
+  border-color: rgba(232, 198, 92, 0.92);
+}
+
 .effect-forge-component-card > header {
   display: flex;
   align-items: center;
@@ -392,6 +397,10 @@
 
 .component-temporaryHitPoints .component-number {
   background: #5f8fcf;
+}
+
+.component-movement .component-number {
+  background: #b59335;
 }
 
 .effect-forge-grid.regeneration-grid select[multiple] {
@@ -625,6 +634,7 @@
   .effect-forge-name-image-row,
   .effect-forge-grid.three-columns,
   .effect-forge-grid.modifier-grid,
+  .effect-forge-grid.movement-grid,
   .effect-forge-grid.condition-grid,
   .effect-forge-grid.persistent-damage-grid,
   .effect-forge-grid.resistance-grid,

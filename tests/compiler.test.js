@@ -4,7 +4,7 @@ import {
   createConditionPack,
   installFoundryMock
 } from "./helpers/foundry-mock.js";
-import { fastHealing, fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, regeneration, shakenNerves, temporaryHitPoints } from "./fixtures/effects.js";
+import { fastHealing, fireImmunity, fireResistance, fireWeakness, movement, persistentBleed, proneEffect, regeneration, shakenNerves, temporaryHitPoints } from "./fixtures/effects.js";
 
 const packs = new Map([
   [
@@ -237,4 +237,22 @@ test("temporary hit points compile to the native TempHP Rule Element", async () 
     key: "TempHP",
     value: 7
   }]);
+});
+
+test("movement components compile to native Speed FlatModifiers", async () => {
+  const compiled = await compileEffectDefinition(movement({
+    movementType: "fly",
+    value: -10,
+    modifierType: "circumstance"
+  }));
+  const component = compiled.components[0];
+
+  assert.equal(component.kind, "movement");
+  assert.equal(component.selector, "fly-speed");
+  assert.deepEqual(component.rules[0], {
+    key: "FlatModifier",
+    selector: "fly-speed",
+    value: -10,
+    type: "circumstance"
+  });
 });

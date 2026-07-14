@@ -180,6 +180,30 @@ export function buildRegeneration({ value, deactivatedBy } = {}) {
   });
 }
 
+export function buildMovement({ movementType, value, modifierType = "status" } = {}) {
+  const normalizedType = String(movementType ?? "").trim();
+  if (!normalizedType) {
+    throw new TypeError("Movement type must not be empty.");
+  }
+
+  const numericValue = Number(value);
+  if (!Number.isInteger(numericValue) || numericValue === 0) {
+    throw new TypeError("Movement value must be a non-zero integer.");
+  }
+
+  const normalizedModifierType = String(modifierType ?? "status").trim();
+  if (!normalizedModifierType) {
+    throw new TypeError("Movement modifier type must not be empty.");
+  }
+
+  return Object.freeze({
+    type: "movement",
+    movementType: normalizedType,
+    value: numericValue,
+    modifierType: normalizedModifierType
+  });
+}
+
 export function cloneComponent(component) {
   if (!component || typeof component !== "object" || Array.isArray(component)) {
     throw new TypeError("Component must be an object.");

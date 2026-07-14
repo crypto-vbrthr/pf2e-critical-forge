@@ -7,6 +7,7 @@ import { getDamageTypeGroups } from "../effect-engine/catalogs/damage-type-catal
 import { getResistanceTypeGroups } from "../effect-engine/catalogs/resistance-type-catalog.js";
 import { getWeaknessTypeGroups } from "../effect-engine/catalogs/weakness-type-catalog.js";
 import { getImmunityTypeGroups } from "../effect-engine/catalogs/immunity-type-catalog.js";
+import { getMovementTypeGroups } from "../effect-engine/catalogs/movement-type-catalog.js";
 import { captureScrollState, restoreScrollState } from "./view-state.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -80,6 +81,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       addFastHealing: EffectForgeApp.#addFastHealing,
       addRegeneration: EffectForgeApp.#addRegeneration,
       addTemporaryHitPoints: EffectForgeApp.#addTemporaryHitPoints,
+      addMovement: EffectForgeApp.#addMovement,
       removeComponent: EffectForgeApp.#removeComponent,
       browseImage: EffectForgeApp.#browseImage,
       validateEffect: EffectForgeApp.#validateEffect,
@@ -244,7 +246,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       isImmunity: component.type === "immunity",
       isFastHealing: component.type === "fastHealing",
       isRegeneration: component.type === "regeneration",
-      isTemporaryHitPoints: component.type === "temporaryHitPoints"
+      isTemporaryHitPoints: component.type === "temporaryHitPoints",
+      isMovement: component.type === "movement"
     };
 
     if (base.isCondition) {
@@ -284,6 +287,15 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (base.isRegeneration) {
       base.damageTypeGroups = getDamageTypeGroups(component.deactivatedBy ?? []);
+    }
+
+    if (base.isMovement) {
+      base.movementTypeGroups = getMovementTypeGroups(component.movementType);
+      base.modifierTypeOptions = MODIFIER_TYPE_DEFINITIONS.map(([value, key]) => ({
+        value,
+        label: game.i18n.localize(key),
+        selected: component.modifierType === value
+      }));
     }
 
     return base;
@@ -405,6 +417,15 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         };
       }
 
+      if (component.type === "movement") {
+        return {
+          type: "movement",
+          movementType: String(data.get(`${prefix}.movementType`) ?? "land").trim(),
+          value: Number(data.get(`${prefix}.value`) ?? 0),
+          modifierType: String(data.get(`${prefix}.modifierType`) ?? "status")
+        };
+      }
+
       const selectorChoice = String(
         data.get(`${prefix}.selectorChoice`) ?? component.selector ?? ""
       ).trim();
@@ -466,6 +487,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         builder.addRegeneration(component);
       } else if (component.type === "temporaryHitPoints") {
         builder.addTemporaryHitPoints(component);
+      } else if (component.type === "movement") {
+        builder.addMovement(component);
       }
     }
 
@@ -642,6 +665,19 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.state.components.push({
       type: "temporaryHitPoints",
       value: 5
+    });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.#renderPreservingScroll();
+  }
+
+  static #addMovement() {
+    this.#syncStateFromForm();
+    this.state.components.push({
+      type: "movement",
+      movementType: "land",
+      value: 10,
+      modifierType: "status"
     });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();

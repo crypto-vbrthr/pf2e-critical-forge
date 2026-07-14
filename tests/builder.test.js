@@ -193,3 +193,21 @@ test("temporary hit points builder rejects non-positive values", () => {
     /positive integer/
   );
 });
+
+test("movement builder normalizes speed type, value, and modifier type", () => {
+  const definition = createEffectBuilder()
+    .setName("Fleet Step")
+    .addMovement({ movementType: "land", value: "10", modifierType: "status" })
+    .build();
+
+  assert.deepEqual(definition.components[0], {
+    type: "movement",
+    movementType: "land",
+    value: 10,
+    modifierType: "status"
+  });
+  assert.throws(
+    () => createEffectBuilder().addMovement({ movementType: "land", value: 0 }),
+    /non-zero integer/
+  );
+});

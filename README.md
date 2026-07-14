@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.2.7-dev` adds temporary Hit Points as the ninth built-in effect component. It grants a fixed positive value once when the effect is applied and compiles through PF2e's native `TempHP` Rule Element.
+Version `0.2.8-dev` adds movement modifiers as the tenth built-in effect component. It supports all Speeds or a specific movement mode and compiles through PF2e's native Speed selectors on a `FlatModifier` Rule Element.
 
 The current engine includes:
 
@@ -22,7 +22,7 @@ The current engine includes:
 - a central weakness-type catalog backed by `CONFIG.PF2E.weaknessTypes`;
 - a grouped immunity-type catalog backed by `CONFIG.PF2E.immunityTypes`;
 - a PF2e condition catalog that distinguishes valued and non-valued conditions;
-- `condition`, `modifier`, `persistentDamage`, `resistance`, `weakness`, `immunity`, `fastHealing`, `regeneration`, and `temporaryHitPoints` components;
+- `condition`, `modifier`, `persistentDamage`, `resistance`, `weakness`, `immunity`, `fastHealing`, `regeneration`, `temporaryHitPoints`, and `movement` components;
 - compilation to PF2e `GrantItem`, `FlatModifier`, `Resistance`, `Weakness`, `Immunity`, `FastHealing`, and `TempHP` Rule Elements, including persistent-damage and recovery-DC alterations;
 - PF2e Effect Item source generation;
 - world Item creation, Actor/Token application, and removal by definition ID;
@@ -75,6 +75,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/FAST_HEALING.md`](docs/FAST_HEALING.md): fast-healing component behavior and Rule Element output
 - [`docs/REGENERATION.md`](docs/REGENERATION.md): regeneration values, deactivation types, and Rule Element output
 - [`docs/TEMPORARY_HIT_POINTS.md`](docs/TEMPORARY_HIT_POINTS.md): temporary Hit Points and native `TempHP` output
+- [`docs/MOVEMENT.md`](docs/MOVEMENT.md): Speed modifiers, selectors, and stacking behavior
 - [`docs/EXAMPLES.md`](docs/EXAMPLES.md): complete examples
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): subsystem boundaries
 - [`docs/TESTING.md`](docs/TESTING.md): local test execution and conventions

@@ -185,6 +185,34 @@ export function validateRules(definition) {
     });
   }
 
+  const movementComponents = definition.components
+    .map((component, index) => ({ component, index }))
+    .filter(({ component }) => component.type === "movement");
+
+  for (let currentIndex = 1; currentIndex < movementComponents.length; currentIndex += 1) {
+    const current = movementComponents[currentIndex];
+    const previous = movementComponents.slice(0, currentIndex).find(({ component }) => {
+      if (component.modifierType !== current.component.modifierType) return false;
+      return component.movementType === current.component.movementType
+        || component.movementType === "all"
+        || current.component.movementType === "all";
+    });
+
+    if (!previous) continue;
+    issues.push({
+      severity: "warning",
+      code: "MOVEMENT_MODIFIER_OVERLAP",
+      messageKey: "Validation.Rules.MovementOverlap",
+      data: {
+        firstComponent: previous.index + 1,
+        firstMovementType: previous.component.movementType,
+        movementType: current.component.movementType,
+        modifierType: current.component.modifierType
+      },
+      componentIndex: current.index
+    });
+  }
+
   const frightened = definition.components
     .map((component, index) => ({ component, index }))
     .find(({ component }) => component.type === "condition" && component.slug === "frightened");

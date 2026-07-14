@@ -89,6 +89,10 @@ When schema or component validation produces an error, later rule and compatibil
 | `WEAKNESS_VALUE_INVALID` | error | Weakness value is not a positive integer. |
 | `IMMUNITY_TYPE_INVALID` | error | Immunity type is absent from the immunity-type catalog. |
 | `FAST_HEALING_VALUE_INVALID` | error | Fast-healing value is not a positive integer. |
+| `MOVEMENT_TYPE_INVALID` | error | Movement type is absent from the movement-type catalog. |
+| `MOVEMENT_VALUE_INVALID` | error | Movement value is zero or not an integer. |
+| `MOVEMENT_MODIFIER_TYPE_INVALID` | error | Movement modifier type is unsupported. |
+| `MOVEMENT_VALUE_UNUSUAL_INCREMENT` | warning | Movement value does not use a 5-foot increment. |
 
 ### Rule codes
 
@@ -104,6 +108,7 @@ When schema or component validation produces an error, later rule and compatibil
 | `WEAKNESS_DUPLICATE_TYPE` | warning | Multiple components grant the same weakness type. |
 | `IMMUNITY_DUPLICATE_TYPE` | warning | Multiple components grant the same immunity type. |
 | `FAST_HEALING_MULTIPLE_SOURCES` | warning | Multiple fast-healing components require an interaction check. |
+| `MOVEMENT_MODIFIER_OVERLAP` | warning | Overlapping Speed modifiers use the same modifier type and may not stack. |
 
 ### Compatibility codes
 
@@ -146,3 +151,14 @@ Use `analyze()` for module logic and `validate()` when directly presenting text 
 |---|---|---|
 | `TEMPORARY_HIT_POINTS_VALUE_INVALID` | error | The value is not a positive integer. |
 | `TEMPORARY_HIT_POINTS_MULTIPLE_SOURCES` | warning | More than one component grants temporary Hit Points, which normally do not stack. |
+
+
+### Movement
+
+| Code | Severity | Meaning |
+|---|---|---|
+| `MOVEMENT_TYPE_INVALID` | error | The movement type is unknown. |
+| `MOVEMENT_VALUE_INVALID` | error | The value is zero or not an integer. |
+| `MOVEMENT_MODIFIER_TYPE_INVALID` | error | The modifier type is unsupported. |
+| `MOVEMENT_VALUE_UNUSUAL_INCREMENT` | warning | The value is not divisible by 5. |
+| `MOVEMENT_MODIFIER_OVERLAP` | warning | Two overlapping components use the same modifier type. |

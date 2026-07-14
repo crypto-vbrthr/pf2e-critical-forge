@@ -337,3 +337,17 @@ The value must be a positive integer. The compiler emits:
   value: 5
 }
 ```
+
+
+## Movement component
+
+```js
+{
+  type: "movement",
+  movementType: "land",
+  value: 10,
+  modifierType: "status"
+}
+```
+
+`movementType` is one of `all`, `land`, `burrow`, `climb`, `fly`, or `swim`. `value` must be a non-zero integer and is measured in feet. `modifierType` is `status`, `circumstance`, `item`, or `untyped`. The component modifies an existing Speed and does not grant a missing movement mode.

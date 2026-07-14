@@ -8,6 +8,7 @@ import { immunityComponent } from "./components/immunity-component.js";
 import { fastHealingComponent } from "./components/fast-healing-component.js";
 import { regenerationComponent } from "./components/regeneration-component.js";
 import { temporaryHitPointsComponent } from "./components/temporary-hit-points-component.js";
+import { movementComponent } from "./components/movement-component.js";
 
 let initialized = false;
 
@@ -23,6 +24,7 @@ export function initializeEffectEngine() {
   componentRegistry.register(fastHealingComponent);
   componentRegistry.register(regenerationComponent);
   componentRegistry.register(temporaryHitPointsComponent);
+  componentRegistry.register(movementComponent);
 
   initialized = true;
 }

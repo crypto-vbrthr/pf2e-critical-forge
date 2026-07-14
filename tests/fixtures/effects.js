@@ -147,3 +147,20 @@ export function regeneration({ value = 5, deactivatedBy = ["acid", "fire"] } = {
     metadata: { originModule: "test-suite" }
   };
 }
+
+export function movement({ movementType = "land", value = 10, modifierType = "status" } = {}) {
+  return {
+    schemaVersion: 1,
+    id: "example.movement",
+    name: "Bewegungsänderung",
+    duration: { value: 1, unit: "minutes", expiry: "turn-end" },
+    components: [{
+      type: "movement",
+      movementType,
+      value,
+      modifierType
+    }],
+    application: {},
+    metadata: { originModule: "test-suite" }
+  };
+}
