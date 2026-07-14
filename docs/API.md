@@ -357,3 +357,19 @@ api.ui.openEffectForge();
 ```
 
 This opens the GM-only Effect Forge window independently of sidebar integration.
+
+## Weakness catalog and Builder method
+
+```js
+const definition = api.builders
+  .effect()
+  .setName("Feuerempfindlich")
+  .setDuration(10, "minutes", "turn-end")
+  .addWeakness({ weaknessType: "fire", value: 5 })
+  .build();
+
+api.weaknessTypes.list();
+api.weaknessTypes.groups("fire");
+api.weaknessTypes.get("physical");
+api.weaknessTypes.has("splash-damage");
+```

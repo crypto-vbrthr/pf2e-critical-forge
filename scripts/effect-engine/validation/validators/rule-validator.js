@@ -88,6 +88,26 @@ export function validateRules(definition) {
     }
   });
 
+  const weaknessByType = new Map();
+  definition.components.forEach((component, index) => {
+    if (component.type !== "weakness") return;
+    const previous = weaknessByType.get(component.weaknessType);
+    if (previous !== undefined) {
+      issues.push({
+        severity: "warning",
+        code: "WEAKNESS_DUPLICATE_TYPE",
+        messageKey: "Validation.Rules.WeaknessDuplicateType",
+        data: {
+          weaknessType: component.weaknessType,
+          firstComponent: previous + 1
+        },
+        componentIndex: index
+      });
+    } else {
+      weaknessByType.set(component.weaknessType, index);
+    }
+  });
+
   const frightened = definition.components
     .map((component, index) => ({ component, index }))
     .find(({ component }) => component.type === "condition" && component.slug === "frightened");

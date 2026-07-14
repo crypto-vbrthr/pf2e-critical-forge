@@ -55,6 +55,22 @@ export function persistentBleed({ dc = undefined, formula = "1d6", damageType = 
   };
 }
 
+export function fireWeakness({ value = 5, weaknessType = "fire" } = {}) {
+  return {
+    schemaVersion: 1,
+    id: "example.fire-weakness",
+    name: "Feuerempfindlich",
+    duration: { value: 10, unit: "minutes", expiry: "turn-end" },
+    components: [{
+      type: "weakness",
+      weaknessType,
+      value
+    }],
+    application: {},
+    metadata: { originModule: "test-suite" }
+  };
+}
+
 export function fireResistance({ value = 5, resistanceType = "fire" } = {}) {
   return {
     schemaVersion: 1,

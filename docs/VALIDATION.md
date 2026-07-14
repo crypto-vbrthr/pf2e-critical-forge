@@ -122,3 +122,9 @@ Target immunity, resistance, trait, and creature-state checks are planned extens
 ```
 
 Use `analyze()` for module logic and `validate()` when directly presenting text to a user.
+
+### Weakness
+
+- `WEAKNESS_TYPE_INVALID`
+- `WEAKNESS_VALUE_INVALID`
+- `WEAKNESS_DUPLICATE_TYPE`

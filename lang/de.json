@@ -220,6 +220,32 @@
         "UnarmedAttacks": "Waffenlose Angriffe",
         "DamageFromSpells": "Schaden durch Zauber",
         "Spells": "Zauber"
+      },
+      "Weakness": "Schwäche",
+      "WeaknessType": "Schwächeart",
+      "WeaknessValue": "Schwächewert",
+      "WeaknessTypeGroups": {
+        "DamageTypes": "Schadensarten",
+        "DamageCategories": "Schadenskategorien",
+        "Sources": "Schadensquellen und Eigenschaften",
+        "Additional": "Weitere PF2e-Schwächearten"
+      },
+      "WeaknessTypeLabels": {
+        "AllDamage": "Aller Schaden",
+        "Physical": "Physisch",
+        "Energy": "Energie",
+        "Precision": "Präzision",
+        "PersistentDamage": "Anhaltender Schaden",
+        "AreaDamage": "Flächenschaden",
+        "SplashDamage": "Flächenschaden (Splash)",
+        "CriticalHits": "Kritische Treffer",
+        "Alchemical": "Alchemistisch",
+        "Magical": "Magisch",
+        "NonMagical": "Nichtmagisch",
+        "Weapons": "Waffen",
+        "UnarmedAttacks": "Waffenlose Angriffe",
+        "DamageFromSpells": "Schaden durch Zauber",
+        "Spells": "Zauber"
       }
     },
     "Notifications": {
@@ -269,7 +295,8 @@
         "SelectorCustom": "„{selector}“ ist ein benutzerdefinierter Selektor. Prüfe seine Wirkung am besten über „Wurf untersuchen“.",
         "ConditionValueIgnored": "Der Zustand „{slug}“ besitzt keinen Zustandswert. Der angegebene Wert {value} wird beim Kompilieren ignoriert.",
         "PersistentDamageDuplicateType": "Mehrere Komponenten verursachen anhaltenden Schaden der Art „{damageType}“. Gleichartige Instanzen stapeln normalerweise nicht; relevant ist in der Regel nur die stärkere.",
-        "ResistanceDuplicateType": "Mehrere Komponenten verleihen Resistenz gegen „{resistanceType}“. Gleichartige Resistenzen addieren sich normalerweise nicht; relevant ist in der Regel nur der höchste Wert."
+        "ResistanceDuplicateType": "Mehrere Komponenten verleihen Resistenz gegen „{resistanceType}“. Gleichartige Resistenzen addieren sich normalerweise nicht; relevant ist in der Regel nur der höchste Wert.",
+        "WeaknessDuplicateType": "Mehrere Komponenten verleihen Schwäche gegen „{weaknessType}“. Gleichartige Schwächen addieren sich normalerweise nicht; relevant ist in der Regel nur der höchste Wert."
       },
       "Compatibility": {
         "TargetPresent": "Die Zielprüfung wurde für „{targetName}“ vorbereitet. Konkrete Immunitätsprüfungen folgen in einer späteren Version."
@@ -283,6 +310,10 @@
         "Resistance": {
           "TypeInvalid": "„{resistanceType}“ ist keine bekannte PF2e-Resistenzart.",
           "ValueInvalid": "Der Resistenzwert muss eine positive ganze Zahl sein."
+        },
+        "Weakness": {
+          "TypeInvalid": "„{weaknessType}“ ist keine bekannte PF2e-Schwächeart.",
+          "ValueInvalid": "Der Schwächewert muss eine positive ganze Zahl sein."
         }
       }
     }

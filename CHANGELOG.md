@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.2.3-dev
+
+### Added
+- `weakness` component with grouped PF2e weakness type and positive integer value.
+- Builder method `addWeakness()`.
+- Central weakness-type catalog backed by `CONFIG.PF2E.weaknessTypes`.
+- Public `api.weaknessTypes` catalog helpers.
+- Effect Forge editor card and component-menu entry for weakness.
+- Validation codes `WEAKNESS_TYPE_INVALID`, `WEAKNESS_VALUE_INVALID`, and `WEAKNESS_DUPLICATE_TYPE`.
+- Compiler support for native PF2e `Weakness` Rule Elements.
+- Builder, catalog, validation, and compiler regression tests for weakness.
+- `docs/WEAKNESS_TYPES.md`.
+
+### Changed
+- Automated suite expanded from 30 to 34 tests.
+- Public API version increased to `0.2.2`; Effect Definition schema remains version `1`.
+
 ## 0.2.2-dev
 
 ### Added

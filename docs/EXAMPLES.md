@@ -206,3 +206,15 @@ const custom = api.builders
   })
   .build();
 ```
+
+## Weakness
+
+```js
+const fireWeakness = api.builders
+  .effect()
+  .setId("example.fire-weakness")
+  .setName("Feuerempfindlich")
+  .setDuration(10, "minutes", "turn-end")
+  .addWeakness({ weaknessType: "fire", value: 5 })
+  .build();
+```

@@ -37,6 +37,12 @@ import {
   isKnownResistanceType,
   listResistanceTypeDefinitions
 } from "../effect-engine/catalogs/resistance-type-catalog.js";
+import {
+  getWeaknessTypeDefinition,
+  getWeaknessTypeGroups,
+  isKnownWeaknessType,
+  listWeaknessTypeDefinitions
+} from "../effect-engine/catalogs/weakness-type-catalog.js";
 
 export function initializePublicApi() {
   const module = game.modules.get(MODULE_ID);
@@ -81,6 +87,13 @@ export function initializePublicApi() {
       list: () => listResistanceTypeDefinitions(),
       get: (value) => getResistanceTypeDefinition(value),
       has: (value) => isKnownResistanceType(value)
+    }),
+
+    weaknessTypes: Object.freeze({
+      groups: (selected = null) => getWeaknessTypeGroups(selected),
+      list: () => listWeaknessTypeDefinitions(),
+      get: (value) => getWeaknessTypeDefinition(value),
+      has: (value) => isKnownWeaknessType(value)
     }),
 
     components: Object.freeze({

@@ -220,6 +220,32 @@
         "UnarmedAttacks": "Unarmed Attacks",
         "DamageFromSpells": "Damage from Spells",
         "Spells": "Spells"
+      },
+      "Weakness": "Weakness",
+      "WeaknessType": "Weakness Type",
+      "WeaknessValue": "Weakness Value",
+      "WeaknessTypeGroups": {
+        "DamageTypes": "Damage Types",
+        "DamageCategories": "Damage Categories",
+        "Sources": "Damage Sources and Properties",
+        "Additional": "Additional PF2e Weakness Types"
+      },
+      "WeaknessTypeLabels": {
+        "AllDamage": "All Damage",
+        "Physical": "Physical",
+        "Energy": "Energy",
+        "Precision": "Precision",
+        "PersistentDamage": "Persistent Damage",
+        "AreaDamage": "Area Damage",
+        "SplashDamage": "Splash Damage",
+        "CriticalHits": "Critical Hits",
+        "Alchemical": "Alchemical",
+        "Magical": "Magical",
+        "NonMagical": "Non-Magical",
+        "Weapons": "Weapons",
+        "UnarmedAttacks": "Unarmed Attacks",
+        "DamageFromSpells": "Damage from Spells",
+        "Spells": "Spells"
       }
     },
     "Notifications": {
@@ -269,7 +295,8 @@
         "SelectorCustom": "“{selector}” is a custom selector. Verify its behavior with “Inspect Roll”.",
         "ConditionValueIgnored": "The condition “{slug}” has no condition value. The supplied value {value} is ignored during compilation.",
         "PersistentDamageDuplicateType": "Multiple components deal persistent {damageType} damage. Instances of the same type normally do not stack; usually only the stronger one matters.",
-        "ResistanceDuplicateType": "Multiple components grant resistance to “{resistanceType}”. Resistances of the same type normally do not add together; usually only the highest value matters."
+        "ResistanceDuplicateType": "Multiple components grant resistance to “{resistanceType}”. Resistances of the same type normally do not add together; usually only the highest value matters.",
+        "WeaknessDuplicateType": "Multiple components grant weakness to “{weaknessType}”. Weaknesses of the same type normally do not add together; usually only the highest value matters."
       },
       "Compatibility": {
         "TargetPresent": "Target analysis was prepared for “{targetName}”. Concrete immunity checks will follow in a later version."
@@ -283,6 +310,10 @@
         "Resistance": {
           "TypeInvalid": "“{resistanceType}” is not a known PF2e resistance type.",
           "ValueInvalid": "The resistance value must be a positive integer."
+        },
+        "Weakness": {
+          "TypeInvalid": "“{weaknessType}” is not a known PF2e weakness type.",
+          "ValueInvalid": "The weakness value must be a positive integer."
         }
       }
     }

@@ -105,6 +105,24 @@ export function buildResistance({ resistanceType, value } = {}) {
   });
 }
 
+export function buildWeakness({ weaknessType, value } = {}) {
+  const normalizedType = String(weaknessType ?? "").trim();
+  if (!normalizedType) {
+    throw new TypeError("Weakness type must not be empty.");
+  }
+
+  const numericValue = Number(value);
+  if (!Number.isInteger(numericValue) || numericValue < 1) {
+    throw new TypeError("Weakness value must be a positive integer.");
+  }
+
+  return Object.freeze({
+    type: "weakness",
+    weaknessType: normalizedType,
+    value: numericValue
+  });
+}
+
 export function cloneComponent(component) {
   if (!component || typeof component !== "object" || Array.isArray(component)) {
     throw new TypeError("Component must be an object.");

@@ -4,6 +4,7 @@ import {
   buildModifier,
   buildPersistentDamage,
   buildResistance,
+  buildWeakness,
   cloneComponent
 } from "./component-builder.js";
 import { buildDuration } from "./duration-builder.js";
@@ -114,6 +115,11 @@ export class EffectBuilder {
 
   addResistance(options) {
     this.#definition.components.push(buildResistance(options));
+    return this;
+  }
+
+  addWeakness(options) {
+    this.#definition.components.push(buildWeakness(options));
     return this;
   }
 

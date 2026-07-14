@@ -98,6 +98,10 @@
                   <i class="fa-solid fa-shield-halved"></i>
                   {{localize "PF2E_CRITICAL_FORGE.EffectForge.Resistance"}}
                 </button>
+                <button type="button" data-action="addWeakness">
+                  <i class="fa-solid fa-burst"></i>
+                  {{localize "PF2E_CRITICAL_FORGE.EffectForge.Weakness"}}
+                </button>
               </div>
             {{/if}}
           </div>
@@ -121,6 +125,9 @@
                     {{/if}}
                     {{#if component.isResistance}}
                       {{localize "PF2E_CRITICAL_FORGE.EffectForge.Resistance"}}
+                    {{/if}}
+                    {{#if component.isWeakness}}
+                      {{localize "PF2E_CRITICAL_FORGE.EffectForge.Weakness"}}
                     {{/if}}
                   </strong>
                 </div>
@@ -265,6 +272,35 @@
 
                   <label class="effect-forge-field">
                     <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ResistanceValue"}}</span>
+                    <input
+                      type="number"
+                      name="components.{{component.index}}.value"
+                      value="{{component.value}}"
+                      min="1"
+                      step="1"
+                      required
+                    >
+                  </label>
+                </div>
+              {{/if}}
+
+              {{#if component.isWeakness}}
+                <div class="effect-forge-grid weakness-grid">
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.WeaknessType"}}</span>
+                    <select name="components.{{component.index}}.weaknessType">
+                      {{#each component.weaknessTypeGroups as |group|}}
+                        <optgroup label="{{group.label}}">
+                          {{#each group.options as |option|}}
+                            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                          {{/each}}
+                        </optgroup>
+                      {{/each}}
+                    </select>
+                  </label>
+
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.WeaknessValue"}}</span>
                     <input
                       type="number"
                       name="components.{{component.index}}.value"

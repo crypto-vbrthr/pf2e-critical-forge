@@ -37,7 +37,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 30 tests covering:
+The suite contains 34 tests covering:
 
 - Builder normalization and immutable output;
 - cloning existing definitions without mutation;

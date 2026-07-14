@@ -39,6 +39,13 @@ installFoundryMock({
     physical: "PF2E.Damage.IWR.Type.physical",
     "all-damage": "PF2E.Damage.IWR.Type.all-damage",
     "custom-resistance": "MY_MODULE.CustomResistance"
+  },
+  weaknessTypes: {
+    fire: "PF2E.TraitFire",
+    physical: "PF2E.Damage.IWR.Type.physical",
+    "all-damage": "PF2E.Damage.IWR.Type.all-damage",
+    "splash-damage": "PF2E.Damage.IWR.Type.splash-damage",
+    "custom-weakness": "MY_MODULE.CustomWeakness"
   }
 });
 
@@ -53,6 +60,9 @@ const damageTypes = await import(
 );
 const resistanceTypes = await import(
   "../scripts/effect-engine/catalogs/resistance-type-catalog.js"
+);
+const weaknessTypes = await import(
+  "../scripts/effect-engine/catalogs/weakness-type-catalog.js"
 );
 
 test("selector catalog includes configured PF2e skills and stable groups", () => {
@@ -89,6 +99,20 @@ test("damage type catalog groups PF2e and fallback damage types", () => {
     ?.options.some((option) => option.value === "bleed" && option.selected), true);
   assert.equal(groups.find((group) => group.id === "additional")
     ?.options.some((option) => option.value === "custom-energy"), true);
+});
+
+test("weakness type catalog groups damage, category, and system types", () => {
+  assert.equal(weaknessTypes.isKnownWeaknessType("fire"), true);
+  assert.equal(weaknessTypes.isKnownWeaknessType("physical"), true);
+  assert.equal(weaknessTypes.isKnownWeaknessType("not-a-weakness"), false);
+
+  const groups = weaknessTypes.getWeaknessTypeGroups("splash-damage");
+  assert.equal(groups.find((group) => group.id === "damage-types")
+    ?.options.some((option) => option.value === "fire"), true);
+  assert.equal(groups.find((group) => group.id === "damage-categories")
+    ?.options.some((option) => option.value === "splash-damage" && option.selected), true);
+  assert.equal(groups.find((group) => group.id === "additional")
+    ?.options.some((option) => option.value === "custom-weakness"), true);
 });
 
 test("resistance type catalog groups damage, category, and system types", () => {

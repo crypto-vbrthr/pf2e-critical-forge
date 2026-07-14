@@ -198,7 +198,8 @@
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(110px, 0.72fr);
 }
 
-.effect-forge-grid.resistance-grid {
+.effect-forge-grid.resistance-grid,
+.effect-forge-grid.weakness-grid {
   grid-template-columns: minmax(0, 1.6fr) minmax(110px, 0.8fr);
 }
 
@@ -309,6 +310,10 @@
   border-color: rgba(103, 191, 114, 0.88);
 }
 
+.effect-forge-component-card.component-weakness {
+  border-color: rgba(229, 139, 65, 0.9);
+}
+
 .effect-forge-component-card > header {
   display: flex;
   align-items: center;
@@ -344,6 +349,10 @@
 
 .component-resistance .component-number {
   background: var(--ef-green);
+}
+
+.component-weakness .component-number {
+  background: #d67a32;
 }
 
 .effect-forge-component-card button.icon {
@@ -575,7 +584,8 @@
   .effect-forge-grid.modifier-grid,
   .effect-forge-grid.condition-grid,
   .effect-forge-grid.persistent-damage-grid,
-  .effect-forge-grid.resistance-grid {
+  .effect-forge-grid.resistance-grid,
+  .effect-forge-grid.weakness-grid {
     grid-template-columns: 1fr;
   }
 

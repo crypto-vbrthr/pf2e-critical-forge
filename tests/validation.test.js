@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { installFoundryMock } from "./helpers/foundry-mock.js";
-import { fireResistance, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
+import { fireResistance, fireWeakness, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
 
 installFoundryMock({
   skills: {
@@ -13,6 +13,11 @@ installFoundryMock({
     fire: "PF2E.TraitFire"
   },
   resistanceTypes: {
+    fire: "PF2E.TraitFire",
+    physical: "PF2E.Damage.IWR.Type.physical",
+    "all-damage": "PF2E.Damage.IWR.Type.all-damage"
+  },
+  weaknessTypes: {
     fire: "PF2E.TraitFire",
     physical: "PF2E.Damage.IWR.Type.physical",
     "all-damage": "PF2E.Damage.IWR.Type.all-damage"
@@ -153,6 +158,35 @@ test("resistance validates type and positive integer value", () => {
   assert.equal(invalidValue.valid, false);
   assert.equal(invalidValue.errors.some(
     (issue) => issue.code === "RESISTANCE_VALUE_INVALID"
+  ), true);
+});
+
+test("weakness validates type and positive integer value", () => {
+  const invalidType = analyzeEffectDefinition(fireWeakness({ weaknessType: "rainbow" }));
+  assert.equal(invalidType.valid, false);
+  assert.equal(invalidType.errors.some(
+    (issue) => issue.code === "WEAKNESS_TYPE_INVALID"
+  ), true);
+
+  const invalidValue = analyzeEffectDefinition(fireWeakness({ value: 0 }));
+  assert.equal(invalidValue.valid, false);
+  assert.equal(invalidValue.errors.some(
+    (issue) => issue.code === "WEAKNESS_VALUE_INVALID"
+  ), true);
+});
+
+test("duplicate weakness types produce a stacking warning", () => {
+  const definition = fireWeakness();
+  definition.components.push({
+    type: "weakness",
+    weaknessType: "fire",
+    value: 10
+  });
+
+  const report = analyzeEffectDefinition(definition);
+  assert.equal(report.valid, true);
+  assert.equal(report.warnings.some(
+    (issue) => issue.code === "WEAKNESS_DUPLICATE_TYPE"
   ), true);
 });
 

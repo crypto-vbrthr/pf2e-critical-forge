@@ -5,6 +5,7 @@ import {
 } from "../effect-engine/catalogs/condition-catalog.js";
 import { getDamageTypeGroups } from "../effect-engine/catalogs/damage-type-catalog.js";
 import { getResistanceTypeGroups } from "../effect-engine/catalogs/resistance-type-catalog.js";
+import { getWeaknessTypeGroups } from "../effect-engine/catalogs/weakness-type-catalog.js";
 import { captureScrollState, restoreScrollState } from "./view-state.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -73,6 +74,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       addModifier: EffectForgeApp.#addModifier,
       addPersistentDamage: EffectForgeApp.#addPersistentDamage,
       addResistance: EffectForgeApp.#addResistance,
+      addWeakness: EffectForgeApp.#addWeakness,
       removeComponent: EffectForgeApp.#removeComponent,
       browseImage: EffectForgeApp.#browseImage,
       validateEffect: EffectForgeApp.#validateEffect,
@@ -232,7 +234,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       isCondition: component.type === "condition",
       isModifier: component.type === "modifier",
       isPersistentDamage: component.type === "persistentDamage",
-      isResistance: component.type === "resistance"
+      isResistance: component.type === "resistance",
+      isWeakness: component.type === "weakness"
     };
 
     if (base.isCondition) {
@@ -260,6 +263,10 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (base.isResistance) {
       base.resistanceTypeGroups = getResistanceTypeGroups(component.resistanceType);
+    }
+
+    if (base.isWeakness) {
+      base.weaknessTypeGroups = getWeaknessTypeGroups(component.weaknessType);
     }
 
     return base;
@@ -342,6 +349,14 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         };
       }
 
+      if (component.type === "weakness") {
+        return {
+          type: "weakness",
+          weaknessType: String(data.get(`${prefix}.weaknessType`) ?? "").trim(),
+          value: Number(data.get(`${prefix}.value`) ?? 0)
+        };
+      }
+
       const selectorChoice = String(
         data.get(`${prefix}.selectorChoice`) ?? component.selector ?? ""
       ).trim();
@@ -393,6 +408,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         builder.addPersistentDamage(component);
       } else if (component.type === "resistance") {
         builder.addResistance(component);
+      } else if (component.type === "weakness") {
+        builder.addWeakness(component);
       }
     }
 
@@ -511,6 +528,18 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.state.components.push({
       type: "resistance",
       resistanceType: "fire",
+      value: 5
+    });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.#renderPreservingScroll();
+  }
+
+  static #addWeakness() {
+    this.#syncStateFromForm();
+    this.state.components.push({
+      type: "weakness",
+      weaknessType: "fire",
       value: 5
     });
     this.componentMenuOpen = false;

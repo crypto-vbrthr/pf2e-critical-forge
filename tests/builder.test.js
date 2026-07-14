@@ -30,6 +30,10 @@ test("EffectBuilder creates an immutable normalized definition", () => {
       resistanceType: "fire",
       value: "5"
     })
+    .addWeakness({
+      weaknessType: "cold",
+      value: "3"
+    })
     .setMetadata({ originModule: "tests", nested: { enabled: true } })
     .build();
 
@@ -58,6 +62,11 @@ test("EffectBuilder creates an immutable normalized definition", () => {
     type: "resistance",
     resistanceType: "fire",
     value: 5
+  });
+  assert.deepEqual(definition.components[4], {
+    type: "weakness",
+    weaknessType: "cold",
+    value: 3
   });
   assertDeepFrozen(definition);
 });
@@ -126,6 +135,14 @@ test("builder rejects malformed component and duration input", () => {
   );
   assert.throws(
     () => createEffectBuilder().addResistance({ resistanceType: "fire", value: 0 }),
+    TypeError
+  );
+  assert.throws(
+    () => createEffectBuilder().addWeakness({ weaknessType: "", value: 5 }),
+    TypeError
+  );
+  assert.throws(
+    () => createEffectBuilder().addWeakness({ weaknessType: "fire", value: 0 }),
     TypeError
   );
 });

@@ -242,3 +242,15 @@ The catalog includes ordinary damage types and broader PF2e resistance categorie
 ```
 
 Unknown metadata keys are permitted so integrations can attach their own non-mechanical context.
+
+## Weakness component
+
+```js
+{
+  type: "weakness",
+  weaknessType: "fire",
+  value: 5
+}
+```
+
+`weaknessType` must be a value from the weakness-type catalog. `value` must be a positive integer. The compiler emits a native PF2e `Weakness` Rule Element.
