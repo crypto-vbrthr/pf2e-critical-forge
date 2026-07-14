@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.5-dev
+
+### Added
+- `fastHealing` component with a positive integer healing value.
+- Builder method `addFastHealing()`.
+- Effect Forge editor card and component-menu entry for fast healing.
+- Validation code `FAST_HEALING_VALUE_INVALID`.
+- Cross-component warning `FAST_HEALING_MULTIPLE_SOURCES`.
+- Compiler support for native PF2e `FastHealing` Rule Elements.
+- Builder, validation, and compiler regression tests for fast healing.
+- `docs/FAST_HEALING.md`.
+
+### Changed
+- Automated suite expanded from 38 to 41 tests.
+- Public API version increased to `0.2.4`; Effect Definition schema remains version `1`.
+
 ## 0.2.4-dev
 
 ### Added

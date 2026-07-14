@@ -18,6 +18,7 @@
   --ef-purple-bright: #915bd0;
   --ef-blue: #5aa2f2;
   --ef-green: #67bf72;
+  --ef-teal: #55c6b0;
   --ef-red: #dc6767;
   min-width: 720px;
   min-height: 540px;
@@ -203,7 +204,8 @@
   grid-template-columns: minmax(0, 1.6fr) minmax(110px, 0.8fr);
 }
 
-.effect-forge-grid.immunity-grid {
+.effect-forge-grid.immunity-grid,
+.effect-forge-grid.fast-healing-grid {
   grid-template-columns: minmax(0, 1fr);
 }
 
@@ -322,6 +324,10 @@
   border-color: rgba(89, 174, 219, 0.9);
 }
 
+.effect-forge-component-card.component-fastHealing {
+  border-color: rgba(85, 198, 176, 0.92);
+}
+
 .effect-forge-component-card > header {
   display: flex;
   align-items: center;
@@ -365,6 +371,10 @@
 
 .component-immunity .component-number {
   background: #4f9cc7;
+}
+
+.component-fastHealing .component-number {
+  background: var(--ef-teal);
 }
 
 .effect-forge-component-card button.icon {

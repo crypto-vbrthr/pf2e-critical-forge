@@ -1,6 +1,6 @@
 export const MODULE_ID = "pf2e-critical-forge";
-export const MODULE_VERSION = "0.2.4-dev";
-export const API_VERSION = "0.2.3";
+export const MODULE_VERSION = "0.2.5-dev";
+export const API_VERSION = "0.2.4";
 export const EFFECT_SCHEMA_VERSION = 1;
 
 export const SETTINGS = Object.freeze({

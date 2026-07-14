@@ -135,6 +135,18 @@ export function buildWeakness({ weaknessType, value } = {}) {
   });
 }
 
+export function buildFastHealing({ value } = {}) {
+  const numericValue = Number(value);
+  if (!Number.isInteger(numericValue) || numericValue < 1) {
+    throw new TypeError("Fast healing value must be a positive integer.");
+  }
+
+  return Object.freeze({
+    type: "fastHealing",
+    value: numericValue
+  });
+}
+
 export function cloneComponent(component) {
   if (!component || typeof component !== "object" || Array.isArray(component)) {
     throw new TypeError("Component must be an object.");

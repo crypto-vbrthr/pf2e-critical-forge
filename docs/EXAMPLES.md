@@ -237,3 +237,25 @@ A condition immunity uses the same component shape:
 ```js
 .addImmunity({ immunityType: "frightened" })
 ```
+
+
+## Fast healing
+
+```js
+const lifePulse = api.builders
+  .effect()
+  .setId("example.life-pulse")
+  .setName("Lebenspuls")
+  .setDuration(1, "minutes", "turn-end")
+  .addFastHealing({ value: 4 })
+  .build();
+```
+
+The resulting PF2e Rule Element is:
+
+```json
+{
+  "key": "FastHealing",
+  "value": 4
+}
+```

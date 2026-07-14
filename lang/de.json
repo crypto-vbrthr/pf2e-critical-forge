@@ -289,7 +289,10 @@
         "persistent-damage": "Anhaltender Schaden",
         "physical": "Physisch",
         "precision": "Präzision"
-      }
+      },
+      "FastHealing": "Schnelle Heilung",
+      "FastHealingValue": "Heilung pro Runde",
+      "FastHealingHint": "Das Ziel erhält diesen Betrag zu Beginn seines Zuges zurück."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialisiert.",
@@ -340,7 +343,8 @@
         "PersistentDamageDuplicateType": "Mehrere Komponenten verursachen anhaltenden Schaden der Art „{damageType}“. Gleichartige Instanzen stapeln normalerweise nicht; relevant ist in der Regel nur die stärkere.",
         "ResistanceDuplicateType": "Mehrere Komponenten verleihen Resistenz gegen „{resistanceType}“. Gleichartige Resistenzen addieren sich normalerweise nicht; relevant ist in der Regel nur der höchste Wert.",
         "WeaknessDuplicateType": "Mehrere Komponenten verleihen Schwäche gegen „{weaknessType}“. Gleichartige Schwächen addieren sich normalerweise nicht; relevant ist in der Regel nur der höchste Wert.",
-        "ImmunityDuplicateType": "Mehrere Komponenten verleihen Immunität gegen „{immunityType}“. Der wiederholte Eintrag ist redundant."
+        "ImmunityDuplicateType": "Mehrere Komponenten verleihen Immunität gegen „{immunityType}“. Der wiederholte Eintrag ist redundant.",
+        "FastHealingMultipleSources": "Mehrere Komponenten verleihen Schnelle Heilung. Prüfe, wie die Quellen am Ziel zusammenwirken; in vielen Fällen ist nur der höchste Wert beabsichtigt."
       },
       "Compatibility": {
         "TargetPresent": "Die Zielprüfung wurde für „{targetName}“ vorbereitet. Konkrete Immunitätsprüfungen folgen in einer späteren Version."
@@ -361,6 +365,9 @@
         },
         "Immunity": {
           "TypeInvalid": "„{immunityType}“ ist keine bekannte PF2e-Immunitätsart."
+        },
+        "FastHealing": {
+          "ValueInvalid": "Der Wert für Schnelle Heilung muss eine positive ganze Zahl sein."
         }
       }
     }

@@ -128,6 +128,25 @@ export function validateRules(definition) {
     }
   });
 
+  const fastHealingComponents = definition.components
+    .map((component, index) => ({ component, index }))
+    .filter(({ component }) => component.type === "fastHealing");
+
+  for (const { component, index } of fastHealingComponents.slice(1)) {
+    const first = fastHealingComponents[0];
+    issues.push({
+      severity: "warning",
+      code: "FAST_HEALING_MULTIPLE_SOURCES",
+      messageKey: "Validation.Rules.FastHealingMultipleSources",
+      data: {
+        firstComponent: first.index + 1,
+        firstValue: first.component.value,
+        value: component.value
+      },
+      componentIndex: index
+    });
+  }
+
   const frightened = definition.components
     .map((component, index) => ({ component, index }))
     .find(({ component }) => component.type === "condition" && component.slug === "frightened");

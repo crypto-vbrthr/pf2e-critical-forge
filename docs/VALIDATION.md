@@ -85,7 +85,10 @@ When schema or component validation produces an error, later rule and compatibil
 | `PERSISTENT_DAMAGE_DC_INVALID` | error | Recovery DC is present but not a positive integer. |
 | `RESISTANCE_TYPE_INVALID` | error | Resistance type is absent from the resistance-type catalog. |
 | `RESISTANCE_VALUE_INVALID` | error | Resistance value is not a positive integer. |
+| `WEAKNESS_TYPE_INVALID` | error | Weakness type is absent from the weakness-type catalog. |
+| `WEAKNESS_VALUE_INVALID` | error | Weakness value is not a positive integer. |
 | `IMMUNITY_TYPE_INVALID` | error | Immunity type is absent from the immunity-type catalog. |
+| `FAST_HEALING_VALUE_INVALID` | error | Fast-healing value is not a positive integer. |
 
 ### Rule codes
 
@@ -98,7 +101,9 @@ When schema or component validation produces an error, later rule and compatibil
 | `STACKING_FRIGHTENED_CIRCUMSTANCE` | info | A circumstance penalty can stack with frightened. |
 | `PERSISTENT_DAMAGE_DUPLICATE_TYPE` | warning | Multiple components use the same persistent-damage type. |
 | `RESISTANCE_DUPLICATE_TYPE` | warning | Multiple components grant the same resistance type. |
+| `WEAKNESS_DUPLICATE_TYPE` | warning | Multiple components grant the same weakness type. |
 | `IMMUNITY_DUPLICATE_TYPE` | warning | Multiple components grant the same immunity type. |
+| `FAST_HEALING_MULTIPLE_SOURCES` | warning | Multiple fast-healing components require an interaction check. |
 
 ### Compatibility codes
 
@@ -124,15 +129,3 @@ Target immunity, resistance, trait, and creature-state checks are planned extens
 ```
 
 Use `analyze()` for module logic and `validate()` when directly presenting text to a user.
-
-### Weakness
-
-- `WEAKNESS_TYPE_INVALID`
-- `WEAKNESS_VALUE_INVALID`
-- `WEAKNESS_DUPLICATE_TYPE`
-
-
-### Immunity
-
-- `IMMUNITY_TYPE_INVALID`
-- `IMMUNITY_DUPLICATE_TYPE`

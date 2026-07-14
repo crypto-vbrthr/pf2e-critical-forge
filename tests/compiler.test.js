@@ -4,7 +4,7 @@ import {
   createConditionPack,
   installFoundryMock
 } from "./helpers/foundry-mock.js";
-import { fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
+import { fastHealing, fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
 
 const packs = new Map([
   [
@@ -151,6 +151,18 @@ test("immunity components compile to Immunity rule elements without a value", as
   assert.deepEqual(component.rules[0], {
     key: "Immunity",
     type: "fire"
+  });
+});
+
+test("fast healing components compile to FastHealing rule elements", async () => {
+  const compiled = await compileEffectDefinition(fastHealing({ value: 6 }));
+  const component = compiled.components[0];
+
+  assert.equal(component.kind, "fastHealing");
+  assert.equal(component.value, 6);
+  assert.deepEqual(component.rules[0], {
+    key: "FastHealing",
+    value: 6
   });
 });
 

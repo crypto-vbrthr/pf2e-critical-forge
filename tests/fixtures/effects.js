@@ -101,3 +101,18 @@ export function fireImmunity({ immunityType = "fire" } = {}) {
     metadata: { originModule: "test-suite" }
   };
 }
+
+export function fastHealing({ value = 2 } = {}) {
+  return {
+    schemaVersion: 1,
+    id: "example.fast-healing",
+    name: "Schnelle Heilung",
+    duration: { value: 1, unit: "minutes", expiry: "turn-end" },
+    components: [{
+      type: "fastHealing",
+      value
+    }],
+    application: {},
+    metadata: { originModule: "test-suite" }
+  };
+}

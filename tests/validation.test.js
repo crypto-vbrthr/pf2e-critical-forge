@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { installFoundryMock } from "./helpers/foundry-mock.js";
-import { fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
+import { fastHealing, fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
 
 installFoundryMock({
   skills: {
@@ -232,5 +232,27 @@ test("duplicate immunity types produce a redundancy warning", () => {
   assert.equal(report.valid, true);
   assert.equal(report.warnings.some(
     (issue) => issue.code === "IMMUNITY_DUPLICATE_TYPE"
+  ), true);
+});
+
+test("fast healing requires a positive integer value", () => {
+  const valid = analyzeEffectDefinition(fastHealing({ value: 3 }));
+  assert.equal(valid.valid, true);
+
+  const invalid = analyzeEffectDefinition(fastHealing({ value: 0 }));
+  assert.equal(invalid.valid, false);
+  assert.equal(invalid.errors.some(
+    (issue) => issue.code === "FAST_HEALING_VALUE_INVALID"
+  ), true);
+});
+
+test("multiple fast healing components produce an interaction warning", () => {
+  const definition = fastHealing({ value: 2 });
+  definition.components.push({ type: "fastHealing", value: 5 });
+
+  const report = analyzeEffectDefinition(definition);
+  assert.equal(report.valid, true);
+  assert.equal(report.warnings.some(
+    (issue) => issue.code === "FAST_HEALING_MULTIPLE_SOURCES"
   ), true);
 });

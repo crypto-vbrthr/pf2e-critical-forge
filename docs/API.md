@@ -223,6 +223,10 @@ The original object is not mutated.
 | `addCondition(slug, value?)` | Adds a PF2e condition component. |
 | `addModifier(options)` | Adds a modifier component. |
 | `addPersistentDamage(options)` | Adds persistent damage with `formula`, `damageType`, and optional `dc`. |
+| `addResistance(options)` | Adds resistance with `resistanceType` and positive integer `value`. |
+| `addWeakness(options)` | Adds weakness with `weaknessType` and positive integer `value`. |
+| `addImmunity(options)` | Adds immunity with `immunityType`. |
+| `addFastHealing(options)` | Adds fast healing with a positive integer `value`. |
 | `clearComponents()` | Removes all components. |
 | `removeComponent(index)` | Removes one component or throws `RangeError`. |
 | `build()` | Returns the immutable Effect Definition. |
@@ -243,6 +247,7 @@ const bleeding = api.builders
     resistanceType: "fire",
     value: 5
   })
+  .addFastHealing({ value: 2 })
   .build();
 ```
 
@@ -390,3 +395,17 @@ api.immunityTypes.groups("frightened");
 api.immunityTypes.get("fire");
 api.immunityTypes.has("emotion");
 ```
+
+
+## Fast-healing Builder method
+
+```js
+const definition = api.builders
+  .effect()
+  .setName("Regenerierender Segen")
+  .setDuration(1, "minutes", "turn-end")
+  .addFastHealing({ value: 4 })
+  .build();
+```
+
+The compiler emits `{ key: "FastHealing", value: 4 }`. The current built-in component accepts a positive integer. See [`FAST_HEALING.md`](FAST_HEALING.md).

@@ -77,6 +77,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       addResistance: EffectForgeApp.#addResistance,
       addWeakness: EffectForgeApp.#addWeakness,
       addImmunity: EffectForgeApp.#addImmunity,
+      addFastHealing: EffectForgeApp.#addFastHealing,
       removeComponent: EffectForgeApp.#removeComponent,
       browseImage: EffectForgeApp.#browseImage,
       validateEffect: EffectForgeApp.#validateEffect,
@@ -238,7 +239,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       isPersistentDamage: component.type === "persistentDamage",
       isResistance: component.type === "resistance",
       isWeakness: component.type === "weakness",
-      isImmunity: component.type === "immunity"
+      isImmunity: component.type === "immunity",
+      isFastHealing: component.type === "fastHealing"
     };
 
     if (base.isCondition) {
@@ -371,6 +373,13 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         };
       }
 
+      if (component.type === "fastHealing") {
+        return {
+          type: "fastHealing",
+          value: Number(data.get(`${prefix}.value`) ?? 0)
+        };
+      }
+
       const selectorChoice = String(
         data.get(`${prefix}.selectorChoice`) ?? component.selector ?? ""
       ).trim();
@@ -426,6 +435,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         builder.addWeakness(component);
       } else if (component.type === "immunity") {
         builder.addImmunity(component);
+      } else if (component.type === "fastHealing") {
+        builder.addFastHealing(component);
       }
     }
 
@@ -568,6 +579,17 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.state.components.push({
       type: "immunity",
       immunityType: "fire"
+    });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.#renderPreservingScroll();
+  }
+
+  static #addFastHealing() {
+    this.#syncStateFromForm();
+    this.state.components.push({
+      type: "fastHealing",
+      value: 2
     });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();

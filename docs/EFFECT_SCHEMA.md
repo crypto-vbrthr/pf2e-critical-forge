@@ -275,3 +275,24 @@ Unknown metadata keys are permitted so integrations can attach their own non-mec
 ```
 
 The same component supports condition immunities, such as `frightened`, when the type is present in `CONFIG.PF2E.immunityTypes`.
+
+
+## Fast-healing component
+
+```js
+{
+  type: "fastHealing",
+  value: 4
+}
+```
+
+`value` is the number of Hit Points regained at the beginning of the target's turn and must be a positive integer. The compiler emits the native PF2e Rule Element:
+
+```js
+{
+  key: "FastHealing",
+  value: 4
+}
+```
+
+The component inherits the Effect Definition's global duration. Multiple fast-healing components remain valid but produce `FAST_HEALING_MULTIPLE_SOURCES` so the author can verify the intended interaction.

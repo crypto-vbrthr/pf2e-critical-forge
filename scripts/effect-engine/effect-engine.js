@@ -5,6 +5,7 @@ import { persistentDamageComponent } from "./components/persistent-damage-compon
 import { resistanceComponent } from "./components/resistance-component.js";
 import { weaknessComponent } from "./components/weakness-component.js";
 import { immunityComponent } from "./components/immunity-component.js";
+import { fastHealingComponent } from "./components/fast-healing-component.js";
 
 let initialized = false;
 
@@ -17,6 +18,7 @@ export function initializeEffectEngine() {
   componentRegistry.register(resistanceComponent);
   componentRegistry.register(weaknessComponent);
   componentRegistry.register(immunityComponent);
+  componentRegistry.register(fastHealingComponent);
 
   initialized = true;
 }

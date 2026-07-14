@@ -289,7 +289,10 @@
         "persistent-damage": "Persistent Damage",
         "physical": "Physical",
         "precision": "Precision"
-      }
+      },
+      "FastHealing": "Fast Healing",
+      "FastHealingValue": "Healing per Round",
+      "FastHealingHint": "The target regains this amount at the beginning of its turn."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialized.",
@@ -340,7 +343,8 @@
         "PersistentDamageDuplicateType": "Multiple components deal persistent {damageType} damage. Instances of the same type normally do not stack; usually only the stronger one matters.",
         "ResistanceDuplicateType": "Multiple components grant resistance to “{resistanceType}”. Resistances of the same type normally do not add together; usually only the highest value matters.",
         "WeaknessDuplicateType": "Multiple components grant weakness to “{weaknessType}”. Weaknesses of the same type normally do not add together; usually only the highest value matters.",
-        "ImmunityDuplicateType": "Multiple components grant immunity to “{immunityType}”. The repeated entry is redundant."
+        "ImmunityDuplicateType": "Multiple components grant immunity to “{immunityType}”. The repeated entry is redundant.",
+        "FastHealingMultipleSources": "Multiple components grant fast healing. Verify how the sources should interact on the target; in many cases only the highest value is intended."
       },
       "Compatibility": {
         "TargetPresent": "Target analysis was prepared for “{targetName}”. Concrete immunity checks will follow in a later version."
@@ -361,6 +365,9 @@
         },
         "Immunity": {
           "TypeInvalid": "“{immunityType}” is not a known PF2e immunity type."
+        },
+        "FastHealing": {
+          "ValueInvalid": "The fast healing value must be a positive integer."
         }
       }
     }

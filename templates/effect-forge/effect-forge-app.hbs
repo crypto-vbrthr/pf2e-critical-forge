@@ -106,6 +106,10 @@
                   <i class="fa-solid fa-shield"></i>
                   {{localize "PF2E_CRITICAL_FORGE.EffectForge.Immunity"}}
                 </button>
+                <button type="button" data-action="addFastHealing">
+                  <i class="fa-solid fa-heart-pulse"></i>
+                  {{localize "PF2E_CRITICAL_FORGE.EffectForge.FastHealing"}}
+                </button>
               </div>
             {{/if}}
           </div>
@@ -135,6 +139,9 @@
                     {{/if}}
                     {{#if component.isImmunity}}
                       {{localize "PF2E_CRITICAL_FORGE.EffectForge.Immunity"}}
+                    {{/if}}
+                    {{#if component.isFastHealing}}
+                      {{localize "PF2E_CRITICAL_FORGE.EffectForge.FastHealing"}}
                     {{/if}}
                   </strong>
                 </div>
@@ -333,6 +340,23 @@
                         </optgroup>
                       {{/each}}
                     </select>
+                  </label>
+                </div>
+              {{/if}}
+
+              {{#if component.isFastHealing}}
+                <div class="effect-forge-grid fast-healing-grid">
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.FastHealingValue"}}</span>
+                    <input
+                      type="number"
+                      name="components.{{component.index}}.value"
+                      value="{{component.value}}"
+                      min="1"
+                      step="1"
+                      required
+                    >
+                    <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.FastHealingHint"}}</small>
                   </label>
                 </div>
               {{/if}}

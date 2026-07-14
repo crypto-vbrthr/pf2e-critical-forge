@@ -37,6 +37,7 @@ test("EffectBuilder creates an immutable normalized definition", () => {
     .addImmunity({
       immunityType: "poison"
     })
+    .addFastHealing({ value: "4" })
     .setMetadata({ originModule: "tests", nested: { enabled: true } })
     .build();
 
@@ -74,6 +75,10 @@ test("EffectBuilder creates an immutable normalized definition", () => {
   assert.deepEqual(definition.components[5], {
     type: "immunity",
     immunityType: "poison"
+  });
+  assert.deepEqual(definition.components[6], {
+    type: "fastHealing",
+    value: 4
   });
   assertDeepFrozen(definition);
 });
@@ -154,6 +159,10 @@ test("builder rejects malformed component and duration input", () => {
   );
   assert.throws(
     () => createEffectBuilder().addImmunity({ immunityType: "" }),
+    TypeError
+  );
+  assert.throws(
+    () => createEffectBuilder().addFastHealing({ value: 0 }),
     TypeError
   );
 });

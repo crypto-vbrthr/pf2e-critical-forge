@@ -6,6 +6,7 @@ import {
   buildResistance,
   buildImmunity,
   buildWeakness,
+  buildFastHealing,
   cloneComponent
 } from "./component-builder.js";
 import { buildDuration } from "./duration-builder.js";
@@ -126,6 +127,11 @@ export class EffectBuilder {
 
   addImmunity(options) {
     this.#definition.components.push(buildImmunity(options));
+    return this;
+  }
+
+  addFastHealing(options) {
+    this.#definition.components.push(buildFastHealing(options));
     return this;
   }
 
