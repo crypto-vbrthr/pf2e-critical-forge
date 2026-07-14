@@ -110,7 +110,11 @@ export function isKnownDamageType(value) {
 }
 
 export function getDamageTypeGroups(selected = null) {
-  const selectedValue = String(selected ?? "").trim();
+  const selectedValues = new Set(
+    (Array.isArray(selected) ? selected : [selected])
+      .map((value) => String(value ?? "").trim())
+      .filter(Boolean)
+  );
   const grouped = new Map();
 
   for (const definition of listDamageTypeDefinitions()) {
@@ -125,7 +129,7 @@ export function getDamageTypeGroups(selected = null) {
     grouped.get(definition.groupId).options.push({
       value: definition.value,
       label: definition.label,
-      selected: definition.value === selectedValue
+      selected: selectedValues.has(definition.value)
     });
   }
 

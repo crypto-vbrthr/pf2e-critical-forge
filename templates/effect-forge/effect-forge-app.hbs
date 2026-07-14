@@ -110,6 +110,14 @@
                   <i class="fa-solid fa-heart-pulse"></i>
                   {{localize "PF2E_CRITICAL_FORGE.EffectForge.FastHealing"}}
                 </button>
+                <button type="button" data-action="addRegeneration">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                  {{localize "PF2E_CRITICAL_FORGE.EffectForge.Regeneration"}}
+                </button>
+                <button type="button" data-action="addTemporaryHitPoints">
+                  <i class="fa-solid fa-heart-circle-plus"></i>
+                  {{localize "PF2E_CRITICAL_FORGE.EffectForge.TemporaryHitPoints"}}
+                </button>
               </div>
             {{/if}}
           </div>
@@ -142,6 +150,12 @@
                     {{/if}}
                     {{#if component.isFastHealing}}
                       {{localize "PF2E_CRITICAL_FORGE.EffectForge.FastHealing"}}
+                    {{/if}}
+                    {{#if component.isRegeneration}}
+                      {{localize "PF2E_CRITICAL_FORGE.EffectForge.Regeneration"}}
+                    {{/if}}
+                    {{#if component.isTemporaryHitPoints}}
+                      {{localize "PF2E_CRITICAL_FORGE.EffectForge.TemporaryHitPoints"}}
                     {{/if}}
                   </strong>
                 </div>
@@ -357,6 +371,55 @@
                       required
                     >
                     <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.FastHealingHint"}}</small>
+                  </label>
+                </div>
+              {{/if}}
+
+
+              {{#if component.isTemporaryHitPoints}}
+                <div class="effect-forge-grid temporary-hit-points-grid">
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.TemporaryHitPointsValue"}}</span>
+                    <input
+                      type="number"
+                      name="components.{{component.index}}.value"
+                      value="{{component.value}}"
+                      min="1"
+                      step="1"
+                      required
+                    >
+                    <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.TemporaryHitPointsHint"}}</small>
+                  </label>
+                </div>
+              {{/if}}
+
+              {{#if component.isRegeneration}}
+                <div class="effect-forge-grid regeneration-grid">
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.RegenerationValue"}}</span>
+                    <input
+                      type="number"
+                      name="components.{{component.index}}.value"
+                      value="{{component.value}}"
+                      min="1"
+                      step="1"
+                      required
+                    >
+                    <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.RegenerationHint"}}</small>
+                  </label>
+
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.RegenerationDeactivatedBy"}}</span>
+                    <select name="components.{{component.index}}.deactivatedBy" multiple size="7" required>
+                      {{#each component.damageTypeGroups as |group|}}
+                        <optgroup label="{{group.label}}">
+                          {{#each group.options as |option|}}
+                            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                          {{/each}}
+                        </optgroup>
+                      {{/each}}
+                    </select>
+                    <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.RegenerationDeactivatedByHint"}}</small>
                   </label>
                 </div>
               {{/if}}

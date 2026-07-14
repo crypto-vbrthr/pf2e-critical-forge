@@ -147,6 +147,39 @@ export function buildFastHealing({ value } = {}) {
   });
 }
 
+export function buildTemporaryHitPoints({ value } = {}) {
+  const numericValue = Number(value);
+  if (!Number.isInteger(numericValue) || numericValue < 1) {
+    throw new TypeError("Temporary hit points value must be a positive integer.");
+  }
+
+  return Object.freeze({
+    type: "temporaryHitPoints",
+    value: numericValue
+  });
+}
+
+export function buildRegeneration({ value, deactivatedBy } = {}) {
+  const numericValue = Number(value);
+  if (!Number.isInteger(numericValue) || numericValue < 1) {
+    throw new TypeError("Regeneration value must be a positive integer.");
+  }
+
+  const sources = Array.isArray(deactivatedBy) ? deactivatedBy : [deactivatedBy];
+  const normalized = [...new Set(
+    sources.map((entry) => String(entry ?? "").trim()).filter(Boolean)
+  )];
+  if (normalized.length === 0) {
+    throw new TypeError("Regeneration requires at least one deactivating damage type.");
+  }
+
+  return Object.freeze({
+    type: "regeneration",
+    value: numericValue,
+    deactivatedBy: Object.freeze(normalized)
+  });
+}
+
 export function cloneComponent(component) {
   if (!component || typeof component !== "object" || Array.isArray(component)) {
     throw new TypeError("Component must be an object.");

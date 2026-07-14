@@ -7,6 +7,8 @@ import {
   buildImmunity,
   buildWeakness,
   buildFastHealing,
+  buildRegeneration,
+  buildTemporaryHitPoints,
   cloneComponent
 } from "./component-builder.js";
 import { buildDuration } from "./duration-builder.js";
@@ -132,6 +134,16 @@ export class EffectBuilder {
 
   addFastHealing(options) {
     this.#definition.components.push(buildFastHealing(options));
+    return this;
+  }
+
+  addRegeneration(options) {
+    this.#definition.components.push(buildRegeneration(options));
+    return this;
+  }
+
+  addTemporaryHitPoints(options) {
+    this.#definition.components.push(buildTemporaryHitPoints(options));
     return this;
   }
 

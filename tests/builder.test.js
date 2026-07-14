@@ -38,6 +38,8 @@ test("EffectBuilder creates an immutable normalized definition", () => {
       immunityType: "poison"
     })
     .addFastHealing({ value: "4" })
+    .addRegeneration({ value: "5", deactivatedBy: ["acid", "fire", "acid"] })
+    .addTemporaryHitPoints({ value: "7" })
     .setMetadata({ originModule: "tests", nested: { enabled: true } })
     .build();
 
@@ -79,6 +81,15 @@ test("EffectBuilder creates an immutable normalized definition", () => {
   assert.deepEqual(definition.components[6], {
     type: "fastHealing",
     value: 4
+  });
+  assert.deepEqual(definition.components[7], {
+    type: "regeneration",
+    value: 5,
+    deactivatedBy: ["acid", "fire"]
+  });
+  assert.deepEqual(definition.components[8], {
+    type: "temporaryHitPoints",
+    value: 7
   });
   assertDeepFrozen(definition);
 });
@@ -164,5 +175,21 @@ test("builder rejects malformed component and duration input", () => {
   assert.throws(
     () => createEffectBuilder().addFastHealing({ value: 0 }),
     TypeError
+  );
+  assert.throws(
+    () => createEffectBuilder().addRegeneration({ value: 0, deactivatedBy: ["fire"] }),
+    TypeError
+  );
+  assert.throws(
+    () => createEffectBuilder().addRegeneration({ value: 5, deactivatedBy: [] }),
+    TypeError
+  );
+});
+
+
+test("temporary hit points builder rejects non-positive values", () => {
+  assert.throws(
+    () => createEffectBuilder().addTemporaryHitPoints({ value: 0 }),
+    /positive integer/
   );
 });

@@ -158,3 +158,16 @@ test("immunity type catalog groups damage, conditions, effects, and system types
   assert.equal(groups.find((group) => group.id === "additional")
     ?.options.some((option) => option.value === "custom-immunity"), true);
 });
+
+
+test("damage-type groups support multiple selected values", async () => {
+  const { getDamageTypeGroups } = await import(
+    "../scripts/effect-engine/catalogs/damage-type-catalog.js"
+  );
+  const groups = getDamageTypeGroups(["acid", "fire"]);
+  const selected = groups.flatMap((group) => group.options)
+    .filter((option) => option.selected)
+    .map((option) => option.value)
+    .sort();
+  assert.deepEqual(selected, ["acid", "fire"]);
+});

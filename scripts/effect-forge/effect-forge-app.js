@@ -78,6 +78,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       addWeakness: EffectForgeApp.#addWeakness,
       addImmunity: EffectForgeApp.#addImmunity,
       addFastHealing: EffectForgeApp.#addFastHealing,
+      addRegeneration: EffectForgeApp.#addRegeneration,
+      addTemporaryHitPoints: EffectForgeApp.#addTemporaryHitPoints,
       removeComponent: EffectForgeApp.#removeComponent,
       browseImage: EffectForgeApp.#browseImage,
       validateEffect: EffectForgeApp.#validateEffect,
@@ -240,7 +242,9 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       isResistance: component.type === "resistance",
       isWeakness: component.type === "weakness",
       isImmunity: component.type === "immunity",
-      isFastHealing: component.type === "fastHealing"
+      isFastHealing: component.type === "fastHealing",
+      isRegeneration: component.type === "regeneration",
+      isTemporaryHitPoints: component.type === "temporaryHitPoints"
     };
 
     if (base.isCondition) {
@@ -276,6 +280,10 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (base.isImmunity) {
       base.immunityTypeGroups = getImmunityTypeGroups(component.immunityType);
+    }
+
+    if (base.isRegeneration) {
+      base.damageTypeGroups = getDamageTypeGroups(component.deactivatedBy ?? []);
     }
 
     return base;
@@ -380,6 +388,23 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         };
       }
 
+      if (component.type === "regeneration") {
+        return {
+          type: "regeneration",
+          value: Number(data.get(`${prefix}.value`) ?? 0),
+          deactivatedBy: data.getAll(`${prefix}.deactivatedBy`)
+            .map((entry) => String(entry).trim())
+            .filter(Boolean)
+        };
+      }
+
+      if (component.type === "temporaryHitPoints") {
+        return {
+          type: "temporaryHitPoints",
+          value: Number(data.get(`${prefix}.value`) ?? 0)
+        };
+      }
+
       const selectorChoice = String(
         data.get(`${prefix}.selectorChoice`) ?? component.selector ?? ""
       ).trim();
@@ -437,6 +462,10 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         builder.addImmunity(component);
       } else if (component.type === "fastHealing") {
         builder.addFastHealing(component);
+      } else if (component.type === "regeneration") {
+        builder.addRegeneration(component);
+      } else if (component.type === "temporaryHitPoints") {
+        builder.addTemporaryHitPoints(component);
       }
     }
 
@@ -590,6 +619,29 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.state.components.push({
       type: "fastHealing",
       value: 2
+    });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.#renderPreservingScroll();
+  }
+
+  static #addRegeneration() {
+    this.#syncStateFromForm();
+    this.state.components.push({
+      type: "regeneration",
+      value: 5,
+      deactivatedBy: ["acid", "fire"]
+    });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.#renderPreservingScroll();
+  }
+
+  static #addTemporaryHitPoints() {
+    this.#syncStateFromForm();
+    this.state.components.push({
+      type: "temporaryHitPoints",
+      value: 5
     });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();

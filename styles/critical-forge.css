@@ -200,8 +200,9 @@
 }
 
 .effect-forge-grid.resistance-grid,
-.effect-forge-grid.weakness-grid {
-  grid-template-columns: minmax(0, 1.6fr) minmax(110px, 0.8fr);
+.effect-forge-grid.weakness-grid,
+.effect-forge-grid.regeneration-grid {
+  grid-template-columns: minmax(110px, 0.72fr) minmax(0, 1.6fr);
 }
 
 .effect-forge-grid.immunity-grid,
@@ -328,6 +329,14 @@
   border-color: rgba(85, 198, 176, 0.92);
 }
 
+.effect-forge-component-card.component-regeneration {
+  border-color: rgba(191, 104, 214, 0.92);
+}
+
+.effect-forge-component-card.component-temporaryHitPoints {
+  border-color: rgba(111, 164, 232, 0.92);
+}
+
 .effect-forge-component-card > header {
   display: flex;
   align-items: center;
@@ -375,6 +384,18 @@
 
 .component-fastHealing .component-number {
   background: var(--ef-teal);
+}
+
+.component-regeneration .component-number {
+  background: #aa5fc2;
+}
+
+.component-temporaryHitPoints .component-number {
+  background: #5f8fcf;
+}
+
+.effect-forge-grid.regeneration-grid select[multiple] {
+  min-height: 8.5rem;
 }
 
 .effect-forge-component-card button.icon {
@@ -607,7 +628,8 @@
   .effect-forge-grid.condition-grid,
   .effect-forge-grid.persistent-damage-grid,
   .effect-forge-grid.resistance-grid,
-  .effect-forge-grid.weakness-grid {
+  .effect-forge-grid.weakness-grid,
+  .effect-forge-grid.regeneration-grid {
     grid-template-columns: 1fr;
   }
 

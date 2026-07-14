@@ -292,7 +292,15 @@
       },
       "FastHealing": "Fast Healing",
       "FastHealingValue": "Healing per Round",
-      "FastHealingHint": "The target regains this amount at the beginning of its turn."
+      "FastHealingHint": "The target regains this amount at the beginning of its turn.",
+      "Regeneration": "Regeneration",
+      "RegenerationValue": "Regeneration per Round",
+      "RegenerationHint": "The target regenerates this amount at the beginning of its turn.",
+      "RegenerationDeactivatedBy": "Deactivated By",
+      "RegenerationDeactivatedByHint": "Select at least one damage type. Use Ctrl or Cmd for multiple selections.",
+      "TemporaryHitPoints": "Temporary Hit Points",
+      "TemporaryHitPointsValue": "Temporary Hit Points",
+      "TemporaryHitPointsHint": "Granted once when the effect is applied. Temporary Hit Points normally do not stack."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialized.",
@@ -344,7 +352,9 @@
         "ResistanceDuplicateType": "Multiple components grant resistance to “{resistanceType}”. Resistances of the same type normally do not add together; usually only the highest value matters.",
         "WeaknessDuplicateType": "Multiple components grant weakness to “{weaknessType}”. Weaknesses of the same type normally do not add together; usually only the highest value matters.",
         "ImmunityDuplicateType": "Multiple components grant immunity to “{immunityType}”. The repeated entry is redundant.",
-        "FastHealingMultipleSources": "Multiple components grant fast healing. Verify how the sources should interact on the target; in many cases only the highest value is intended."
+        "FastHealingMultipleSources": "Multiple components grant fast healing. Verify how the sources should interact on the target; in many cases only the highest value is intended.",
+        "RegenerationMultipleSources": "Multiple components grant regeneration. Verify their values and deactivation conditions; in many cases only one regeneration source is intended.",
+        "TemporaryHitPointsMultipleSources": "Multiple components grant temporary Hit Points. They normally do not stack; compare component {firstComponent} ({firstValue}) with this value ({value})."
       },
       "Compatibility": {
         "TargetPresent": "Target analysis was prepared for “{targetName}”. Concrete immunity checks will follow in a later version."
@@ -368,6 +378,15 @@
         },
         "FastHealing": {
           "ValueInvalid": "The fast healing value must be a positive integer."
+        },
+        "Regeneration": {
+          "ValueInvalid": "The regeneration value must be a positive integer.",
+          "DeactivationRequired": "Regeneration requires at least one damage type that deactivates it.",
+          "TypeInvalid": "“{damageType}” is not a known PF2e damage type and cannot deactivate regeneration.",
+          "DuplicateType": "Damage type “{damageType}” is listed more than once as a deactivation condition."
+        },
+        "TemporaryHitPoints": {
+          "ValueInvalid": "The temporary Hit Points value must be a positive integer. Received: {value}."
         }
       }
     }

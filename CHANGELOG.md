@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.2.7-dev
+
+### Added
+- `temporaryHitPoints` component with a positive integer value.
+- Builder method `addTemporaryHitPoints()`.
+- Effect Forge editor card and component-menu entry for temporary Hit Points.
+- Validation code `TEMPORARY_HIT_POINTS_VALUE_INVALID`.
+- Cross-component warning `TEMPORARY_HIT_POINTS_MULTIPLE_SOURCES`.
+- Compiler support for native PF2e `TempHP` Rule Elements.
+- Builder, validation, and compiler regression tests.
+- `docs/TEMPORARY_HIT_POINTS.md`.
+
+### Changed
+- Automated suite expanded from 45 to 49 tests.
+- Public API version increased to `0.2.6`; Effect Definition schema remains version `1`.
+
+## 0.2.6-dev
+
+### Added
+- `regeneration` component with a positive integer value and one or more deactivating damage types.
+- Builder method `addRegeneration()` with normalization and duplicate removal.
+- Effect Forge editor card with grouped multi-selection for deactivating damage types.
+- Validation codes for invalid values, missing or invalid deactivation types, duplicate deactivation entries, and multiple regeneration sources.
+- Compiler support for PF2e `FastHealing` Rule Elements with `type: "regeneration"` and `deactivatedBy`.
+- Builder, catalog, validation, and compiler regression tests for regeneration.
+- `docs/REGENERATION.md`.
+
+### Changed
+- Damage-type groups now support multiple selected entries while remaining backward compatible with single selection.
+- Public API version increased to `0.2.5`; Effect Definition schema remains version `1`.
+
 ## 0.2.5-dev
 
 ### Added

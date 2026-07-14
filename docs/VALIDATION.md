@@ -129,3 +129,20 @@ Target immunity, resistance, trait, and creature-state checks are planned extens
 ```
 
 Use `analyze()` for module logic and `validate()` when directly presenting text to a user.
+
+
+### Regeneration
+
+- `REGENERATION_VALUE_INVALID`
+- `REGENERATION_DEACTIVATION_REQUIRED`
+- `REGENERATION_DEACTIVATION_TYPE_INVALID`
+- `REGENERATION_DEACTIVATION_DUPLICATE`
+- `REGENERATION_MULTIPLE_SOURCES`
+
+
+### Temporary Hit Points
+
+| Code | Severity | Meaning |
+|---|---|---|
+| `TEMPORARY_HIT_POINTS_VALUE_INVALID` | error | The value is not a positive integer. |
+| `TEMPORARY_HIT_POINTS_MULTIPLE_SOURCES` | warning | More than one component grants temporary Hit Points, which normally do not stack. |

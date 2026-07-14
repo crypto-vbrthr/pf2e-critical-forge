@@ -128,6 +128,25 @@ export function validateRules(definition) {
     }
   });
 
+  const regenerationComponents = definition.components
+    .map((component, index) => ({ component, index }))
+    .filter(({ component }) => component.type === "regeneration");
+
+  for (const { component, index } of regenerationComponents.slice(1)) {
+    const first = regenerationComponents[0];
+    issues.push({
+      severity: "warning",
+      code: "REGENERATION_MULTIPLE_SOURCES",
+      messageKey: "Validation.Rules.RegenerationMultipleSources",
+      data: {
+        firstComponent: first.index + 1,
+        firstValue: first.component.value,
+        value: component.value
+      },
+      componentIndex: index
+    });
+  }
+
   const fastHealingComponents = definition.components
     .map((component, index) => ({ component, index }))
     .filter(({ component }) => component.type === "fastHealing");
@@ -138,6 +157,25 @@ export function validateRules(definition) {
       severity: "warning",
       code: "FAST_HEALING_MULTIPLE_SOURCES",
       messageKey: "Validation.Rules.FastHealingMultipleSources",
+      data: {
+        firstComponent: first.index + 1,
+        firstValue: first.component.value,
+        value: component.value
+      },
+      componentIndex: index
+    });
+  }
+
+  const temporaryHitPointsComponents = definition.components
+    .map((component, index) => ({ component, index }))
+    .filter(({ component }) => component.type === "temporaryHitPoints");
+
+  for (const { component, index } of temporaryHitPointsComponents.slice(1)) {
+    const first = temporaryHitPointsComponents[0];
+    issues.push({
+      severity: "warning",
+      code: "TEMPORARY_HIT_POINTS_MULTIPLE_SOURCES",
+      messageKey: "Validation.Rules.TemporaryHitPointsMultipleSources",
       data: {
         firstComponent: first.index + 1,
         firstValue: first.component.value,

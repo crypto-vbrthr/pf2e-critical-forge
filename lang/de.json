@@ -292,7 +292,15 @@
       },
       "FastHealing": "Schnelle Heilung",
       "FastHealingValue": "Heilung pro Runde",
-      "FastHealingHint": "Das Ziel erhält diesen Betrag zu Beginn seines Zuges zurück."
+      "FastHealingHint": "Das Ziel erhält diesen Betrag zu Beginn seines Zuges zurück.",
+      "Regeneration": "Regeneration",
+      "RegenerationValue": "Regeneration pro Runde",
+      "RegenerationHint": "Das Ziel regeneriert diesen Betrag zu Beginn seines Zuges.",
+      "RegenerationDeactivatedBy": "Deaktiviert durch",
+      "RegenerationDeactivatedByHint": "Wähle mindestens eine Schadensart. Mehrfachauswahl mit Strg bzw. Cmd.",
+      "TemporaryHitPoints": "Temporäre Trefferpunkte",
+      "TemporaryHitPointsValue": "Temporäre Trefferpunkte",
+      "TemporaryHitPointsHint": "Werden beim Anwenden des Effekts einmalig vergeben. Temporäre Trefferpunkte addieren sich normalerweise nicht."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialisiert.",
@@ -344,7 +352,9 @@
         "ResistanceDuplicateType": "Mehrere Komponenten verleihen Resistenz gegen „{resistanceType}“. Gleichartige Resistenzen addieren sich normalerweise nicht; relevant ist in der Regel nur der höchste Wert.",
         "WeaknessDuplicateType": "Mehrere Komponenten verleihen Schwäche gegen „{weaknessType}“. Gleichartige Schwächen addieren sich normalerweise nicht; relevant ist in der Regel nur der höchste Wert.",
         "ImmunityDuplicateType": "Mehrere Komponenten verleihen Immunität gegen „{immunityType}“. Der wiederholte Eintrag ist redundant.",
-        "FastHealingMultipleSources": "Mehrere Komponenten verleihen Schnelle Heilung. Prüfe, wie die Quellen am Ziel zusammenwirken; in vielen Fällen ist nur der höchste Wert beabsichtigt."
+        "FastHealingMultipleSources": "Mehrere Komponenten verleihen Schnelle Heilung. Prüfe, wie die Quellen am Ziel zusammenwirken; in vielen Fällen ist nur der höchste Wert beabsichtigt.",
+        "RegenerationMultipleSources": "Mehrere Komponenten verleihen Regeneration. Prüfe die Werte und Abschaltbedingungen; in vielen Fällen ist nur eine Regenerationsquelle beabsichtigt.",
+        "TemporaryHitPointsMultipleSources": "Mehrere Komponenten vergeben temporäre Trefferpunkte. Diese addieren sich normalerweise nicht; vergleiche Komponente {firstComponent} ({firstValue}) mit diesem Wert ({value})."
       },
       "Compatibility": {
         "TargetPresent": "Die Zielprüfung wurde für „{targetName}“ vorbereitet. Konkrete Immunitätsprüfungen folgen in einer späteren Version."
@@ -368,6 +378,15 @@
         },
         "FastHealing": {
           "ValueInvalid": "Der Wert für Schnelle Heilung muss eine positive ganze Zahl sein."
+        },
+        "Regeneration": {
+          "ValueInvalid": "Der Regenerationswert muss eine positive ganze Zahl sein.",
+          "DeactivationRequired": "Regeneration benötigt mindestens eine Schadensart, die sie deaktiviert.",
+          "TypeInvalid": "„{damageType}“ ist keine bekannte PF2e-Schadensart und kann Regeneration nicht deaktivieren.",
+          "DuplicateType": "Die Schadensart „{damageType}“ ist mehrfach als Abschaltbedingung eingetragen."
+        },
+        "TemporaryHitPoints": {
+          "ValueInvalid": "Der Wert für temporäre Trefferpunkte muss eine positive ganze Zahl sein. Erhalten: {value}."
         }
       }
     }

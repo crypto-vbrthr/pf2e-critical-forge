@@ -296,3 +296,44 @@ The same component supports condition immunities, such as `frightened`, when the
 ```
 
 The component inherits the Effect Definition's global duration. Multiple fast-healing components remain valid but produce `FAST_HEALING_MULTIPLE_SOURCES` so the author can verify the intended interaction.
+
+
+## Regeneration component
+
+```js
+{
+  type: "regeneration",
+  value: 5,
+  deactivatedBy: ["acid", "fire"]
+}
+```
+
+`value` must be a positive integer. `deactivatedBy` must be a non-empty array of known PF2e damage-type slugs. The compiler emits:
+
+```js
+{
+  key: "FastHealing",
+  value: 5,
+  type: "regeneration",
+  deactivatedBy: ["acid", "fire"]
+}
+```
+
+
+## Temporary Hit Points component
+
+```js
+{
+  type: "temporaryHitPoints",
+  value: 5
+}
+```
+
+The value must be a positive integer. The compiler emits:
+
+```js
+{
+  key: "TempHP",
+  value: 5
+}
+```

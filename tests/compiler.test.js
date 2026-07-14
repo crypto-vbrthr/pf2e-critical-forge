@@ -4,7 +4,7 @@ import {
   createConditionPack,
   installFoundryMock
 } from "./helpers/foundry-mock.js";
-import { fastHealing, fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
+import { fastHealing, fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, regeneration, shakenNerves, temporaryHitPoints } from "./fixtures/effects.js";
 
 const packs = new Map([
   [
@@ -166,6 +166,24 @@ test("fast healing components compile to FastHealing rule elements", async () =>
   });
 });
 
+test("regeneration compiles through FastHealing with type and deactivation array", async () => {
+  const compiled = await compileEffectDefinition(regeneration({
+    value: 8,
+    deactivatedBy: ["acid", "fire"]
+  }));
+  const component = compiled.components[0];
+
+  assert.equal(component.kind, "regeneration");
+  assert.equal(component.value, 8);
+  assert.deepEqual(component.deactivatedBy, ["acid", "fire"]);
+  assert.deepEqual(component.rules[0], {
+    key: "FastHealing",
+    value: 8,
+    type: "regeneration",
+    deactivatedBy: ["acid", "fire"]
+  });
+});
+
 test("modifier components compile to FlatModifier rule elements", async () => {
   const compiled = await compileEffectDefinition(shakenNerves());
   assert.deepEqual(compiled.components[1].rules[0], {
@@ -210,4 +228,13 @@ test("compiler rejects invalid definitions with EffectValidationError", async ()
       return true;
     }
   );
+});
+
+
+test("temporary hit points compile to the native TempHP Rule Element", async () => {
+  const compiled = await compileEffectDefinition(temporaryHitPoints({ value: 7 }));
+  assert.deepEqual(compiled.components[0].rules, [{
+    key: "TempHP",
+    value: 7
+  }]);
 });

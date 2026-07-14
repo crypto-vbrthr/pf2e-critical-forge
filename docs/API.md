@@ -227,6 +227,8 @@ The original object is not mutated.
 | `addWeakness(options)` | Adds weakness with `weaknessType` and positive integer `value`. |
 | `addImmunity(options)` | Adds immunity with `immunityType`. |
 | `addFastHealing(options)` | Adds fast healing with a positive integer `value`. |
+| `addRegeneration(options)` | Adds regeneration with positive integer `value` and `deactivatedBy` damage types. |
+| `addTemporaryHitPoints(options)` | Adds a one-time grant of temporary Hit Points with a positive integer `value`. |
 | `clearComponents()` | Removes all components. |
 | `removeComponent(index)` | Removes one component or throws `RangeError`. |
 | `build()` | Returns the immutable Effect Definition. |
@@ -248,6 +250,8 @@ const bleeding = api.builders
     value: 5
   })
   .addFastHealing({ value: 2 })
+  .addRegeneration({ value: 5, deactivatedBy: ["acid", "fire"] })
+  .addTemporaryHitPoints({ value: 7 })
   .build();
 ```
 
@@ -284,6 +288,7 @@ The compiler emits a `badge-value` alteration only when the resolved condition i
 ```js
 api.damageTypes.list();
 api.damageTypes.groups("bleed");
+api.damageTypes.groups(["acid", "fire"]);
 api.damageTypes.get("fire");
 api.damageTypes.has("spirit");
 ```
@@ -409,3 +414,34 @@ const definition = api.builders
 ```
 
 The compiler emits `{ key: "FastHealing", value: 4 }`. The current built-in component accepts a positive integer. See [`FAST_HEALING.md`](FAST_HEALING.md).
+
+
+## Regeneration component
+
+```js
+const trollBlood = api.builders
+  .effect()
+  .setName("Troll Blood")
+  .setDuration(1, "minutes", "turn-end")
+  .addRegeneration({
+    value: 5,
+    deactivatedBy: ["acid", "fire"]
+  })
+  .build();
+```
+
+The compiler emits `{ key: "FastHealing", value: 5, type: "regeneration", deactivatedBy: ["acid", "fire"] }`. See [`REGENERATION.md`](REGENERATION.md).
+
+
+## Temporary Hit Points component
+
+```js
+const definition = api.builders
+  .effect()
+  .setName("Protective Vitality")
+  .setDuration(1, "minutes", "turn-end")
+  .addTemporaryHitPoints({ value: 5 })
+  .build();
+```
+
+The compiler emits `{ key: "TempHP", value: 5 }`. See [`TEMPORARY_HIT_POINTS.md`](TEMPORARY_HIT_POINTS.md).

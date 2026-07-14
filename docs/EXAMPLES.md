@@ -259,3 +259,52 @@ The resulting PF2e Rule Element is:
   "value": 4
 }
 ```
+
+
+## Regeneration
+
+```js
+const trollBlood = api.builders
+  .effect()
+  .setId("example.troll-blood")
+  .setName("Trollblut")
+  .setDuration(1, "minutes", "turn-end")
+  .addRegeneration({
+    value: 5,
+    deactivatedBy: ["acid", "fire"]
+  })
+  .build();
+```
+
+The resulting PF2e Rule Element is:
+
+```json
+{
+  "key": "FastHealing",
+  "value": 5,
+  "type": "regeneration",
+  "deactivatedBy": ["acid", "fire"]
+}
+```
+
+
+## Temporary Hit Points
+
+```js
+const definition = api.builders
+  .effect()
+  .setId("example.protective-vitality")
+  .setName("Protective Vitality")
+  .setDuration(1, "minutes", "turn-end")
+  .addTemporaryHitPoints({ value: 7 })
+  .build();
+```
+
+Compiled rule:
+
+```json
+{
+  "key": "TempHP",
+  "value": 7
+}
+```

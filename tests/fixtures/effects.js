@@ -116,3 +116,34 @@ export function fastHealing({ value = 2 } = {}) {
     metadata: { originModule: "test-suite" }
   };
 }
+
+export function temporaryHitPoints({ value = 5 } = {}) {
+  return {
+    schemaVersion: 1,
+    id: "example.temporary-hit-points",
+    name: "Temporäre Trefferpunkte",
+    duration: { value: 1, unit: "minutes", expiry: "turn-end" },
+    components: [{
+      type: "temporaryHitPoints",
+      value
+    }],
+    application: {},
+    metadata: { originModule: "test-suite" }
+  };
+}
+
+export function regeneration({ value = 5, deactivatedBy = ["acid", "fire"] } = {}) {
+  return {
+    schemaVersion: 1,
+    id: "example.regeneration",
+    name: "Regeneration",
+    duration: { value: 1, unit: "minutes", expiry: "turn-end" },
+    components: [{
+      type: "regeneration",
+      value,
+      deactivatedBy
+    }],
+    application: {},
+    metadata: { originModule: "test-suite" }
+  };
+}

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { installFoundryMock } from "./helpers/foundry-mock.js";
-import { fastHealing, fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
+import { fastHealing, fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, regeneration, shakenNerves, temporaryHitPoints } from "./fixtures/effects.js";
 
 installFoundryMock({
   skills: {
@@ -254,5 +254,64 @@ test("multiple fast healing components produce an interaction warning", () => {
   assert.equal(report.valid, true);
   assert.equal(report.warnings.some(
     (issue) => issue.code === "FAST_HEALING_MULTIPLE_SOURCES"
+  ), true);
+});
+
+
+test("regeneration validates value and deactivating damage types", () => {
+  const valid = analyzeEffectDefinition(regeneration());
+  assert.equal(valid.valid, true);
+
+  const invalidValue = analyzeEffectDefinition(regeneration({ value: 0 }));
+  assert.equal(invalidValue.errors.some(
+    (issue) => issue.code === "REGENERATION_VALUE_INVALID"
+  ), true);
+
+  const missingTypes = analyzeEffectDefinition(regeneration({ deactivatedBy: [] }));
+  assert.equal(missingTypes.errors.some(
+    (issue) => issue.code === "REGENERATION_DEACTIVATION_REQUIRED"
+  ), true);
+
+  const invalidType = analyzeEffectDefinition(regeneration({ deactivatedBy: ["rainbow"] }));
+  assert.equal(invalidType.errors.some(
+    (issue) => issue.code === "REGENERATION_DEACTIVATION_TYPE_INVALID"
+  ), true);
+});
+
+test("multiple regeneration components produce an interaction warning", () => {
+  const definition = regeneration({ value: 5 });
+  definition.components.push({
+    type: "regeneration",
+    value: 10,
+    deactivatedBy: ["cold"]
+  });
+
+  const report = analyzeEffectDefinition(definition);
+  assert.equal(report.valid, true);
+  assert.equal(report.warnings.some(
+    (issue) => issue.code === "REGENERATION_MULTIPLE_SOURCES"
+  ), true);
+});
+
+
+test("temporary hit points require a positive integer value", () => {
+  const valid = analyzeEffectDefinition(temporaryHitPoints({ value: 5 }));
+  assert.equal(valid.valid, true);
+
+  const invalid = analyzeEffectDefinition(temporaryHitPoints({ value: 0 }));
+  assert.equal(invalid.valid, false);
+  assert.equal(invalid.errors.some(
+    (issue) => issue.code === "TEMPORARY_HIT_POINTS_VALUE_INVALID"
+  ), true);
+});
+
+test("multiple temporary-hit-point components produce a non-stacking warning", () => {
+  const definition = temporaryHitPoints({ value: 5 });
+  definition.components.push({ type: "temporaryHitPoints", value: 9 });
+
+  const report = analyzeEffectDefinition(definition);
+  assert.equal(report.valid, true);
+  assert.equal(report.warnings.some(
+    (issue) => issue.code === "TEMPORARY_HIT_POINTS_MULTIPLE_SOURCES"
   ), true);
 });
