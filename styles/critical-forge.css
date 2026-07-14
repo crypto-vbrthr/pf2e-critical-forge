@@ -1,161 +1,595 @@
-.pf2e-critical-forge .window-content {
-  padding: 0;
-}
-
-.effect-forge-shell {
-  display: grid;
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.effect-forge-hero {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  border-bottom: 1px solid var(--color-border-light-primary);
-  padding-bottom: 0.75rem;
-}
-
-.effect-forge-hero > i {
-  font-size: 2.4rem;
-}
-
-.effect-forge-hero h1 {
-  margin: 0;
-}
-
-.effect-forge-hero p {
-  margin: 0.35rem 0 0;
-}
-
-.effect-forge-status {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
-  padding: 0.75rem;
-  border: 1px solid var(--color-border-light-primary);
-  border-radius: 6px;
-}
-
-.effect-forge-status p {
-  margin: 0;
-}
-
-.effect-forge-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
 .pf2e-critical-forge-open {
   width: 100%;
   margin-top: 0.25rem;
 }
 
-.effect-forge-shell fieldset {
+.pf2e-critical-forge {
+  --ef-bg: #090910;
+  --ef-panel: #14141d;
+  --ef-panel-alt: #191923;
+  --ef-field: #242431;
+  --ef-field-hover: #2b2b39;
+  --ef-border: #30303d;
+  --ef-border-soft: #262632;
+  --ef-text: #f0e8df;
+  --ef-muted: #aaa4ac;
+  --ef-orange: #f6a23a;
+  --ef-purple: #7542b2;
+  --ef-purple-bright: #915bd0;
+  --ef-blue: #5aa2f2;
+  --ef-green: #67bf72;
+  --ef-red: #dc6767;
+  min-width: 720px;
+  min-height: 540px;
+  color: var(--ef-text);
+}
+
+.pf2e-critical-forge .window-content {
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(117, 66, 178, 0.08), transparent 34%),
+    var(--ef-bg);
+}
+
+.effect-forge-shell {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0.6rem;
+  gap: 0.6rem;
+  box-sizing: border-box;
+}
+
+.effect-forge-workspace {
+  display: grid;
+  grid-template-columns: minmax(430px, 1fr) minmax(430px, 1fr);
+  gap: 0.6rem;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.effect-forge-panel {
+  min-width: 0;
+  border: 1px solid var(--ef-border);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent), var(--ef-panel);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.effect-forge-editor {
+  display: block;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+.effect-forge-section {
   display: grid;
   gap: 0.75rem;
+  padding: 0.95rem;
+  border-bottom: 1px solid var(--ef-border-soft);
+}
+
+.effect-forge-section:last-child {
+  border-bottom: 0;
+}
+
+.effect-forge-section h2,
+.effect-forge-panel-header h2 {
   margin: 0;
-  padding: 0.85rem;
-  border: 1px solid var(--color-border-light-primary);
-  border-radius: 6px;
+  color: var(--ef-orange);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
-.effect-forge-shell legend {
-  padding: 0 0.35rem;
-  font-weight: 700;
-}
-
-.effect-forge-shell label {
+.effect-forge-name-image-row {
   display: grid;
-  gap: 0.25rem;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  gap: 1rem;
+  align-items: end;
 }
 
-.effect-forge-shell input,
-.effect-forge-shell select,
-.effect-forge-shell textarea {
+.effect-forge-field {
+  display: grid;
+  gap: 0.38rem;
+  min-width: 0;
+}
+
+.effect-forge-field > span,
+.effect-forge-checkbox > span {
+  font-size: 0.83rem;
+  font-weight: 650;
+  color: var(--ef-text);
+}
+
+.effect-forge-field input,
+.effect-forge-field select,
+.effect-forge-field textarea {
   width: 100%;
+  min-height: 2.35rem;
+  padding: 0.55rem 0.68rem;
+  color: var(--ef-text);
+  border: 1px solid var(--ef-border);
+  border-radius: 5px;
+  outline: none;
+  background: var(--ef-field);
+  box-sizing: border-box;
+  transition: border-color 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+
+.effect-forge-field textarea {
+  min-height: 5.1rem;
+  resize: vertical;
+  line-height: 1.4;
+}
+
+.effect-forge-field input:hover,
+.effect-forge-field select:hover,
+.effect-forge-field textarea:hover {
+  background: var(--ef-field-hover);
+}
+
+.effect-forge-field input:focus,
+.effect-forge-field select:focus,
+.effect-forge-field textarea:focus {
+  border-color: var(--ef-purple-bright);
+  box-shadow: 0 0 0 2px rgba(145, 91, 208, 0.2);
+}
+
+.effect-forge-field input:disabled,
+.effect-forge-field select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.effect-forge-character-count {
+  justify-self: end;
+  margin-top: -0.18rem;
+  color: var(--ef-muted);
+  font-size: 0.75rem;
+}
+
+.effect-forge-image-picker {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  min-height: 64px;
+  overflow: hidden;
+  border: 1px solid var(--ef-border);
+  border-radius: 5px;
+  background: var(--ef-field);
+}
+
+.effect-forge-image-picker img {
+  width: 64px;
+  height: 64px;
+  padding: 4px;
+  object-fit: cover;
+  box-sizing: border-box;
+  border-right: 1px solid var(--ef-border);
+}
+
+.effect-forge-image-picker .effect-forge-browse-button {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ef-text);
 }
 
 .effect-forge-grid {
   display: grid;
-  gap: 0.75rem;
+  gap: 1rem;
+  min-width: 0;
 }
 
-.effect-forge-grid.two-columns {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.effect-forge-grid.three-columns,
+.effect-forge-grid.modifier-grid {
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(90px, 0.72fr);
 }
 
-.effect-forge-grid.three-columns {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.effect-forge-grid.condition-grid {
+  grid-template-columns: minmax(0, 1.6fr) minmax(110px, 0.8fr);
 }
 
-.effect-forge-component {
-  display: grid;
-  gap: 0.65rem;
-  padding: 0.75rem;
-  background: color-mix(in srgb, var(--color-bg-option) 80%, transparent);
-  border-radius: 5px;
-}
-
-.effect-forge-toggle {
-  display: flex !important;
+.effect-forge-checkbox {
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem !important;
+  gap: 0.55rem;
+  width: max-content;
+  cursor: pointer;
 }
 
-.effect-forge-toggle input {
+.effect-forge-checkbox input {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  border: 1px solid #716657;
+  border-radius: 3px;
+  background: transparent;
+}
+
+.effect-forge-checkbox input:checked {
+  border-color: var(--ef-orange);
+  background: var(--ef-orange);
+  box-shadow: inset 0 0 0 3px var(--ef-panel);
+}
+
+.effect-forge-section-header,
+.effect-forge-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.effect-forge-add-component {
+  position: relative;
+}
+
+.effect-forge-add-component > button {
   width: auto;
+  white-space: nowrap;
+}
+
+.effect-forge-component-menu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  display: grid;
+  width: 220px;
+  padding: 0.35rem;
+  border: 1px solid var(--ef-border);
+  border-radius: 6px;
+  background: #1b1b26;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+}
+
+.effect-forge-component-menu button {
+  justify-content: flex-start;
+  border: 0;
+  background: transparent;
+}
+
+.effect-forge-component-menu button:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.effect-forge-component-list {
+  display: grid;
+  gap: 0.72rem;
+  min-height: 140px;
+  max-height: 480px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+.effect-forge-component-card {
+  display: grid;
+  gap: 0.78rem;
+  padding: 0.78rem;
+  border: 1px solid var(--ef-border);
+  border-left-width: 3px;
+  border-radius: 7px;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.025), transparent), var(--ef-panel-alt);
+}
+
+.effect-forge-component-card.component-condition {
+  border-color: rgba(246, 162, 58, 0.85);
+}
+
+.effect-forge-component-card.component-modifier {
+  border-color: rgba(145, 91, 208, 0.85);
+}
+
+.effect-forge-component-card > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.effect-forge-component-title {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.component-number {
+  display: grid;
+  place-items: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 999px;
+  background: var(--ef-orange);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.component-modifier .component-number {
+  background: var(--ef-purple-bright);
+}
+
+.effect-forge-component-card button.icon {
+  width: 2.15rem;
+  height: 2.15rem;
+  min-width: 2.15rem;
+  padding: 0;
+  border-color: #725f4d;
+  color: #f1dfca;
+  background: #17171f;
+}
+
+.effect-forge-empty {
+  display: grid;
+  place-items: center;
+  gap: 0.4rem;
+  min-height: 140px;
+  color: var(--ef-muted);
+  border: 1px dashed var(--ef-border);
+  border-radius: 7px;
+}
+
+.effect-forge-empty i {
+  font-size: 2rem;
+}
+
+.effect-forge-sidebar {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.6rem;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.effect-forge-validation,
+.effect-forge-preview {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.6rem;
+  min-height: 0;
+  padding: 0.8rem;
+  overflow: hidden;
+}
+
+.effect-forge-validation-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.effect-forge-validation-status.valid { color: var(--ef-green); }
+.effect-forge-validation-status.invalid { color: var(--ef-red); }
+.effect-forge-validation-status.neutral { color: var(--ef-muted); }
+
+.effect-forge-validation-groups {
+  display: grid;
+  gap: 0.5rem;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+
+.effect-forge-validation-group {
+  overflow: hidden;
+  border: 1px solid var(--ef-border);
+  border-radius: 6px;
+  background: #111119;
+}
+
+.effect-forge-validation-group summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.68rem 0.8rem;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 750;
+}
+
+.effect-forge-validation-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.effect-forge-validation-group.severity-error { border-color: rgba(220, 103, 103, 0.75); }
+.effect-forge-validation-group.severity-warning { border-color: rgba(246, 162, 58, 0.72); }
+.effect-forge-validation-group.severity-hint,
+.effect-forge-validation-group.severity-info { border-color: rgba(90, 162, 242, 0.75); }
+
+.effect-forge-validation-group.severity-error summary { color: var(--ef-red); }
+.effect-forge-validation-group.severity-warning summary { color: var(--ef-orange); }
+.effect-forge-validation-group.severity-hint summary,
+.effect-forge-validation-group.severity-info summary { color: var(--ef-blue); }
+
+.effect-forge-validation-items {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0 0.8rem 0.8rem;
+}
+
+.effect-forge-validation-items article {
+  padding: 0.7rem;
+  border-left: 3px solid currentColor;
+  border-radius: 3px;
+  color: var(--ef-text);
+  background: rgba(90, 162, 242, 0.08);
+}
+
+.effect-forge-validation-items p,
+.effect-forge-validation-items small,
+.effect-forge-valid-message,
+.effect-forge-preview-empty {
   margin: 0;
 }
 
-.effect-forge-hint {
-  margin: 0;
-  font-style: italic;
-  opacity: 0.8;
+.effect-forge-validation-items small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--ef-muted);
 }
 
-@media (max-width: 650px) {
-  .effect-forge-grid.two-columns,
-  .effect-forge-grid.three-columns {
+.effect-forge-valid-message {
+  align-self: start;
+  color: var(--ef-green);
+}
+
+.effect-forge-copy-button {
+  width: auto;
+  min-height: 2rem;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.effect-forge-preview pre {
+  min-height: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0.75rem;
+  overflow: auto;
+  white-space: pre;
+  color: #e7e0d7;
+  border: 1px solid var(--ef-border);
+  border-radius: 5px;
+  background: #101018;
+  font: 0.76rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  scrollbar-gutter: stable;
+}
+
+.effect-forge-actions {
+  position: relative;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.55fr 0.9fr;
+  gap: 0.7rem;
+  flex: 0 0 auto;
+  padding: 0.65rem;
+  border: 1px solid var(--ef-border);
+  border-radius: 8px;
+  background: #171720;
+  box-shadow: 0 -5px 18px rgba(0, 0, 0, 0.28);
+}
+
+.pf2e-critical-forge button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.48rem;
+  min-height: 2.35rem;
+  color: var(--ef-text);
+  border: 1px solid #454552;
+  border-radius: 4px;
+  background: #1b1b24;
+}
+
+.pf2e-critical-forge button:hover:not(:disabled) {
+  border-color: #706a77;
+  background: #252531;
+}
+
+.pf2e-critical-forge button.primary {
+  border-color: #7142a7;
+  background: linear-gradient(180deg, #7547ab, #5f358e);
+}
+
+.pf2e-critical-forge button.primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #8656bd, #6d3ca0);
+}
+
+.pf2e-critical-forge button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 980px) {
+  .pf2e-critical-forge {
+    min-width: 580px;
+  }
+
+  .effect-forge-workspace {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .effect-forge-editor,
+  .effect-forge-sidebar {
+    overflow: visible;
+  }
+
+  .effect-forge-sidebar {
+    grid-template-rows: auto 360px 360px;
+  }
+
+  .effect-forge-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 690px) {
+  .pf2e-critical-forge {
+    min-width: 420px;
+  }
+
+  .effect-forge-name-image-row,
+  .effect-forge-grid.three-columns,
+  .effect-forge-grid.modifier-grid,
+  .effect-forge-grid.condition-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .effect-forge-image-field {
+    max-width: 180px;
+  }
+
+  .effect-forge-actions {
     grid-template-columns: 1fr;
   }
 }
 
 
-.effect-forge-validation {
-  display: grid;
-  gap: 0.65rem;
-  padding: 0.85rem;
-  border: 1px solid var(--color-border-light-primary);
-  border-radius: 6px;
+.effect-forge-field select optgroup {
+  color: var(--ef-orange);
+  background: #181821;
+  font-weight: 800;
 }
 
-.effect-forge-validation h2 {
-  margin: 0;
-  font-size: 1.05rem;
+.effect-forge-field select option {
+  color: var(--ef-text);
+  background: var(--ef-field);
+  font-weight: 500;
 }
 
-.effect-forge-validation-list {
-  display: grid;
-  gap: 0.5rem;
+.effect-forge-custom-selector {
+  margin-top: 0.1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--ef-border-soft);
 }
 
-.effect-forge-validation-item {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.65rem;
-  align-items: start;
-  padding: 0.65rem;
-  border-left: 4px solid currentColor;
-  background: color-mix(in srgb, currentColor 8%, transparent);
+.effect-forge-custom-selector[hidden] {
+  display: none;
 }
 
-.effect-forge-validation-item p {
-  margin: 0.2rem 0 0;
+.effect-forge-field-hint {
+  color: var(--ef-muted);
+  font-size: 0.75rem;
+  line-height: 1.35;
 }
-
-.effect-forge-validation-item.severity-error { color: var(--color-level-error, #b3261e); }
-.effect-forge-validation-item.severity-warning { color: var(--color-level-warning, #9a6700); }
-.effect-forge-validation-item.severity-hint { color: #6f42c1; }
-.effect-forge-validation-item.severity-info { color: var(--color-level-info, #1769aa); }

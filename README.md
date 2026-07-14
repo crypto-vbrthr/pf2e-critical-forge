@@ -8,7 +8,7 @@ PF2E Critical Forge is being developed as two optional user-facing tools built o
 
 ## Status
 
-`0.1.4-dev` adds a rudimentary test GUI to the functional Effect Engine. It provides:
+`0.1.10-dev` adds the centralized grouped Selector Catalog.
 
 - independent settings for Effect Forge and Critical Forge;
 - an always-loaded public API;
@@ -30,7 +30,7 @@ console.log(api.version);
 console.log(api.effects);
 ```
 
-See [`docs/API.md`](docs/API.md), [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md), and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+See [`docs/API.md`](docs/API.md), [`docs/SELECTORS.md`](docs/SELECTORS.md), [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md), and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Opening Effect Forge
 
@@ -40,3 +40,7 @@ For diagnostics or macros, the window can always be opened with:
 ```js
 game.modules.get("pf2e-critical-forge")?.api.ui.openEffectForge();
 ```
+
+## Condition metadata
+
+The Effect Engine distinguishes valued and non-valued PF2e conditions through the system condition compendium. `badge-value` alterations are emitted only for valued conditions.

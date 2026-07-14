@@ -1,7 +1,9 @@
-const CHECK_SELECTORS = new Set([
-  "all", "check", "attack-roll", "skill-check", "perception",
-  "saving-throw", "fortitude", "reflex", "will"
-]);
+import { isValuedCondition } from "../../catalogs/condition-catalog.js";
+import {
+  isKnownSelector,
+  isValidSelectorSyntax,
+  selectorIsAffectedByFrightened
+} from "../../catalogs/selector-catalog.js";
 
 function selectorsOf(component) {
   return Array.isArray(component.selector)
@@ -9,12 +11,46 @@ function selectorsOf(component) {
     : [component.selector];
 }
 
-function frightenedAffectsSelector(selector) {
-  return CHECK_SELECTORS.has(selector);
-}
-
 export function validateRules(definition) {
   const issues = [];
+
+  definition.components.forEach((component, index) => {
+    if (
+      component.type === "condition" &&
+      component.value !== undefined &&
+      !isValuedCondition(component.slug)
+    ) {
+      issues.push({
+        severity: "warning",
+        code: "CONDITION_VALUE_IGNORED",
+        messageKey: "Validation.Rules.ConditionValueIgnored",
+        data: { slug: component.slug, value: component.value },
+        componentIndex: index
+      });
+    }
+
+    if (component.type !== "modifier") return;
+
+    for (const selector of selectorsOf(component)) {
+      if (!isValidSelectorSyntax(selector)) {
+        issues.push({
+          severity: "error",
+          code: "MODIFIER_SELECTOR_FORMAT",
+          messageKey: "Validation.Rules.SelectorFormat",
+          data: { selector: String(selector ?? "") },
+          componentIndex: index
+        });
+      } else if (!isKnownSelector(selector)) {
+        issues.push({
+          severity: "info",
+          code: "MODIFIER_SELECTOR_CUSTOM",
+          messageKey: "Validation.Rules.SelectorCustom",
+          data: { selector },
+          componentIndex: index
+        });
+      }
+    }
+  });
   const frightened = definition.components
     .map((component, index) => ({ component, index }))
     .find(({ component }) => component.type === "condition" && component.slug === "frightened");
@@ -24,7 +60,7 @@ export function validateRules(definition) {
   definition.components.forEach((component, index) => {
     if (component.type !== "modifier" || component.value >= 0) return;
 
-    const overlaps = selectorsOf(component).some(frightenedAffectsSelector);
+    const overlaps = selectorsOf(component).some(selectorIsAffectedByFrightened);
     if (!overlaps) return;
 
     if (component.modifierType === "status") {

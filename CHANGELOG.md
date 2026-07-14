@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.1.11-dev
+
+- Added a central PF2e condition catalog backed by `pf2e.conditionitems`.
+- Condition value fields are shown only for valued conditions.
+- Non-valued conditions no longer receive an invalid `badge-value` GrantItem alteration.
+- Added `api.conditions` metadata helpers.
+- Added validation warning `CONDITION_VALUE_IGNORED` for legacy definitions.
+
+
+## 0.1.10-dev
+
+### Added
+- Central Selector Catalog shared by GUI, Validation Engine, and public API.
+- Grouped selector choices using HTML option groups.
+- Complete PF2e skill list loaded dynamically from `CONFIG.PF2E.skills`.
+- Attribute-based, attack, defense/DC, movement, health, and damage selector groups.
+- Custom selector input with syntax validation and informational diagnostics.
+- Selector API and `docs/SELECTORS.md`.
+
+### Changed
+- Frightened stacking validation now uses selector metadata from the central catalog.
+
 ## 0.1.9-dev
 
 ### Changed

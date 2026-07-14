@@ -1,26 +1,80 @@
 import { MODULE_ID } from "../constants.js";
+import {
+  initializeConditionCatalog,
+  isValuedCondition
+} from "../effect-engine/catalogs/condition-catalog.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
+const FALLBACK_CONDITIONS = [
+  "blinded", "clumsy", "concealed", "confused", "controlled", "dazzled",
+  "deafened", "doomed", "drained", "dying", "encumbered", "enfeebled",
+  "fascinated", "fatigued", "fleeing", "frightened", "grabbed", "hidden",
+  "immobilized", "invisible", "off-guard", "paralyzed", "persistent-damage",
+  "prone", "quickened", "restrained", "sickened", "slowed", "stunned",
+  "stupefied", "unconscious", "undetected", "wounded"
+];
+
+
+const MODIFIER_TYPE_DEFINITIONS = [
+  ["status", "PF2E_CRITICAL_FORGE.EffectForge.ModifierTypes.Status"],
+  ["circumstance", "PF2E_CRITICAL_FORGE.EffectForge.ModifierTypes.Circumstance"],
+  ["item", "PF2E_CRITICAL_FORGE.EffectForge.ModifierTypes.Item"],
+  ["untyped", "PF2E_CRITICAL_FORGE.EffectForge.ModifierTypes.Untyped"]
+];
+
+const VALIDATION_GROUPS = [
+  ["error", "PF2E_CRITICAL_FORGE.EffectForge.Validation.Errors", "fa-circle-xmark"],
+  ["warning", "PF2E_CRITICAL_FORGE.EffectForge.Validation.Warnings", "fa-triangle-exclamation"],
+  ["hint", "PF2E_CRITICAL_FORGE.EffectForge.Validation.Hints", "fa-circle-info"],
+  ["info", "PF2E_CRITICAL_FORGE.EffectForge.Validation.Information", "fa-circle-info"]
+];
+
 export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   validationReport = null;
+  definitionPreview = null;
+  compiledPreview = null;
+  componentMenuOpen = false;
+
+  state = {
+    effectId: "example.shaken-nerves",
+    effectName: "",
+    description: "",
+    img: "icons/svg/terror.svg",
+    durationValue: 2,
+    durationUnit: "rounds",
+    durationExpiry: "turn-end",
+    components: [
+      { type: "condition", slug: "frightened", value: 2 },
+      { type: "modifier", selector: "will", value: -1, modifierType: "circumstance" }
+    ]
+  };
+
   static DEFAULT_OPTIONS = {
     id: "pf2e-critical-forge-effect-forge",
     classes: ["pf2e-critical-forge", "effect-forge"],
     tag: "form",
     window: {
-      title: "PF2E_CRITICAL_FORGE.EffectForge.Title",
-      icon: "fa-solid fa-hammer"
+      title: "PF2E_CRITICAL_FORGE.EffectForge.WindowTitle",
+      icon: "fa-solid fa-hammer",
+      resizable: true
     },
     position: {
-      width: 680,
-      height: "auto"
+      width: 1220,
+      height: 820
     },
     actions: {
+      toggleComponentMenu: EffectForgeApp.#toggleComponentMenu,
+      addCondition: EffectForgeApp.#addCondition,
+      addModifier: EffectForgeApp.#addModifier,
+      removeComponent: EffectForgeApp.#removeComponent,
+      browseImage: EffectForgeApp.#browseImage,
       validateEffect: EffectForgeApp.#validateEffect,
       compileEffect: EffectForgeApp.#compileEffect,
       createItem: EffectForgeApp.#createItem,
       applySelected: EffectForgeApp.#applySelected,
+      copyDefinition: EffectForgeApp.#copyDefinition,
+      copyCompiled: EffectForgeApp.#copyCompiled,
       closeWindow: EffectForgeApp.#closeWindow
     }
   };
@@ -31,15 +85,97 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   };
 
+  constructor(options = {}) {
+    super(options);
+    this.state.effectName = game.i18n.localize(
+      "PF2E_CRITICAL_FORGE.Examples.ShakenNerves.Name"
+    );
+    this.state.description = game.i18n.localize(
+      "PF2E_CRITICAL_FORGE.Examples.ShakenNerves.PlainDescription"
+    );
+  }
+
   async _prepareContext() {
     const api = game.modules.get(MODULE_ID)?.api;
+    await initializeConditionCatalog();
+    await this.#ensurePreviewData();
+
     return {
       apiReady: Boolean(api),
       apiVersion: api?.version ?? "—",
       schemaVersion: api?.schemaVersion ?? "—",
-      components: api?.components.list() ?? [],
-      validationReport: this.validationReport
+      state: this.state,
+      descriptionLength: this.state.description.length,
+      unlimitedDuration: this.state.durationUnit === "unlimited",
+      componentMenuOpen: this.componentMenuOpen,
+      components: this.state.components.map((component, index) =>
+        this.#prepareComponent(component, index)
+      ),
+      validationReport: this.validationReport,
+      definitionPreview: this.definitionPreview,
+      compiledPreview: this.compiledPreview
     };
+  }
+
+  _onRender(context, options) {
+    super._onRender(context, options);
+
+    const root = this.element;
+    if (!(root instanceof HTMLElement)) return;
+
+    const description = root.querySelector('textarea[name="description"]');
+    const counter = root.querySelector("[data-description-counter]");
+    description?.addEventListener("input", () => {
+      if (counter) counter.textContent = `${description.value.length} / 1000`;
+    });
+
+    const unlimited = root.querySelector('input[name="unlimitedDuration"]');
+    const durationControls = root.querySelectorAll("[data-duration-control]");
+    const updateDurationState = () => {
+      const disabled = Boolean(unlimited?.checked);
+      for (const control of durationControls) control.disabled = disabled;
+    };
+    unlimited?.addEventListener("change", updateDurationState);
+    updateDurationState();
+
+    const customValue = this.constructor.#api().selectors.customValue;
+    for (const conditionChoice of root.querySelectorAll("[data-condition-choice]")) {
+      const card = conditionChoice.closest(".effect-forge-component-card");
+      const valueField = card?.querySelector("[data-condition-value-field]");
+      const valueInput = valueField?.querySelector("input");
+
+      const updateConditionValue = () => {
+        const selected = conditionChoice.selectedOptions?.[0];
+        const isValued = selected?.dataset.valued === "true";
+        if (valueField) valueField.hidden = !isValued;
+        if (valueInput) {
+          valueInput.disabled = !isValued;
+          if (isValued && valueInput.value === "") valueInput.value = "1";
+          if (!isValued) valueInput.value = "";
+        }
+      };
+
+      conditionChoice.addEventListener("change", updateConditionValue);
+      updateConditionValue();
+    }
+
+    for (const selectorChoice of root.querySelectorAll("[data-selector-choice]")) {
+      const card = selectorChoice.closest(".effect-forge-component-card");
+      const customField = card?.querySelector("[data-custom-selector-field]");
+      const customInput = customField?.querySelector("input");
+
+      const updateCustomSelector = () => {
+        const custom = selectorChoice.value === customValue;
+        if (customField) customField.hidden = !custom;
+        if (customInput) {
+          customInput.disabled = !custom;
+          customInput.required = custom;
+        }
+      };
+
+      selectorChoice.addEventListener("change", updateCustomSelector);
+      updateCustomSelector();
+    }
   }
 
   static #api() {
@@ -48,51 +184,141 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     return api;
   }
 
-  #readForm() {
-    const form = this.element;
-    if (!(form instanceof HTMLFormElement)) {
-      throw new Error("Effect Forge form is unavailable.");
+  #prepareComponent(component, index) {
+    const base = {
+      ...component,
+      index,
+      number: index + 1,
+      isCondition: component.type === "condition",
+      isModifier: component.type === "modifier"
+    };
+
+    if (base.isCondition) {
+      base.isValuedCondition = isValuedCondition(component.slug);
+      base.value = base.isValuedCondition ? (component.value ?? 1) : undefined;
+      base.conditionOptions = this.#conditionOptions(component.slug);
     }
 
-    const data = Object.fromEntries(new FormData(form).entries());
+    if (base.isModifier) {
+      const selectorApi = this.constructor.#api().selectors;
+      base.selectorGroups = selectorApi.groups(component.selector);
+      base.usesCustomSelector = !selectorApi.has(component.selector);
+      base.customSelector = base.usesCustomSelector ? component.selector : "";
+      base.modifierTypeOptions = MODIFIER_TYPE_DEFINITIONS.map(([value, key]) => ({
+        value,
+        label: game.i18n.localize(key),
+        selected: component.modifierType === value
+      }));
+    }
+
+    return base;
+  }
+
+  #conditionOptions(selected) {
+    const configured = CONFIG.PF2E?.conditionTypes ?? {};
+    const entries = Object.entries(configured).map(([value, label]) => ({
+      value,
+      label: game.i18n.localize(label),
+      isValued: isValuedCondition(value)
+    }));
+
+    const source = entries.length > 0
+      ? entries
+      : FALLBACK_CONDITIONS.map((value) => ({
+          value,
+          label: value,
+          isValued: isValuedCondition(value)
+        }));
+
+    if (selected && !source.some((option) => option.value === selected)) {
+      source.push({
+        value: selected,
+        label: selected,
+        isValued: isValuedCondition(selected)
+      });
+    }
+
+    return source
+      .map((option) => ({ ...option, selected: option.value === selected }))
+      .sort((a, b) => a.label.localeCompare(b.label, game.i18n.lang));
+  }
+
+  #syncStateFromForm() {
+    const form = this.element;
+    if (!(form instanceof HTMLFormElement)) return;
+
+    const data = new FormData(form);
+    this.state.effectId = String(data.get("effectId") ?? "").trim();
+    this.state.effectName = String(data.get("effectName") ?? "");
+    this.state.description = String(data.get("description") ?? "").slice(0, 1000);
+    this.state.img = String(data.get("img") ?? "icons/svg/aura.svg");
+
+    const unlimited = data.get("unlimitedDuration") === "on";
+    this.state.durationValue = Number(data.get("durationValue") ?? 0);
+    this.state.durationUnit = unlimited
+      ? "unlimited"
+      : String(data.get("durationUnit") ?? "rounds");
+    this.state.durationExpiry = String(data.get("durationExpiry") ?? "turn-end");
+
+    this.state.components = this.state.components.map((component, index) => {
+      const prefix = `components.${index}`;
+      if (component.type === "condition") {
+        const raw = String(data.get(`${prefix}.value`) ?? "").trim();
+        return {
+          type: "condition",
+          slug: String(data.get(`${prefix}.slug`) ?? "").trim(),
+          value: raw === "" ? undefined : Number.parseInt(raw, 10)
+        };
+      }
+
+      const selectorChoice = String(
+        data.get(`${prefix}.selectorChoice`) ?? component.selector ?? ""
+      ).trim();
+      const selector = selectorChoice === this.constructor.#api().selectors.customValue
+        ? String(data.get(`${prefix}.customSelector`) ?? "").trim()
+        : selectorChoice;
+
+      return {
+        type: "modifier",
+        selector,
+        value: Number(data.get(`${prefix}.value`) ?? 0),
+        modifierType: String(data.get(`${prefix}.modifierType`) ?? "status")
+      };
+    });
+  }
+
+  #buildDefinition({ sync = true } = {}) {
+    if (sync) this.#syncStateFromForm();
+
     const builder = this.constructor.#api().builders
       .effect()
-      .setId(`pf2e-critical-forge.custom.${foundry.utils.randomID()}`)
-      .setName(data.effectName)
+      .setId(this.state.effectId || `pf2e-critical-forge.custom.${foundry.utils.randomID()}`)
+      .setName(this.state.effectName)
       .setDescription(
-        `<p>${foundry.utils.escapeHTML(String(data.description ?? "").trim())}</p>`
+        `<p>${foundry.utils.escapeHTML(this.state.description.trim())}</p>`
       )
-      .setImage(data.img)
+      .setImage(this.state.img)
       .setMetadata({
         originModule: MODULE_ID,
-        originFeature: "effect-forge-test-ui"
+        originFeature: "effect-forge-ui"
       });
 
-    const durationUnit = String(data.durationUnit ?? "rounds");
-    if (durationUnit === "unlimited") {
+    if (this.state.durationUnit === "unlimited") {
       builder.setDuration(-1, "unlimited", null);
     } else {
       builder.setDuration(
-        Number(data.durationValue),
-        durationUnit,
-        String(data.durationExpiry ?? "turn-end")
+        this.state.durationValue,
+        this.state.durationUnit,
+        this.state.durationExpiry
       );
     }
 
-    if (data.conditionEnabled === "on") {
-      const rawValue = String(data.conditionValue ?? "").trim();
-      builder.addCondition(
-        String(data.conditionSlug ?? "").trim(),
-        rawValue === "" ? undefined : Number.parseInt(rawValue, 10)
-      );
-    }
-
-    if (data.modifierEnabled === "on") {
-      builder.addModifier({
-        selector: String(data.modifierSelector ?? "").trim(),
-        value: Number(data.modifierValue),
-        modifierType: String(data.modifierType ?? "status")
-      });
+    for (const component of this.state.components) {
+      if (component.type === "condition") {
+        builder.addCondition(component.slug, component.value);
+      } else if (component.type === "modifier") {
+        builder.addModifier(component);
+      }
     }
 
     return builder.build();
@@ -104,46 +330,138 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         ? game.i18n.format(`PF2E_CRITICAL_FORGE.${issue.messageKey}`, issue.data ?? {})
         : issue.data?.message ?? issue.code);
 
-    return {
-      ...issue,
-      text,
-      icon: {
-        error: "fa-circle-xmark",
-        warning: "fa-triangle-exclamation",
-        hint: "fa-lightbulb",
-        info: "fa-circle-info"
-      }[issue.severity] ?? "fa-circle-info"
+    return { ...issue, text };
+  }
+
+  #setValidationReport(result) {
+    const localized = result.issues.map((issue) => this.#localizeIssue(issue));
+    const groups = VALIDATION_GROUPS.map(([severity, labelKey, icon]) => {
+      const issues = localized.filter((issue) => issue.severity === severity);
+      return {
+        severity,
+        label: game.i18n.localize(labelKey),
+        icon,
+        count: issues.length,
+        issues,
+        hasIssues: issues.length > 0
+      };
+    }).filter((group) => group.hasIssues);
+
+    const errorCount = localized.filter((issue) => issue.severity === "error").length;
+    const warningCount = localized.filter((issue) => issue.severity === "warning").length;
+
+    this.validationReport = {
+      valid: result.valid,
+      issueCount: localized.length,
+      errorCount,
+      warningCount,
+      groups,
+      hasIssues: localized.length > 0,
+      statusClass: errorCount > 0 ? "invalid" : "valid",
+      statusIcon: errorCount > 0 ? "fa-circle-xmark" : "fa-circle-check",
+      statusText: game.i18n.localize(
+        errorCount > 0
+          ? "PF2E_CRITICAL_FORGE.EffectForge.Validation.HasErrors"
+          : "PF2E_CRITICAL_FORGE.EffectForge.Validation.NoErrors"
+      )
     };
   }
 
-  #reportValidation(result) {
-    this.validationReport = {
-      valid: result.valid,
-      issues: result.issues.map((issue) => this.#localizeIssue(issue))
-    };
+  async #ensurePreviewData() {
+    if (this.definitionPreview !== null && this.validationReport !== null) return;
 
-    if (result.valid) {
-      ui.notifications.info(
-        game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.ValidationSuccess")
+    try {
+      const definition = this.#buildDefinition({ sync: false });
+      const validation = this.constructor.#api().effects.analyze(definition);
+      this.#setValidationReport(validation);
+      this.definitionPreview = JSON.stringify(definition, null, 2);
+
+      if (this.compiledPreview === null) {
+        const compiled = await this.constructor.#api().effects.toItemSource(definition);
+        this.compiledPreview = JSON.stringify(compiled, null, 2);
+      }
+    } catch (error) {
+      console.warn(`${MODULE_ID} | Initial preview could not be prepared`, error);
+    }
+  }
+
+  #invalidatePreviews() {
+    this.validationReport = null;
+    this.definitionPreview = null;
+    this.compiledPreview = null;
+  }
+
+  static #toggleComponentMenu() {
+    this.#syncStateFromForm();
+    this.componentMenuOpen = !this.componentMenuOpen;
+    this.render({ force: true });
+  }
+
+  static #addCondition() {
+    this.#syncStateFromForm();
+    this.state.components.push({ type: "condition", slug: "frightened", value: 1 });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.render({ force: true });
+  }
+
+  static #addModifier() {
+    this.#syncStateFromForm();
+    this.state.components.push({
+      type: "modifier",
+      selector: "will",
+      value: -1,
+      modifierType: "circumstance"
+    });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.render({ force: true });
+  }
+
+  static #removeComponent(event, target) {
+    this.#syncStateFromForm();
+    const index = Number(target.dataset.index);
+    if (Number.isInteger(index) && index >= 0 && index < this.state.components.length) {
+      this.state.components.splice(index, 1);
+    }
+    this.#invalidatePreviews();
+    this.render({ force: true });
+  }
+
+  static async #browseImage() {
+    this.#syncStateFromForm();
+
+    const Picker = globalThis.FilePicker
+      ?? foundry.applications?.apps?.FilePicker?.implementation;
+
+    if (!Picker) {
+      ui.notifications.warn(
+        game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.ImagePickerUnavailable")
       );
-    } else {
-      const message = this.validationReport.issues
-        .filter((issue) => issue.severity === "error")
-        .map((issue) => issue.text)
-        .join("\n");
-      ui.notifications.error(message);
+      return;
     }
 
-    this.render({ force: true });
+    const picker = new Picker({
+      type: "image",
+      current: this.state.img,
+      callback: (path) => {
+        this.state.img = path;
+        this.#invalidatePreviews();
+        this.render({ force: true });
+      }
+    });
+
+    await picker.browse();
   }
 
   static #validateEffect() {
     try {
-      const definition = this.#readForm();
+      const definition = this.#buildDefinition();
       const result = this.constructor.#api().effects.analyze(definition);
-      this.#reportValidation(result);
-      console.log(`${MODULE_ID} | Effect definition`, definition);
-      console.log(`${MODULE_ID} | Validation result`, result);
+      this.#setValidationReport(result);
+      this.definitionPreview = JSON.stringify(definition, null, 2);
+      this.compiledPreview = null;
+      this.render({ force: true });
     } catch (error) {
       console.error(`${MODULE_ID} | Validation failed`, error);
       ui.notifications.error(error.message);
@@ -152,10 +470,13 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static async #compileEffect() {
     try {
-      const definition = this.#readForm();
+      const definition = this.#buildDefinition();
+      const validation = this.constructor.#api().effects.analyze(definition);
       const result = await this.constructor.#api().effects.toItemSource(definition);
-      console.log(`${MODULE_ID} | Effect definition`, definition);
-      console.log(`${MODULE_ID} | PF2e Item source`, result);
+      this.#setValidationReport(validation);
+      this.definitionPreview = JSON.stringify(definition, null, 2);
+      this.compiledPreview = JSON.stringify(result, null, 2);
+      this.render({ force: true });
       ui.notifications.info(
         game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.CompileSuccess")
       );
@@ -167,11 +488,10 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static async #createItem() {
     try {
-      const definition = this.#readForm();
+      const definition = this.#buildDefinition();
       const item = await this.constructor.#api().effects.createItem(definition, {
         renderSheet: true
       });
-
       if (item) {
         ui.notifications.info(game.i18n.format(
           "PF2E_CRITICAL_FORGE.EffectForge.ItemCreated",
@@ -194,7 +514,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     try {
-      const definition = this.#readForm();
+      const definition = this.#buildDefinition();
       const created = await this.constructor.#api().effects.apply(definition, targets);
       ui.notifications.info(game.i18n.format(
         "PF2E_CRITICAL_FORGE.EffectForge.Applied",
@@ -204,6 +524,30 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       console.error(`${MODULE_ID} | Effect application failed`, error);
       ui.notifications.error(error.message);
     }
+  }
+
+  static async #copyText(text) {
+    if (!text) return;
+
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else if (game.clipboard?.copyPlainText) {
+      game.clipboard.copyPlainText(text);
+    } else {
+      throw new Error("Clipboard API is unavailable.");
+    }
+
+    ui.notifications.info(
+      game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.Copied")
+    );
+  }
+
+  static async #copyDefinition() {
+    await this.constructor.#copyText(this.definitionPreview);
+  }
+
+  static async #copyCompiled() {
+    await this.constructor.#copyText(this.compiledPreview);
   }
 
   static #closeWindow() {

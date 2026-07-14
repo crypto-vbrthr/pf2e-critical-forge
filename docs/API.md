@@ -165,3 +165,30 @@ const stronger = api.builders
 - `build()`
 
 `build()` returns a cloned and deeply frozen Effect Definition.
+
+## Selector catalog
+
+```js
+api.selectors.list();
+api.selectors.groups(selected);
+api.selectors.get(value);
+api.selectors.has(value);
+api.selectors.isValidSyntax(value);
+api.selectors.customValue;
+```
+
+The catalog is shared by the Effect Forge interface and the Validation Engine. See [`SELECTORS.md`](SELECTORS.md).
+
+## Condition catalog
+
+```js
+const conditions = game.modules.get("pf2e-critical-forge")?.api.conditions;
+
+await conditions.initialize();
+conditions.isValued("frightened"); // true
+conditions.isValued("prone");      // false
+conditions.get("frightened");
+conditions.list();
+```
+
+The compiler omits `badge-value` alterations for non-valued conditions even when a legacy definition contains a value.

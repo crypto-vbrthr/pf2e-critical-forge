@@ -11,6 +11,20 @@ import {
   EffectBuilder,
   createEffectBuilder
 } from "../effect-engine/builder/effect-builder.js";
+import {
+  CUSTOM_SELECTOR_VALUE,
+  getSelectorDefinition,
+  getSelectorGroups,
+  isKnownSelector,
+  isValidSelectorSyntax,
+  listSelectorDefinitions
+} from "../effect-engine/catalogs/selector-catalog.js";
+import {
+  getConditionDefinition,
+  initializeConditionCatalog,
+  isValuedCondition,
+  listConditionDefinitions
+} from "../effect-engine/catalogs/condition-catalog.js";
 
 export function initializePublicApi() {
   const module = game.modules.get(MODULE_ID);
@@ -25,6 +39,22 @@ export function initializePublicApi() {
     builders: Object.freeze({
       effect: () => createEffectBuilder(),
       from: (definition) => EffectBuilder.from(definition)
+    }),
+
+    selectors: Object.freeze({
+      customValue: CUSTOM_SELECTOR_VALUE,
+      groups: (selected = null, options = {}) => getSelectorGroups(selected, options),
+      list: () => listSelectorDefinitions(),
+      get: (value) => getSelectorDefinition(value),
+      has: (value) => isKnownSelector(value),
+      isValidSyntax: (value) => isValidSelectorSyntax(value)
+    }),
+
+    conditions: Object.freeze({
+      initialize: (options = {}) => initializeConditionCatalog(options),
+      list: () => listConditionDefinitions(),
+      get: (slug) => getConditionDefinition(slug),
+      isValued: (slug) => isValuedCondition(slug)
     }),
 
     components: Object.freeze({

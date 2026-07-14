@@ -1,4 +1,4 @@
-import { resolveConditionUuid } from "../condition-resolver.js";
+import { resolveConditionDefinition } from "../condition-resolver.js";
 
 export const conditionComponent = {
   type: "condition",
@@ -22,15 +22,18 @@ export const conditionComponent = {
   },
 
   async compile(component) {
-    const uuid = await resolveConditionUuid(component.slug);
+    const condition = await resolveConditionDefinition(component.slug);
     const rule = {
       key: "GrantItem",
-      uuid,
+      uuid: condition.uuid,
       allowDuplicate: false,
       onDeleteActions: { grantee: "restrict" }
     };
 
-    if (component.value !== undefined) {
+    // badge-value is valid only for PF2e conditions whose badge is a numeric
+    // condition value. Adding it to binary conditions can prevent the granted
+    // condition from being prepared and applied correctly.
+    if (condition.isValued && component.value !== undefined) {
       rule.alterations = [{
         mode: "override",
         property: "badge-value",
@@ -41,7 +44,8 @@ export const conditionComponent = {
     return {
       kind: "condition",
       slug: component.slug,
-      value: component.value ?? null,
+      isValued: condition.isValued,
+      value: condition.isValued ? (component.value ?? null) : null,
       rules: [rule]
     };
   },
