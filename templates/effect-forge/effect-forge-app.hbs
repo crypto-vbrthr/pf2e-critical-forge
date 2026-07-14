@@ -102,6 +102,10 @@
                   <i class="fa-solid fa-burst"></i>
                   {{localize "PF2E_CRITICAL_FORGE.EffectForge.Weakness"}}
                 </button>
+                <button type="button" data-action="addImmunity">
+                  <i class="fa-solid fa-shield"></i>
+                  {{localize "PF2E_CRITICAL_FORGE.EffectForge.Immunity"}}
+                </button>
               </div>
             {{/if}}
           </div>
@@ -128,6 +132,9 @@
                     {{/if}}
                     {{#if component.isWeakness}}
                       {{localize "PF2E_CRITICAL_FORGE.EffectForge.Weakness"}}
+                    {{/if}}
+                    {{#if component.isImmunity}}
+                      {{localize "PF2E_CRITICAL_FORGE.EffectForge.Immunity"}}
                     {{/if}}
                   </strong>
                 </div>
@@ -309,6 +316,23 @@
                       step="1"
                       required
                     >
+                  </label>
+                </div>
+              {{/if}}
+
+              {{#if component.isImmunity}}
+                <div class="effect-forge-grid immunity-grid">
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ImmunityType"}}</span>
+                    <select name="components.{{component.index}}.immunityType">
+                      {{#each component.immunityTypeGroups as |group|}}
+                        <optgroup label="{{group.label}}">
+                          {{#each group.options as |option|}}
+                            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                          {{/each}}
+                        </optgroup>
+                      {{/each}}
+                    </select>
                   </label>
                 </div>
               {{/if}}

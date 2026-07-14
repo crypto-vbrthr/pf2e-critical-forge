@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { installFoundryMock } from "./helpers/foundry-mock.js";
-import { fireResistance, fireWeakness, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
+import { fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
 
 installFoundryMock({
   skills: {
@@ -21,6 +21,10 @@ installFoundryMock({
     fire: "PF2E.TraitFire",
     physical: "PF2E.Damage.IWR.Type.physical",
     "all-damage": "PF2E.Damage.IWR.Type.all-damage"
+  },
+  immunityTypes: {
+    fire: "PF2E.TraitFire",
+    frightened: "PF2E.Damage.IWR.Type.frightened"
   }
 });
 
@@ -202,5 +206,31 @@ test("duplicate resistance types produce a stacking warning", () => {
   assert.equal(report.valid, true);
   assert.equal(report.warnings.some(
     (issue) => issue.code === "RESISTANCE_DUPLICATE_TYPE"
+  ), true);
+});
+
+
+test("immunity validates its type and requires no numeric value", () => {
+  const valid = analyzeEffectDefinition(fireImmunity());
+  assert.equal(valid.valid, true);
+
+  const invalidType = analyzeEffectDefinition(fireImmunity({ immunityType: "rainbow" }));
+  assert.equal(invalidType.valid, false);
+  assert.equal(invalidType.errors.some(
+    (issue) => issue.code === "IMMUNITY_TYPE_INVALID"
+  ), true);
+});
+
+test("duplicate immunity types produce a redundancy warning", () => {
+  const definition = fireImmunity();
+  definition.components.push({
+    type: "immunity",
+    immunityType: "fire"
+  });
+
+  const report = analyzeEffectDefinition(definition);
+  assert.equal(report.valid, true);
+  assert.equal(report.warnings.some(
+    (issue) => issue.code === "IMMUNITY_DUPLICATE_TYPE"
   ), true);
 });

@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.2.3-dev` adds weakness as the fifth built-in effect component. It uses the PF2e weakness catalog, validates type and value, warns about duplicate weakness types, and compiles to native `Weakness` Rule Elements. The scroll-preserving Effect Forge behavior from `0.2.2-dev` remains unchanged.
+Version `0.2.4-dev` adds immunity as the sixth built-in effect component. It uses the PF2e immunity catalog, supports both damage and condition immunities, warns about redundant duplicates, and compiles to native `Immunity` Rule Elements without a numeric value.
 
 The current engine includes:
 
@@ -20,9 +20,10 @@ The current engine includes:
 - a central damage-type catalog backed by `CONFIG.PF2E.damageTypes`;
 - a central resistance-type catalog backed by `CONFIG.PF2E.resistanceTypes`;
 - a central weakness-type catalog backed by `CONFIG.PF2E.weaknessTypes`;
+- a grouped immunity-type catalog backed by `CONFIG.PF2E.immunityTypes`;
 - a PF2e condition catalog that distinguishes valued and non-valued conditions;
-- `condition`, `modifier`, `persistentDamage`, `resistance`, and `weakness` components;
-- compilation to PF2e `GrantItem`, `FlatModifier`, `Resistance`, and `Weakness` Rule Elements, including persistent-damage and recovery-DC alterations;
+- `condition`, `modifier`, `persistentDamage`, `resistance`, `weakness`, and `immunity` components;
+- compilation to PF2e `GrantItem`, `FlatModifier`, `Resistance`, `Weakness`, and `Immunity` Rule Elements, including persistent-damage and recovery-DC alterations;
 - PF2e Effect Item source generation;
 - world Item creation, Actor/Token application, and removal by definition ID;
 - a resizable, localized, component-based GM interface;
@@ -70,6 +71,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/DAMAGE_TYPES.md`](docs/DAMAGE_TYPES.md): damage-type catalog and groups
 - [`docs/RESISTANCE_TYPES.md`](docs/RESISTANCE_TYPES.md): resistance-type catalog and groups
 - [`docs/WEAKNESS_TYPES.md`](docs/WEAKNESS_TYPES.md): weakness-type catalog and groups
+- [`docs/IMMUNITY_TYPES.md`](docs/IMMUNITY_TYPES.md): immunity-type catalog and groups
 - [`docs/EXAMPLES.md`](docs/EXAMPLES.md): complete examples
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): subsystem boundaries
 - [`docs/TESTING.md`](docs/TESTING.md): local test execution and conventions

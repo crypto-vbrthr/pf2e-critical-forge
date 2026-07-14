@@ -86,3 +86,18 @@ export function fireResistance({ value = 5, resistanceType = "fire" } = {}) {
     metadata: { originModule: "test-suite" }
   };
 }
+
+export function fireImmunity({ immunityType = "fire" } = {}) {
+  return {
+    schemaVersion: 1,
+    id: "example.fire-immunity",
+    name: "Feuerimmunität",
+    duration: { value: 10, unit: "minutes", expiry: "turn-end" },
+    components: [{
+      type: "immunity",
+      immunityType
+    }],
+    application: {},
+    metadata: { originModule: "test-suite" }
+  };
+}

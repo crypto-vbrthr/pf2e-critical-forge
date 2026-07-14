@@ -246,6 +246,49 @@
         "UnarmedAttacks": "Unarmed Attacks",
         "DamageFromSpells": "Damage from Spells",
         "Spells": "Spells"
+      },
+      "Immunity": "Immunity",
+      "ImmunityType": "Immunity Type",
+      "ImmunityTypeGroups": {
+        "DamageTypes": "Damage Types",
+        "DamageCategories": "Damage Categories",
+        "Conditions": "Conditions",
+        "Effects": "Effects and Traits",
+        "Sources": "Sources and Properties",
+        "Additional": "Additional PF2e Immunity Types"
+      },
+      "ImmunityTypeLabels": {
+        "aging": "Aging",
+        "auditory": "Auditory",
+        "curse": "Curse",
+        "death-effects": "Death Effects",
+        "detection": "Detection",
+        "disease": "Disease",
+        "emotion": "Emotion",
+        "fear-effects": "Fear Effects",
+        "fortune-effects": "Fortune Effects",
+        "healing": "Healing",
+        "illusion": "Illusion",
+        "inhaled": "Inhaled",
+        "light": "Light",
+        "misfortune-effects": "Misfortune Effects",
+        "object-immunities": "Object Immunities",
+        "sleep": "Sleep",
+        "visual": "Visual",
+        "alchemical": "Alchemical",
+        "area-damage": "Area Damage",
+        "critical-hits": "Critical Hits",
+        "magic": "Magic",
+        "magical": "Magical",
+        "non-magical": "Non-Magical",
+        "nonlethal-attacks": "Nonlethal Attacks",
+        "spells": "Spells",
+        "unarmed-attacks": "Unarmed Attacks",
+        "weapons": "Weapons",
+        "energy": "Energy",
+        "persistent-damage": "Persistent Damage",
+        "physical": "Physical",
+        "precision": "Precision"
       }
     },
     "Notifications": {
@@ -296,7 +339,8 @@
         "ConditionValueIgnored": "The condition “{slug}” has no condition value. The supplied value {value} is ignored during compilation.",
         "PersistentDamageDuplicateType": "Multiple components deal persistent {damageType} damage. Instances of the same type normally do not stack; usually only the stronger one matters.",
         "ResistanceDuplicateType": "Multiple components grant resistance to “{resistanceType}”. Resistances of the same type normally do not add together; usually only the highest value matters.",
-        "WeaknessDuplicateType": "Multiple components grant weakness to “{weaknessType}”. Weaknesses of the same type normally do not add together; usually only the highest value matters."
+        "WeaknessDuplicateType": "Multiple components grant weakness to “{weaknessType}”. Weaknesses of the same type normally do not add together; usually only the highest value matters.",
+        "ImmunityDuplicateType": "Multiple components grant immunity to “{immunityType}”. The repeated entry is redundant."
       },
       "Compatibility": {
         "TargetPresent": "Target analysis was prepared for “{targetName}”. Concrete immunity checks will follow in a later version."
@@ -314,6 +358,9 @@
         "Weakness": {
           "TypeInvalid": "“{weaknessType}” is not a known PF2e weakness type.",
           "ValueInvalid": "The weakness value must be a positive integer."
+        },
+        "Immunity": {
+          "TypeInvalid": "“{immunityType}” is not a known PF2e immunity type."
         }
       }
     }

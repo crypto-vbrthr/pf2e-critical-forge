@@ -46,6 +46,16 @@ installFoundryMock({
     "all-damage": "PF2E.Damage.IWR.Type.all-damage",
     "splash-damage": "PF2E.Damage.IWR.Type.splash-damage",
     "custom-weakness": "MY_MODULE.CustomWeakness"
+  },
+  immunityTypes: {
+    fire: "PF2E.TraitFire",
+    frightened: "PF2E.Damage.IWR.Type.frightened",
+    emotion: "PF2E.Damage.IWR.Type.emotion",
+    weapons: "PF2E.Damage.IWR.Type.weapons",
+    "custom-immunity": "MY_MODULE.CustomImmunity"
+  },
+  conditionTypes: {
+    frightened: "PF2E.ConditionTypeFrightened"
   }
 });
 
@@ -63,6 +73,9 @@ const resistanceTypes = await import(
 );
 const weaknessTypes = await import(
   "../scripts/effect-engine/catalogs/weakness-type-catalog.js"
+);
+const immunityTypes = await import(
+  "../scripts/effect-engine/catalogs/immunity-type-catalog.js"
 );
 
 test("selector catalog includes configured PF2e skills and stable groups", () => {
@@ -127,4 +140,21 @@ test("resistance type catalog groups damage, category, and system types", () => 
     ?.options.some((option) => option.value === "all-damage" && option.selected), true);
   assert.equal(groups.find((group) => group.id === "additional")
     ?.options.some((option) => option.value === "custom-resistance"), true);
+});
+
+
+test("immunity type catalog groups damage, conditions, effects, and system types", () => {
+  assert.equal(immunityTypes.isKnownImmunityType("fire"), true);
+  assert.equal(immunityTypes.isKnownImmunityType("frightened"), true);
+  assert.equal(immunityTypes.isKnownImmunityType("not-an-immunity"), false);
+
+  const groups = immunityTypes.getImmunityTypeGroups("frightened");
+  assert.equal(groups.find((group) => group.id === "damage-types")
+    ?.options.some((option) => option.value === "fire"), true);
+  assert.equal(groups.find((group) => group.id === "conditions")
+    ?.options.some((option) => option.value === "frightened" && option.selected), true);
+  assert.equal(groups.find((group) => group.id === "effects")
+    ?.options.some((option) => option.value === "emotion"), true);
+  assert.equal(groups.find((group) => group.id === "additional")
+    ?.options.some((option) => option.value === "custom-immunity"), true);
 });

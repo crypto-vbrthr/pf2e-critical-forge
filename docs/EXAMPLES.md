@@ -218,3 +218,22 @@ const fireWeakness = api.builders
   .addWeakness({ weaknessType: "fire", value: 5 })
   .build();
 ```
+
+
+## Immunity
+
+```js
+const fireImmunity = api.builders
+  .effect()
+  .setId("example.fire-immunity")
+  .setName("Flammenkörper")
+  .setDuration(10, "minutes", "turn-end")
+  .addImmunity({ immunityType: "fire" })
+  .build();
+```
+
+A condition immunity uses the same component shape:
+
+```js
+.addImmunity({ immunityType: "frightened" })
+```

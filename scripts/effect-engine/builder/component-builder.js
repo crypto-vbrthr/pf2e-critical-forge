@@ -105,6 +105,18 @@ export function buildResistance({ resistanceType, value } = {}) {
   });
 }
 
+export function buildImmunity({ immunityType } = {}) {
+  const normalizedType = String(immunityType ?? "").trim();
+  if (!normalizedType) {
+    throw new TypeError("Immunity type must not be empty.");
+  }
+
+  return Object.freeze({
+    type: "immunity",
+    immunityType: normalizedType
+  });
+}
+
 export function buildWeakness({ weaknessType, value } = {}) {
   const normalizedType = String(weaknessType ?? "").trim();
   if (!normalizedType) {

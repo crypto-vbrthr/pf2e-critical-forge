@@ -4,7 +4,7 @@ import {
   createConditionPack,
   installFoundryMock
 } from "./helpers/foundry-mock.js";
-import { fireResistance, fireWeakness, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
+import { fireImmunity, fireResistance, fireWeakness, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
 
 const packs = new Map([
   [
@@ -41,6 +41,10 @@ installFoundryMock({
   weaknessTypes: {
     fire: "PF2E.TraitFire",
     physical: "PF2E.Damage.IWR.Type.physical"
+  },
+  immunityTypes: {
+    fire: "PF2E.TraitFire",
+    frightened: "PF2E.Damage.IWR.Type.frightened"
   }
 });
 
@@ -135,6 +139,18 @@ test("weakness components compile to Weakness rule elements", async () => {
     key: "Weakness",
     type: "fire",
     value: 7
+  });
+});
+
+test("immunity components compile to Immunity rule elements without a value", async () => {
+  const compiled = await compileEffectDefinition(fireImmunity());
+  const component = compiled.components[0];
+
+  assert.equal(component.kind, "immunity");
+  assert.equal(component.immunityType, "fire");
+  assert.deepEqual(component.rules[0], {
+    key: "Immunity",
+    type: "fire"
   });
 });
 

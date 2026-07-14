@@ -373,3 +373,20 @@ api.weaknessTypes.groups("fire");
 api.weaknessTypes.get("physical");
 api.weaknessTypes.has("splash-damage");
 ```
+
+
+## Immunity catalog and Builder method
+
+```js
+const definition = api.builders
+  .effect()
+  .setName("Flammenkörper")
+  .setDuration(10, "minutes", "turn-end")
+  .addImmunity({ immunityType: "fire" })
+  .build();
+
+api.immunityTypes.list();
+api.immunityTypes.groups("frightened");
+api.immunityTypes.get("fire");
+api.immunityTypes.has("emotion");
+```

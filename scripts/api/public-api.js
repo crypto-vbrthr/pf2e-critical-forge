@@ -43,6 +43,12 @@ import {
   isKnownWeaknessType,
   listWeaknessTypeDefinitions
 } from "../effect-engine/catalogs/weakness-type-catalog.js";
+import {
+  getImmunityTypeDefinition,
+  getImmunityTypeGroups,
+  isKnownImmunityType,
+  listImmunityTypeDefinitions
+} from "../effect-engine/catalogs/immunity-type-catalog.js";
 
 export function initializePublicApi() {
   const module = game.modules.get(MODULE_ID);
@@ -94,6 +100,13 @@ export function initializePublicApi() {
       list: () => listWeaknessTypeDefinitions(),
       get: (value) => getWeaknessTypeDefinition(value),
       has: (value) => isKnownWeaknessType(value)
+    }),
+
+    immunityTypes: Object.freeze({
+      groups: (selected = null) => getImmunityTypeGroups(selected),
+      list: () => listImmunityTypeDefinitions(),
+      get: (value) => getImmunityTypeDefinition(value),
+      has: (value) => isKnownImmunityType(value)
     }),
 
     components: Object.freeze({

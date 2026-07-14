@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.2.4-dev
+
+### Added
+- `immunity` component with a grouped PF2e immunity type and no numeric value.
+- Builder method `addImmunity()`.
+- Central immunity-type catalog backed by `CONFIG.PF2E.immunityTypes`.
+- Compact immunity groups for damage types, damage categories, conditions, effects and traits, sources and properties, and additional system entries.
+- Public `api.immunityTypes` catalog helpers.
+- Effect Forge editor card and component-menu entry for immunity.
+- Validation codes `IMMUNITY_TYPE_INVALID` and `IMMUNITY_DUPLICATE_TYPE`.
+- Compiler support for native PF2e `Immunity` Rule Elements.
+- Builder, catalog, validation, and compiler regression tests for immunity.
+- `docs/IMMUNITY_TYPES.md`.
+
+### Changed
+- Automated suite expanded from 34 to 38 tests.
+- Public API version increased to `0.2.3`; Effect Definition schema remains version `1`.
+
+
 ## 0.2.3-dev
 
 ### Added

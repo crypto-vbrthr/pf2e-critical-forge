@@ -88,6 +88,26 @@ export function validateRules(definition) {
     }
   });
 
+  const immunityByType = new Map();
+  definition.components.forEach((component, index) => {
+    if (component.type !== "immunity") return;
+    const previous = immunityByType.get(component.immunityType);
+    if (previous !== undefined) {
+      issues.push({
+        severity: "warning",
+        code: "IMMUNITY_DUPLICATE_TYPE",
+        messageKey: "Validation.Rules.ImmunityDuplicateType",
+        data: {
+          immunityType: component.immunityType,
+          firstComponent: previous + 1
+        },
+        componentIndex: index
+      });
+    } else {
+      immunityByType.set(component.immunityType, index);
+    }
+  });
+
   const weaknessByType = new Map();
   definition.components.forEach((component, index) => {
     if (component.type !== "weakness") return;

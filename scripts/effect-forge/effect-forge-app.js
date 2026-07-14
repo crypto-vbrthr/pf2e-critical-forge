@@ -6,6 +6,7 @@ import {
 import { getDamageTypeGroups } from "../effect-engine/catalogs/damage-type-catalog.js";
 import { getResistanceTypeGroups } from "../effect-engine/catalogs/resistance-type-catalog.js";
 import { getWeaknessTypeGroups } from "../effect-engine/catalogs/weakness-type-catalog.js";
+import { getImmunityTypeGroups } from "../effect-engine/catalogs/immunity-type-catalog.js";
 import { captureScrollState, restoreScrollState } from "./view-state.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -75,6 +76,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       addPersistentDamage: EffectForgeApp.#addPersistentDamage,
       addResistance: EffectForgeApp.#addResistance,
       addWeakness: EffectForgeApp.#addWeakness,
+      addImmunity: EffectForgeApp.#addImmunity,
       removeComponent: EffectForgeApp.#removeComponent,
       browseImage: EffectForgeApp.#browseImage,
       validateEffect: EffectForgeApp.#validateEffect,
@@ -235,7 +237,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       isModifier: component.type === "modifier",
       isPersistentDamage: component.type === "persistentDamage",
       isResistance: component.type === "resistance",
-      isWeakness: component.type === "weakness"
+      isWeakness: component.type === "weakness",
+      isImmunity: component.type === "immunity"
     };
 
     if (base.isCondition) {
@@ -267,6 +270,10 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (base.isWeakness) {
       base.weaknessTypeGroups = getWeaknessTypeGroups(component.weaknessType);
+    }
+
+    if (base.isImmunity) {
+      base.immunityTypeGroups = getImmunityTypeGroups(component.immunityType);
     }
 
     return base;
@@ -357,6 +364,13 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         };
       }
 
+      if (component.type === "immunity") {
+        return {
+          type: "immunity",
+          immunityType: String(data.get(`${prefix}.immunityType`) ?? "").trim()
+        };
+      }
+
       const selectorChoice = String(
         data.get(`${prefix}.selectorChoice`) ?? component.selector ?? ""
       ).trim();
@@ -410,6 +424,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         builder.addResistance(component);
       } else if (component.type === "weakness") {
         builder.addWeakness(component);
+      } else if (component.type === "immunity") {
+        builder.addImmunity(component);
       }
     }
 
@@ -541,6 +557,17 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       type: "weakness",
       weaknessType: "fire",
       value: 5
+    });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.#renderPreservingScroll();
+  }
+
+  static #addImmunity() {
+    this.#syncStateFromForm();
+    this.state.components.push({
+      type: "immunity",
+      immunityType: "fire"
     });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();

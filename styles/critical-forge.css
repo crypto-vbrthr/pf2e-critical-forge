@@ -203,6 +203,10 @@
   grid-template-columns: minmax(0, 1.6fr) minmax(110px, 0.8fr);
 }
 
+.effect-forge-grid.immunity-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .effect-forge-grid.condition-grid {
   grid-template-columns: minmax(0, 1.6fr) minmax(110px, 0.8fr);
 }
@@ -314,6 +318,10 @@
   border-color: rgba(229, 139, 65, 0.9);
 }
 
+.effect-forge-component-card.component-immunity {
+  border-color: rgba(89, 174, 219, 0.9);
+}
+
 .effect-forge-component-card > header {
   display: flex;
   align-items: center;
@@ -353,6 +361,10 @@
 
 .component-weakness .component-number {
   background: #d67a32;
+}
+
+.component-immunity .component-number {
+  background: #4f9cc7;
 }
 
 .effect-forge-component-card button.icon {

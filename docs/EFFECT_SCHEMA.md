@@ -254,3 +254,24 @@ Unknown metadata keys are permitted so integrations can attach their own non-mec
 ```
 
 `weaknessType` must be a value from the weakness-type catalog. `value` must be a positive integer. The compiler emits a native PF2e `Weakness` Rule Element.
+
+
+## Immunity component
+
+```js
+{
+  type: "immunity",
+  immunityType: "fire"
+}
+```
+
+`immunityType` must be a value from the immunity-type catalog. Immunity intentionally has no numeric value. The compiler emits a native PF2e `Immunity` Rule Element:
+
+```js
+{
+  key: "Immunity",
+  type: "fire"
+}
+```
+
+The same component supports condition immunities, such as `frightened`, when the type is present in `CONFIG.PF2E.immunityTypes`.

@@ -4,6 +4,7 @@ import {
   buildModifier,
   buildPersistentDamage,
   buildResistance,
+  buildImmunity,
   buildWeakness,
   cloneComponent
 } from "./component-builder.js";
@@ -120,6 +121,11 @@ export class EffectBuilder {
 
   addWeakness(options) {
     this.#definition.components.push(buildWeakness(options));
+    return this;
+  }
+
+  addImmunity(options) {
+    this.#definition.components.push(buildImmunity(options));
     return this;
   }
 

@@ -43,13 +43,13 @@ function format(key, data = {}) {
   );
 }
 
-export function installFoundryMock({ skills = {}, damageTypes = {}, resistanceTypes = {}, weaknessTypes = {}, packs = new Map(), language = "de" } = {}) {
+export function installFoundryMock({ skills = {}, damageTypes = {}, resistanceTypes = {}, weaknessTypes = {}, immunityTypes = {}, conditionTypes = {}, packs = new Map(), language = "de" } = {}) {
   globalThis.foundry = {
     utils: { deepClone, deepFreeze, mergeObject, getProperty }
   };
 
   globalThis.CONFIG = {
-    PF2E: { skills, damageTypes, resistanceTypes, weaknessTypes }
+    PF2E: { skills, damageTypes, resistanceTypes, weaknessTypes, immunityTypes, conditionTypes }
   };
 
   globalThis.game = {

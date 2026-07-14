@@ -4,6 +4,7 @@ import { modifierComponent } from "./components/modifier-component.js";
 import { persistentDamageComponent } from "./components/persistent-damage-component.js";
 import { resistanceComponent } from "./components/resistance-component.js";
 import { weaknessComponent } from "./components/weakness-component.js";
+import { immunityComponent } from "./components/immunity-component.js";
 
 let initialized = false;
 
@@ -15,6 +16,7 @@ export function initializeEffectEngine() {
   componentRegistry.register(persistentDamageComponent);
   componentRegistry.register(resistanceComponent);
   componentRegistry.register(weaknessComponent);
+  componentRegistry.register(immunityComponent);
 
   initialized = true;
 }

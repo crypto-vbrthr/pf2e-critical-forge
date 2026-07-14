@@ -246,6 +246,49 @@
         "UnarmedAttacks": "Waffenlose Angriffe",
         "DamageFromSpells": "Schaden durch Zauber",
         "Spells": "Zauber"
+      },
+      "Immunity": "Immunität",
+      "ImmunityType": "Immunitätsart",
+      "ImmunityTypeGroups": {
+        "DamageTypes": "Schadensarten",
+        "DamageCategories": "Schadenskategorien",
+        "Conditions": "Zustände",
+        "Effects": "Effekte und Merkmale",
+        "Sources": "Quellen und Eigenschaften",
+        "Additional": "Weitere PF2e-Immunitätsarten"
+      },
+      "ImmunityTypeLabels": {
+        "aging": "Alterung",
+        "auditory": "Hörbar",
+        "curse": "Fluch",
+        "death-effects": "Todeseffekte",
+        "detection": "Entdeckung",
+        "disease": "Krankheit",
+        "emotion": "Emotion",
+        "fear-effects": "Furchteffekte",
+        "fortune-effects": "Glückseffekte",
+        "healing": "Heilung",
+        "illusion": "Illusion",
+        "inhaled": "Eingeatmet",
+        "light": "Licht",
+        "misfortune-effects": "Unglückseffekte",
+        "object-immunities": "Objektimmunitäten",
+        "sleep": "Schlaf",
+        "visual": "Sichtbar",
+        "alchemical": "Alchemistisch",
+        "area-damage": "Flächenschaden",
+        "critical-hits": "Kritische Treffer",
+        "magic": "Magie",
+        "magical": "Magisch",
+        "non-magical": "Nichtmagisch",
+        "nonlethal-attacks": "Nichttödliche Angriffe",
+        "spells": "Zauber",
+        "unarmed-attacks": "Waffenlose Angriffe",
+        "weapons": "Waffen",
+        "energy": "Energie",
+        "persistent-damage": "Anhaltender Schaden",
+        "physical": "Physisch",
+        "precision": "Präzision"
       }
     },
     "Notifications": {
@@ -296,7 +339,8 @@
         "ConditionValueIgnored": "Der Zustand „{slug}“ besitzt keinen Zustandswert. Der angegebene Wert {value} wird beim Kompilieren ignoriert.",
         "PersistentDamageDuplicateType": "Mehrere Komponenten verursachen anhaltenden Schaden der Art „{damageType}“. Gleichartige Instanzen stapeln normalerweise nicht; relevant ist in der Regel nur die stärkere.",
         "ResistanceDuplicateType": "Mehrere Komponenten verleihen Resistenz gegen „{resistanceType}“. Gleichartige Resistenzen addieren sich normalerweise nicht; relevant ist in der Regel nur der höchste Wert.",
-        "WeaknessDuplicateType": "Mehrere Komponenten verleihen Schwäche gegen „{weaknessType}“. Gleichartige Schwächen addieren sich normalerweise nicht; relevant ist in der Regel nur der höchste Wert."
+        "WeaknessDuplicateType": "Mehrere Komponenten verleihen Schwäche gegen „{weaknessType}“. Gleichartige Schwächen addieren sich normalerweise nicht; relevant ist in der Regel nur der höchste Wert.",
+        "ImmunityDuplicateType": "Mehrere Komponenten verleihen Immunität gegen „{immunityType}“. Der wiederholte Eintrag ist redundant."
       },
       "Compatibility": {
         "TargetPresent": "Die Zielprüfung wurde für „{targetName}“ vorbereitet. Konkrete Immunitätsprüfungen folgen in einer späteren Version."
@@ -314,6 +358,9 @@
         "Weakness": {
           "TypeInvalid": "„{weaknessType}“ ist keine bekannte PF2e-Schwächeart.",
           "ValueInvalid": "Der Schwächewert muss eine positive ganze Zahl sein."
+        },
+        "Immunity": {
+          "TypeInvalid": "„{immunityType}“ ist keine bekannte PF2e-Immunitätsart."
         }
       }
     }
