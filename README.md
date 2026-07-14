@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.2.1-dev` adds resistance as the fourth built-in effect component. Resistance types are grouped, read from PF2e configuration when available, validated centrally, and compiled to native `Resistance` Rule Elements.
+Version `0.2.2-dev` is a focused Effect Forge usability update. Scroll positions in the editor, component list, validation report, and JSON previews now survive ApplicationV2 re-renders; component lists already near their lower edge remain pinned there when a new component is appended. Resistance remains the fourth built-in effect component and continues to compile to native `Resistance` Rule Elements.
 
 The current engine includes:
 

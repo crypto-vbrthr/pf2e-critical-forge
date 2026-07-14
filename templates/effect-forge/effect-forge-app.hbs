@@ -1,6 +1,6 @@
 <div class="effect-forge-shell">
   <div class="effect-forge-workspace">
-    <main class="effect-forge-panel effect-forge-editor">
+    <main class="effect-forge-panel effect-forge-editor" data-preserve-scroll data-scroll-key="editor">
       <section class="effect-forge-section">
         <h2>{{localize "PF2E_CRITICAL_FORGE.EffectForge.BasicData"}}</h2>
 
@@ -103,7 +103,7 @@
           </div>
         </header>
 
-        <div class="effect-forge-component-list">
+        <div class="effect-forge-component-list" data-preserve-scroll data-scroll-key="components" data-scroll-anchor="bottom">
           {{#each components as |component|}}
             <article class="effect-forge-component-card component-{{component.type}}">
               <header>
@@ -306,7 +306,7 @@
 
         {{#if validationReport}}
           {{#if validationReport.hasIssues}}
-            <div class="effect-forge-validation-groups">
+            <div class="effect-forge-validation-groups" data-preserve-scroll data-scroll-key="validation">
               {{#each validationReport.groups as |group|}}
                 <details class="effect-forge-validation-group severity-{{group.severity}}" open>
                   <summary>
@@ -342,7 +342,7 @@
           </button>
         </header>
         {{#if definitionPreview}}
-          <pre>{{definitionPreview}}</pre>
+          <pre data-preserve-scroll data-scroll-key="definition-preview">{{definitionPreview}}</pre>
         {{else}}
           <p class="effect-forge-preview-empty">{{localize "PF2E_CRITICAL_FORGE.EffectForge.PreviewEmpty"}}</p>
         {{/if}}
@@ -357,7 +357,7 @@
           </button>
         </header>
         {{#if compiledPreview}}
-          <pre>{{compiledPreview}}</pre>
+          <pre data-preserve-scroll data-scroll-key="compiled-preview">{{compiledPreview}}</pre>
         {{else}}
           <p class="effect-forge-preview-empty">{{localize "PF2E_CRITICAL_FORGE.EffectForge.CompiledEmpty"}}</p>
         {{/if}}

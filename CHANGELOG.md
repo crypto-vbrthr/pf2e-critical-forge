@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.2-dev
+
+### Added
+- Reusable Effect Forge view-state helper for capturing and restoring marked scroll containers across ApplicationV2 re-renders.
+- Regression tests for exact scroll restoration, bottom anchoring, and shrinking content.
+
+### Fixed
+- Editor, component-list, validation, and preview scroll positions no longer reset when the component menu is opened, a component is added or removed, an image is selected, or validation/compilation refreshes the window.
+- A component list already near its lower edge remains pinned there after appending a component, keeping the new card in view.
+
+### Changed
+- Automated suite expanded from 27 to 30 tests.
+- Public API version remains `0.2.1`; Effect Definition schema remains version `1`.
+
 ## 0.2.1-dev
 
 ### Added

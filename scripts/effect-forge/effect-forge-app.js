@@ -5,6 +5,7 @@ import {
 } from "../effect-engine/catalogs/condition-catalog.js";
 import { getDamageTypeGroups } from "../effect-engine/catalogs/damage-type-catalog.js";
 import { getResistanceTypeGroups } from "../effect-engine/catalogs/resistance-type-catalog.js";
+import { captureScrollState, restoreScrollState } from "./view-state.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -37,6 +38,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   definitionPreview = null;
   compiledPreview = null;
   componentMenuOpen = false;
+  preservedScrollState = new Map();
 
   state = {
     effectId: "example.shaken-nerves",
@@ -180,6 +182,40 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       selectorChoice.addEventListener("change", updateCustomSelector);
       updateCustomSelector();
     }
+
+    this.#restoreScrollPositions();
+  }
+
+  #captureScrollPositions() {
+    const root = this.element;
+    this.preservedScrollState = root instanceof HTMLElement
+      ? captureScrollState(root)
+      : new Map();
+  }
+
+  #restoreScrollPositions() {
+    if (!(this.preservedScrollState instanceof Map) || this.preservedScrollState.size === 0) {
+      return;
+    }
+
+    const state = this.preservedScrollState;
+    this.preservedScrollState = new Map();
+
+    const restore = () => {
+      const root = this.element;
+      if (root instanceof HTMLElement) restoreScrollState(root, state);
+    };
+
+    if (typeof globalThis.requestAnimationFrame === "function") {
+      globalThis.requestAnimationFrame(restore);
+    } else {
+      globalThis.setTimeout(restore, 0);
+    }
+  }
+
+  #renderPreservingScroll() {
+    this.#captureScrollPositions();
+    return this.render({ force: true });
   }
 
   static #api() {
@@ -433,7 +469,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static #toggleComponentMenu() {
     this.#syncStateFromForm();
     this.componentMenuOpen = !this.componentMenuOpen;
-    this.render({ force: true });
+    this.#renderPreservingScroll();
   }
 
   static #addCondition() {
@@ -441,7 +477,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.state.components.push({ type: "condition", slug: "frightened", value: 1 });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
-    this.render({ force: true });
+    this.#renderPreservingScroll();
   }
 
   static #addModifier() {
@@ -454,7 +490,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
-    this.render({ force: true });
+    this.#renderPreservingScroll();
   }
 
   static #addPersistentDamage() {
@@ -467,7 +503,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
-    this.render({ force: true });
+    this.#renderPreservingScroll();
   }
 
   static #addResistance() {
@@ -479,7 +515,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
-    this.render({ force: true });
+    this.#renderPreservingScroll();
   }
 
   static #removeComponent(event, target) {
@@ -489,7 +525,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this.state.components.splice(index, 1);
     }
     this.#invalidatePreviews();
-    this.render({ force: true });
+    this.#renderPreservingScroll();
   }
 
   static async #browseImage() {
@@ -511,7 +547,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       callback: (path) => {
         this.state.img = path;
         this.#invalidatePreviews();
-        this.render({ force: true });
+        this.#renderPreservingScroll();
       }
     });
 
@@ -525,7 +561,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this.#setValidationReport(result);
       this.definitionPreview = JSON.stringify(definition, null, 2);
       this.compiledPreview = null;
-      this.render({ force: true });
+      this.#renderPreservingScroll();
     } catch (error) {
       console.error(`${MODULE_ID} | Validation failed`, error);
       ui.notifications.error(error.message);
@@ -540,7 +576,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this.#setValidationReport(validation);
       this.definitionPreview = JSON.stringify(definition, null, 2);
       this.compiledPreview = JSON.stringify(result, null, 2);
-      this.render({ force: true });
+      this.#renderPreservingScroll();
       ui.notifications.info(
         game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.CompileSuccess")
       );
