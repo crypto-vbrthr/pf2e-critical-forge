@@ -68,6 +68,26 @@ export function validateRules(definition) {
     }
   });
 
+  const resistanceByType = new Map();
+  definition.components.forEach((component, index) => {
+    if (component.type !== "resistance") return;
+    const previous = resistanceByType.get(component.resistanceType);
+    if (previous !== undefined) {
+      issues.push({
+        severity: "warning",
+        code: "RESISTANCE_DUPLICATE_TYPE",
+        messageKey: "Validation.Rules.ResistanceDuplicateType",
+        data: {
+          resistanceType: component.resistanceType,
+          firstComponent: previous + 1
+        },
+        componentIndex: index
+      });
+    } else {
+      resistanceByType.set(component.resistanceType, index);
+    }
+  });
+
   const frightened = definition.components
     .map((component, index) => ({ component, index }))
     .find(({ component }) => component.type === "condition" && component.slug === "frightened");

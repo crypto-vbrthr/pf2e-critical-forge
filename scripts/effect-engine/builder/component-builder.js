@@ -87,6 +87,24 @@ export function buildPersistentDamage({ formula, damageType, dc } = {}) {
   return Object.freeze(component);
 }
 
+export function buildResistance({ resistanceType, value } = {}) {
+  const normalizedType = String(resistanceType ?? "").trim();
+  if (!normalizedType) {
+    throw new TypeError("Resistance type must not be empty.");
+  }
+
+  const numericValue = Number(value);
+  if (!Number.isInteger(numericValue) || numericValue < 1) {
+    throw new TypeError("Resistance value must be a positive integer.");
+  }
+
+  return Object.freeze({
+    type: "resistance",
+    resistanceType: normalizedType,
+    value: numericValue
+  });
+}
+
 export function cloneComponent(component) {
   if (!component || typeof component !== "object" || Array.isArray(component)) {
     throw new TypeError("Component must be an object.");

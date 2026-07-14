@@ -197,6 +197,34 @@ Persistent damage can be removed by PF2e's normal recovery process without delet
 
 Multiple persistent-damage components may coexist when their damage types differ. Repeated components of the same damage type produce `PERSISTENT_DAMAGE_DUPLICATE_TYPE`, because equal damage types normally do not stack. See [`DAMAGE_TYPES.md`](DAMAGE_TYPES.md).
 
+
+## Resistance component
+
+```js
+{
+  type: "resistance",
+  resistanceType: "fire",
+  value: 5
+}
+```
+
+Fields:
+
+- `resistanceType`: required resistance type registered in the resistance-type catalog;
+- `value`: required positive integer.
+
+The compiler creates the native PF2e rule element:
+
+```js
+{
+  key: "Resistance",
+  type: "fire",
+  value: 5
+}
+```
+
+The catalog includes ordinary damage types and broader PF2e resistance categories such as `physical`, `energy`, and `all-damage`. Repeated components with the same `resistanceType` are valid but produce a stacking warning because same-type resistances normally do not add together.
+
 ## Application data
 
 `application` is reserved for policies such as target type, replacement, stacking, and incompatibility behavior. The current compiler preserves the object but does not enforce every proposed policy yet.

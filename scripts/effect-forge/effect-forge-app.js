@@ -4,6 +4,7 @@ import {
   isValuedCondition
 } from "../effect-engine/catalogs/condition-catalog.js";
 import { getDamageTypeGroups } from "../effect-engine/catalogs/damage-type-catalog.js";
+import { getResistanceTypeGroups } from "../effect-engine/catalogs/resistance-type-catalog.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -69,6 +70,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       addCondition: EffectForgeApp.#addCondition,
       addModifier: EffectForgeApp.#addModifier,
       addPersistentDamage: EffectForgeApp.#addPersistentDamage,
+      addResistance: EffectForgeApp.#addResistance,
       removeComponent: EffectForgeApp.#removeComponent,
       browseImage: EffectForgeApp.#browseImage,
       validateEffect: EffectForgeApp.#validateEffect,
@@ -193,7 +195,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       number: index + 1,
       isCondition: component.type === "condition",
       isModifier: component.type === "modifier",
-      isPersistentDamage: component.type === "persistentDamage"
+      isPersistentDamage: component.type === "persistentDamage",
+      isResistance: component.type === "resistance"
     };
 
     if (base.isCondition) {
@@ -217,6 +220,10 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     if (base.isPersistentDamage) {
       base.damageTypeGroups = getDamageTypeGroups(component.damageType);
       base.dc = component.dc ?? "";
+    }
+
+    if (base.isResistance) {
+      base.resistanceTypeGroups = getResistanceTypeGroups(component.resistanceType);
     }
 
     return base;
@@ -291,6 +298,14 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         };
       }
 
+      if (component.type === "resistance") {
+        return {
+          type: "resistance",
+          resistanceType: String(data.get(`${prefix}.resistanceType`) ?? "").trim(),
+          value: Number(data.get(`${prefix}.value`) ?? 0)
+        };
+      }
+
       const selectorChoice = String(
         data.get(`${prefix}.selectorChoice`) ?? component.selector ?? ""
       ).trim();
@@ -340,6 +355,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         builder.addModifier(component);
       } else if (component.type === "persistentDamage") {
         builder.addPersistentDamage(component);
+      } else if (component.type === "resistance") {
+        builder.addResistance(component);
       }
     }
 
@@ -447,6 +464,18 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       formula: "1d6",
       damageType: "bleed",
       dc: undefined
+    });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.render({ force: true });
+  }
+
+  static #addResistance() {
+    this.#syncStateFromForm();
+    this.state.components.push({
+      type: "resistance",
+      resistanceType: "fire",
+      value: 5
     });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();

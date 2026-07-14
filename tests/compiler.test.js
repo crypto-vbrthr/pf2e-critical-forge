@@ -4,7 +4,7 @@ import {
   createConditionPack,
   installFoundryMock
 } from "./helpers/foundry-mock.js";
-import { persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
+import { fireResistance, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
 
 const packs = new Map([
   [
@@ -33,6 +33,10 @@ installFoundryMock({
   damageTypes: {
     bleed: "PF2E.TraitBleed",
     fire: "PF2E.TraitFire"
+  },
+  resistanceTypes: {
+    fire: "PF2E.TraitFire",
+    physical: "PF2E.Damage.IWR.Type.physical"
   }
 });
 
@@ -99,6 +103,20 @@ test("persistent damage adds a recovery DC alteration only when supplied", async
     mode: "override",
     property: "pd-recovery-dc",
     value: 19
+  });
+});
+
+test("resistance components compile to Resistance rule elements", async () => {
+  const compiled = await compileEffectDefinition(fireResistance({ value: 7 }));
+  const component = compiled.components[0];
+
+  assert.equal(component.kind, "resistance");
+  assert.equal(component.resistanceType, "fire");
+  assert.equal(component.value, 7);
+  assert.deepEqual(component.rules[0], {
+    key: "Resistance",
+    type: "fire",
+    value: 7
   });
 });
 

@@ -54,3 +54,19 @@ export function persistentBleed({ dc = undefined, formula = "1d6", damageType = 
     metadata: { originModule: "test-suite" }
   };
 }
+
+export function fireResistance({ value = 5, resistanceType = "fire" } = {}) {
+  return {
+    schemaVersion: 1,
+    id: "example.fire-resistance",
+    name: "Feuerschutz",
+    duration: { value: 10, unit: "minutes", expiry: "turn-end" },
+    components: [{
+      type: "resistance",
+      resistanceType,
+      value
+    }],
+    application: {},
+    metadata: { originModule: "test-suite" }
+  };
+}

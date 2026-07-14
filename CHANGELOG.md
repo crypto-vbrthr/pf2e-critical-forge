@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.2.1-dev
+
+### Added
+- `resistance` component with grouped resistance type and positive integer value.
+- Builder method `addResistance()`.
+- Central resistance-type catalog backed by `CONFIG.PF2E.resistanceTypes`, with standard damage-type and category fallbacks.
+- Public `api.resistanceTypes` catalog helpers.
+- Effect Forge editor card and component-menu entry for resistance.
+- Stable validation codes for invalid resistance type, invalid resistance value, and duplicate resistance types.
+- Compiler support for PF2e `Resistance` Rule Elements.
+- Builder, catalog, validation, and compiler regression tests for resistance.
+- `docs/RESISTANCE_TYPES.md`.
+
+### Changed
+- Automated suite expanded from 23 to 27 tests.
+- Public API version increased to `0.2.1`; Effect Definition schema remains version `1`.
+
 ## 0.2.0-dev
 
 ### Added

@@ -31,6 +31,12 @@ import {
   isKnownDamageType,
   listDamageTypeDefinitions
 } from "../effect-engine/catalogs/damage-type-catalog.js";
+import {
+  getResistanceTypeDefinition,
+  getResistanceTypeGroups,
+  isKnownResistanceType,
+  listResistanceTypeDefinitions
+} from "../effect-engine/catalogs/resistance-type-catalog.js";
 
 export function initializePublicApi() {
   const module = game.modules.get(MODULE_ID);
@@ -68,6 +74,13 @@ export function initializePublicApi() {
       list: () => listDamageTypeDefinitions(),
       get: (value) => getDamageTypeDefinition(value),
       has: (value) => isKnownDamageType(value)
+    }),
+
+    resistanceTypes: Object.freeze({
+      groups: (selected = null) => getResistanceTypeGroups(selected),
+      list: () => listResistanceTypeDefinitions(),
+      get: (value) => getResistanceTypeDefinition(value),
+      has: (value) => isKnownResistanceType(value)
     }),
 
     components: Object.freeze({

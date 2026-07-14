@@ -239,6 +239,10 @@ const bleeding = api.builders
     damageType: "bleed",
     dc: 17
   })
+  .addResistance({
+    resistanceType: "fire",
+    value: 5
+  })
   .build();
 ```
 
@@ -280,6 +284,18 @@ api.damageTypes.has("spirit");
 ```
 
 The catalog combines `CONFIG.PF2E.damageTypes` with standard fallback metadata. The GUI and persistent-damage validator consume the same catalog. See [`DAMAGE_TYPES.md`](DAMAGE_TYPES.md).
+
+
+## Resistance-type catalog
+
+```js
+api.resistanceTypes.list();
+api.resistanceTypes.groups("fire");
+api.resistanceTypes.get("physical");
+api.resistanceTypes.has("all-damage");
+```
+
+The catalog reads `CONFIG.PF2E.resistanceTypes` and supplements it with stable fallbacks for standard damage types, broad damage categories, and common damage sources. GUI options are grouped to keep the list navigable. See [`RESISTANCE_TYPES.md`](RESISTANCE_TYPES.md).
 
 ## Component extension API
 

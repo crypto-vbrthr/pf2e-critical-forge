@@ -83,6 +83,8 @@ When schema or component validation produces an error, later rule and compatibil
 | `PERSISTENT_DAMAGE_FORMULA_MISSING` | error | Persistent damage has no formula. |
 | `PERSISTENT_DAMAGE_TYPE_INVALID` | error | Damage type is absent from the central catalog. |
 | `PERSISTENT_DAMAGE_DC_INVALID` | error | Recovery DC is present but not a positive integer. |
+| `RESISTANCE_TYPE_INVALID` | error | Resistance type is absent from the resistance-type catalog. |
+| `RESISTANCE_VALUE_INVALID` | error | Resistance value is not a positive integer. |
 
 ### Rule codes
 
@@ -94,6 +96,7 @@ When schema or component validation produces an error, later rule and compatibil
 | `STACKING_FRIGHTENED_STATUS` | warning | A status penalty overlaps with frightened's status penalty. |
 | `STACKING_FRIGHTENED_CIRCUMSTANCE` | info | A circumstance penalty can stack with frightened. |
 | `PERSISTENT_DAMAGE_DUPLICATE_TYPE` | warning | Multiple components use the same persistent-damage type. |
+| `RESISTANCE_DUPLICATE_TYPE` | warning | Multiple components grant the same resistance type. |
 
 ### Compatibility codes
 

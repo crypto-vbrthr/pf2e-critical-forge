@@ -94,6 +94,10 @@
                   <i class="fa-solid fa-droplet"></i>
                   {{localize "PF2E_CRITICAL_FORGE.EffectForge.PersistentDamage"}}
                 </button>
+                <button type="button" data-action="addResistance">
+                  <i class="fa-solid fa-shield-halved"></i>
+                  {{localize "PF2E_CRITICAL_FORGE.EffectForge.Resistance"}}
+                </button>
               </div>
             {{/if}}
           </div>
@@ -114,6 +118,9 @@
                     {{/if}}
                     {{#if component.isPersistentDamage}}
                       {{localize "PF2E_CRITICAL_FORGE.EffectForge.PersistentDamage"}}
+                    {{/if}}
+                    {{#if component.isResistance}}
+                      {{localize "PF2E_CRITICAL_FORGE.EffectForge.Resistance"}}
                     {{/if}}
                   </strong>
                 </div>
@@ -237,6 +244,35 @@
                       placeholder="15"
                     >
                     <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.RecoveryDCHint"}}</small>
+                  </label>
+                </div>
+              {{/if}}
+
+              {{#if component.isResistance}}
+                <div class="effect-forge-grid resistance-grid">
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ResistanceType"}}</span>
+                    <select name="components.{{component.index}}.resistanceType">
+                      {{#each component.resistanceTypeGroups as |group|}}
+                        <optgroup label="{{group.label}}">
+                          {{#each group.options as |option|}}
+                            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                          {{/each}}
+                        </optgroup>
+                      {{/each}}
+                    </select>
+                  </label>
+
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ResistanceValue"}}</span>
+                    <input
+                      type="number"
+                      name="components.{{component.index}}.value"
+                      value="{{component.value}}"
+                      min="1"
+                      step="1"
+                      required
+                    >
                   </label>
                 </div>
               {{/if}}

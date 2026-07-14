@@ -198,6 +198,10 @@
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(110px, 0.72fr);
 }
 
+.effect-forge-grid.resistance-grid {
+  grid-template-columns: minmax(0, 1.6fr) minmax(110px, 0.8fr);
+}
+
 .effect-forge-grid.condition-grid {
   grid-template-columns: minmax(0, 1.6fr) minmax(110px, 0.8fr);
 }
@@ -301,6 +305,10 @@
   border-color: rgba(220, 103, 103, 0.88);
 }
 
+.effect-forge-component-card.component-resistance {
+  border-color: rgba(103, 191, 114, 0.88);
+}
+
 .effect-forge-component-card > header {
   display: flex;
   align-items: center;
@@ -332,6 +340,10 @@
 
 .component-persistentDamage .component-number {
   background: var(--ef-red);
+}
+
+.component-resistance .component-number {
+  background: var(--ef-green);
 }
 
 .effect-forge-component-card button.icon {
@@ -562,7 +574,8 @@
   .effect-forge-grid.three-columns,
   .effect-forge-grid.modifier-grid,
   .effect-forge-grid.condition-grid,
-  .effect-forge-grid.persistent-damage-grid {
+  .effect-forge-grid.persistent-damage-grid,
+  .effect-forge-grid.resistance-grid {
     grid-template-columns: 1fr;
   }
 

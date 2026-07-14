@@ -33,6 +33,12 @@ installFoundryMock({
     fire: "PF2E.TraitFire",
     bleed: "PF2E.TraitBleed",
     "custom-energy": "MY_MODULE.CustomEnergy"
+  },
+  resistanceTypes: {
+    fire: "PF2E.TraitFire",
+    physical: "PF2E.Damage.IWR.Type.physical",
+    "all-damage": "PF2E.Damage.IWR.Type.all-damage",
+    "custom-resistance": "MY_MODULE.CustomResistance"
   }
 });
 
@@ -44,6 +50,9 @@ const conditions = await import(
 );
 const damageTypes = await import(
   "../scripts/effect-engine/catalogs/damage-type-catalog.js"
+);
+const resistanceTypes = await import(
+  "../scripts/effect-engine/catalogs/resistance-type-catalog.js"
 );
 
 test("selector catalog includes configured PF2e skills and stable groups", () => {
@@ -80,4 +89,18 @@ test("damage type catalog groups PF2e and fallback damage types", () => {
     ?.options.some((option) => option.value === "bleed" && option.selected), true);
   assert.equal(groups.find((group) => group.id === "additional")
     ?.options.some((option) => option.value === "custom-energy"), true);
+});
+
+test("resistance type catalog groups damage, category, and system types", () => {
+  assert.equal(resistanceTypes.isKnownResistanceType("fire"), true);
+  assert.equal(resistanceTypes.isKnownResistanceType("physical"), true);
+  assert.equal(resistanceTypes.isKnownResistanceType("not-a-resistance"), false);
+
+  const groups = resistanceTypes.getResistanceTypeGroups("all-damage");
+  assert.equal(groups.find((group) => group.id === "damage-types")
+    ?.options.some((option) => option.value === "fire"), true);
+  assert.equal(groups.find((group) => group.id === "damage-categories")
+    ?.options.some((option) => option.value === "all-damage" && option.selected), true);
+  assert.equal(groups.find((group) => group.id === "additional")
+    ?.options.some((option) => option.value === "custom-resistance"), true);
 });

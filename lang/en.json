@@ -195,6 +195,31 @@
         "Spirit": "Spirit",
         "Vitality": "Vitality",
         "Void": "Void"
+      },
+      "Resistance": "Resistance",
+      "ResistanceType": "Resistance Type",
+      "ResistanceValue": "Resistance Value",
+      "ResistanceTypeGroups": {
+        "DamageTypes": "Damage Types",
+        "DamageCategories": "Damage Categories",
+        "Sources": "Damage Sources and Properties",
+        "Additional": "Additional PF2e Resistance Types"
+      },
+      "ResistanceTypeLabels": {
+        "AllDamage": "All Damage",
+        "Physical": "Physical",
+        "Energy": "Energy",
+        "Precision": "Precision",
+        "PersistentDamage": "Persistent Damage",
+        "AreaDamage": "Area Damage",
+        "CriticalHits": "Critical Hits",
+        "Alchemical": "Alchemical",
+        "Magical": "Magical",
+        "NonMagical": "Non-Magical",
+        "Weapons": "Weapons",
+        "UnarmedAttacks": "Unarmed Attacks",
+        "DamageFromSpells": "Damage from Spells",
+        "Spells": "Spells"
       }
     },
     "Notifications": {
@@ -243,7 +268,8 @@
         "SelectorFormat": "Selector “{selector}” is invalid. Selectors must be lowercase kebab-case strings.",
         "SelectorCustom": "“{selector}” is a custom selector. Verify its behavior with “Inspect Roll”.",
         "ConditionValueIgnored": "The condition “{slug}” has no condition value. The supplied value {value} is ignored during compilation.",
-        "PersistentDamageDuplicateType": "Multiple components deal persistent {damageType} damage. Instances of the same type normally do not stack; usually only the stronger one matters."
+        "PersistentDamageDuplicateType": "Multiple components deal persistent {damageType} damage. Instances of the same type normally do not stack; usually only the stronger one matters.",
+        "ResistanceDuplicateType": "Multiple components grant resistance to “{resistanceType}”. Resistances of the same type normally do not add together; usually only the highest value matters."
       },
       "Compatibility": {
         "TargetPresent": "Target analysis was prepared for “{targetName}”. Concrete immunity checks will follow in a later version."
@@ -253,6 +279,10 @@
           "FormulaMissing": "Persistent damage requires a damage formula, such as 1d6.",
           "TypeInvalid": "“{damageType}” is not a known PF2e damage type.",
           "DcInvalid": "The recovery DC must be empty or a positive integer."
+        },
+        "Resistance": {
+          "TypeInvalid": "“{resistanceType}” is not a known PF2e resistance type.",
+          "ValueInvalid": "The resistance value must be a positive integer."
         }
       }
     }

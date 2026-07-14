@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { installFoundryMock } from "./helpers/foundry-mock.js";
-import { persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
+import { fireResistance, persistentBleed, proneEffect, shakenNerves } from "./fixtures/effects.js";
 
 installFoundryMock({
   skills: {
@@ -11,6 +11,11 @@ installFoundryMock({
   damageTypes: {
     bleed: "PF2E.TraitBleed",
     fire: "PF2E.TraitFire"
+  },
+  resistanceTypes: {
+    fire: "PF2E.TraitFire",
+    physical: "PF2E.Damage.IWR.Type.physical",
+    "all-damage": "PF2E.Damage.IWR.Type.all-damage"
   }
 });
 
@@ -134,5 +139,34 @@ test("duplicate persistent damage types produce a stacking warning", () => {
   assert.equal(report.valid, true);
   assert.equal(report.warnings.some(
     (issue) => issue.code === "PERSISTENT_DAMAGE_DUPLICATE_TYPE"
+  ), true);
+});
+
+test("resistance validates type and positive integer value", () => {
+  const invalidType = analyzeEffectDefinition(fireResistance({ resistanceType: "rainbow" }));
+  assert.equal(invalidType.valid, false);
+  assert.equal(invalidType.errors.some(
+    (issue) => issue.code === "RESISTANCE_TYPE_INVALID"
+  ), true);
+
+  const invalidValue = analyzeEffectDefinition(fireResistance({ value: 0 }));
+  assert.equal(invalidValue.valid, false);
+  assert.equal(invalidValue.errors.some(
+    (issue) => issue.code === "RESISTANCE_VALUE_INVALID"
+  ), true);
+});
+
+test("duplicate resistance types produce a stacking warning", () => {
+  const definition = fireResistance();
+  definition.components.push({
+    type: "resistance",
+    resistanceType: "fire",
+    value: 10
+  });
+
+  const report = analyzeEffectDefinition(definition);
+  assert.equal(report.valid, true);
+  assert.equal(report.warnings.some(
+    (issue) => issue.code === "RESISTANCE_DUPLICATE_TYPE"
   ), true);
 });

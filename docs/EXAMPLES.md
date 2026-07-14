@@ -79,6 +79,36 @@ const acidBurn = api.builders
 
 The first definition uses PF2e's normal recovery DC. The second adds a `pd-recovery-dc` alteration.
 
+
+## Resistance
+
+```js
+const fireShield = api.builders
+  .effect()
+  .setId("example.fire-shield")
+  .setName("Feuerschild")
+  .setDuration(10, "minutes", "turn-end")
+  .addResistance({
+    resistanceType: "fire",
+    value: 5
+  })
+  .build();
+```
+
+Broad resistance categories use the same component:
+
+```js
+const hardenedBody = api.builders
+  .effect()
+  .setName("Gehärteter Körper")
+  .setDuration(1, "minutes", "turn-end")
+  .addResistance({
+    resistanceType: "physical",
+    value: 3
+  })
+  .build();
+```
+
 ## Multiple selectors
 
 ```js
