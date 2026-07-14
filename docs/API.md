@@ -6,189 +6,311 @@
 const api = game.modules.get("pf2e-critical-forge")?.api;
 ```
 
-The API is available regardless of whether the Effect Forge UI or Critical Forge is enabled.
+The API is published during Foundry's `init` hook and remains available regardless of the Effect Forge and Critical Forge settings.
+
+For module integrations, prefer the ready hook:
+
+```js
+Hooks.on("pf2eCriticalForgeReady", (api) => {
+  console.log(api.version, api.schemaVersion);
+});
+```
 
 ## Version information
 
 ```js
-api.version       // module API version
-api.schemaVersion // supported Effect Definition schema
+api.version        // public API version
+api.moduleVersion  // installed module version
+api.schemaVersion  // supported Effect Definition schema version
 ```
+
+Consumers should branch on `api.version` for API capabilities and on `api.schemaVersion` when importing stored Effect Definitions.
 
 ## Effects
 
 ### `api.effects.analyze(definition, context?)`
 
-Runs the structured Validation Engine and returns stable issue codes, severities, localization keys, and data. An optional `context.target` prepares target-aware checks.
+Runs the structured Validation Engine without compiling or mutating the definition.
 
-### `api.effects.validate(definition)`
+```js
+const report = api.effects.analyze(definition, {
+  target: actor
+});
+```
 
-Validates an Effect Definition.
-
-Returns:
+Return shape:
 
 ```js
 {
   valid: true,
+  issues: [],
   errors: [],
-  warnings: []
+  warnings: [],
+  hints: [],
+  information: []
 }
 ```
 
-Validation does not mutate the supplied object.
+Each issue contains:
+
+```js
+{
+  severity: "error" | "warning" | "hint" | "info",
+  code: "STABLE_MACHINE_CODE",
+  messageKey: "Validation.Rules.SomeMessage",
+  message: null,
+  data: {},
+  componentIndex: 0
+}
+```
+
+Use `code` for program logic. `messageKey` and localized messages are presentation details.
+
+### `api.effects.validate(definition)`
+
+Compatibility wrapper around the structured analyzer. It returns localized string arrays while retaining the structured `issues` array.
+
+```js
+const validation = api.effects.validate(definition);
+
+if (!validation.valid) {
+  ui.notifications.error(validation.errors.join("\n"));
+}
+```
+
+The supplied definition is never mutated.
 
 ### `api.effects.compile(definition, context?)`
 
-Validates and compiles the definition into an abstract compiled representation.
+Validates and compiles the definition into an abstract representation.
 
-In `0.1.0-dev`, this does not yet create a PF2e Item.
+```js
+const compiled = await api.effects.compile(definition);
+```
+
+Important fields:
+
+```js
+{
+  schemaVersion: 1,
+  id: "example.effect",
+  name: "Example Effect",
+  duration: { value: 2, unit: "rounds", expiry: "turn-end" },
+  components: [
+    {
+      kind: "condition",
+      rules: [{ key: "GrantItem", uuid: "..." }]
+    }
+  ],
+  validation: { valid: true, ... }
+}
+```
+
+Compilation is asynchronous because condition UUIDs and metadata may need to be resolved from the PF2e condition compendium.
+
+Invalid definitions reject with `EffectValidationError`. The complete validation result is available as `error.result`.
+
+```js
+try {
+  await api.effects.compile(definition);
+} catch (error) {
+  console.error(error.result);
+}
+```
 
 ### `api.effects.toItemSource(definition, context?)`
 
-Compiles an Effect Definition into PF2e Effect Item source data without creating a document.
+Compiles an Effect Definition into PF2e Effect Item source data without creating a Foundry document.
+
+```js
+const source = await api.effects.toItemSource(definition);
+```
+
+The returned source contains:
+
+- `type: "effect"`;
+- PF2e duration data;
+- collected Rule Elements in `system.rules`;
+- origin and definition metadata in `flags.pf2e-critical-forge`.
 
 ### `api.effects.createItem(definition, options?)`
 
-Creates a world-level PF2e Effect Item. `options.renderSheet` defaults to `true`.
+Creates a world-level PF2e Effect Item.
+
+```js
+const item = await api.effects.createItem(definition, {
+  renderSheet: true
+});
+```
 
 ### `api.effects.apply(definition, targets, options?)`
 
 Creates the compiled Effect Item as an embedded Item on one or more Actor or Token targets.
 
+```js
+await api.effects.apply(definition, [actorA, tokenB]);
+```
+
+Targets may be supplied as Actors, Tokens, TokenDocuments, or arrays supported by the application service.
+
 ### `api.effects.remove(definitionId, targets)`
 
-Removes effects generated from the supplied Effect Definition ID from the target Actors.
+Removes generated effects whose module flag contains the supplied Effect Definition ID.
+
+```js
+await api.effects.remove("example.shaken-nerves", [actor]);
+```
 
 ### `api.effects.checkCompatibility(definition, target, options?)`
 
-Performs structural compatibility checks. The initial implementation reports whether a target exists and whether the definition validates.
-
-## Components
-
-### `api.components.register(handler)`
-
-Registers a component handler.
-
-Required handler shape:
-
-```js
-{
-  type: "example",
-  validate(component, context) {},
-  compile(component, context) {},
-  describe(component, context) {}
-}
-```
-
-Third-party component types should use a namespaced type such as:
-
-```text
-my-module.special-component
-```
-
-### `api.components.get(type)`
-### `api.components.list()`
-### `api.components.unregister(type)`
-
-## Hooks
-
-After initialization, the module emits:
-
-```js
-Hooks.callAll("pf2eCriticalForgeReady", api);
-```
-
-External modules should register their components or future card packs from this hook.
-
-## User interface
-
-### `api.ui.openEffectForge()`
-
-Opens the GM-only Effect Forge window, independent of sidebar integration.
-
-```js
-game.modules.get("pf2e-critical-forge")?.api.ui.openEffectForge();
-```
+Performs structural and target-aware compatibility checks. Target-specific PF2e immunity and resistance analysis is an extension point and is intentionally still limited in the current milestone.
 
 ## Effect Builder
 
-The public Builder API creates consistent Effect Definitions without exposing their internal structure.
+The Builder is the supported construction path for new definitions.
 
 ### `api.builders.effect()`
-
-Creates a new fluent Effect Builder.
 
 ```js
 const definition = api.builders
   .effect()
   .setId("example.shaken-nerves")
-  .setName("Shaken Nerves")
-  .setDescription("<p>The target is rattled.</p>")
+  .setName("Erschütterte Nerven")
+  .setDescription("<p>Das Ziel ist verängstigt und mental verwundbar.</p>")
   .setImage("icons/svg/terror.svg")
   .setDuration(2, "rounds", "turn-end")
   .addCondition("frightened", 2)
   .addModifier({
     selector: "will",
     value: -1,
-    modifierType: "status"
+    modifierType: "circumstance"
   })
-  .setMetadata({ originModule: "example-module" })
+  .setMetadata({
+    originModule: "example-module",
+    originFeature: "critical-hit"
+  })
   .build();
 ```
 
+`build()` returns a cloned and deeply frozen definition.
+
 ### `api.builders.from(definition)`
 
-Creates a Builder from an existing Effect Definition. The source object is cloned and never mutated.
+Creates a Builder from a deep clone of an existing definition.
 
 ```js
-const stronger = api.builders
+const longer = api.builders
   .from(definition)
   .setDuration(3, "rounds", "turn-end")
   .build();
 ```
 
+The original object is not mutated.
+
 ### Builder methods
 
-- `setId(id)`
-- `setName(name)`
-- `setDescription(html)`
-- `setImage(path)`
-- `setDuration(value, unit, expiry)`
-- `setApplication(data)`
-- `setMetadata(data)`
-- `mergeMetadata(data)`
-- `addComponent(component)`
-- `addCondition(slug, value?)`
-- `addModifier(options)`
-- `clearComponents()`
-- `removeComponent(index)`
-- `build()`
-
-`build()` returns a cloned and deeply frozen Effect Definition.
+| Method | Purpose |
+|---|---|
+| `setId(id)` | Sets a stable definition ID or `null`. |
+| `setName(name)` | Sets and trims the display name. |
+| `setDescription(html)` | Stores description HTML. |
+| `setImage(path)` | Sets an image, falling back to `icons/svg/aura.svg`. |
+| `setDuration(value, unit, expiry)` | Sets the global duration. |
+| `setApplication(data)` | Replaces application metadata with a clone. |
+| `setMetadata(data)` | Replaces metadata with a clone. |
+| `mergeMetadata(data)` | Deep-merges metadata without mutating the source. |
+| `addComponent(component)` | Adds an arbitrary registered component. |
+| `addCondition(slug, value?)` | Adds a PF2e condition component. |
+| `addModifier(options)` | Adds a modifier component. |
+| `clearComponents()` | Removes all components. |
+| `removeComponent(index)` | Removes one component or throws `RangeError`. |
+| `build()` | Returns the immutable Effect Definition. |
 
 ## Selector catalog
 
 ```js
 api.selectors.list();
-api.selectors.groups(selected);
-api.selectors.get(value);
-api.selectors.has(value);
-api.selectors.isValidSyntax(value);
+api.selectors.groups("will");
+api.selectors.get("athletics");
+api.selectors.has("saving-throw");
+api.selectors.isValidSyntax("my-module-special-check");
 api.selectors.customValue;
 ```
 
-The catalog is shared by the Effect Forge interface and the Validation Engine. See [`SELECTORS.md`](SELECTORS.md).
+The catalog is shared by the GUI, validator, and public API. See [`SELECTORS.md`](SELECTORS.md).
 
 ## Condition catalog
 
 ```js
-const conditions = game.modules.get("pf2e-critical-forge")?.api.conditions;
+await api.conditions.initialize();
 
-await conditions.initialize();
-conditions.isValued("frightened"); // true
-conditions.isValued("prone");      // false
-conditions.get("frightened");
-conditions.list();
+api.conditions.isValued("frightened"); // true
+api.conditions.isValued("prone");      // false
+api.conditions.get("frightened");
+api.conditions.list();
 ```
 
-The compiler omits `badge-value` alterations for non-valued conditions even when a legacy definition contains a value.
+The PF2e condition compendium is the primary metadata source. A fallback valued-condition set keeps Builder and validation behavior available before compendia finish loading.
+
+The compiler emits a `badge-value` alteration only when the resolved condition is valued.
+
+## Component extension API
+
+### `api.components.register(handler, options?)`
+
+Required handler shape:
+
+```js
+{
+  type: "my-module.special-component",
+
+  validate(component, context) {
+    return {
+      errors: [],
+      warnings: []
+    };
+  },
+
+  async compile(component, context) {
+    return {
+      kind: "my-module.special-component",
+      rules: []
+    };
+  },
+
+  describe(component, context) {
+    return "Readable summary";
+  }
+}
+```
+
+Rules:
+
+- `type` must be a non-empty unique string.
+- Third-party types should be namespaced.
+- `validate`, `compile`, and `describe` are required functions.
+- `compile` may be asynchronous.
+- Compiled Rule Elements belong in a `rules` array.
+- Register during `pf2eCriticalForgeReady` unless early registration is specifically required.
+
+```js
+Hooks.on("pf2eCriticalForgeReady", (api) => {
+  api.components.register(handler);
+});
+```
+
+Other methods:
+
+```js
+api.components.get(type);
+api.components.list();
+api.components.unregister(type);
+```
+
+## User interface
+
+```js
+api.ui.openEffectForge();
+```
+
+This opens the GM-only Effect Forge window independently of sidebar integration.

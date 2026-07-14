@@ -6,8 +6,8 @@ Current schema version: `1`.
 {
   schemaVersion: 1,
   id: "example.shaken-nerves",
-  name: "Shaken Nerves",
-  description: "The target is rattled and mentally vulnerable.",
+  name: "Erschütterte Nerven",
+  description: "<p>Das Ziel ist erschüttert und mental verwundbar.</p>",
   img: "icons/svg/terror.svg",
 
   duration: {
@@ -26,7 +26,8 @@ Current schema version: `1`.
       type: "modifier",
       selector: "will",
       value: -1,
-      modifierType: "status"
+      modifierType: "circumstance",
+      predicate: []
     }
   ],
 
@@ -46,15 +47,33 @@ Current schema version: `1`.
 
 ## Required fields
 
-- `schemaVersion`: currently `1`.
+- `schemaVersion`: must equal the API's `schemaVersion`.
 - `name`: non-empty string.
-- `components`: array with at least one registered component.
+- `components`: non-empty array containing registered component types.
+
+`id`, `description`, `img`, `duration`, `application`, and `metadata` are optional at the raw schema level, although the Builder supplies normalized defaults.
+
+## Identity
+
+`id` should be stable when effects need to be updated, replaced, or removed later.
+
+Recommended form:
+
+```text
+module-id.feature.effect-name
+```
+
+Example:
+
+```text
+weather-forge.extreme-heat.exhaustion
+```
 
 ## Duration
 
-The global duration is inherited by every component.
+The global duration is inherited by all components.
 
-Supported initial units:
+Supported units:
 
 - `rounds`
 - `minutes`
@@ -62,11 +81,29 @@ Supported initial units:
 - `days`
 - `unlimited`
 
-Components may later support `durationMode` values such as `inherit`, `override`, `independent`, or `instant`. These are reserved and not compiled in `0.1.0-dev`.
+Finite duration:
 
-## Initial component types
+```js
+{
+  value: 2,
+  unit: "rounds",
+  expiry: "turn-end"
+}
+```
 
-### Condition
+Unlimited duration:
+
+```js
+{
+  value: -1,
+  unit: "unlimited",
+  expiry: null
+}
+```
+
+Component-specific duration overrides are reserved for a later schema revision and must not be assumed by integrations yet.
+
+## Condition component
 
 ```js
 {
@@ -76,18 +113,71 @@ Components may later support `durationMode` values such as `inherit`, `override`
 }
 ```
 
-`value` is optional because not every PF2e condition has a value.
+`slug` is required.
 
-### Modifier
+`value` is optional because PF2e distinguishes:
+
+- **valued conditions**, such as `frightened`;
+- **non-valued conditions**, such as `prone`.
+
+For non-valued conditions, omit `value`:
+
+```js
+{
+  type: "condition",
+  slug: "prone"
+}
+```
+
+Legacy definitions containing a value on a non-valued condition remain valid, but validation emits `CONDITION_VALUE_IGNORED` and the compiler omits the `badge-value` alteration.
+
+## Modifier component
 
 ```js
 {
   type: "modifier",
   selector: "will",
   value: -1,
-  modifierType: "status",
+  modifierType: "circumstance",
   predicate: []
 }
 ```
 
-Initial supported modifier types are `status`, `circumstance`, `item`, and `untyped`.
+Fields:
+
+- `selector`: one selector string or an array of selector strings;
+- `value`: finite number;
+- `modifierType`: `status`, `circumstance`, `item`, or `untyped`;
+- `predicate`: optional PF2e predicate array;
+- `label`: optional custom Rule Element label.
+
+Multiple selectors:
+
+```js
+{
+  type: "modifier",
+  selector: ["will", "perception"],
+  value: 1,
+  modifierType: "status"
+}
+```
+
+Unknown but syntactically valid selectors are allowed and reported as custom selectors. See [`SELECTORS.md`](SELECTORS.md).
+
+## Application data
+
+`application` is reserved for policies such as target type, replacement, stacking, and incompatibility behavior. The current compiler preserves the object but does not enforce every proposed policy yet.
+
+## Metadata
+
+`metadata` is preserved through compilation and copied into module flags. Useful keys include:
+
+```js
+{
+  originModule: "example-module",
+  originFeature: "critical-hit",
+  tags: ["mental"]
+}
+```
+
+Unknown metadata keys are permitted so integrations can attach their own non-mechanical context.

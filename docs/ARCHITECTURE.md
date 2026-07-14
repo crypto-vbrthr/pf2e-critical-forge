@@ -2,36 +2,79 @@
 
 ## Core rules
 
-1. The Effect Engine is always initialized while the module is active.
+1. The Effect Engine is initialized whenever the module is active.
 2. Effect Forge and Critical Forge are optional consumers of the engine.
-3. Disabling either GUI feature never disables the public Effect Engine API.
+3. Disabling either GUI feature never disables the public API.
 4. User interfaces use the same public API exposed to other modules.
 5. Critical cards produce Effect Definitions, never raw PF2e Rule Elements.
-6. Effects contain any number of components.
-7. A global duration applies to all components unless a component explicitly overrides it.
-8. Narrative data and mechanical effect profiles remain separate.
-9. Public API behavior and schemas are versioned and documented.
-10. Invalid external content must fail locally and must not disable the module.
-11. All user-facing text is localized.
-12. Internals may change; the documented API is the compatibility boundary.
+6. Effects contain any number of components under one global duration.
+7. Narrative card data and reusable mechanical effect profiles remain separate.
+8. Public API behavior and schemas are versioned and documented.
+9. Invalid external content fails locally and must not disable the module.
+10. User-facing text is localized.
+11. Internals may change; the documented API is the compatibility boundary.
+12. Schema validation, rule analysis, compilation, and application remain separate stages.
 
-## Layers
+## Data flow
 
 ```text
 Effect Forge UI ─┐
-                  ├── Public API ── Effect Engine ── PF2e compiler/application
-Critical Forge ──┤
-External modules ┘
+Critical Forge ──┼── Public API
+External module ─┘       │
+                         ▼
+                  Effect Builder
+                         │
+                         ▼
+                 Effect Definition
+                         │
+                 ┌───────┴────────┐
+                 ▼                ▼
+          Validation Engine    Compiler
+                                  │
+                                  ▼
+                         PF2e Item Source
+                                  │
+                                  ▼
+                         Application Service
 ```
 
-## Initial milestone
+## Subsystems
 
-Version `0.1.0-dev` implements schema validation, component registration, abstract compilation, settings, API publication, and a small diagnostic UI.
+### Builder
 
-Concrete PF2e Item creation and Actor application are deliberately isolated behind API methods so they can be implemented without changing the external contract.
+Normalizes common input, clones caller-owned data, and returns deeply frozen Effect Definitions.
 
+It does not decide whether a PF2e condition is meaningful for a target and does not create Rule Elements.
 
-## Compiler structure
+### Catalogs
+
+```text
+effect-engine/catalogs/
+├─ selector-catalog.js
+└─ condition-catalog.js
+```
+
+The selector catalog is shared by the GUI and validator. The condition catalog resolves compendium UUIDs and identifies valued conditions.
+
+Catalogs are metadata services, not compilers.
+
+### Validation Engine
+
+```text
+effect-engine/validation/
+├─ validation-engine.js
+├─ validation-report.js
+└─ validators/
+   ├─ schema-validator.js
+   ├─ rule-validator.js
+   └─ compatibility-validator.js
+```
+
+Validation is synchronous in the current schema and produces machine-readable reports. It does not mutate definitions or create Foundry documents.
+
+Validation phases stop after schema/component errors.
+
+### Compiler
 
 ```text
 effect-engine/compiler/
@@ -42,35 +85,47 @@ effect-engine/compiler/
 └─ flag-builder.js
 ```
 
-- `effect-compiler.js` validates definitions and compiles components.
+- `effect-compiler.js` validates and compiles registered components.
+- component handlers produce abstract compiled components and Rule Elements.
 - `rule-builder.js` collects Rule Elements.
-- `duration-builder.js` translates the global duration.
+- `duration-builder.js` translates global duration data.
 - `flag-builder.js` creates origin and schema metadata.
-- `pf2e-item-builder.js` assembles the PF2e Effect Item source.
+- `pf2e-item-builder.js` assembles PF2e Effect Item source data.
 
+Compilation may be asynchronous because catalogs can resolve compendium content.
 
-## Builder layer
+### Application Service
 
-```text
-Effect Forge UI / external module
-        ↓
-Effect Builder
-        ↓
-Effect Definition
-        ↓
-Validator and compiler
-```
+The application layer is the only engine layer that creates or deletes Foundry documents. It accepts compiled definitions through the public API and isolates document ownership and target normalization from the compiler.
 
-The Builder is the supported construction path for new Effect Definitions. It clones input data, normalizes common component data, and returns immutable definitions. The GUI uses the same public Builder API as external modules.
+### GUI
 
+The GUI is a thin consumer:
 
-## Validation Engine
+- gathers user input;
+- builds definitions through the public Builder;
+- displays validation reports;
+- requests compilation or application through the public API.
 
-```text
-Effect Definition
-├─ Schema Validator
-├─ Rule Validator
-└─ Compatibility Validator
-```
+It does not duplicate PF2e compilation rules.
 
-Validation produces structured reports and never compiles or mutates the definition. Public issue codes are suitable for other modules to make automated decisions.
+## Extension boundary
+
+Third-party modules may register component handlers through `api.components`. A handler owns three responsibilities for its component type:
+
+- component-level validation;
+- compilation to an abstract component, including Rule Elements;
+- a readable description.
+
+Cross-component interactions belong in rule validators rather than individual component compilers.
+
+## Test boundaries
+
+The automated suite runs outside Foundry with a small deterministic mock of:
+
+- `foundry.utils` clone, freeze, merge, and property helpers;
+- `game.i18n`;
+- `CONFIG.PF2E.skills`;
+- the PF2e condition compendium.
+
+This keeps Builder, validation, catalogs, and compiler tests fast and reproducible. Document creation and full Foundry UI behavior remain integration-test territory inside Foundry.

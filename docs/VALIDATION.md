@@ -1,12 +1,12 @@
 # Validation Engine
 
-The Validation Engine analyzes Effect Definitions independently from compilation.
+The Validation Engine analyzes Effect Definitions independently from compilation and never mutates the supplied definition.
 
 ```js
 const report = api.effects.analyze(definition, { target });
 ```
 
-The report contains stable machine-readable codes:
+## Report shape
 
 ```js
 {
@@ -16,7 +16,11 @@ The report contains stable machine-readable codes:
       severity: "info",
       code: "STACKING_FRIGHTENED_CIRCUMSTANCE",
       messageKey: "Validation.Rules.FrightenedCircumstance",
-      data: { frightenedValue: 2, modifierValue: -1 },
+      message: null,
+      data: {
+        frightenedValue: 2,
+        modifierValue: -1
+      },
       componentIndex: 1
     }
   ],
@@ -27,18 +31,87 @@ The report contains stable machine-readable codes:
 }
 ```
 
+`valid` is false only when at least one `error` exists. Warnings and informational entries do not block compilation.
+
+## Severity meanings
+
+| Severity | Meaning |
+|---|---|
+| `error` | The definition cannot be compiled safely. |
+| `warning` | The definition can compile, but behavior may be ineffective or surprising. |
+| `hint` | Optional improvement advice. |
+| `info` | Neutral diagnostic information. |
+
+Use the stable `code` for automation:
+
+```js
+const report = api.effects.analyze(definition);
+
+if (report.issues.some((issue) => issue.code === "STACKING_FRIGHTENED_STATUS")) {
+  // Offer a circumstance penalty instead.
+}
+```
+
+Do not parse localized messages.
+
 ## Validation phases
 
-1. Schema and component validation
-2. PF2e rule interaction validation
-3. Optional target compatibility validation
+1. **Schema validation**
+2. **Component validation**
+3. **PF2e rule interaction validation**
+4. **Optional target compatibility validation**
 
-Later phases are skipped when schema errors make the definition invalid.
+When schema or component validation produces an error, later rule and compatibility phases are skipped. This prevents misleading secondary diagnostics from malformed data.
 
-## Initial rule codes
+## Current issue codes
 
-- `STACKING_FRIGHTENED_STATUS`
-- `STACKING_FRIGHTENED_CIRCUMSTANCE`
-- `COMPATIBILITY_TARGET_PRESENT`
+### Schema and component codes
 
-The legacy `api.effects.validate()` method remains available and returns localized text arrays for compatibility.
+| Code | Severity | Meaning |
+|---|---|---|
+| `SCHEMA_DEFINITION_OBJECT` | error | Root value is not an object. |
+| `SCHEMA_VERSION_UNSUPPORTED` | error | Schema version does not match the engine. |
+| `SCHEMA_NAME_REQUIRED` | error | Effect name is empty. |
+| `SCHEMA_DURATION_OBJECT` | error | Duration is not an object. |
+| `SCHEMA_DURATION_UNIT` | error | Duration unit is unsupported. |
+| `SCHEMA_DURATION_VALUE` | error | Finite duration value is invalid. |
+| `SCHEMA_COMPONENTS_REQUIRED` | error | No components are present. |
+| `SCHEMA_COMPONENT_OBJECT` | error | Component entry is not an object. |
+| `SCHEMA_COMPONENT_UNKNOWN` | error | No handler is registered for the component type. |
+| `COMPONENT_INVALID` | error | A component handler rejected its data. |
+| `COMPONENT_WARNING` | warning | A component handler reported a non-blocking issue. |
+
+### Rule codes
+
+| Code | Severity | Meaning |
+|---|---|---|
+| `CONDITION_VALUE_IGNORED` | warning | A non-valued condition contains a legacy value. |
+| `MODIFIER_SELECTOR_FORMAT` | error | Selector is not lowercase kebab case. |
+| `MODIFIER_SELECTOR_CUSTOM` | info | Selector is syntactically valid but absent from the catalog. |
+| `STACKING_FRIGHTENED_STATUS` | warning | A status penalty overlaps with frightened's status penalty. |
+| `STACKING_FRIGHTENED_CIRCUMSTANCE` | info | A circumstance penalty can stack with frightened. |
+
+### Compatibility codes
+
+| Code | Severity | Meaning |
+|---|---|---|
+| `COMPATIBILITY_TARGET_PRESENT` | info | A target was supplied to the compatibility phase. |
+
+Target immunity, resistance, trait, and creature-state checks are planned extensions. Their codes will remain machine-readable and localized through the same report structure.
+
+## Localized compatibility wrapper
+
+`api.effects.validate(definition)` returns the same structured information plus localized string arrays:
+
+```js
+{
+  valid: false,
+  issues: [...],
+  errors: ["Localized error"],
+  warnings: ["Localized warning"],
+  hints: [],
+  information: []
+}
+```
+
+Use `analyze()` for module logic and `validate()` when directly presenting text to a user.

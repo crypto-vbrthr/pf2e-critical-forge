@@ -1,0 +1,13 @@
+{
+  "name": "pf2e-critical-forge",
+  "version": "0.1.12-dev",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-concurrency=1",
+    "test:coverage": "node --experimental-test-coverage --test --test-concurrency=1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

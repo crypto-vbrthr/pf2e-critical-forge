@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.12-dev
+
+### Added
+- Dependency-free automated test suite based on the Node test runner.
+- Builder tests for normalization, cloning, immutability, component operations, and invalid input.
+- Validation tests for schema short-circuiting, selector diagnostics, frightened stacking, non-valued conditions, and target context.
+- Catalog tests for dynamic PF2e skills and valued condition metadata.
+- Compiler tests for `GrantItem`, `FlatModifier`, PF2e Item source data, flags, and invalid definitions.
+- `docs/TESTING.md` with test structure, commands, mocks, and extension guidelines.
+
+### Changed
+- Refreshed README and all developer documentation to match the current API and compiler behavior.
+- Expanded API return shapes, error behavior, component contracts, validation codes, and complete usage examples.
+- Updated schema examples to use a circumstance penalty where stacking with frightened is intended.
+
 ## 0.1.11-dev
 
 - Added a central PF2e condition catalog backed by `pf2e.conditionitems`.
