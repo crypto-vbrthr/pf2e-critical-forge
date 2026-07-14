@@ -7,7 +7,7 @@ import { getDamageTypeGroups } from "../effect-engine/catalogs/damage-type-catal
 import { getResistanceTypeGroups } from "../effect-engine/catalogs/resistance-type-catalog.js";
 import { getWeaknessTypeGroups } from "../effect-engine/catalogs/weakness-type-catalog.js";
 import { getImmunityTypeGroups } from "../effect-engine/catalogs/immunity-type-catalog.js";
-import { getMovementTypeGroups } from "../effect-engine/catalogs/movement-type-catalog.js";
+import { getBaseSpeedTypeGroups, getMovementTypeGroups } from "../effect-engine/catalogs/movement-type-catalog.js";
 import { captureScrollState, restoreScrollState } from "./view-state.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -82,6 +82,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       addRegeneration: EffectForgeApp.#addRegeneration,
       addTemporaryHitPoints: EffectForgeApp.#addTemporaryHitPoints,
       addMovement: EffectForgeApp.#addMovement,
+      addBaseSpeed: EffectForgeApp.#addBaseSpeed,
       removeComponent: EffectForgeApp.#removeComponent,
       browseImage: EffectForgeApp.#browseImage,
       validateEffect: EffectForgeApp.#validateEffect,
@@ -247,7 +248,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       isFastHealing: component.type === "fastHealing",
       isRegeneration: component.type === "regeneration",
       isTemporaryHitPoints: component.type === "temporaryHitPoints",
-      isMovement: component.type === "movement"
+      isMovement: component.type === "movement",
+      isBaseSpeed: component.type === "baseSpeed"
     };
 
     if (base.isCondition) {
@@ -296,6 +298,10 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         label: game.i18n.localize(key),
         selected: component.modifierType === value
       }));
+    }
+
+    if (base.isBaseSpeed) {
+      base.baseSpeedTypeGroups = getBaseSpeedTypeGroups(component.movementType);
     }
 
     return base;
@@ -426,6 +432,14 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         };
       }
 
+      if (component.type === "baseSpeed") {
+        return {
+          type: "baseSpeed",
+          movementType: String(data.get(`${prefix}.movementType`) ?? "fly").trim(),
+          value: Number(data.get(`${prefix}.value`) ?? 0)
+        };
+      }
+
       const selectorChoice = String(
         data.get(`${prefix}.selectorChoice`) ?? component.selector ?? ""
       ).trim();
@@ -489,6 +503,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         builder.addTemporaryHitPoints(component);
       } else if (component.type === "movement") {
         builder.addMovement(component);
+      } else if (component.type === "baseSpeed") {
+        builder.addBaseSpeed(component);
       }
     }
 
@@ -678,6 +694,18 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       movementType: "land",
       value: 10,
       modifierType: "status"
+    });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.#renderPreservingScroll();
+  }
+
+  static #addBaseSpeed() {
+    this.#syncStateFromForm();
+    this.state.components.push({
+      type: "baseSpeed",
+      movementType: "fly",
+      value: 30
     });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();

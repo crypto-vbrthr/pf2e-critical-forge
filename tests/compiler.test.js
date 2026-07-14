@@ -4,7 +4,7 @@ import {
   createConditionPack,
   installFoundryMock
 } from "./helpers/foundry-mock.js";
-import { fastHealing, fireImmunity, fireResistance, fireWeakness, movement, persistentBleed, proneEffect, regeneration, shakenNerves, temporaryHitPoints } from "./fixtures/effects.js";
+import { baseSpeed, fastHealing, fireImmunity, fireResistance, fireWeakness, movement, persistentBleed, proneEffect, regeneration, shakenNerves, temporaryHitPoints } from "./fixtures/effects.js";
 
 const packs = new Map([
   [
@@ -254,5 +254,22 @@ test("movement components compile to native Speed FlatModifiers", async () => {
     selector: "fly-speed",
     value: -10,
     type: "circumstance"
+  });
+});
+
+
+test("base Speed components compile to native BaseSpeed Rule Elements", async () => {
+  const compiled = await compileEffectDefinition(baseSpeed({
+    movementType: "swim",
+    value: 25
+  }));
+  const component = compiled.components[0];
+
+  assert.equal(component.kind, "baseSpeed");
+  assert.equal(component.selector, "swim");
+  assert.deepEqual(component.rules[0], {
+    key: "BaseSpeed",
+    selector: "swim",
+    value: 25
   });
 });

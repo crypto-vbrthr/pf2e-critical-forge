@@ -202,7 +202,8 @@
 
 .effect-forge-grid.resistance-grid,
 .effect-forge-grid.weakness-grid,
-.effect-forge-grid.regeneration-grid {
+.effect-forge-grid.regeneration-grid,
+.effect-forge-grid.base-speed-grid {
   grid-template-columns: minmax(110px, 0.72fr) minmax(0, 1.6fr);
 }
 
@@ -342,6 +343,10 @@
   border-color: rgba(232, 198, 92, 0.92);
 }
 
+.effect-forge-component-card.component-baseSpeed {
+  border-color: rgba(91, 207, 224, 0.92);
+}
+
 .effect-forge-component-card > header {
   display: flex;
   align-items: center;
@@ -401,6 +406,10 @@
 
 .component-movement .component-number {
   background: #b59335;
+}
+
+.component-baseSpeed .component-number {
+  background: #3e9fb3;
 }
 
 .effect-forge-grid.regeneration-grid select[multiple] {
@@ -635,6 +644,7 @@
   .effect-forge-grid.three-columns,
   .effect-forge-grid.modifier-grid,
   .effect-forge-grid.movement-grid,
+  .effect-forge-grid.base-speed-grid,
   .effect-forge-grid.condition-grid,
   .effect-forge-grid.persistent-damage-grid,
   .effect-forge-grid.resistance-grid,

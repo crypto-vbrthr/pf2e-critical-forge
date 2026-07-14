@@ -230,6 +230,7 @@ The original object is not mutated.
 | `addRegeneration(options)` | Adds regeneration with positive integer `value` and `deactivatedBy` damage types. |
 | `addTemporaryHitPoints(options)` | Adds a one-time grant of temporary Hit Points with a positive integer `value`. |
 | `addMovement(options)` | Adds a Speed modifier with `movementType`, non-zero integer `value`, and `modifierType`. |
+| `addBaseSpeed(options)` | Grants climb, burrow, fly, or swim Speed with `movementType` and positive integer `value`. |
 | `clearComponents()` | Removes all components. |
 | `removeComponent(index)` | Removes one component or throws `RangeError`. |
 | `build()` | Returns the immutable Effect Definition. |
@@ -254,6 +255,7 @@ const bleeding = api.builders
   .addRegeneration({ value: 5, deactivatedBy: ["acid", "fire"] })
   .addTemporaryHitPoints({ value: 7 })
   .addMovement({ movementType: "land", value: 10, modifierType: "status" })
+  .addBaseSpeed({ movementType: "fly", value: 30 })
   .build();
 ```
 
@@ -471,3 +473,26 @@ api.movementTypes.selector("land"); // "land-speed"
 ```
 
 See [`MOVEMENT.md`](MOVEMENT.md) for supported movement modes and stacking behavior.
+
+
+## Base Speed catalog and Builder method
+
+```js
+const wings = api.builders
+  .effect()
+  .setName("Borrowed Wings")
+  .setDuration(10, "minutes", "turn-end")
+  .addBaseSpeed({
+    movementType: "fly",
+    value: 30
+  })
+  .build();
+
+api.baseSpeedTypes.list();
+api.baseSpeedTypes.groups("fly");
+api.baseSpeedTypes.get("swim");
+api.baseSpeedTypes.has("land");      // false
+api.baseSpeedTypes.selector("fly"); // "fly"
+```
+
+The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BASE_SPEED.md`](BASE_SPEED.md).

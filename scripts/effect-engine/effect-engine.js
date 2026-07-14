@@ -9,6 +9,7 @@ import { fastHealingComponent } from "./components/fast-healing-component.js";
 import { regenerationComponent } from "./components/regeneration-component.js";
 import { temporaryHitPointsComponent } from "./components/temporary-hit-points-component.js";
 import { movementComponent } from "./components/movement-component.js";
+import { baseSpeedComponent } from "./components/base-speed-component.js";
 
 let initialized = false;
 
@@ -25,6 +26,7 @@ export function initializeEffectEngine() {
   componentRegistry.register(regenerationComponent);
   componentRegistry.register(temporaryHitPointsComponent);
   componentRegistry.register(movementComponent);
+  componentRegistry.register(baseSpeedComponent);
 
   initialized = true;
 }

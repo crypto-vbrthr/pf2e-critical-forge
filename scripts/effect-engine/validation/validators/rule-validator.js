@@ -213,6 +213,26 @@ export function validateRules(definition) {
     });
   }
 
+  const baseSpeedByType = new Map();
+  definition.components.forEach((component, index) => {
+    if (component.type !== "baseSpeed") return;
+    const previous = baseSpeedByType.get(component.movementType);
+    if (previous !== undefined) {
+      issues.push({
+        severity: "warning",
+        code: "BASE_SPEED_DUPLICATE_TYPE",
+        messageKey: "Validation.Rules.BaseSpeedDuplicateType",
+        data: {
+          movementType: component.movementType,
+          firstComponent: previous + 1
+        },
+        componentIndex: index
+      });
+    } else {
+      baseSpeedByType.set(component.movementType, index);
+    }
+  });
+
   const frightened = definition.components
     .map((component, index) => ({ component, index }))
     .find(({ component }) => component.type === "condition" && component.slug === "frightened");

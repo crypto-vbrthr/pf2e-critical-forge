@@ -338,3 +338,31 @@ Compiled rule:
 ```
 
 A penalty uses the same component with a negative value. Selecting `all` compiles to `all-speeds`.
+
+
+## Grant a movement mode
+
+```js
+const wings = api.builders
+  .effect()
+  .setId("example.borrowed-wings")
+  .setName("Borrowed Wings")
+  .setDuration(10, "minutes", "turn-end")
+  .addBaseSpeed({
+    movementType: "fly",
+    value: 30
+  })
+  .build();
+```
+
+Compiled rule:
+
+```json
+{
+  "key": "BaseSpeed",
+  "selector": "fly",
+  "value": 30
+}
+```
+
+A separate `movement` component can modify the granted Speed.

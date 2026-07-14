@@ -54,7 +54,12 @@ import {
   getMovementTypeDefinition,
   getMovementTypeGroups,
   isKnownMovementType,
-  listMovementTypeDefinitions
+  listMovementTypeDefinitions,
+  getBaseSpeedSelector,
+  getBaseSpeedTypeDefinition,
+  getBaseSpeedTypeGroups,
+  isKnownBaseSpeedType,
+  listBaseSpeedTypeDefinitions
 } from "../effect-engine/catalogs/movement-type-catalog.js";
 
 export function initializePublicApi() {
@@ -122,6 +127,14 @@ export function initializePublicApi() {
       get: (value) => getMovementTypeDefinition(value),
       has: (value) => isKnownMovementType(value),
       selector: (value) => getMovementSelector(value)
+    }),
+
+    baseSpeedTypes: Object.freeze({
+      groups: (selected = null) => getBaseSpeedTypeGroups(selected),
+      list: () => listBaseSpeedTypeDefinitions(),
+      get: (value) => getBaseSpeedTypeDefinition(value),
+      has: (value) => isKnownBaseSpeedType(value),
+      selector: (value) => getBaseSpeedSelector(value)
     }),
 
     components: Object.freeze({

@@ -164,3 +164,20 @@ export function movement({ movementType = "land", value = 10, modifierType = "st
     metadata: { originModule: "test-suite" }
   };
 }
+
+
+export function baseSpeed({ movementType = "fly", value = 30 } = {}) {
+  return {
+    schemaVersion: 1,
+    id: "example.base-speed",
+    name: "Verliehene Bewegungsrate",
+    duration: { value: 1, unit: "minutes", expiry: "turn-end" },
+    components: [{
+      type: "baseSpeed",
+      movementType,
+      value
+    }],
+    application: {},
+    metadata: { originModule: "test-suite" }
+  };
+}

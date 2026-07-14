@@ -122,6 +122,10 @@
                   <i class="fa-solid fa-person-running"></i>
                   {{localize "PF2E_CRITICAL_FORGE.EffectForge.Movement"}}
                 </button>
+                <button type="button" data-action="addBaseSpeed">
+                  <i class="fa-solid fa-wind"></i>
+                  {{localize "PF2E_CRITICAL_FORGE.EffectForge.BaseSpeed"}}
+                </button>
               </div>
             {{/if}}
           </div>
@@ -163,6 +167,9 @@
                     {{/if}}
                     {{#if component.isMovement}}
                       {{localize "PF2E_CRITICAL_FORGE.EffectForge.Movement"}}
+                    {{/if}}
+                    {{#if component.isBaseSpeed}}
+                      {{localize "PF2E_CRITICAL_FORGE.EffectForge.BaseSpeed"}}
                     {{/if}}
                   </strong>
                 </div>
@@ -434,6 +441,36 @@
                       required
                     >
                     <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.MovementHint"}}</small>
+                  </label>
+                </div>
+              {{/if}}
+
+              {{#if component.isBaseSpeed}}
+                <div class="effect-forge-grid base-speed-grid">
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.BaseSpeedType"}}</span>
+                    <select name="components.{{component.index}}.movementType">
+                      {{#each component.baseSpeedTypeGroups as |group|}}
+                        <optgroup label="{{group.label}}">
+                          {{#each group.options as |option|}}
+                            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                          {{/each}}
+                        </optgroup>
+                      {{/each}}
+                    </select>
+                  </label>
+
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.BaseSpeedValue"}}</span>
+                    <input
+                      type="number"
+                      name="components.{{component.index}}.value"
+                      value="{{component.value}}"
+                      min="1"
+                      step="5"
+                      required
+                    >
+                    <small class="effect-forge-field-hint">{{localize "PF2E_CRITICAL_FORGE.EffectForge.BaseSpeedHint"}}</small>
                   </label>
                 </div>
               {{/if}}

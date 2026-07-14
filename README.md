@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.2.8-dev` adds movement modifiers as the tenth built-in effect component. It supports all Speeds or a specific movement mode and compiles through PF2e's native Speed selectors on a `FlatModifier` Rule Element.
+Version `0.2.9-dev` adds `baseSpeed` as the eleventh built-in effect component. It grants a climb, burrow, fly, or swim Speed through PF2e's native `BaseSpeed` Rule Element, while the existing `movement` component remains responsible for bonuses and penalties.
 
 The current engine includes:
 
@@ -22,8 +22,8 @@ The current engine includes:
 - a central weakness-type catalog backed by `CONFIG.PF2E.weaknessTypes`;
 - a grouped immunity-type catalog backed by `CONFIG.PF2E.immunityTypes`;
 - a PF2e condition catalog that distinguishes valued and non-valued conditions;
-- `condition`, `modifier`, `persistentDamage`, `resistance`, `weakness`, `immunity`, `fastHealing`, `regeneration`, `temporaryHitPoints`, and `movement` components;
-- compilation to PF2e `GrantItem`, `FlatModifier`, `Resistance`, `Weakness`, `Immunity`, `FastHealing`, and `TempHP` Rule Elements, including persistent-damage and recovery-DC alterations;
+- `condition`, `modifier`, `persistentDamage`, `resistance`, `weakness`, `immunity`, `fastHealing`, `regeneration`, `temporaryHitPoints`, `movement`, and `baseSpeed` components;
+- compilation to PF2e `GrantItem`, `FlatModifier`, `BaseSpeed`, `Resistance`, `Weakness`, `Immunity`, `FastHealing`, and `TempHP` Rule Elements, including persistent-damage and recovery-DC alterations;
 - PF2e Effect Item source generation;
 - world Item creation, Actor/Token application, and removal by definition ID;
 - a resizable, localized, component-based GM interface;
@@ -68,6 +68,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md): Effect Definition schema
 - [`docs/VALIDATION.md`](docs/VALIDATION.md): report format, phases, and issue codes
 - [`docs/SELECTORS.md`](docs/SELECTORS.md): selector catalog and custom selectors
+- [`docs/BASE_SPEED.md`](docs/BASE_SPEED.md): granting climb, burrow, fly, and swim Speeds
 - [`docs/DAMAGE_TYPES.md`](docs/DAMAGE_TYPES.md): damage-type catalog and groups
 - [`docs/RESISTANCE_TYPES.md`](docs/RESISTANCE_TYPES.md): resistance-type catalog and groups
 - [`docs/WEAKNESS_TYPES.md`](docs/WEAKNESS_TYPES.md): weakness-type catalog and groups

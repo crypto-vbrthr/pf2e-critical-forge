@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { installFoundryMock } from "./helpers/foundry-mock.js";
-import { fastHealing, fireImmunity, fireResistance, fireWeakness, movement, persistentBleed, proneEffect, regeneration, shakenNerves, temporaryHitPoints } from "./fixtures/effects.js";
+import { baseSpeed, fastHealing, fireImmunity, fireResistance, fireWeakness, movement, persistentBleed, proneEffect, regeneration, shakenNerves, temporaryHitPoints } from "./fixtures/effects.js";
 
 installFoundryMock({
   skills: {
@@ -356,5 +356,37 @@ test("overlapping movement modifiers of the same type produce a stacking warning
   assert.equal(report.valid, true);
   assert.equal(report.warnings.some(
     (issue) => issue.code === "MOVEMENT_MODIFIER_OVERLAP"
+  ), true);
+});
+
+
+test("base Speed validates grantable modes and positive values", () => {
+  assert.equal(analyzeEffectDefinition(baseSpeed()).valid, true);
+
+  const invalidType = analyzeEffectDefinition(baseSpeed({ movementType: "land" }));
+  assert.equal(invalidType.errors.some(
+    (issue) => issue.code === "BASE_SPEED_TYPE_INVALID"
+  ), true);
+
+  const invalidValue = analyzeEffectDefinition(baseSpeed({ value: 0 }));
+  assert.equal(invalidValue.errors.some(
+    (issue) => issue.code === "BASE_SPEED_VALUE_INVALID"
+  ), true);
+
+  const unusual = analyzeEffectDefinition(baseSpeed({ value: 17 }));
+  assert.equal(unusual.valid, true);
+  assert.equal(unusual.warnings.some(
+    (issue) => issue.code === "BASE_SPEED_VALUE_UNUSUAL_INCREMENT"
+  ), true);
+});
+
+test("duplicate base Speeds of the same movement mode produce a warning", () => {
+  const definition = baseSpeed({ movementType: "fly", value: 30 });
+  definition.components.push({ type: "baseSpeed", movementType: "fly", value: 40 });
+
+  const report = analyzeEffectDefinition(definition);
+  assert.equal(report.valid, true);
+  assert.equal(report.warnings.some(
+    (issue) => issue.code === "BASE_SPEED_DUPLICATE_TYPE"
   ), true);
 });

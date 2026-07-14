@@ -204,6 +204,24 @@ export function buildMovement({ movementType, value, modifierType = "status" } =
   });
 }
 
+export function buildBaseSpeed({ movementType, value } = {}) {
+  const normalizedType = String(movementType ?? "").trim();
+  if (!normalizedType) {
+    throw new TypeError("Base Speed movement type must not be empty.");
+  }
+
+  const numericValue = Number(value);
+  if (!Number.isInteger(numericValue) || numericValue < 1) {
+    throw new TypeError("Base Speed value must be a positive integer.");
+  }
+
+  return Object.freeze({
+    type: "baseSpeed",
+    movementType: normalizedType,
+    value: numericValue
+  });
+}
+
 export function cloneComponent(component) {
   if (!component || typeof component !== "object" || Array.isArray(component)) {
     throw new TypeError("Component must be an object.");

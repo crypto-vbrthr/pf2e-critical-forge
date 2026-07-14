@@ -10,6 +10,7 @@ import {
   buildRegeneration,
   buildTemporaryHitPoints,
   buildMovement,
+  buildBaseSpeed,
   cloneComponent
 } from "./component-builder.js";
 import { buildDuration } from "./duration-builder.js";
@@ -150,6 +151,11 @@ export class EffectBuilder {
 
   addMovement(options) {
     this.#definition.components.push(buildMovement(options));
+    return this;
+  }
+
+  addBaseSpeed(options) {
+    this.#definition.components.push(buildBaseSpeed(options));
     return this;
   }
 

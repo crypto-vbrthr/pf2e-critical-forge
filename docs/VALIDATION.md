@@ -93,6 +93,9 @@ When schema or component validation produces an error, later rule and compatibil
 | `MOVEMENT_VALUE_INVALID` | error | Movement value is zero or not an integer. |
 | `MOVEMENT_MODIFIER_TYPE_INVALID` | error | Movement modifier type is unsupported. |
 | `MOVEMENT_VALUE_UNUSUAL_INCREMENT` | warning | Movement value does not use a 5-foot increment. |
+| `BASE_SPEED_TYPE_INVALID` | error | The movement mode cannot be granted by `BaseSpeed`. |
+| `BASE_SPEED_VALUE_INVALID` | error | Base Speed is not a positive integer. |
+| `BASE_SPEED_VALUE_UNUSUAL_INCREMENT` | warning | Base Speed does not use a 5-foot increment. |
 
 ### Rule codes
 
@@ -109,6 +112,7 @@ When schema or component validation produces an error, later rule and compatibil
 | `IMMUNITY_DUPLICATE_TYPE` | warning | Multiple components grant the same immunity type. |
 | `FAST_HEALING_MULTIPLE_SOURCES` | warning | Multiple fast-healing components require an interaction check. |
 | `MOVEMENT_MODIFIER_OVERLAP` | warning | Overlapping Speed modifiers use the same modifier type and may not stack. |
+| `BASE_SPEED_DUPLICATE_TYPE` | warning | Multiple components grant the same movement mode. |
 
 ### Compatibility codes
 
@@ -162,3 +166,13 @@ Use `analyze()` for module logic and `validate()` when directly presenting text 
 | `MOVEMENT_MODIFIER_TYPE_INVALID` | error | The modifier type is unsupported. |
 | `MOVEMENT_VALUE_UNUSUAL_INCREMENT` | warning | The value is not divisible by 5. |
 | `MOVEMENT_MODIFIER_OVERLAP` | warning | Two overlapping components use the same modifier type. |
+
+
+### Base Speed
+
+| Code | Severity | Meaning |
+|---|---|---|
+| `BASE_SPEED_TYPE_INVALID` | error | The selected movement mode is not grantable. |
+| `BASE_SPEED_VALUE_INVALID` | error | The value is not a positive integer. |
+| `BASE_SPEED_VALUE_UNUSUAL_INCREMENT` | warning | The value is not divisible by 5. |
+| `BASE_SPEED_DUPLICATE_TYPE` | warning | More than one component grants the same movement mode. |

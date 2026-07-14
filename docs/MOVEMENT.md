@@ -48,7 +48,7 @@ The compiler emits a native PF2e `FlatModifier`:
 
 ## Existing Speeds only
 
-A movement modifier changes a Speed that the Actor already possesses. It does not grant a missing fly, swim, climb, or burrow Speed. Granting a new movement mode belongs to a separate future `BaseSpeed` component.
+A movement modifier changes a Speed that the Actor already possesses. It does not grant a missing fly, swim, climb, or burrow Speed. Granting a new movement mode belongs to the separate `baseSpeed` component documented in [`BASE_SPEED.md`](BASE_SPEED.md).
 
 ## Stacking
 

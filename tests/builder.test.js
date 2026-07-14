@@ -40,6 +40,7 @@ test("EffectBuilder creates an immutable normalized definition", () => {
     .addFastHealing({ value: "4" })
     .addRegeneration({ value: "5", deactivatedBy: ["acid", "fire", "acid"] })
     .addTemporaryHitPoints({ value: "7" })
+    .addBaseSpeed({ movementType: "fly", value: "30" })
     .setMetadata({ originModule: "tests", nested: { enabled: true } })
     .build();
 
@@ -90,6 +91,11 @@ test("EffectBuilder creates an immutable normalized definition", () => {
   assert.deepEqual(definition.components[8], {
     type: "temporaryHitPoints",
     value: 7
+  });
+  assert.deepEqual(definition.components[9], {
+    type: "baseSpeed",
+    movementType: "fly",
+    value: 30
   });
   assertDeepFrozen(definition);
 });
@@ -209,5 +215,23 @@ test("movement builder normalizes speed type, value, and modifier type", () => {
   assert.throws(
     () => createEffectBuilder().addMovement({ movementType: "land", value: 0 }),
     /non-zero integer/
+  );
+});
+
+
+test("base Speed builder normalizes a granted movement mode", () => {
+  const definition = createEffectBuilder()
+    .setName("Wings")
+    .addBaseSpeed({ movementType: "fly", value: "25" })
+    .build();
+
+  assert.deepEqual(definition.components[0], {
+    type: "baseSpeed",
+    movementType: "fly",
+    value: 25
+  });
+  assert.throws(
+    () => createEffectBuilder().addBaseSpeed({ movementType: "fly", value: 0 }),
+    /positive integer/
   );
 });

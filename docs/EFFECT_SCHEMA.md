@@ -351,3 +351,16 @@ The value must be a positive integer. The compiler emits:
 ```
 
 `movementType` is one of `all`, `land`, `burrow`, `climb`, `fly`, or `swim`. `value` must be a non-zero integer and is measured in feet. `modifierType` is `status`, `circumstance`, `item`, or `untyped`. The component modifies an existing Speed and does not grant a missing movement mode.
+
+
+## Base Speed component
+
+```js
+{
+  type: "baseSpeed",
+  movementType: "fly",
+  value: 30
+}
+```
+
+`movementType` is one of `burrow`, `climb`, `fly`, or `swim`. `value` must be a positive integer measured in feet. The compiler emits a native PF2e `BaseSpeed` Rule Element whose selector is the movement-mode slug without the `-speed` suffix. The component grants a movement mode; bonuses and penalties belong in the separate `movement` component.

@@ -316,7 +316,11 @@
         "ClimbSpeed": "Climb Speed",
         "FlySpeed": "Fly Speed",
         "SwimSpeed": "Swim Speed"
-      }
+      },
+      "BaseSpeed": "Base Speed",
+      "BaseSpeedType": "Granted movement mode",
+      "BaseSpeedValue": "Speed in feet",
+      "BaseSpeedHint": "Grants climb, burrow, fly, or swim as a new base Speed. Existing movement modifiers can then alter it."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialized.",
@@ -371,7 +375,8 @@
         "FastHealingMultipleSources": "Multiple components grant fast healing. Verify how the sources should interact on the target; in many cases only the highest value is intended.",
         "RegenerationMultipleSources": "Multiple components grant regeneration. Verify their values and deactivation conditions; in many cases only one regeneration source is intended.",
         "TemporaryHitPointsMultipleSources": "Multiple components grant temporary Hit Points. They normally do not stack; compare component {firstComponent} ({firstValue}) with this value ({value}).",
-        "MovementOverlap": "Component {firstComponent} and this component affect the same Speed with the same modifier type. Under the stacking rules, normally only the stronger bonus or penalty applies."
+        "MovementOverlap": "Component {firstComponent} and this component affect the same Speed with the same modifier type. Under the stacking rules, normally only the stronger bonus or penalty applies.",
+        "BaseSpeedDuplicateType": "Multiple components grant the same movement mode “{movementType}”. Usually only one base Speed of that type should be defined."
       },
       "Compatibility": {
         "TargetPresent": "Target analysis was prepared for “{targetName}”. Concrete immunity checks will follow in a later version."
@@ -410,6 +415,11 @@
           "ValueInvalid": "The movement value must be a non-zero integer.",
           "ModifierTypeInvalid": "“{modifierType}” is not a supported movement modifier type.",
           "UnusualIncrement": "The movement change {value} does not use the usual 5-foot increment."
+        },
+        "BaseSpeed": {
+          "TypeInvalid": "“{movementType}” cannot be granted as a base Speed.",
+          "ValueInvalid": "The base Speed must be a positive integer.",
+          "UnusualIncrement": "The base Speed {value} does not use the usual 5-foot increment."
         }
       }
     }

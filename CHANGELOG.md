@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.9-dev
+
+### Added
+- `baseSpeed` component for granting climb, burrow, fly, or swim Speeds.
+- Builder method `addBaseSpeed()` with movement type and positive integer value.
+- Public `api.baseSpeedTypes` helpers derived from the central movement-type catalog.
+- Effect Forge editor card and component-menu entry for granted movement modes.
+- Validation codes for invalid types, values, unusual increments, and duplicate base Speeds.
+- Compiler support for native PF2e `BaseSpeed` Rule Elements.
+- Builder, catalog, validation, and compiler regression tests.
+- `docs/BASE_SPEED.md`.
+
+### Changed
+- Automated suite expanded from 55 to 60 tests.
+- Public API version increased to `0.2.8`; Effect Definition schema remains version `1`.
+
 ## 0.2.8-dev
 
 ### Added

@@ -316,7 +316,11 @@
         "ClimbSpeed": "Kletterbewegungsrate",
         "FlySpeed": "Flugbewegungsrate",
         "SwimSpeed": "Schwimmbewegungsrate"
-      }
+      },
+      "BaseSpeed": "Grundbewegungsrate",
+      "BaseSpeedType": "Verliehene Bewegungsart",
+      "BaseSpeedValue": "Bewegungsrate in Fuß",
+      "BaseSpeedHint": "Verleiht Klettern, Graben, Fliegen oder Schwimmen als neue Grundbewegungsrate. Bestehende Bewegungsmodifikatoren können sie anschließend verändern."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialisiert.",
@@ -371,7 +375,8 @@
         "FastHealingMultipleSources": "Mehrere Komponenten verleihen Schnelle Heilung. Prüfe, wie die Quellen am Ziel zusammenwirken; in vielen Fällen ist nur der höchste Wert beabsichtigt.",
         "RegenerationMultipleSources": "Mehrere Komponenten verleihen Regeneration. Prüfe die Werte und Abschaltbedingungen; in vielen Fällen ist nur eine Regenerationsquelle beabsichtigt.",
         "TemporaryHitPointsMultipleSources": "Mehrere Komponenten vergeben temporäre Trefferpunkte. Diese addieren sich normalerweise nicht; vergleiche Komponente {firstComponent} ({firstValue}) mit diesem Wert ({value}).",
-        "MovementOverlap": "Komponente {firstComponent} und diese Komponente beeinflussen dieselbe Bewegungsrate mit demselben Modifikatortyp. Nach den Stapelregeln gilt normalerweise nur der stärkere Bonus beziehungsweise Malus."
+        "MovementOverlap": "Komponente {firstComponent} und diese Komponente beeinflussen dieselbe Bewegungsrate mit demselben Modifikatortyp. Nach den Stapelregeln gilt normalerweise nur der stärkere Bonus beziehungsweise Malus.",
+        "BaseSpeedDuplicateType": "Mehrere Komponenten verleihen dieselbe Bewegungsart „{movementType}“. Üblicherweise sollte nur eine Grundbewegungsrate dieser Art definiert werden."
       },
       "Compatibility": {
         "TargetPresent": "Die Zielprüfung wurde für „{targetName}“ vorbereitet. Konkrete Immunitätsprüfungen folgen in einer späteren Version."
@@ -410,6 +415,11 @@
           "ValueInvalid": "Der Bewegungswert muss eine von 0 verschiedene ganze Zahl sein.",
           "ModifierTypeInvalid": "„{modifierType}“ ist kein unterstützter Modifikatortyp für Bewegung.",
           "UnusualIncrement": "Die Bewegungsänderung {value} verwendet keine übliche 5-Fuß-Schrittweite."
+        },
+        "BaseSpeed": {
+          "TypeInvalid": "„{movementType}“ kann nicht als Grundbewegungsrate verliehen werden.",
+          "ValueInvalid": "Die Grundbewegungsrate muss eine positive ganze Zahl sein.",
+          "UnusualIncrement": "Die Grundbewegungsrate {value} verwendet nicht das übliche 5-Fuß-Raster."
         }
       }
     }

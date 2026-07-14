@@ -186,3 +186,16 @@ test("movement type catalog maps modes to native speed selectors", () => {
   assert.equal(groups.find((group) => group.id === "mode")
     ?.options.some((option) => option.value === "swim" && option.selected), true);
 });
+
+
+test("base Speed catalog exposes only grantable movement modes", () => {
+  assert.equal(movementTypes.isKnownBaseSpeedType("fly"), true);
+  assert.equal(movementTypes.isKnownBaseSpeedType("land"), false);
+  assert.equal(movementTypes.isKnownBaseSpeedType("all"), false);
+  assert.equal(movementTypes.getBaseSpeedSelector("swim"), "swim");
+
+  const groups = movementTypes.getBaseSpeedTypeGroups("climb");
+  const options = groups.flatMap((group) => group.options);
+  assert.equal(options.some((option) => option.value === "climb" && option.selected), true);
+  assert.equal(options.some((option) => option.value === "land"), false);
+});
