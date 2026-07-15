@@ -4,6 +4,10 @@ import {
   MODULE_ID,
   MODULE_VERSION
 } from "../constants.js";
+import {
+  EffectMigrationError,
+  migrateEffectDefinition
+} from "../effect-engine/migration/migration-engine.js";
 
 export const EFFECT_EXPORT_FORMAT = `${MODULE_ID}.effect`;
 export const EFFECT_EXPORT_FORMAT_VERSION = 1;
@@ -87,8 +91,7 @@ function parseJson(value) {
 
 function isRawDefinition(value) {
   return isObject(value)
-    && Object.hasOwn(value, "schemaVersion")
-    && Object.hasOwn(value, "components");
+    && (Object.hasOwn(value, "components") || Object.hasOwn(value, "effects"));
 }
 
 export function parseEffectImport(value, {
@@ -147,22 +150,36 @@ export function parseEffectImport(value, {
     envelope = parsed;
   }
 
-  if (definition.schemaVersion !== expectedSchemaVersion) {
-    throw new EffectTransferError(
-      "IMPORT_SCHEMA_VERSION_UNSUPPORTED",
-      "The Effect Definition schema version is not supported.",
-      {
-        actual: definition.schemaVersion,
-        expected: expectedSchemaVersion
-      }
-    );
+  let migration;
+  try {
+    migration = migrateEffectDefinition(definition, { targetVersion: expectedSchemaVersion });
+  } catch (error) {
+    if (error instanceof EffectMigrationError) {
+      throw new EffectTransferError(
+        "IMPORT_SCHEMA_VERSION_UNSUPPORTED",
+        "The Effect Definition schema version is not supported.",
+        {
+          actual: definition.schemaVersion ?? 0,
+          expected: expectedSchemaVersion,
+          migrationCode: error.code
+        }
+      );
+    }
+    throw error;
   }
 
   return {
-    definition: clone(definition),
+    definition: clone(migration.definition),
     unmanagedRules: clone(unmanagedRules),
     sourceFormat,
-    envelope: envelope ? clone(envelope) : null
+    envelope: envelope ? clone(envelope) : null,
+    migration: {
+      fromVersion: migration.fromVersion,
+      toVersion: migration.toVersion,
+      migrated: migration.migrated,
+      steps: clone(migration.steps),
+      warnings: clone(migration.warnings)
+    }
   };
 }
 

@@ -27,6 +27,9 @@ External module ─┘       │
                          ▼
                  Effect Definition
                          │
+                         ▼
+                 Migration Engine
+                         │
                  ┌───────┴────────┐
                  ▼                ▼
           Validation Engine    Compiler
@@ -65,6 +68,10 @@ effect-engine/catalogs/
 The selector catalog is shared by the GUI and validator. The condition catalog resolves compendium UUIDs and identifies valued conditions. Damage, resistance, weakness, and immunity catalogs group their PF2e configuration entries for the GUI and expose the same metadata through the public API.
 
 Catalogs are metadata services, not compilers.
+
+### Migration Engine
+
+`effect-engine/migration/` upgrades older Effect Definitions before validation or editing. Migrations are sequential, immutable, and versioned. Legacy data is migrated in memory; Foundry Items are only rewritten when the user explicitly saves them. Unsupported future versions fail safely instead of being guessed.
 
 ### Validation Engine
 
@@ -122,7 +129,10 @@ The GUI is a thin consumer:
 - gathers user input;
 - builds definitions through the public Builder;
 - displays validation reports;
-- requests compilation or application through the public API.
+- requests compilation or application through the public API;
+- tracks unsaved changes and protects destructive navigation;
+- keeps component ordering and collapsed state as presentation-only data;
+- links validation issues back to the affected component cards.
 
 It does not duplicate PF2e compilation rules.
 

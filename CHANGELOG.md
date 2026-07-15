@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.0-dev
+
+### Added
+- Schema Migration Engine with public `api.effects.migrate()` support.
+- Automatic migration for legacy raw imports and stored Item definitions.
+- Legacy schema-0 normalization for early field aliases and missing default containers.
+- Unsaved-change tracking with discard confirmation when loading, importing, resetting, or closing.
+- Component actions for duplicate, move up, move down, expand, and collapse.
+- Component-level validation markers and links from validation messages back to the affected card.
+- Client-side persistence of Effect Forge window size and position.
+- Button-state tooltips for unavailable update and token-application actions.
+- Eight regression tests for migration, component presentation state, editor snapshots, and window-state normalization.
+- New migration documentation in `docs/MIGRATIONS.md`.
+
+### Changed
+- Imported and loaded legacy definitions are migrated in memory and written back only when the user saves.
+- Collapsed component state is presentation-only and never appears in exported Effect Definitions.
+- The automated suite expanded from 80 to 88 tests; measured line coverage is 93.79%.
+- Module version increased to `0.4.0-dev`; public API version increased to `0.4.0`; Effect Definition schema remains version `1`.
+
 ## 0.3.3-dev
 
 ### Fixed

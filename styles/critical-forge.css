@@ -862,3 +862,165 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* v0.4.0 polish */
+.effect-forge-workflow-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.effect-forge-dirty-indicator,
+.effect-forge-migration-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.5rem;
+  border: 1px solid var(--ef-border);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
+.effect-forge-dirty-indicator.clean {
+  color: var(--ef-green);
+  background: rgba(103, 191, 114, 0.08);
+  border-color: rgba(103, 191, 114, 0.35);
+}
+
+.effect-forge-dirty-indicator.dirty {
+  color: var(--ef-orange);
+  background: rgba(246, 162, 58, 0.1);
+  border-color: rgba(246, 162, 58, 0.4);
+}
+
+.effect-forge-migration-notice {
+  width: fit-content;
+  color: var(--ef-blue);
+  background: rgba(90, 162, 242, 0.08);
+  border-color: rgba(90, 162, 242, 0.35);
+}
+
+.effect-forge-component-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.effect-forge-component-collapse {
+  width: 1.8rem;
+  min-width: 1.8rem;
+  height: 1.8rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ef-muted);
+}
+
+.effect-forge-component-collapse:hover {
+  color: var(--ef-text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.effect-forge-component-header-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.2rem;
+}
+
+.effect-forge-component-header-actions .icon {
+  width: 1.85rem;
+  min-width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+}
+
+.effect-forge-component-header-actions .icon.danger:hover:not(:disabled) {
+  color: #fff;
+  background: rgba(220, 103, 103, 0.35);
+}
+
+.effect-forge-component-validation {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 1.9rem;
+  padding: 0.2rem 0.38rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.effect-forge-component-validation.severity-error {
+  color: var(--ef-red);
+  background: rgba(220, 103, 103, 0.12);
+}
+
+.effect-forge-component-validation.severity-warning {
+  color: var(--ef-orange);
+  background: rgba(246, 162, 58, 0.12);
+}
+
+.effect-forge-component-validation.severity-hint,
+.effect-forge-component-validation.severity-info {
+  color: var(--ef-blue);
+  background: rgba(90, 162, 242, 0.12);
+}
+
+.effect-forge-component-card.validation-error {
+  box-shadow: inset 0 0 0 1px rgba(220, 103, 103, 0.25);
+}
+
+.effect-forge-component-card.validation-warning {
+  box-shadow: inset 0 0 0 1px rgba(246, 162, 58, 0.2);
+}
+
+.effect-forge-component-card.collapsed {
+  gap: 0.35rem;
+}
+
+.effect-forge-component-summary {
+  margin: 0 0 0 2.35rem;
+  color: var(--ef-muted);
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.effect-forge-validation-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.effect-forge-validation-meta button {
+  width: auto;
+  min-height: 1.8rem;
+  padding: 0.25rem 0.45rem;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.effect-forge-component-card.validation-focus {
+  animation: effect-forge-validation-focus 1.35s ease;
+}
+
+@keyframes effect-forge-validation-focus {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(246, 162, 58, 0); }
+  30% { box-shadow: 0 0 0 4px rgba(246, 162, 58, 0.42); }
+}
+
+@media (max-width: 920px) {
+  .effect-forge-component-card > header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .effect-forge-component-header-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+}

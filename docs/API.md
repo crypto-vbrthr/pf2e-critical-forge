@@ -35,6 +35,32 @@ Consumers should branch on `api.version` for API capabilities and on `api.schema
 
 ## Effects
 
+### `api.effects.migrate(definition, options?)`
+
+Migrates an older Effect Definition to the current schema without mutating the supplied object. Definitions without `schemaVersion` are treated as legacy schema version `0`.
+
+```js
+const migration = api.effects.migrate(oldDefinition);
+
+console.log(migration.migrated);
+console.log(migration.definition);
+```
+
+Return shape:
+
+```js
+{
+  definition: EffectDefinition,
+  fromVersion: 0,
+  toVersion: 1,
+  migrated: true,
+  steps: [],
+  warnings: []
+}
+```
+
+Future schema versions and missing migration paths reject with `EffectMigrationError`. See [`MIGRATIONS.md`](MIGRATIONS.md).
+
 ### `api.effects.analyze(definition, context?)`
 
 Runs the structured Validation Engine without compiling or mutating the definition.
@@ -201,11 +227,18 @@ Return shape:
   definition: EffectDefinition,
   unmanagedRules: RuleElementSource[],
   sourceFormat: "critical-forge-export" | "effect-definition",
-  envelope: object | null
+  envelope: object | null,
+  migration: {
+    fromVersion: 0,
+    toVersion: 1,
+    migrated: true,
+    steps: [],
+    warnings: []
+  }
 }
 ```
 
-Parsing checks transfer and schema versions but deliberately leaves rule validation to `analyze()`. See [`IMPORT_EXPORT.md`](IMPORT_EXPORT.md).
+Parsing checks transfer versions, migrates supported older schemas, and deliberately leaves rule validation to `analyze()`. See [`IMPORT_EXPORT.md`](IMPORT_EXPORT.md).
 
 ### `api.effects.updateItem(item, definition, options?)`
 

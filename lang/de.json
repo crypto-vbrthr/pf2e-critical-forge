@@ -364,7 +364,25 @@
         "ExportValidationFailed": "Der Effekt ist noch nicht gültig und kann deshalb nicht exportiert werden. Erste Meldung: {code} ({count} Fehler).",
         "ClipboardUnavailable": "Der Zugriff auf die Zwischenablage ist in dieser Umgebung nicht verfügbar.",
         "Unknown": "Der Import oder Export ist fehlgeschlagen."
-      }
+      },
+      "UnsavedChanges": "Ungespeicherte Änderungen",
+      "AllChangesSaved": "Keine ungespeicherten Änderungen",
+      "DiscardChangesTitle": "Änderungen verwerfen?",
+      "DiscardChangesPrompt": "Es gibt ungespeicherte Änderungen. Sollen sie verworfen werden?",
+      "MigrationApplied": "Definition automatisch migriert:",
+      "ComponentIssueCount": "{count} Meldung(en) zu dieser Komponente",
+      "ToggleComponent": "Komponente ein- oder ausklappen",
+      "MoveComponentUp": "Komponente nach oben verschieben",
+      "MoveComponentDown": "Komponente nach unten verschieben",
+      "DuplicateComponent": "Komponente duplizieren",
+      "GoToComponent": "Zu Komponente",
+      "ValidateTooltip": "Effektdefinition prüfen",
+      "CompileTooltip": "PF2e-Item-Daten erzeugen",
+      "CreateItemTooltip": "Als neues Welt-Item speichern",
+      "UpdateItemTooltip": "Geladenes Welt-Item aktualisieren",
+      "UpdateItemDisabledTooltip": "Zuerst ein bestehendes Welt-Item laden",
+      "ApplySelectedTooltip": "Effekt auf die ausgewählten Tokens anwenden",
+      "ApplySelectedDisabledTooltip": "Zuerst mindestens ein Token auswählen"
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialisiert.",

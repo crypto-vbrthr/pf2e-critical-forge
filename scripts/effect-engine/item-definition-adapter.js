@@ -1,4 +1,5 @@
 import { EFFECT_SCHEMA_VERSION, MODULE_ID } from "../constants.js";
+import { migrateEffectDefinition } from "./migration/migration-engine.js";
 import {
   initializeConditionCatalog,
   listConditionDefinitions
@@ -293,9 +294,11 @@ export async function parseEffectItemRules(rules = []) {
 export async function extractEffectDefinitionFromItem(item) {
   const source = readItemSource(item);
   const moduleFlags = source.flags?.[MODULE_ID] ?? {};
-  const stored = moduleFlags.definition && typeof moduleFlags.definition === "object"
+  const storedRaw = moduleFlags.definition && typeof moduleFlags.definition === "object"
     ? clone(moduleFlags.definition)
     : null;
+  const storedMigration = storedRaw ? migrateEffectDefinition(storedRaw) : null;
+  const stored = storedMigration?.definition ?? null;
   const parsed = await parseEffectItemRules(source.system?.rules ?? []);
 
   const storedComponents = Array.isArray(stored?.components) ? stored.components : null;
@@ -336,8 +339,26 @@ export async function extractEffectDefinitionFromItem(item) {
     sourceItemId: source._id ?? source.id ?? null,
     sourceItemUuid: item.uuid ?? source.uuid ?? null,
     source: canUseStoredComponents ? "stored-definition" : "rules",
-    warnings: unmanagedRules.length > 0
-      ? [{ code: "ITEM_UNMANAGED_RULES_PRESERVED", count: unmanagedRules.length }]
-      : []
+    migration: storedMigration
+      ? {
+          fromVersion: storedMigration.fromVersion,
+          toVersion: storedMigration.toVersion,
+          migrated: storedMigration.migrated,
+          steps: clone(storedMigration.steps),
+          warnings: clone(storedMigration.warnings)
+        }
+      : null,
+    warnings: [
+      ...(unmanagedRules.length > 0
+        ? [{ code: "ITEM_UNMANAGED_RULES_PRESERVED", count: unmanagedRules.length }]
+        : []),
+      ...(storedMigration?.migrated
+        ? [{
+            code: "ITEM_DEFINITION_MIGRATED",
+            fromVersion: storedMigration.fromVersion,
+            toVersion: storedMigration.toVersion
+          }]
+        : [])
+    ]
   };
 }

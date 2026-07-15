@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.3.3-dev` provides portable JSON import and export and uses Foundry's native file-download utility for reliable desktop-client exports. Effects can be moved between worlds as files or clipboard data while retaining the complete Effect Definition and preserved third-party Rule Elements. Existing Items can still be loaded by selection or drag-and-drop and updated in place where writable.
+Version `0.4.0-dev` adds schema migration and the first full GUI-polish pass. Legacy definitions are migrated automatically, unsaved changes are protected, component cards can be duplicated, reordered, and collapsed, validation messages can jump to affected components, and the window remembers its client-side size and position.
 
 The current engine includes:
 

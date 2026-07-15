@@ -364,7 +364,25 @@
         "ExportValidationFailed": "The effect is not valid yet and cannot be exported. First issue: {code} ({count} errors).",
         "ClipboardUnavailable": "Clipboard access is unavailable in this environment.",
         "Unknown": "The import or export failed."
-      }
+      },
+      "UnsavedChanges": "Unsaved changes",
+      "AllChangesSaved": "No unsaved changes",
+      "DiscardChangesTitle": "Discard changes?",
+      "DiscardChangesPrompt": "There are unsaved changes. Discard them?",
+      "MigrationApplied": "Definition migrated automatically:",
+      "ComponentIssueCount": "{count} issue(s) for this component",
+      "ToggleComponent": "Expand or collapse component",
+      "MoveComponentUp": "Move component up",
+      "MoveComponentDown": "Move component down",
+      "DuplicateComponent": "Duplicate component",
+      "GoToComponent": "Go to component",
+      "ValidateTooltip": "Validate the Effect Definition",
+      "CompileTooltip": "Generate PF2e Item data",
+      "CreateItemTooltip": "Save as a new world Item",
+      "UpdateItemTooltip": "Update the loaded world Item",
+      "UpdateItemDisabledTooltip": "Load an existing world Item first",
+      "ApplySelectedTooltip": "Apply the effect to selected tokens",
+      "ApplySelectedDisabledTooltip": "Select at least one token first"
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialized.",

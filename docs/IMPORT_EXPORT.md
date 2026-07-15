@@ -19,8 +19,8 @@ Exports are allowed only for Effect Definitions that pass the Validation Engine.
   "exportedAt": "2026-07-15T08:00:00.000Z",
   "generator": {
     "moduleId": "pf2e-critical-forge",
-    "moduleVersion": "0.3.3-dev",
-    "apiVersion": "0.3.1",
+    "moduleVersion": "0.4.0-dev",
+    "apiVersion": "0.4.0",
     "schemaVersion": 1
   },
   "definition": {},
@@ -35,10 +35,12 @@ Exports are allowed only for Effect Definitions that pass the Validation Engine.
 The GUI accepts imports from a JSON file or from the clipboard. Importing:
 
 1. parses the export envelope or a raw Effect Definition;
-2. checks the export and schema versions;
-3. runs the Validation Engine;
-4. opens the result as a new, unsaved effect;
-5. preserves any exported unmanaged Rule Elements.
+2. checks the export format version;
+3. migrates older Effect Definitions to the current schema in memory;
+4. rejects unsupported future schema versions;
+5. runs the Validation Engine in the GUI workflow;
+6. opens the result as a new, unsaved effect;
+7. preserves any exported unmanaged Rule Elements.
 
 The imported effect is deliberately detached from the Item that may have produced the export. Use **Create new Item** to save it in the current world.
 
@@ -84,10 +86,11 @@ const json = api.effects.serializeExport(definition, {
 const imported = api.effects.parseImport(json);
 console.log(imported.definition);
 console.log(imported.unmanagedRules);
+console.log(imported.migration);
 ```
 
-`parseImport()` does not run the Validation Engine. API consumers should call `api.effects.analyze(imported.definition)` before applying or storing imported data.
+`parseImport()` performs schema migration but does not run the Validation Engine. API consumers should call `api.effects.analyze(imported.definition)` before applying or storing imported data.
 
 ## Compatibility
 
-The export envelope and the Effect Definition schema are versioned separately. A future schema migration service can therefore migrate definitions without changing the outer transfer format.
+The export envelope and the Effect Definition schema are versioned separately. The Migration Engine upgrades older definitions without changing the outer transfer format. Future schema versions are rejected safely until a matching migration path exists.

@@ -11,6 +11,7 @@ import {
 import { buildPf2eEffectSource } from "../effect-engine/compiler/pf2e-item-builder.js";
 import { NotImplementedError } from "../core/errors.js";
 import { extractEffectDefinitionFromItem } from "../effect-engine/item-definition-adapter.js";
+import { migrateEffectDefinition } from "../effect-engine/migration/migration-engine.js";
 import {
   createEffectExportPackage,
   parseEffectImport,
@@ -19,6 +20,7 @@ import {
 
 export function createEffectApi() {
   return Object.freeze({
+    migrate: (definition, options = {}) => migrateEffectDefinition(definition, options),
     validate: (definition) => validateEffectDefinition(definition),
     analyze: (definition, context = {}) => analyzeEffectDefinition(definition, context),
     compile: (definition, context = {}) => compileEffectDefinition(definition, context),

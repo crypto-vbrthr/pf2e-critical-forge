@@ -1,4 +1,4 @@
-import { MODULE_ID } from "../constants.js";
+import { MODULE_ID, SETTINGS } from "../constants.js";
 import {
   initializeConditionCatalog,
   isValuedCondition
@@ -9,6 +9,15 @@ import { getWeaknessTypeGroups } from "../effect-engine/catalogs/weakness-type-c
 import { getImmunityTypeGroups } from "../effect-engine/catalogs/immunity-type-catalog.js";
 import { getBaseSpeedTypeGroups, getMovementTypeGroups } from "../effect-engine/catalogs/movement-type-catalog.js";
 import { captureScrollState, restoreScrollState } from "./view-state.js";
+import {
+  attachComponentUiState,
+  createEditorSnapshot,
+  duplicateComponent,
+  moveComponent,
+  normalizeWindowState,
+  stripComponentUiState,
+  toggleComponentCollapsed
+} from "./gui-state.js";
 import { getEffectItemDragData, resolveDroppedEffectItem } from "./effect-item-drop.js";
 import {
   EffectTransferError,
@@ -73,12 +82,12 @@ function createInitialState({ example = true } = {}) {
     durationValue: example ? 2 : 1,
     durationUnit: "rounds",
     durationExpiry: "turn-end",
-    components: example
+    components: (example
       ? [
           { type: "condition", slug: "frightened", value: 2 },
           { type: "modifier", selector: "will", value: -1, modifierType: "circumstance" }
         ]
-      : []
+      : []).map((component) => attachComponentUiState(component))
   };
 }
 
@@ -103,6 +112,13 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   itemReadWarnings = [];
   definitionApplication = {};
   definitionMetadata = {};
+  isDirty = false;
+  cleanSnapshot = "";
+  migrationReport = null;
+  resizeObserver = null;
+  windowStateTimer = null;
+  controlTokenHook = null;
+  allowCloseWithoutPrompt = false;
 
   state = null;
 
@@ -139,6 +155,11 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       addMovement: EffectForgeApp.#addMovement,
       addBaseSpeed: EffectForgeApp.#addBaseSpeed,
       removeComponent: EffectForgeApp.#removeComponent,
+      duplicateComponent: EffectForgeApp.#duplicateComponent,
+      moveComponentUp: EffectForgeApp.#moveComponentUp,
+      moveComponentDown: EffectForgeApp.#moveComponentDown,
+      toggleComponentCollapsed: EffectForgeApp.#toggleComponentCollapsed,
+      focusComponent: EffectForgeApp.#focusComponent,
       browseImage: EffectForgeApp.#browseImage,
       validateEffect: EffectForgeApp.#validateEffect,
       compileEffect: EffectForgeApp.#compileEffect,
@@ -158,8 +179,30 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   };
 
   constructor(options = {}) {
-    super(options);
+    let savedPosition = {};
+    try {
+      savedPosition = normalizeWindowState(
+        game.settings?.get?.(MODULE_ID, SETTINGS.EFFECT_FORGE_WINDOW_STATE) ?? {}
+      );
+    } catch {
+      savedPosition = {};
+    }
+
+    super(foundry.utils.mergeObject(
+      { position: savedPosition },
+      options,
+      { inplace: false }
+    ));
     this.state = createInitialState();
+    this.cleanSnapshot = this.#editorSnapshot();
+    this.isDirty = false;
+  }
+
+  _onPosition(position) {
+    super._onPosition(position);
+    if (!this.state) return;
+    globalThis.clearTimeout(this.windowStateTimer);
+    this.windowStateTimer = globalThis.setTimeout(() => this.#persistWindowState(), 300);
   }
 
   #setStateFromDefinition(definition, { fallbackName = "", fallbackImage = "icons/svg/aura.svg" } = {}) {
@@ -174,6 +217,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       durationUnit: definition.duration?.unit ?? "unlimited",
       durationExpiry: definition.duration?.expiry ?? "turn-end",
       components: foundry.utils.deepClone(definition.components ?? [])
+        .map((component) => attachComponentUiState(component))
     };
   }
 
@@ -185,6 +229,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.selectedItemId = item.id ?? result.sourceItemId ?? "";
     this.unmanagedRules = foundry.utils.deepClone(result.unmanagedRules ?? []);
     this.itemReadWarnings = foundry.utils.deepClone(result.warnings ?? []);
+    this.migrationReport = foundry.utils.deepClone(result.migration ?? null);
     this.#setStateFromDefinition(definition, {
       fallbackName: item.name ?? "",
       fallbackImage: item.img ?? "icons/svg/aura.svg"
@@ -192,6 +237,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markClean();
     if (render) await this.render({ force: true });
     return result;
   }
@@ -203,9 +249,11 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.itemReadWarnings = [];
     this.definitionApplication = {};
     this.definitionMetadata = {};
+    this.migrationReport = null;
     this.state = createInitialState({ example: false });
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markClean();
     if (render) return this.render({ force: true });
     return this;
   }
@@ -232,7 +280,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         { count: this.unmanagedRules.length }
       ),
       itemReadWarnings: this.itemReadWarnings,
-      hasItemReadWarnings: this.itemReadWarnings.length > 0,
+      hasItemReadWarnings: this.unmanagedRules.length > 0,
       hasWorldEffects: worldEffects.length > 0,
       worldEffectOptions: worldEffects.map((item) => ({
         value: item.id,
@@ -245,6 +293,14 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       components: this.state.components.map((component, index) =>
         this.#prepareComponent(component, index)
       ),
+      isDirty: this.isDirty,
+      dirtyStatusText: game.i18n.localize(
+        this.isDirty
+          ? "PF2E_CRITICAL_FORGE.EffectForge.UnsavedChanges"
+          : "PF2E_CRITICAL_FORGE.EffectForge.AllChangesSaved"
+      ),
+      hasSelectedTokens: (globalThis.canvas?.tokens?.controlled?.length ?? 0) > 0,
+      migrationReport: this.migrationReport,
       validationReport: this.validationReport,
       definitionPreview: this.definitionPreview,
       compiledPreview: this.compiledPreview
@@ -256,6 +312,14 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const root = this.element;
     if (!(root instanceof HTMLElement)) return;
+
+    const markDirty = (event) => {
+      const target = event.target;
+      if (target?.name === "selectedItemId") return;
+      this.#markDirty();
+    };
+    root.addEventListener("input", markDirty);
+    root.addEventListener("change", markDirty);
 
     const description = root.querySelector('textarea[name="description"]');
     const counter = root.querySelector("[data-description-counter]");
@@ -312,7 +376,154 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     this.#activateEffectDropZone(root);
+    this.#activateWindowStatePersistence(root);
+    this.#activateTokenSelectionTracking();
+    this.#updateDirtyIndicator();
+    this.#updateTokenActionState();
     this.#restoreScrollPositions();
+  }
+
+  #editorSnapshot() {
+    return createEditorSnapshot({ state: this.state, unmanagedRules: this.unmanagedRules });
+  }
+
+  #markClean() {
+    this.cleanSnapshot = this.#editorSnapshot();
+    this.isDirty = false;
+    this.#updateDirtyIndicator();
+  }
+
+  #markDirty() {
+    this.isDirty = true;
+    this.#updateDirtyIndicator();
+  }
+
+  #refreshDirtyState() {
+    this.isDirty = this.#editorSnapshot() !== this.cleanSnapshot;
+    this.#updateDirtyIndicator();
+  }
+
+  #updateDirtyIndicator() {
+    const root = this.element;
+    if (!(root instanceof HTMLElement)) return;
+    const indicator = root.querySelector("[data-dirty-indicator]");
+    if (!(indicator instanceof HTMLElement)) return;
+    indicator.classList.toggle("dirty", this.isDirty);
+    indicator.classList.toggle("clean", !this.isDirty);
+    const text = indicator.querySelector("[data-dirty-text]");
+    if (text) {
+      text.textContent = game.i18n.localize(
+        this.isDirty
+          ? "PF2E_CRITICAL_FORGE.EffectForge.UnsavedChanges"
+          : "PF2E_CRITICAL_FORGE.EffectForge.AllChangesSaved"
+      );
+    }
+  }
+
+  async #confirmDiscardChanges() {
+    if (!this.isDirty) return true;
+
+    const title = game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.DiscardChangesTitle");
+    const content = `<p>${game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.DiscardChangesPrompt")}</p>`;
+    const DialogV2 = foundry.applications?.api?.DialogV2;
+    if (DialogV2?.confirm) {
+      return Boolean(await DialogV2.confirm({
+        window: { title },
+        content,
+        modal: true,
+        rejectClose: false
+      }));
+    }
+
+    if (globalThis.Dialog?.confirm) {
+      return new Promise((resolve) => {
+        globalThis.Dialog.confirm({
+          title,
+          content,
+          yes: () => resolve(true),
+          no: () => resolve(false),
+          close: () => resolve(false)
+        });
+      });
+    }
+
+    return globalThis.confirm?.(game.i18n.localize(
+      "PF2E_CRITICAL_FORGE.EffectForge.DiscardChangesPrompt"
+    )) ?? false;
+  }
+
+
+  #activateTokenSelectionTracking() {
+    if (this.controlTokenHook != null || !globalThis.Hooks?.on) return;
+    this.controlTokenHook = globalThis.Hooks.on("controlToken", () => {
+      this.#updateTokenActionState();
+    });
+  }
+
+  #updateTokenActionState() {
+    const root = this.element;
+    if (!(root instanceof HTMLElement)) return;
+    const button = root.querySelector('[data-action="applySelected"]');
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    const hasSelectedTokens = (globalThis.canvas?.tokens?.controlled?.length ?? 0) > 0;
+    button.disabled = !hasSelectedTokens;
+    button.title = game.i18n.localize(
+      hasSelectedTokens
+        ? "PF2E_CRITICAL_FORGE.EffectForge.ApplySelectedTooltip"
+        : "PF2E_CRITICAL_FORGE.EffectForge.ApplySelectedDisabledTooltip"
+    );
+  }
+
+  #activateWindowStatePersistence(root) {
+    this.resizeObserver?.disconnect?.();
+    this.resizeObserver = null;
+
+    const queueSave = () => {
+      globalThis.clearTimeout(this.windowStateTimer);
+      this.windowStateTimer = globalThis.setTimeout(() => this.#persistWindowState(), 300);
+    };
+
+    if (typeof globalThis.ResizeObserver === "function") {
+      this.resizeObserver = new globalThis.ResizeObserver(queueSave);
+      this.resizeObserver.observe(root);
+    }
+
+    root.addEventListener("pointerup", queueSave);
+  }
+
+  async #persistWindowState() {
+    try {
+      const root = this.element;
+      const rect = root instanceof HTMLElement ? root.getBoundingClientRect() : null;
+      const position = this.position ?? {};
+      const value = normalizeWindowState({
+        width: position.width ?? rect?.width,
+        height: position.height ?? rect?.height,
+        left: position.left ?? rect?.left,
+        top: position.top ?? rect?.top
+      });
+      await game.settings?.set?.(MODULE_ID, SETTINGS.EFFECT_FORGE_WINDOW_STATE, value);
+    } catch (error) {
+      console.debug(`${MODULE_ID} | Could not persist Effect Forge window state`, error);
+    }
+  }
+
+  async close(options = {}) {
+    if (!this.allowCloseWithoutPrompt && this.isDirty) {
+      const confirmed = await this.#confirmDiscardChanges();
+      if (!confirmed) return this;
+    }
+
+    this.allowCloseWithoutPrompt = false;
+    globalThis.clearTimeout(this.windowStateTimer);
+    await this.#persistWindowState();
+    this.resizeObserver?.disconnect?.();
+    if (this.controlTokenHook != null && globalThis.Hooks?.off) {
+      globalThis.Hooks.off("controlToken", this.controlTokenHook);
+      this.controlTokenHook = null;
+    }
+    return super.close(options);
   }
 
   #activateEffectDropZone(root) {
@@ -378,6 +589,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         return;
       }
 
+      if (!await this.#confirmDiscardChanges()) return;
       await this.loadItem(result.item, { render: false });
       this.preservedScrollState = new Map();
       await this.render({ force: true });
@@ -430,10 +642,18 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   #prepareComponent(component, index) {
+    const componentValidation = this.#componentValidationStatus(index);
     const base = {
       ...component,
       index,
       number: index + 1,
+      uiId: component._uiId,
+      collapsed: Boolean(component._collapsed),
+      canMoveUp: index > 0,
+      canMoveDown: index < this.state.components.length - 1,
+      summary: this.#componentSummary(component),
+      validationStatus: componentValidation,
+      hasValidationStatus: Boolean(componentValidation),
       isCondition: component.type === "condition",
       isModifier: component.type === "modifier",
       isPersistentDamage: component.type === "persistentDamage",
@@ -502,6 +722,62 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     return base;
   }
 
+  #componentValidationStatus(index) {
+    const issues = this.validationReport?.groups
+      ?.flatMap((group) => group.issues ?? [])
+      ?.filter((issue) => issue.componentIndex === index) ?? [];
+    if (issues.length === 0) return null;
+
+    const priority = ["error", "warning", "hint", "info"];
+    const severity = priority.find((candidate) =>
+      issues.some((issue) => issue.severity === candidate)
+    ) ?? "info";
+    const icons = {
+      error: "fa-circle-xmark",
+      warning: "fa-triangle-exclamation",
+      hint: "fa-circle-info",
+      info: "fa-circle-info"
+    };
+    return {
+      severity,
+      icon: icons[severity],
+      count: issues.length,
+      title: game.i18n.format("PF2E_CRITICAL_FORGE.EffectForge.ComponentIssueCount", {
+        count: issues.length
+      })
+    };
+  }
+
+  #componentSummary(component) {
+    const localize = (key) => game.i18n.localize(key);
+    switch (component.type) {
+      case "condition":
+        return `${component.slug}${component.value == null ? "" : ` ${component.value}`}`;
+      case "modifier":
+        return `${component.value > 0 ? "+" : ""}${component.value} ${component.modifierType} · ${component.selector}`;
+      case "persistentDamage":
+        return `${component.formula} ${component.damageType}${component.dc ? ` · DC ${component.dc}` : ""}`;
+      case "resistance":
+        return `${component.resistanceType} ${component.value}`;
+      case "weakness":
+        return `${component.weaknessType} ${component.value}`;
+      case "immunity":
+        return String(component.immunityType ?? "");
+      case "fastHealing":
+        return `${localize("PF2E_CRITICAL_FORGE.EffectForge.FastHealing")} ${component.value}`;
+      case "regeneration":
+        return `${component.value} · ${(component.deactivatedBy ?? []).join(", ")}`;
+      case "temporaryHitPoints":
+        return String(component.value ?? "");
+      case "movement":
+        return `${component.value > 0 ? "+" : ""}${component.value} · ${component.movementType} · ${component.modifierType}`;
+      case "baseSpeed":
+        return `${component.movementType} ${component.value}`;
+      default:
+        return String(component.type ?? "");
+    }
+  }
+
   #conditionOptions(selected) {
     const configured = CONFIG.PF2E?.conditionTypes ?? {};
     const entries = Object.entries(configured)
@@ -553,9 +829,15 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     this.state.components = this.state.components.map((component, index) => {
       const prefix = `components.${index}`;
+      const uiState = {
+        _uiId: component._uiId,
+        _collapsed: Boolean(component._collapsed)
+      };
+      if (component._collapsed) return component;
       if (component.type === "condition") {
         const raw = String(data.get(`${prefix}.value`) ?? "").trim();
         return {
+          ...uiState,
           type: "condition",
           slug: String(data.get(`${prefix}.slug`) ?? "").trim(),
           value: raw === "" ? undefined : Number.parseInt(raw, 10)
@@ -565,6 +847,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       if (component.type === "persistentDamage") {
         const rawDc = String(data.get(`${prefix}.dc`) ?? "").trim();
         return {
+          ...uiState,
           type: "persistentDamage",
           formula: String(data.get(`${prefix}.formula`) ?? "").trim(),
           damageType: String(data.get(`${prefix}.damageType`) ?? "").trim(),
@@ -574,6 +857,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "resistance") {
         return {
+          ...uiState,
           type: "resistance",
           resistanceType: String(data.get(`${prefix}.resistanceType`) ?? "").trim(),
           value: Number(data.get(`${prefix}.value`) ?? 0)
@@ -582,6 +866,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "weakness") {
         return {
+          ...uiState,
           type: "weakness",
           weaknessType: String(data.get(`${prefix}.weaknessType`) ?? "").trim(),
           value: Number(data.get(`${prefix}.value`) ?? 0)
@@ -590,6 +875,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "immunity") {
         return {
+          ...uiState,
           type: "immunity",
           immunityType: String(data.get(`${prefix}.immunityType`) ?? "").trim()
         };
@@ -597,6 +883,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "fastHealing") {
         return {
+          ...uiState,
           type: "fastHealing",
           value: Number(data.get(`${prefix}.value`) ?? 0)
         };
@@ -604,6 +891,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "regeneration") {
         return {
+          ...uiState,
           type: "regeneration",
           value: Number(data.get(`${prefix}.value`) ?? 0),
           deactivatedBy: data.getAll(`${prefix}.deactivatedBy`)
@@ -614,6 +902,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "temporaryHitPoints") {
         return {
+          ...uiState,
           type: "temporaryHitPoints",
           value: Number(data.get(`${prefix}.value`) ?? 0)
         };
@@ -621,6 +910,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "movement") {
         return {
+          ...uiState,
           type: "movement",
           movementType: String(data.get(`${prefix}.movementType`) ?? "land").trim(),
           value: Number(data.get(`${prefix}.value`) ?? 0),
@@ -630,6 +920,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "baseSpeed") {
         return {
+          ...uiState,
           type: "baseSpeed",
           movementType: String(data.get(`${prefix}.movementType`) ?? "fly").trim(),
           value: Number(data.get(`${prefix}.value`) ?? 0)
@@ -644,12 +935,14 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         : selectorChoice;
 
       return {
+        ...uiState,
         type: "modifier",
         selector,
         value: Number(data.get(`${prefix}.value`) ?? 0),
         modifierType: String(data.get(`${prefix}.modifierType`) ?? "status")
       };
     });
+    this.#refreshDirtyState();
   }
 
   #buildDefinition({ sync = true } = {}) {
@@ -680,7 +973,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       );
     }
 
-    for (const component of this.state.components) {
+    for (const stateComponent of this.state.components) {
+      const component = stripComponentUiState(stateComponent);
       if (component.type === "condition") {
         builder.addCondition(component.slug, component.value);
       } else if (component.type === "modifier") {
@@ -715,7 +1009,12 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         ? game.i18n.format(`PF2E_CRITICAL_FORGE.${issue.messageKey}`, issue.data ?? {})
         : issue.data?.message ?? issue.code);
 
-    return { ...issue, text };
+    return {
+      ...issue,
+      text,
+      hasComponent: Number.isInteger(issue.componentIndex),
+      componentNumber: Number.isInteger(issue.componentIndex) ? issue.componentIndex + 1 : null
+    };
   }
 
   #setValidationReport(result) {
@@ -802,11 +1101,13 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.itemReadWarnings = this.unmanagedRules.length > 0
       ? [{ code: "IMPORT_UNMANAGED_RULES_PRESERVED", count: this.unmanagedRules.length }]
       : [];
+    this.migrationReport = foundry.utils.deepClone(imported.migration ?? null);
     this.#setStateFromDefinition(imported.definition);
     this.componentMenuOpen = false;
     this.#setValidationReport(validation);
     this.definitionPreview = JSON.stringify(imported.definition, null, 2);
     this.compiledPreview = null;
+    this.#markClean();
     this.preservedScrollState = new Map();
     await this.render({ force: true });
 
@@ -860,6 +1161,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       return;
     }
 
+    if (!await this.#confirmDiscardChanges()) return;
+
     try {
       await this.loadItem(item, { render: false });
       this.preservedScrollState = new Map();
@@ -885,6 +1188,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       if (!file) return;
       try {
         const text = await readEffectImportFile(file);
+        if (!await this.#confirmDiscardChanges()) return;
         await this.#loadImportedData(text);
       } catch (error) {
         this.#showTransferError(error, "JSON file import");
@@ -903,6 +1207,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         );
       }
       const text = await globalThis.navigator.clipboard.readText();
+      if (!await this.#confirmDiscardChanges()) return;
       await this.#loadImportedData(text);
     } catch (error) {
       this.#showTransferError(error, "clipboard import");
@@ -937,7 +1242,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
-  static #newEffect() {
+  static async #newEffect() {
+    if (!await this.#confirmDiscardChanges()) return;
     this.preservedScrollState = new Map();
     this.resetToNewEffect({ render: true });
   }
@@ -950,129 +1256,140 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static #addCondition() {
     this.#syncStateFromForm();
-    this.state.components.push({ type: "condition", slug: "frightened", value: 1 });
+    this.state.components.push(attachComponentUiState({ type: "condition", slug: "frightened", value: 1 }));
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
   }
 
   static #addModifier() {
     this.#syncStateFromForm();
-    this.state.components.push({
+    this.state.components.push(attachComponentUiState({
       type: "modifier",
       selector: "will",
       value: -1,
       modifierType: "circumstance"
-    });
+    }));
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
   }
 
   static #addPersistentDamage() {
     this.#syncStateFromForm();
-    this.state.components.push({
+    this.state.components.push(attachComponentUiState({
       type: "persistentDamage",
       formula: "1d6",
       damageType: "bleed",
       dc: undefined
-    });
+    }));
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
   }
 
   static #addResistance() {
     this.#syncStateFromForm();
-    this.state.components.push({
+    this.state.components.push(attachComponentUiState({
       type: "resistance",
       resistanceType: "fire",
       value: 5
-    });
+    }));
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
   }
 
   static #addWeakness() {
     this.#syncStateFromForm();
-    this.state.components.push({
+    this.state.components.push(attachComponentUiState({
       type: "weakness",
       weaknessType: "fire",
       value: 5
-    });
+    }));
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
   }
 
   static #addImmunity() {
     this.#syncStateFromForm();
-    this.state.components.push({
+    this.state.components.push(attachComponentUiState({
       type: "immunity",
       immunityType: "fire"
-    });
+    }));
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
   }
 
   static #addFastHealing() {
     this.#syncStateFromForm();
-    this.state.components.push({
+    this.state.components.push(attachComponentUiState({
       type: "fastHealing",
       value: 2
-    });
+    }));
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
   }
 
   static #addRegeneration() {
     this.#syncStateFromForm();
-    this.state.components.push({
+    this.state.components.push(attachComponentUiState({
       type: "regeneration",
       value: 5,
       deactivatedBy: ["acid", "fire"]
-    });
+    }));
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
   }
 
   static #addTemporaryHitPoints() {
     this.#syncStateFromForm();
-    this.state.components.push({
+    this.state.components.push(attachComponentUiState({
       type: "temporaryHitPoints",
       value: 5
-    });
+    }));
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
   }
 
   static #addMovement() {
     this.#syncStateFromForm();
-    this.state.components.push({
+    this.state.components.push(attachComponentUiState({
       type: "movement",
       movementType: "land",
       value: 10,
       modifierType: "status"
-    });
+    }));
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
   }
 
   static #addBaseSpeed() {
     this.#syncStateFromForm();
-    this.state.components.push({
+    this.state.components.push(attachComponentUiState({
       type: "baseSpeed",
       movementType: "fly",
       value: 30
-    });
+    }));
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
   }
 
@@ -1083,7 +1400,68 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this.state.components.splice(index, 1);
     }
     this.#invalidatePreviews();
+    this.#markDirty();
     this.#renderPreservingScroll();
+  }
+
+  static #duplicateComponent(event, target) {
+    this.#syncStateFromForm();
+    const index = Number(target.dataset.index);
+    if (duplicateComponent(this.state.components, index)) {
+      this.#invalidatePreviews();
+      this.#markDirty();
+      this.#renderPreservingScroll();
+    }
+  }
+
+  static #moveComponentUp(event, target) {
+    this.#syncStateFromForm();
+    const index = Number(target.dataset.index);
+    if (moveComponent(this.state.components, index, "up")) {
+      this.#invalidatePreviews();
+      this.#markDirty();
+      this.#renderPreservingScroll();
+    }
+  }
+
+  static #moveComponentDown(event, target) {
+    this.#syncStateFromForm();
+    const index = Number(target.dataset.index);
+    if (moveComponent(this.state.components, index, "down")) {
+      this.#invalidatePreviews();
+      this.#markDirty();
+      this.#renderPreservingScroll();
+    }
+  }
+
+  static #toggleComponentCollapsed(event, target) {
+    this.#syncStateFromForm();
+    const index = Number(target.dataset.index);
+    if (toggleComponentCollapsed(this.state.components, index)) {
+      this.#renderPreservingScroll();
+    }
+  }
+
+  static #focusComponent(event, target) {
+    const index = Number(target.dataset.index);
+    const root = this.element;
+    if (!(root instanceof HTMLElement) || !Number.isInteger(index)) return;
+    const card = root.querySelector(`[data-component-index="${index}"]`);
+    if (!(card instanceof HTMLElement)) return;
+    const component = this.state.components[index];
+    if (component?._collapsed) {
+      component._collapsed = false;
+      this.#renderPreservingScroll().then(() => {
+        const refreshed = this.element?.querySelector?.(`[data-component-index="${index}"]`);
+        refreshed?.scrollIntoView?.({ behavior: "smooth", block: "center" });
+        refreshed?.classList?.add("validation-focus");
+        globalThis.setTimeout(() => refreshed?.classList?.remove("validation-focus"), 1400);
+      });
+      return;
+    }
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("validation-focus");
+    globalThis.setTimeout(() => card.classList.remove("validation-focus"), 1400);
   }
 
   static async #browseImage() {
@@ -1105,6 +1483,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       callback: (path) => {
         this.state.img = path;
         this.#invalidatePreviews();
+        this.#markDirty();
         this.#renderPreservingScroll();
       }
     });
@@ -1183,6 +1562,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this.sourceItem = updated ?? this.sourceItem;
       this.selectedItemId = this.sourceItem.id ?? this.selectedItemId;
       this.#invalidatePreviews();
+      this.#markClean();
       await this.#renderPreservingScroll();
       ui.notifications.info(game.i18n.format(
         "PF2E_CRITICAL_FORGE.EffectForge.ItemUpdated",

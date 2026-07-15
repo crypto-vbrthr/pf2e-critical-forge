@@ -20,4 +20,12 @@ export function registerSettings() {
     default: true,
     requiresReload: true
   });
+  game.settings.register(MODULE_ID, SETTINGS.EFFECT_FORGE_WINDOW_STATE, {
+    name: "Effect Forge Window State",
+    scope: "client",
+    config: false,
+    type: Object,
+    default: {}
+  });
+
 }
