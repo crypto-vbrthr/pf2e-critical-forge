@@ -35,6 +35,7 @@ tests/
 ├─ gui-state.test.js
 ├─ item-editing.test.js
 ├─ migration.test.js
+├─ release-metadata.test.js
 ├─ validation.test.js
 ├─ view-state.test.js
 ├─ fixtures/
@@ -43,7 +44,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 88 tests covering:
+The suite contains 92 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -59,9 +60,10 @@ The suite contains 88 tests covering:
 - loading newly generated Items from their stored Effect Definition;
 - reconstructing legacy and compatible foreign Items from PF2e Rule Elements;
 - preserving unsupported Rule Elements during an Item update;
-- updating only Forge-managed Item fields.
+- updating only Forge-managed Item fields;
+- synchronized release metadata, manifest paths, localization parity, and archive hygiene.
 
-At `0.4.0-dev`, the measured line coverage of files loaded by the suite is 93.79%. Coverage is a diagnostic, not a release gate yet.
+At `0.4.0-rc.1`, the measured line coverage of files loaded by the suite is 93.86%. Coverage is a diagnostic, not a release gate yet.
 
 ## Foundry mock
 

@@ -1,11 +1,12 @@
 {
   "name": "pf2e-critical-forge",
-  "version": "0.4.0-dev",
+  "version": "0.4.0-rc.2",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test --test-concurrency=1",
-    "test:coverage": "node --experimental-test-coverage --test --test-concurrency=1"
+    "test:coverage": "node --experimental-test-coverage --test --test-concurrency=1",
+    "release:check": "npm test && node tools/release-check.mjs"
   },
   "engines": {
     "node": ">=20"

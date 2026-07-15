@@ -8,7 +8,7 @@
       },
       "EnableCriticalForge": {
         "Name": "Critical Forge aktivieren",
-        "Hint": "Aktiviert die spätere Generierung kritischer Treffer und Patzer im Chat."
+        "Hint": "Reserviert die Einstellung für die spätere Critical Forge. Die Kartengenerierung ist in diesem Release Candidate noch nicht enthalten und bleibt standardmäßig deaktiviert."
       }
     },
     "EffectForge": {
@@ -387,7 +387,7 @@
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialisiert.",
       "GmOnly": "Die Effect Forge ist nur für die Spielleitung verfügbar.",
-      "NotImplemented": "Diese Funktion ist im Architekturstand 0.1.0-dev noch nicht implementiert."
+      "NotImplemented": "Diese Funktion ist im aktuellen Release Candidate noch nicht implementiert."
     },
     "Errors": {
       "InvalidDefinition": "Die Effektdefinition ist ungültig.",

@@ -17,7 +17,7 @@ export function registerSettings() {
     scope: "world",
     config: true,
     type: Boolean,
-    default: true,
+    default: false,
     requiresReload: true
   });
   game.settings.register(MODULE_ID, SETTINGS.EFFECT_FORGE_WINDOW_STATE, {

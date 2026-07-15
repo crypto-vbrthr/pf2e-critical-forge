@@ -8,7 +8,7 @@
       },
       "EnableCriticalForge": {
         "Name": "Enable Critical Forge",
-        "Hint": "Enables the future generation of critical-hit and fumble results in chat."
+        "Hint": "Reserves the setting for the future Critical Forge. Card generation is not included in this release candidate and remains disabled by default."
       }
     },
     "EffectForge": {
@@ -387,7 +387,7 @@
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialized.",
       "GmOnly": "Effect Forge is available to Gamemasters only.",
-      "NotImplemented": "This function is not implemented in architecture release 0.1.0-dev."
+      "NotImplemented": "This function is not implemented in the current release candidate."
     },
     "Errors": {
       "InvalidDefinition": "The effect definition is invalid.",

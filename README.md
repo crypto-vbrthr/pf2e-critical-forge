@@ -8,7 +8,9 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.4.0-dev` adds schema migration and the first full GUI-polish pass. Legacy definitions are migrated automatically, unsaved changes are protected, component cards can be duplicated, reordered, and collapsed, validation messages can jump to affected components, and the window remembers its client-side size and position.
+Version `0.4.0-rc.2` is the first release candidate for the **Effect Engine** and **Effect Forge**. The feature set is frozen for candidate testing: schema migration, item editing, drag-and-drop, JSON transfer, component management, validation, and window-state persistence are all included. **Critical Forge card generation remains planned and is disabled by default.**
+
+The release candidate targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
 The current engine includes:
 
@@ -83,3 +85,5 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/EXAMPLES.md`](docs/EXAMPLES.md): complete examples
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): subsystem boundaries
 - [`docs/TESTING.md`](docs/TESTING.md): local test execution and conventions
+- [`docs/RELEASE_CANDIDATE.md`](docs/RELEASE_CANDIDATE.md): RC scope, compatibility, manual test matrix, and known limitations
+- [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md): final packaging and publication checklist

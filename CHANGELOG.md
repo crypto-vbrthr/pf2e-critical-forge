@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.0-rc.2
+
+- Fixed release metadata tests incorrectly treating the repository root `.git` directory as packaged release content.
+- Root development directories `.git`, `node_modules`, and `coverage` are now skipped by source-tree checks while nested occurrences remain forbidden.
+- Applied the same distinction to `npm run release:check`, so it can run normally from a Git checkout.
+
+## 0.4.0-rc.1
+
+### Release candidate
+- Feature-frozen release candidate for the Effect Engine and Effect Forge.
+- Module, package, and runtime version metadata are synchronized.
+- Foundry compatibility is narrowed to version 14; the PF2e system dependency now requires 8.1.2 or newer.
+- Critical Forge remains planned and is disabled by default so the candidate exposes no non-functional feature switch on a fresh world.
+- Added automated release metadata, manifest-path, localization-parity, and archive-hygiene tests.
+- Added `npm run release:check` for the full automated suite plus release-specific static checks.
+- Added a release-candidate test matrix, known limitations, and a publication checklist.
+- The automated suite now contains 92 passing tests with 93.86% measured line coverage.
+- No Effect Definition schema changes; schema version remains `1`.
+- Public API version remains `0.4.0`.
+
 ## 0.4.0-dev
 
 ### Added
