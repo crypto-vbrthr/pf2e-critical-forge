@@ -8,7 +8,7 @@
       },
       "EnableCriticalForge": {
         "Name": "Enable Critical Forge",
-        "Hint": "Reserves the setting for the future Critical Forge. Card generation is not included in this release candidate and remains disabled by default."
+        "Hint": "Enables Foundry integration for Critical Forge in a later version. The card architecture, registries, and API are already always available; roll hooks and chat cards are not included yet."
       }
     },
     "EffectForge": {
@@ -482,6 +482,80 @@
           "TypeInvalid": "“{movementType}” cannot be granted as a base Speed.",
           "ValueInvalid": "The base Speed must be a positive integer.",
           "UnusualIncrement": "The base Speed {value} does not use the usual 5-foot increment."
+        }
+      }
+    },
+    "CriticalForge": {
+      "Packs": {
+        "Core": {
+          "Title": "Critical Forge Core Pack",
+          "Description": "A small localized test-card collection for the critical-hit and fumble architecture."
+        }
+      },
+      "Cards": {
+        "Slashing": {
+          "DeepCut": {
+            "Title": "Deep Cut",
+            "Description": "The blade opens a wound that refuses to close."
+          }
+        },
+        "Piercing": {
+          "Puncture": {
+            "Title": "Puncture",
+            "Description": "The point leaves a narrow but stubbornly bleeding wound."
+          }
+        },
+        "Bludgeoning": {
+          "RingingBlow": {
+            "Title": "Ringing Blow",
+            "Description": "The impact turns the next heartbeat into thunder."
+          }
+        },
+        "Generic": {
+          "OffBalance": {
+            "Title": "Off Balance",
+            "Description": "The hit tears the target out of its stance."
+          }
+        },
+        "Fumble": {
+          "Overextended": {
+            "Title": "Overextended",
+            "Description": "The failed attack leaves the attacker exposed."
+          },
+          "WeaponJolt": {
+            "Title": "Weapon Jolt",
+            "Description": "The miss sends a painful vibration through the attacker’s grip."
+          }
+        }
+      },
+      "Effects": {
+        "Slashing": {
+          "DeepCut": {
+            "Name": "Deep Cut"
+          }
+        },
+        "Piercing": {
+          "Puncture": {
+            "Name": "Puncture"
+          }
+        },
+        "Bludgeoning": {
+          "RingingBlow": {
+            "Name": "Ringing Blow"
+          }
+        },
+        "Generic": {
+          "OffBalance": {
+            "Name": "Off Balance"
+          }
+        },
+        "Fumble": {
+          "Overextended": {
+            "Name": "Overextended"
+          },
+          "WeaponJolt": {
+            "Name": "Weapon Jolt"
+          }
         }
       }
     }

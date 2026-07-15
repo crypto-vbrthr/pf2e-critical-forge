@@ -1,5 +1,10 @@
 # Architecture
 
+
+## Critical Forge domain layer
+
+`critical-forge/` is now a headless domain subsystem above the Effect Engine. It owns card and pack schemas, registries, localization materialization, matching, and weighted selection. It does not own chat rendering, PF2e roll hooks, actor inspection, or document application. See [`CRITICAL_FORGE_ARCHITECTURE.md`](CRITICAL_FORGE_ARCHITECTURE.md).
+
 ## Core rules
 
 1. The Effect Engine is initialized whenever the module is active.

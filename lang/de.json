@@ -8,7 +8,7 @@
       },
       "EnableCriticalForge": {
         "Name": "Critical Forge aktivieren",
-        "Hint": "Reserviert die Einstellung für die spätere Critical Forge. Die Kartengenerierung ist in diesem Release Candidate noch nicht enthalten und bleibt standardmäßig deaktiviert."
+        "Hint": "Aktiviert in einer späteren Version die Foundry-Einbindung der Critical Forge. Kartenarchitektur, Registries und API sind bereits immer verfügbar; Wurfhooks und Chatkarten sind noch nicht enthalten."
       }
     },
     "EffectForge": {
@@ -482,6 +482,80 @@
           "TypeInvalid": "„{movementType}“ kann nicht als Grundbewegungsrate verliehen werden.",
           "ValueInvalid": "Die Grundbewegungsrate muss eine positive ganze Zahl sein.",
           "UnusualIncrement": "Die Grundbewegungsrate {value} verwendet nicht das übliche 5-Fuß-Raster."
+        }
+      }
+    },
+    "CriticalForge": {
+      "Packs": {
+        "Core": {
+          "Title": "Critical Forge Kernpaket",
+          "Description": "Kleine lokalisierte Testkartensammlung für die Architektur von kritischen Treffern und Patzern."
+        }
+      },
+      "Cards": {
+        "Slashing": {
+          "DeepCut": {
+            "Title": "Tiefe Schnittwunde",
+            "Description": "Die Klinge reißt eine Wunde, die sich nicht schließen will."
+          }
+        },
+        "Piercing": {
+          "Puncture": {
+            "Title": "Durchbohrt",
+            "Description": "Die Spitze hinterlässt eine schmale, aber hartnäckig blutende Wunde."
+          }
+        },
+        "Bludgeoning": {
+          "RingingBlow": {
+            "Title": "Dröhnender Treffer",
+            "Description": "Der Einschlag verwandelt den nächsten Herzschlag in Donner."
+          }
+        },
+        "Generic": {
+          "OffBalance": {
+            "Title": "Aus dem Gleichgewicht",
+            "Description": "Der Treffer reißt das Ziel aus seiner Haltung."
+          }
+        },
+        "Fumble": {
+          "Overextended": {
+            "Title": "Überstreckt",
+            "Description": "Der misslungene Angriff lässt den Angreifer offen dastehen."
+          },
+          "WeaponJolt": {
+            "Title": "Waffenschlag",
+            "Description": "Der Fehlschlag jagt eine schmerzhafte Erschütterung durch den Griff des Angreifers."
+          }
+        }
+      },
+      "Effects": {
+        "Slashing": {
+          "DeepCut": {
+            "Name": "Tiefe Schnittwunde"
+          }
+        },
+        "Piercing": {
+          "Puncture": {
+            "Name": "Durchbohrt"
+          }
+        },
+        "Bludgeoning": {
+          "RingingBlow": {
+            "Name": "Dröhnender Treffer"
+          }
+        },
+        "Generic": {
+          "OffBalance": {
+            "Name": "Aus dem Gleichgewicht"
+          }
+        },
+        "Fumble": {
+          "Overextended": {
+            "Name": "Überstreckt"
+          },
+          "WeaponJolt": {
+            "Name": "Waffenschlag"
+          }
         }
       }
     }

@@ -3,31 +3,28 @@
 PF2E Critical Forge consists of two optional user-facing tools built on one always-available Effect Engine:
 
 - **Effect Forge**: a GM interface for building reusable PF2e effects.
-- **Critical Forge**: planned on-demand critical-hit and fumble results.
+- **Critical Forge**: a headless, localized card architecture for critical-hit and fumble results; Foundry roll and chat integration follows later.
 - **Effect Engine API**: an always-loaded public API for this and other modules.
 
 ## Status
 
-Version `0.4.0-rc.2` is the first release candidate for the **Effect Engine** and **Effect Forge**. The feature set is frozen for candidate testing: schema migration, item editing, drag-and-drop, JSON transfer, component management, validation, and window-state persistence are all included. **Critical Forge card generation remains planned and is disabled by default.**
+Version `0.5.0-dev` begins the **Critical Forge architecture** while keeping the existing Effect Engine and Effect Forge stable. This milestone is deliberately headless: it adds versioned card and pack schemas, registries, localization resolution, filtering, weighted selection, and a small localized test pack. It does **not** add roll hooks, chat cards, automatic PF2e document inspection, or effect application from critical results.
 
-The release candidate targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
+The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
 The current engine includes:
 
-- versioned Effect Definitions;
-- a fluent immutable Builder API;
-- structured schema, rule, and compatibility validation;
-- stable validation codes and severities;
-- central selector, condition, damage, resistance, weakness, immunity, and movement catalogs;
-- `condition`, `modifier`, `persistentDamage`, `resistance`, `weakness`, `immunity`, `fastHealing`, `regeneration`, `temporaryHitPoints`, `movement`, and `baseSpeed` components;
-- compilation to native PF2e Effect Items and Rule Elements;
-- world Item creation, in-place Item updates, Actor/Token application, and removal by definition ID;
-- round-trip loading from stored definitions and compatible PF2e Rule Elements;
-- drag-and-drop loading of world, embedded Actor, and compendium effects;
-- versioned JSON file and clipboard import/export;
-- preservation of unsupported or advanced Rule Elements during updates;
-- a resizable, localized, component-based GM interface;
-- an extension API for third-party components.
+- the complete Effect Engine and polished Effect Forge from the `0.4.0` release-candidate line;
+- versioned Critical Card and Card Pack schemas;
+- transactional Pack Registry and globally indexed Card Registry;
+- localized title, description, and effect-name resolution with fallbacks;
+- headless filter matching for damage types, weapon groups, attack traits, and actor traits;
+- transparent candidate reports and weighted selection with injectable randomness;
+- recent-card exclusion supplied by callers;
+- conversion of card effect templates into immutable Effect Definitions;
+- a small localized `core` architecture test pack;
+- a public API for external card packs and selectors;
+- no Foundry UI integration or automatic roll handling for Critical Forge yet.
 
 ## API access
 
@@ -37,9 +34,10 @@ const api = game.modules.get("pf2e-critical-forge")?.api;
 console.log(api.version);
 console.log(api.schemaVersion);
 console.log(api.effects);
+console.log(api.cards);
 ```
 
-The API is available whenever the module is active, even when both user-facing Forge features are disabled.
+The API is available whenever the module is active. Critical card registries are initialized regardless of the future Critical Forge UI setting.
 
 ## Opening Effect Forge
 
@@ -59,15 +57,20 @@ The repository contains dependency-free tests using the Node test runner:
 ```bash
 npm test
 npm run test:coverage
+npm run quality:check
 ```
 
-The suite covers the Builder, catalogs, Validation Engine, compiler, PF2e Rule Elements, Item source generation, Item round-tripping, drag-and-drop resolution, unmanaged-rule preservation, and the valued/non-valued condition boundary.
+The suite covers the Effect Engine and Forge as well as card normalization, pack registration, matching, weighted selection, localization, and Effect Definition materialization.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 
 ## Documentation
 
 - [`docs/API.md`](docs/API.md): public API reference
+- [`docs/CRITICAL_FORGE_ARCHITECTURE.md`](docs/CRITICAL_FORGE_ARCHITECTURE.md): headless Critical Forge subsystem boundaries
+- [`docs/CARD_SCHEMA.md`](docs/CARD_SCHEMA.md): Critical Card data model and filter semantics
+- [`docs/CARD_PACKS.md`](docs/CARD_PACKS.md): pack registration and extension model
+- [`docs/CARD_SELECTION.md`](docs/CARD_SELECTION.md): candidate evaluation and weighted selection
 - [`docs/EDITING_ITEMS.md`](docs/EDITING_ITEMS.md): loading, updating, and preserving existing Effect Items
 - [`docs/IMPORT_EXPORT.md`](docs/IMPORT_EXPORT.md): portable JSON files, clipboard transfer, and API helpers
 - [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md): Effect Definition schema
@@ -85,5 +88,5 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/EXAMPLES.md`](docs/EXAMPLES.md): complete examples
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): subsystem boundaries
 - [`docs/TESTING.md`](docs/TESTING.md): local test execution and conventions
-- [`docs/RELEASE_CANDIDATE.md`](docs/RELEASE_CANDIDATE.md): RC scope, compatibility, manual test matrix, and known limitations
+- [`docs/RELEASE_CANDIDATE.md`](docs/RELEASE_CANDIDATE.md): historical Effect Forge RC scope and manual test matrix
 - [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md): final packaging and publication checklist

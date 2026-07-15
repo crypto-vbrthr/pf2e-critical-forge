@@ -1,3 +1,5 @@
+> Historical document for the Effect Forge 0.4.0 release-candidate line. The current 0.5.0 development line adds headless Critical Forge architecture.
+
 # Release Candidate 0.4.0-rc.2
 
 `rc.2` corrects the release-hygiene check so it can be run from a normal Git checkout. Root development directories are ignored by the source-tree scan; they remain excluded from the distributed ZIP.

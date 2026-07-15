@@ -26,7 +26,7 @@ test("release version metadata stays synchronized", () => {
 
   assert.equal(manifest.version, pkg.version);
   assert.equal(manifest.version, runtimeVersion);
-  assert.doesNotMatch(manifest.version, /-dev(?:\.|$)/);
+  assert.match(manifest.version, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/);
   assert.match(readFileSync(join(root, "README.md"), "utf8"), new RegExp(manifest.version.replaceAll(".", "\\.")));
   assert.match(readFileSync(join(root, "CHANGELOG.md"), "utf8"), new RegExp(`## ${manifest.version.replaceAll(".", "\\.")}`));
 });

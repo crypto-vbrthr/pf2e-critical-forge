@@ -19,6 +19,7 @@ Run the suite with Node's experimental coverage report:
 
 ```bash
 npm run test:coverage
+npm run quality:check
 ```
 
 The test command forces single-file concurrency so shared Foundry-style globals remain deterministic.
@@ -63,7 +64,7 @@ The suite contains 92 tests covering:
 - updating only Forge-managed Item fields;
 - synchronized release metadata, manifest paths, localization parity, and archive hygiene.
 
-At `0.4.0-rc.1`, the measured line coverage of files loaded by the suite is 93.86%. Coverage is a diagnostic, not a release gate yet.
+Coverage is a diagnostic rather than a release gate. The headless Critical Forge tests are included in the same report as the Effect Engine and Effect Forge tests.
 
 ## Foundry mock
 
@@ -134,3 +135,15 @@ The Node suite does not attempt to prove:
 - interaction with third-party modules.
 
 Those paths should be checked in a Foundry test world using a short release checklist. Automated Foundry integration tests can be added later without replacing the fast Node suite.
+
+
+## Critical Forge architecture tests
+
+- `card-schema.test.js`: card/pack normalization and validation
+- `card-registry.test.js`: pack ownership, duplicate protection, and filtering
+- `card-selection.test.js`: matching semantics, candidate reports, and deterministic weighting
+- `card-localization.test.js`: translation fallbacks and Effect Definition materialization
+
+The Critical Forge tests remain headless and inject random/localization functions where deterministic behavior matters.
+
+`quality:check` runs the full test suite and the release metadata, localization, syntax, and archive-hygiene checks while permitting a development version suffix. `release:check` remains strict and rejects `-dev` versions.

@@ -9,6 +9,7 @@ import { initializeConditionCatalog } from "./effect-engine/catalogs/condition-c
 Hooks.once("init", () => {
   registerSettings();
   initializeEffectEngine();
+  initializeCriticalForge();
   initializePublicApi();
 });
 
@@ -25,14 +26,13 @@ Hooks.once("ready", async () => {
     initializeEffectForgeUi();
   }
 
-  if (game.settings.get(MODULE_ID, SETTINGS.ENABLE_CRITICAL_FORGE)) {
-    initializeCriticalForge();
-  }
 
   Hooks.callAll("pf2eCriticalForgeReady", api);
   console.info(`${MODULE_ID} | Ready`, {
     apiVersion: api?.version,
     schemaVersion: api?.schemaVersion,
-    components: api?.components.list()
+    components: api?.components.list(),
+    criticalCardPacks: api?.cards.listPacks().length,
+    criticalCards: api?.cards.list().length
   });
 });

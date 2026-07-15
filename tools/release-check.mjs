@@ -4,6 +4,7 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const allowDev = process.argv.includes("--allow-dev");
 const readJson = (path) => JSON.parse(readFileSync(join(root, path), "utf8"));
 const fail = (message) => {
   console.error(`RELEASE CHECK FAILED: ${message}`);
@@ -22,6 +23,7 @@ if (manifest.version === pkg.version && pkg.version === moduleVersion) pass(`ver
 else fail(`version mismatch: manifest=${manifest.version}, package=${pkg.version}, constants=${moduleVersion}`);
 
 if (!String(manifest.version).includes("-dev")) pass("release version contains no development suffix");
+else if (allowDev) pass("development suffix accepted for quality check");
 else fail("release version still contains a development suffix");
 
 if (manifest.compatibility?.minimum === "14" && manifest.compatibility?.verified === "14") pass("Foundry 14 compatibility is explicit");
@@ -91,8 +93,8 @@ if (!process.exitCode) pass("all JavaScript files pass node --check");
 
 const readme = readFileSync(join(root, "README.md"), "utf8");
 const changelog = readFileSync(join(root, "CHANGELOG.md"), "utf8");
-if (readme.includes(`Version \`${manifest.version}\``) && changelog.includes(`## ${manifest.version}`)) pass("README and changelog identify the candidate version");
-else fail("README or changelog does not identify the candidate version");
+if (readme.includes(`Version \`${manifest.version}\``) && changelog.includes(`## ${manifest.version}`)) pass("README and changelog identify the current version");
+else fail("README or changelog does not identify the current version");
 
 if (Number.isInteger(schemaVersion) && apiVersion) pass(`API ${apiVersion}; Effect Definition schema ${schemaVersion}`);
 else fail("API or schema version could not be read from constants.js");

@@ -1,11 +1,14 @@
 import {
   API_VERSION,
   EFFECT_SCHEMA_VERSION,
+  CARD_SCHEMA_VERSION,
+  CARD_PACK_SCHEMA_VERSION,
   MODULE_ID,
   MODULE_VERSION
 } from "../constants.js";
 import { componentRegistry } from "../effect-engine/component-registry.js";
 import { createEffectApi } from "./effect-api.js";
+import { createCardApi } from "./card-api.js";
 import { openEffectForge } from "../effect-forge/effect-forge.js";
 import {
   EffectBuilder,
@@ -70,6 +73,8 @@ export function initializePublicApi() {
     version: API_VERSION,
     moduleVersion: MODULE_VERSION,
     schemaVersion: EFFECT_SCHEMA_VERSION,
+    cardSchemaVersion: CARD_SCHEMA_VERSION,
+    cardPackSchemaVersion: CARD_PACK_SCHEMA_VERSION,
     effects: createEffectApi(),
 
     builders: Object.freeze({
@@ -146,14 +151,7 @@ export function initializePublicApi() {
 
     ui: Object.freeze({ openEffectForge }),
 
-    cards: Object.freeze({
-      registerPack() {
-        throw new Error("Critical-card registration is planned for a later milestone.");
-      },
-      registerCard() {
-        throw new Error("Critical-card registration is planned for a later milestone.");
-      }
-    })
+    cards: createCardApi()
   });
 
   module.api = api;

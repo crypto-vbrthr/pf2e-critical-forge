@@ -28,7 +28,9 @@ Hooks.on("pf2eCriticalForgeReady", (api) => {
 ```js
 api.version        // public API version
 api.moduleVersion  // installed module version
-api.schemaVersion  // supported Effect Definition schema version
+api.schemaVersion          // supported Effect Definition schema version
+api.cardSchemaVersion      // supported Critical Card schema version
+api.cardPackSchemaVersion  // supported Critical Card Pack schema version
 ```
 
 Consumers should branch on `api.version` for API capabilities and on `api.schemaVersion` when importing stored Effect Definitions.
@@ -608,3 +610,72 @@ api.baseSpeedTypes.selector("fly"); // "fly"
 ```
 
 The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BASE_SPEED.md`](BASE_SPEED.md).
+
+
+## Critical cards
+
+Critical Forge card architecture is available through `api.cards` even though no Foundry roll hooks or chat-card UI are included in version 0.5.0-dev.
+
+### Registration and lookup
+
+```js
+api.cards.registerPack(packDefinition);
+api.cards.registerCard(cardDefinition);
+
+api.cards.get("my-pack.slashing.result");
+api.cards.list({ category: "criticalHit" });
+api.cards.getPack("my-pack");
+api.cards.listPacks();
+```
+
+Pack registration is transactional. Use `{ replace: true }` to replace an existing pack only after the complete replacement has validated.
+
+### Validation
+
+```js
+const cardReport = api.cards.validate(cardDefinition);
+const packReport = api.cards.validatePack(packDefinition);
+```
+
+Reports contain stable codes in `issues`, `errors`, and `warnings`.
+
+### Matching and selection
+
+```js
+const context = {
+  category: "criticalHit",
+  damageTypes: ["slashing"],
+  weaponGroups: ["sword"],
+  attackTraits: ["agile"],
+  sourceTraits: ["humanoid"],
+  targetTraits: ["undead"]
+};
+
+const candidates = api.cards.candidates(context);
+const result = api.cards.select(context, {
+  excludeCardIds: ["core.generic.off-balance"],
+  random: Math.random
+});
+```
+
+The selection result contains the selected card plus eligible and rejected candidate reports. The selector reads only the supplied context and never reads Foundry documents directly.
+
+### Localization
+
+```js
+const presentation = api.cards.localize("core.slashing.deep-cut");
+console.log(presentation.title, presentation.description);
+```
+
+A custom localizer can be supplied for tests or non-Foundry consumers.
+
+### Effect materialization
+
+```js
+const result = api.cards.materializeEffect("core.slashing.deep-cut");
+
+console.log(result.target);      // "target" or "source"
+console.log(result.definition);  // immutable Effect Definition
+```
+
+Narrative-only cards return `null`. Materialization does not create or apply Foundry documents.

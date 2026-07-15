@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.0-dev
+
+- Added the first headless Critical Forge architecture without Foundry UI or roll-hook integration.
+- Added versioned Critical Card and Card Pack schemas with immutable normalization and structured validation.
+- Added transactional Pack Registry and globally indexed Card Registry.
+- Added filter matching for damage types, weapon groups, attack traits, source traits, target traits, and exclusions.
+- Added transparent candidate reports, specificity weighting, deterministic random injection, and recent-card exclusion.
+- Added localization resolution for card titles, descriptions, and effect names with fallback text.
+- Added materialization of card effect templates into valid immutable Effect Definitions for the existing Effect Engine.
+- Added a small localized `core` test pack covering slashing, piercing, bludgeoning, generic hits, and fumbles.
+- Replaced the placeholder public card API with registration, validation, lookup, matching, selection, localization, and materialization functions.
+- Added dedicated Critical Forge architecture, card schema, card pack, and selection documentation.
+- Added automated tests for card schemas, registries, selection, localization, and effect materialization.
+
 ## 0.4.0-rc.2
 
 - Fixed release metadata tests incorrectly treating the repository root `.git` directory as packaged release content.
