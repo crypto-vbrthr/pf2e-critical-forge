@@ -2,7 +2,7 @@
 
 The PF2e Context Adapter is a headless translation boundary. It accepts PF2e/Foundry objects explicitly supplied by a caller and returns the neutral context consumed by Critical Forge card matching.
 
-It does not register automatic roll hooks, choose a card, render presentation HTML, or apply effects. Version 0.5.5-dev includes a manual diagnostic workbench that invokes the adapter only after a GM explicitly selects or drops a message; a separate presentation service can then publish one explicitly chosen candidate as a preview-only chat card.
+It does not register automatic roll hooks, choose a card, render presentation HTML, or apply effects. Version 0.5.6-dev includes a manual diagnostic workbench that invokes the adapter only after a GM explicitly selects or drops a message; a separate presentation service publishes a chosen candidate and can apply its stored effect only after another explicit GM action.
 
 ## API
 

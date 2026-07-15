@@ -8,7 +8,17 @@
       },
       "EnableCriticalForge": {
         "Name": "Enable Critical Forge",
-        "Hint": "Enables Foundry integration for Critical Forge in a later version. The card architecture, registries, and API are already always available; roll hooks and chat cards are not included yet."
+        "Hint": "Enables Critical Forge integration with the diagnostic workbench, manual chat cards, and confirmed effect application. Automatic roll hooks and automatic card selection are not included yet."
+      },
+      "CriticalCardVisibility": {
+        "Name": "Critical Forge card visibility",
+        "Hint": "Determines who can see manually published Critical Forge cards in chat. GM Blind is the recommended default.",
+        "Choices": {
+          "Blind": "GM Blind",
+          "Gm": "Gamemasters only",
+          "Public": "Public",
+          "Self": "Self only"
+        }
       }
     },
     "EffectForge": {
@@ -610,8 +620,8 @@
       "SelectionContext": "Selection context",
       "AdapterMetadata": "Adapter metadata",
       "WelcomeTitle": "Diagnostic workbench ready",
-      "WelcomeText": "Select an existing PF2e roll message or drag one here from chat. The Forge shows what the adapter detected and which cards match. Eligible cards can then be posted manually as preview-only chat cards.",
-      "NoAutomationNotice": "Diagnostics post a preview chat card only after an explicit button press. They apply no effects and change no actors.",
+      "WelcomeText": "Select an existing PF2e roll message or drag one here from chat. The Forge shows what the adapter detected and which cards match. Eligible cards can then be deliberately published to chat.",
+      "NoAutomationNotice": "Diagnostics publish a chat card only after an explicit button press. An effect is also applied only after a separate Gamemaster confirmation.",
       "CopyReport": "Copy report",
       "ReportCopied": "The diagnostic report was copied to the clipboard.",
       "CopyFailed": "The diagnostic report could not be copied.",
@@ -632,12 +642,12 @@
       "OpenFailed": "Critical diagnostics could not be opened. See the console for details."
     },
     "CriticalPreview": {
-      "ShowInChat": "Preview in chat",
+      "ShowInChat": "Show card in chat",
       "CardUnavailable": "The selected card is no longer available.",
-      "Posted": "Preview “{title}” was posted to chat.",
-      "PublishFailed": "The card preview could not be posted to chat.",
-      "ChatFlavor": "Critical Forge · Manual Preview",
-      "PreviewNotice": "Manual preview only. No effect was applied.",
+      "Posted": "Card “{title}” was posted to chat.",
+      "PublishFailed": "The card could not be posted to chat.",
+      "ChatFlavor": "Critical Forge · Manual Card",
+      "PreviewNotice": "Manual Critical Forge card.",
       "MechanicalEffect": "Mechanical consequence",
       "NoMechanicalEffect": "This card has no mechanical consequence.",
       "EffectTarget": "Effect target",
@@ -679,6 +689,25 @@
         "Movement": "{value} {modifierType} to {movement}",
         "BaseSpeed": "{movement} {value} {feet}",
         "Unknown": "Unsupported component: {type}"
+      },
+      "Application": {
+        "Apply": "Apply effect",
+        "Pending": "Not yet applied",
+        "Applying": "Applying effect…",
+        "Applied": "Applied",
+        "AppliedStatus": "Applied to {target} · {user}",
+        "AppliedNotification": "Effect applied to {target}.",
+        "Errors": {
+          "CRITICAL_CARD_PREVIEW_MISSING": "The Critical Forge data for this chat card is missing.",
+          "CRITICAL_CARD_EFFECT_MISSING": "This card has no effect that can be applied.",
+          "CRITICAL_CARD_APPLY_GM_ONLY": "Only a Gamemaster may apply this effect.",
+          "CRITICAL_CARD_ALREADY_APPLIED": "This card effect has already been applied.",
+          "CRITICAL_CARD_APPLICATION_IN_PROGRESS": "This effect is already being applied.",
+          "CRITICAL_CARD_TARGET_ROLE_INVALID": "The card has an invalid effect target.",
+          "CRITICAL_CARD_TARGET_UNRESOLVED": "The intended target could no longer be resolved.",
+          "CRITICAL_CARD_EFFECT_INVALID": "The effect is invalid for the target and was not applied.",
+          "CRITICAL_CARD_APPLICATION_FAILED": "The effect could not be applied. See the console for details."
+        }
       }
     }
   }

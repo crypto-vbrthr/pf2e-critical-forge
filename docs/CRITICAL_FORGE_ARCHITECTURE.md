@@ -1,6 +1,6 @@
 # Critical Forge Architecture
 
-Version 0.5.5 adds a thin, manual presentation layer around the headless Critical Forge domain and PF2e Context Adapter. It deliberately contains no automatic roll hooks, automatic card choice, or effect application.
+Version 0.5.6 adds a thin, manual presentation and application layer around the headless Critical Forge domain and PF2e Context Adapter. It deliberately contains no automatic roll hooks or automatic card choice.
 
 ```text
 Manual Chat Diagnostic UI ── explicit message input
@@ -33,7 +33,7 @@ Effect Engine
 critical-forge/
 ├─ adapters/pf2e/       PF2e data readers and diagnostic context adapter
 ├─ diagnostics/          manual message resolution, diagnostic service, and workbench UI
-├─ presentation/         effect summaries and preview-only ChatMessage publication
+├─ presentation/         effect summaries, ChatMessage publication, visibility, and manual application
 ├─ core/                 bundled architecture test pack
 ├─ localization/         key resolution and Effect materialization
 ├─ registry/             pack and card registries

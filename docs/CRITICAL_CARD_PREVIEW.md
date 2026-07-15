@@ -1,90 +1,76 @@
-# Critical Card Preview
+# Critical Card Chat Workflow
 
-Version `0.5.5-dev` adds the first visible Critical Forge result card. The feature is deliberately manual and preview-only.
+Version `0.5.6-dev` turns the manual Critical Forge preview into a controlled result-card workflow. Cards are still chosen explicitly from diagnostics; no roll hook or automatic selection is active.
 
-## Workflow
+## Visibility setting
 
-1. Open **Critical Forge Diagnostics**.
-2. Analyze a suitable PF2e attack-roll ChatMessage.
-3. Review the eligible candidates and their filter matches.
-4. Press **Preview in chat** on one eligible card.
-5. Critical Forge publishes a localized result card to chat.
+The world setting **Critical Forge card visibility** supports:
 
-No weighted random choice occurs in this workflow. The GM chooses the exact candidate that is previewed.
+- `blind`: GM-blind, the default;
+- `gm`: visible to Gamemasters;
+- `public`: visible to everyone;
+- `self`: visible only to the publishing user.
 
-## Chat-card contents
+Critical Forge applies the selected mode through Foundry's `ChatMessage.applyMode()` before creating the message.
 
-The preview card contains:
+## Manual application
 
-- localized category, title, and narrative description;
-- localized effect name when the card has a mechanical consequence;
-- effect target (`source` or `target`), including the resolved Actor name when available;
-- global Effect Definition duration;
-- localized summaries of every current built-in Effect component;
-- a visible notice that no effect was applied;
-- the source ChatMessage label when available.
+Cards with a mechanical consequence contain an **Apply effect** control. Application is deliberately GM-only. Before applying, Critical Forge:
 
-The preview card contains no buttons and performs no Actor or Item operation.
+1. reloads the structured data stored in ChatMessage flags;
+2. rejects cards that were already applied or are currently being processed;
+3. resolves the recorded source or target Token/Actor again;
+4. reruns the Effect Engine's target-aware validation;
+5. embeds the compiled PF2e Effect Item on the Actor;
+6. stores an audit record and updates the chat-card status.
+
+If the target no longer exists or validation returns an error, the Actor is not changed.
 
 ## Stored flags
 
-The ChatMessage stores structured data for later milestones:
-
 ```js
 flags["pf2e-critical-forge"].criticalCardPreview = {
-  previewVersion: 1,
+  previewVersion: 2,
   cardId: "core.slashing.deep-cut",
   packId: "core",
   category: "criticalHit",
   sourceMessageUuid: "ChatMessage...",
+  visibilityMode: "blind",
   context: {},
   metadata: {},
   effect: {
     target: "target",
     definition: EffectDefinition
+  },
+  application: {
+    status: "pending",
+    appliedAt: null,
+    appliedBy: null,
+    targetActorUuid: null,
+    targetActorName: null,
+    createdEffectIds: []
   }
 };
 ```
 
-These flags do not imply that the effect was accepted or applied. A future confirmation workflow can read the exact immutable Effect Definition without reconstructing it from rendered HTML.
+After success, `status` is `applied` and the audit fields are populated.
 
 ## Public API
 
-Prepare presentation data without creating a ChatMessage:
-
 ```js
-const preview = api.cards.preparePreview("core.slashing.deep-cut", {
+await api.cards.publishPreview(cardId, {
   context,
   metadata,
-  sourceMessage
-});
-```
-
-Publish the preview:
-
-```js
-const result = await api.cards.publishPreview("core.slashing.deep-cut", {
-  context,
-  metadata,
-  sourceMessage
+  sourceMessage,
+  visibilityMode: "blind"
 });
 
-console.log(result.preview);
-console.log(result.message);
+const inspection = await api.cards.inspectPreviewApplication(message);
+const result = await api.cards.applyPreviewEffect(message);
 ```
 
-Summarize an arbitrary Effect Definition for another UI:
-
-```js
-const summary = api.cards.summarizeEffect(definition);
-```
+`api.cards.visibilityModes` exposes the stable mode constants and `normalizeVisibilityMode()` provides safe fallback to `blind`.
 
 ## Safety boundary
 
-The preview milestone does not:
-
-- register attack-roll hooks;
-- choose a card automatically;
-- add an apply button to chat;
-- create or embed an Effect Item;
-- alter Actors, Tokens, or the source ChatMessage.
+This milestone still does not register attack-roll hooks or choose cards automatically. Every card publication and every effect application requires an explicit GM action.

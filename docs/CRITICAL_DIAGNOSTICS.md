@@ -1,6 +1,6 @@
 # Critical Forge Diagnostics
 
-Version `0.5.5-dev` provides a manual GM workbench for testing the PF2e Context Adapter and card-selection pipeline against real chat messages. Eligible cards can be deliberately published as preview-only chat cards.
+Version `0.5.6-dev` provides a manual GM workbench for testing the PF2e Context Adapter and card-selection pipeline against real chat messages. Eligible cards can be deliberately published as manual result chat cards.
 
 It still applies no effect, creates no Item, changes no Actor, and registers no automatic attack-roll hook.
 

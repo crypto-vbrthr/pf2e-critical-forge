@@ -616,7 +616,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the headless PF2e Context Adapter, manual diagnostics, and preview-only result chat cards are available through `api.cards`. Version 0.5.5-dev still includes no automatic roll hooks, automatic card selection, or effect application.
+Critical Forge card architecture, the headless PF2e Context Adapter, manual diagnostics, configurable result chat cards, and GM-confirmed effect application are available through `api.cards`. Version 0.5.6-dev includes manual GM-confirmed application from result cards, but still no automatic roll hooks or automatic card selection.
 
 ### Registration and lookup
 
@@ -703,7 +703,7 @@ Recent PF2e roll messages can be listed with:
 api.cards.diagnostics.listMessages({ limit: 50 });
 ```
 
-The GM-only workbench can be opened with `api.ui.openCriticalDiagnostics(message?)`. It never performs a weighted selection or applies a card. A GM may explicitly publish one eligible candidate as a preview-only chat card. See [`CRITICAL_DIAGNOSTICS.md`](CRITICAL_DIAGNOSTICS.md).
+The GM-only workbench can be opened with `api.ui.openCriticalDiagnostics(message?)`. It never performs a weighted selection or applies a card. A GM may explicitly publish one eligible candidate as a result chat card and, in a second deliberate step, apply its stored effect. See [`CRITICAL_DIAGNOSTICS.md`](CRITICAL_DIAGNOSTICS.md).
 
 ### Matching and selection
 
@@ -771,7 +771,7 @@ console.log(result.preview);
 console.log(result.message);
 ```
 
-The message contains localized narrative and effect summaries plus structured flags under `flags.pf2e-critical-forge.criticalCardPreview`. It has no apply action and changes no Actor.
+The message contains localized narrative and effect summaries plus structured flags under `flags.pf2e-critical-forge.criticalCardPreview`. Cards with a mechanical consequence expose a GM-only apply action that re-resolves and revalidates the stored target before changing an Actor.
 
 Effect Definitions can be summarized independently:
 
@@ -780,3 +780,21 @@ const summary = api.cards.summarizeEffect(definition);
 ```
 
 `api.cards.previewVersion` identifies the stored preview-flag shape. See [`CRITICAL_CARD_PREVIEW.md`](CRITICAL_CARD_PREVIEW.md).
+
+
+### Result-card visibility and application
+
+```js
+await api.cards.publishPreview(cardId, {
+  context,
+  metadata,
+  sourceMessage,
+  visibilityMode: api.cards.visibilityModes.BLIND
+});
+
+const inspection = await api.cards.inspectPreviewApplication(message);
+const target = await api.cards.resolvePreviewTarget(previewFlag);
+const result = await api.cards.applyPreviewEffect(message);
+```
+
+Supported visibility values are `blind`, `gm`, `public`, and `self`. Invalid values normalize to `blind`. Application is GM-only and records an audit status in the ChatMessage flags.

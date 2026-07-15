@@ -1,6 +1,6 @@
 export const MODULE_ID = "pf2e-critical-forge";
-export const MODULE_VERSION = "0.5.5-dev";
-export const API_VERSION = "0.5.3";
+export const MODULE_VERSION = "0.5.6-dev";
+export const API_VERSION = "0.5.4";
 export const EFFECT_SCHEMA_VERSION = 1;
 export const CARD_SCHEMA_VERSION = 1;
 export const CARD_PACK_SCHEMA_VERSION = 1;
@@ -8,5 +8,6 @@ export const CARD_PACK_SCHEMA_VERSION = 1;
 export const SETTINGS = Object.freeze({
   ENABLE_EFFECT_FORGE: "enableEffectForge",
   ENABLE_CRITICAL_FORGE: "enableCriticalForge",
-  EFFECT_FORGE_WINDOW_STATE: "effectForgeWindowState"
+  EFFECT_FORGE_WINDOW_STATE: "effectForgeWindowState",
+  CRITICAL_CARD_VISIBILITY: "criticalCardVisibility"
 });

@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.6-dev
+
+- Added configurable Critical Forge card visibility with `GM Blind` as the default and optional GM-only, public, or self-only modes.
+- Critical result cards now use Foundry 14 `ChatMessage.applyMode()` semantics before creation.
+- Added a manual **Apply effect** control to cards with mechanical consequences.
+- Effect application is GM-only, resolves the stored source or target Actor again, and reruns target-aware Effect Engine validation before changing an Actor.
+- Added duplicate-application and in-progress protection.
+- Successful application records timestamp, GM, target Actor, and created Effect Item ids in ChatMessage flags and updates the card status.
+- Public cards hide the apply control from non-GM users.
+- Added public visibility and application helpers through `api.cards`.
+- Added regression tests for visibility payloads, target resolution, permission checks, validation failures, audit flags, and duplicate prevention.
+- The complete suite now contains 141 passing tests with 92.12% measured line coverage.
+- Public API version increased to `0.5.4`; Critical Card Preview format increased to version `2`; Effect and card schemas remain unchanged.
+
 ## 0.5.5-dev
 
 - Added a manual **Preview in chat** action to every eligible card in Critical Forge Diagnostics.

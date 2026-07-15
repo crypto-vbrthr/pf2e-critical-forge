@@ -1,4 +1,4 @@
-> Historical document for the Effect Forge 0.4.0 release-candidate line. The current 0.5.5 development line adds Critical Forge diagnostics plus manual preview-only result chat cards.
+> Historical document for the Effect Forge 0.4.0 release-candidate line. The current 0.5.6 development line adds Critical Forge diagnostics, configurable result cards, and manual GM effect application.
 
 # Release Candidate 0.4.0-rc.2
 

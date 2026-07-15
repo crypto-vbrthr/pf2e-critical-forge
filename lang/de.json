@@ -8,7 +8,17 @@
       },
       "EnableCriticalForge": {
         "Name": "Critical Forge aktivieren",
-        "Hint": "Aktiviert in einer späteren Version die Foundry-Einbindung der Critical Forge. Kartenarchitektur, Registries und API sind bereits immer verfügbar; Wurfhooks und Chatkarten sind noch nicht enthalten."
+        "Hint": "Aktiviert die Foundry-Einbindung der Critical Forge mit Diagnosewerkbank, manuellen Chatkarten und bestätigter Effektanwendung. Automatische Wurfhooks und automatische Kartenauswahl sind noch nicht enthalten."
+      },
+      "CriticalCardVisibility": {
+        "Name": "Sichtbarkeit von Critical-Forge-Karten",
+        "Hint": "Legt fest, wer manuell veröffentlichte Critical-Forge-Karten im Chat sehen kann. GM-Blind ist der empfohlene Standard.",
+        "Choices": {
+          "Blind": "GM-Blind",
+          "Gm": "Nur Spielleitung",
+          "Public": "Öffentlich",
+          "Self": "Nur für mich"
+        }
       }
     },
     "EffectForge": {
@@ -610,8 +620,8 @@
       "SelectionContext": "Selection Context",
       "AdapterMetadata": "Adapter-Metadaten",
       "WelcomeTitle": "Diagnosewerkbank bereit",
-      "WelcomeText": "Wähle eine vorhandene PF2e-Wurfnachricht oder ziehe sie aus dem Chat hierher. Die Forge zeigt, was der Adapter erkannt hat und welche Karten passen. Passende Karten können anschließend manuell als reine Vorschau im Chat dargestellt werden.",
-      "NoAutomationNotice": "Die Diagnose veröffentlicht nur nach einem bewussten Knopfdruck eine Vorschau-Chatkarte. Sie wendet keine Effekte an und verändert keine Actors.",
+      "WelcomeText": "Wähle eine vorhandene PF2e-Wurfnachricht oder ziehe sie aus dem Chat hierher. Die Forge zeigt, was der Adapter erkannt hat und welche Karten passen. Passende Karten können anschließend bewusst im Chat veröffentlicht werden.",
+      "NoAutomationNotice": "Die Diagnose veröffentlicht nur nach einem bewussten Knopfdruck eine Chatkarte. Ein Effekt wird ebenfalls nur nach einer gesonderten Bestätigung durch die Spielleitung angewendet.",
       "CopyReport": "Bericht kopieren",
       "ReportCopied": "Diagnosebericht wurde in die Zwischenablage kopiert.",
       "CopyFailed": "Der Diagnosebericht konnte nicht kopiert werden.",
@@ -632,12 +642,12 @@
       "OpenFailed": "Die Krit-Diagnose konnte nicht geöffnet werden. Details stehen in der Konsole."
     },
     "CriticalPreview": {
-      "ShowInChat": "Vorschau im Chat",
+      "ShowInChat": "Karte im Chat anzeigen",
       "CardUnavailable": "Die gewählte Karte ist nicht mehr verfügbar.",
-      "Posted": "Vorschau „{title}“ wurde im Chat veröffentlicht.",
-      "PublishFailed": "Die Karten-Vorschau konnte nicht im Chat veröffentlicht werden.",
-      "ChatFlavor": "Critical Forge · Manuelle Vorschau",
-      "PreviewNotice": "Manuelle Vorschau. Es wurde kein Effekt angewendet.",
+      "Posted": "Karte „{title}“ wurde im Chat veröffentlicht.",
+      "PublishFailed": "Die Karte konnte nicht im Chat veröffentlicht werden.",
+      "ChatFlavor": "Critical Forge · Manuelle Karte",
+      "PreviewNotice": "Manuelle Critical-Forge-Karte.",
       "MechanicalEffect": "Mechanische Folge",
       "NoMechanicalEffect": "Diese Karte besitzt keine mechanische Folge.",
       "EffectTarget": "Effektziel",
@@ -679,6 +689,25 @@
         "Movement": "{value} {modifierType} auf {movement}",
         "BaseSpeed": "{movement} {value} {feet}",
         "Unknown": "Nicht unterstützte Komponente: {type}"
+      },
+      "Application": {
+        "Apply": "Effekt anwenden",
+        "Pending": "Noch nicht angewendet",
+        "Applying": "Effekt wird angewendet…",
+        "Applied": "Angewendet",
+        "AppliedStatus": "Auf {target} angewendet · {user}",
+        "AppliedNotification": "Effekt wurde auf {target} angewendet.",
+        "Errors": {
+          "CRITICAL_CARD_PREVIEW_MISSING": "Die Critical-Forge-Daten der Chatkarte fehlen.",
+          "CRITICAL_CARD_EFFECT_MISSING": "Diese Karte besitzt keinen anwendbaren Effekt.",
+          "CRITICAL_CARD_APPLY_GM_ONLY": "Nur die Spielleitung darf diesen Effekt anwenden.",
+          "CRITICAL_CARD_ALREADY_APPLIED": "Der Effekt dieser Karte wurde bereits angewendet.",
+          "CRITICAL_CARD_APPLICATION_IN_PROGRESS": "Der Effekt wird bereits angewendet.",
+          "CRITICAL_CARD_TARGET_ROLE_INVALID": "Das Effektziel der Karte ist ungültig.",
+          "CRITICAL_CARD_TARGET_UNRESOLVED": "Das vorgesehene Ziel konnte nicht mehr gefunden werden.",
+          "CRITICAL_CARD_EFFECT_INVALID": "Der Effekt ist für das Ziel nicht gültig und wurde nicht angewendet.",
+          "CRITICAL_CARD_APPLICATION_FAILED": "Der Effekt konnte nicht angewendet werden. Details stehen in der Konsole."
+        }
       }
     }
   }

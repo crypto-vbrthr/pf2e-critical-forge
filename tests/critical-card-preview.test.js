@@ -99,6 +99,12 @@ test("publishing a preview renders one chat card without applying an effect", as
       speaker: { alias: "Valeros", actor: "actor-1" }
     },
     chatStyle: 7,
+    visibilityMode: "blind",
+    applyChatModeFn: (data, mode) => ({
+      ...data,
+      whisper: mode === "blind" ? ["gm-1"] : [],
+      blind: mode === "blind"
+    }),
     renderTemplateFn: async (path, data) => {
       calls.render = { path, data };
       return `<article data-card-id="${data.cardId}">${data.title}</article>`;
@@ -112,11 +118,15 @@ test("publishing a preview renders one chat card without applying an effect", as
   assert.match(calls.render.path, /critical-card-preview\.hbs$/);
   assert.equal(calls.render.data.cardId, "core.generic.off-balance");
   assert.equal(calls.create.style, 7);
+  assert.deepEqual(calls.create.whisper, ["gm-1"]);
+  assert.equal(calls.create.blind, true);
   assert.equal(calls.create.speaker.alias, "Valeros");
   assert.match(calls.create.content, /core\.generic\.off-balance/);
   assert.equal(calls.create.flags["pf2e-critical-forge"].criticalCardPreview.cardId, "core.generic.off-balance");
   assert.equal(calls.create.flags["pf2e-critical-forge"].criticalCardPreview.effect.target, "target");
   assert.equal(calls.create.flags["pf2e-critical-forge"].criticalCardPreview.effect.definition.name.length > 0, true);
-  assert.equal(calls.create.flags["pf2e-critical-forge"].criticalCardPreview.applied, undefined);
+  assert.equal(calls.create.flags["pf2e-critical-forge"].criticalCardPreview.visibilityMode, "blind");
+  assert.equal(calls.create.flags["pf2e-critical-forge"].criticalCardPreview.application.status, "pending");
+  assert.equal(result.visibilityMode, "blind");
   assert.equal(result.message.id, "preview-message");
 });

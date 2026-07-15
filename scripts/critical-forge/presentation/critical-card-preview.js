@@ -1,4 +1,4 @@
-import { MODULE_ID } from "../../constants.js";
+import { MODULE_ID, SETTINGS } from "../../constants.js";
 import { criticalCardRegistry } from "../critical-forge.js";
 import { localizeCard, materializeCardEffect } from "../localization/card-localizer.js";
 import { deepClone, deepFreeze } from "../utils.js";
@@ -9,7 +9,16 @@ import { getResistanceTypeDefinition } from "../../effect-engine/catalogs/resist
 import { getSelectorDefinition } from "../../effect-engine/catalogs/selector-catalog.js";
 import { getWeaknessTypeDefinition } from "../../effect-engine/catalogs/weakness-type-catalog.js";
 
-export const CRITICAL_CARD_PREVIEW_VERSION = 1;
+export const CRITICAL_CARD_PREVIEW_VERSION = 2;
+
+export const CRITICAL_CARD_VISIBILITY_MODES = Object.freeze({
+  BLIND: "blind",
+  GM: "gm",
+  PUBLIC: "public",
+  SELF: "self"
+});
+
+const ALLOWED_VISIBILITY_MODES = new Set(Object.values(CRITICAL_CARD_VISIBILITY_MODES));
 
 const CHAT_TEMPLATE = `modules/${MODULE_ID}/templates/critical-forge/critical-card-preview.hbs`;
 
@@ -76,6 +85,8 @@ export async function publishCriticalCardPreview(cardOrId, {
   speaker = null,
   renderTemplateFn = defaultRenderTemplate,
   createMessageFn = defaultCreateMessage,
+  applyChatModeFn = defaultApplyChatMode,
+  visibilityMode = defaultVisibilityMode(),
   chatStyle = defaultChatStyle(),
   i18n = globalThis.game?.i18n
 } = {}) {
@@ -104,6 +115,7 @@ export async function publishCriticalCardPreview(cardOrId, {
           packId: preview.packId,
           category: preview.category,
           sourceMessageUuid: preview.sourceMessageUuid,
+          visibilityMode: normalizeVisibilityMode(visibilityMode),
           context: deepClone(preview.context),
           metadata: deepClone(preview.metadata),
           effect: preview.effect
@@ -111,14 +123,29 @@ export async function publishCriticalCardPreview(cardOrId, {
                 target: preview.effect.target,
                 definition: deepClone(preview.effect.definition)
               }
-            : null
+            : null,
+          application: {
+            status: preview.effect ? "pending" : "not-applicable",
+            appliedAt: null,
+            appliedBy: null,
+            targetActorUuid: null,
+            targetActorName: null,
+            createdEffectIds: []
+          }
         }
       }
     }
   };
 
-  const message = await createMessageFn(messageData);
-  return Object.freeze({ preview, message, messageData });
+  const normalizedVisibility = normalizeVisibilityMode(visibilityMode);
+  const visibleMessageData = applyChatModeFn(messageData, normalizedVisibility) ?? messageData;
+  const message = await createMessageFn(visibleMessageData);
+  return Object.freeze({
+    preview,
+    message,
+    messageData: visibleMessageData,
+    visibilityMode: normalizedVisibility
+  });
 }
 
 function prepareEffect(materialized, { i18n, sourceName, targetName }) {
@@ -377,6 +404,46 @@ function humanize(value) {
   return String(value ?? "")
     .replaceAll("-", " ")
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+
+export function normalizeVisibilityMode(mode) {
+  const normalized = String(mode ?? "").trim().toLowerCase();
+  return ALLOWED_VISIBILITY_MODES.has(normalized)
+    ? normalized
+    : CRITICAL_CARD_VISIBILITY_MODES.BLIND;
+}
+
+function defaultVisibilityMode() {
+  try {
+    const configured = globalThis.game?.settings?.get?.(MODULE_ID, SETTINGS.CRITICAL_CARD_VISIBILITY);
+    return normalizeVisibilityMode(configured);
+  } catch (_error) {
+    return CRITICAL_CARD_VISIBILITY_MODES.BLIND;
+  }
+}
+
+function defaultApplyChatMode(data, mode) {
+  const applyMode = globalThis.ChatMessage?.applyMode;
+  if (typeof applyMode !== "function") {
+    const fallback = { ...data };
+    if (mode === "public") {
+      fallback.whisper = [];
+      fallback.blind = false;
+    } else if (mode === "self") {
+      fallback.whisper = globalThis.game?.user?.id ? [globalThis.game.user.id] : [];
+      fallback.blind = false;
+    } else {
+      const gms = [...(globalThis.game?.users ?? [])]
+        .filter((user) => user?.isGM)
+        .map((user) => user.id)
+        .filter(Boolean);
+      fallback.whisper = gms;
+      fallback.blind = mode === "blind";
+    }
+    return fallback;
+  }
+  return applyMode.call(globalThis.ChatMessage, data, mode);
 }
 
 function defaultRenderTemplate(path, data) {

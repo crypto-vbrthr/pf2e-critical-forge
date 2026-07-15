@@ -3,12 +3,12 @@
 PF2E Critical Forge consists of two optional user-facing tools built on one always-available Effect Engine:
 
 - **Effect Forge**: a GM interface for building reusable PF2e effects.
-- **Critical Forge**: a localized card architecture with PF2e diagnostics and manually published preview-only result chat cards.
+- **Critical Forge**: a localized card architecture with PF2e diagnostics, configurable result-chat visibility, and manual GM-confirmed effect application.
 - **Effect Engine API**: an always-loaded public API for this and other modules.
 
 ## Status
 
-Version `0.5.5-dev` adds the first **manual Critical Forge result preview**. A GM can select or drop an existing PF2e roll message, inspect the complete diagnostic report, and deliberately publish any eligible card as a localized preview-only chat card. The preview shows narrative text, effect target, duration, and mechanical components, but offers no apply action and changes no Actor.
+Version `0.5.6-dev` adds the first **manual application workflow** for Critical Forge result cards. A GM can publish an eligible card from diagnostics, keep it GM-blind by default or choose another visibility mode in module settings, and explicitly apply its stored Effect Definition to the recorded source or target Actor. The card revalidates the effect before application, records an audit status, and blocks duplicate application.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -18,17 +18,12 @@ The current engine includes:
 - versioned Critical Card and Card Pack schemas;
 - transactional Pack Registry and globally indexed Card Registry;
 - localized title, description, and effect-name resolution with fallbacks;
-- headless filter matching for damage types, weapon groups, attack traits, and actor traits;
-- transparent candidate reports and weighted selection with injectable randomness;
-- recent-card exclusion supplied by callers;
-- conversion of card effect templates into immutable Effect Definitions;
-- a small localized `core` architecture test pack;
-- a public API for external card packs and selectors;
-- a diagnostic PF2e Context Adapter for explicitly supplied messages, rolls, strikes, items, actors, tokens, and roll options;
-- a GM-only manual diagnostic workbench for real PF2e chat messages;
-- localized preview-only result chat cards published explicitly from eligible diagnostic candidates;
-- structured preview flags reserved for later user-confirmed effect application;
-- no automatic roll hooks, automatic card selection, effect application, or Actor changes for Critical Forge yet.
+- headless filter matching and transparent weighted candidate reports;
+- a diagnostic PF2e Context Adapter and GM-only manual workbench for real chat messages;
+- localized result cards with configurable `blind`, `gm`, `public`, or `self` visibility;
+- GM-confirmed effect application to the stored source or target Actor;
+- target re-resolution, target-aware validation, duplicate protection, and application audit flags;
+- no automatic roll hooks or automatic card selection yet.
 
 ## API access
 
@@ -67,7 +62,7 @@ npm run test:coverage
 npm run quality:check
 ```
 
-The suite covers the Effect Engine and Forge as well as card normalization, pack registration, matching, weighted selection, localization, Effect Definition materialization, diagnostic reports, effect summaries, and preview-chat publication data.
+The suite covers the Effect Engine and Forge as well as card normalization, selection, localization, diagnostics, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 
@@ -80,7 +75,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/CARD_SELECTION.md`](docs/CARD_SELECTION.md): candidate evaluation and weighted selection
 - [`docs/PF2E_CONTEXT_ADAPTER.md`](docs/PF2E_CONTEXT_ADAPTER.md): PF2e document-to-context translation and diagnostics
 - [`docs/CRITICAL_DIAGNOSTICS.md`](docs/CRITICAL_DIAGNOSTICS.md): manual chat-message diagnostic workbench and report format
-- [`docs/CRITICAL_CARD_PREVIEW.md`](docs/CRITICAL_CARD_PREVIEW.md): manual preview-only result chat cards and stored message flags
+- [`docs/CRITICAL_CARD_PREVIEW.md`](docs/CRITICAL_CARD_PREVIEW.md): manual result chat cards, visibility, stored flags, and effect application
 - [`docs/EDITING_ITEMS.md`](docs/EDITING_ITEMS.md): loading, updating, and preserving existing Effect Items
 - [`docs/IMPORT_EXPORT.md`](docs/IMPORT_EXPORT.md): portable JSON files, clipboard transfer, and API helpers
 - [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md): Effect Definition schema

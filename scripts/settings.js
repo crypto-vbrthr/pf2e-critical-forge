@@ -20,6 +20,21 @@ export function registerSettings() {
     default: false,
     requiresReload: true
   });
+  game.settings.register(MODULE_ID, SETTINGS.CRITICAL_CARD_VISIBILITY, {
+    name: "PF2E_CRITICAL_FORGE.Settings.CriticalCardVisibility.Name",
+    hint: "PF2E_CRITICAL_FORGE.Settings.CriticalCardVisibility.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      blind: "PF2E_CRITICAL_FORGE.Settings.CriticalCardVisibility.Choices.Blind",
+      gm: "PF2E_CRITICAL_FORGE.Settings.CriticalCardVisibility.Choices.Gm",
+      public: "PF2E_CRITICAL_FORGE.Settings.CriticalCardVisibility.Choices.Public",
+      self: "PF2E_CRITICAL_FORGE.Settings.CriticalCardVisibility.Choices.Self"
+    },
+    default: "blind"
+  });
+
   game.settings.register(MODULE_ID, SETTINGS.EFFECT_FORGE_WINDOW_STATE, {
     name: "Effect Forge Window State",
     scope: "client",

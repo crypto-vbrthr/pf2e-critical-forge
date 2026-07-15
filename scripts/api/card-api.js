@@ -25,8 +25,15 @@ import {
   prepareCriticalCardPreview,
   publishCriticalCardPreview,
   summarizeCriticalEffectDefinition,
-  CRITICAL_CARD_PREVIEW_VERSION
+  CRITICAL_CARD_PREVIEW_VERSION,
+  CRITICAL_CARD_VISIBILITY_MODES,
+  normalizeVisibilityMode
 } from "../critical-forge/presentation/critical-card-preview.js";
+import {
+  applyCriticalCardEffect,
+  inspectCriticalCardApplication,
+  resolveCriticalCardEffectTarget
+} from "../critical-forge/presentation/critical-card-application.js";
 
 export function createCardApi() {
   const resolveCard = (cardOrId) => {
@@ -63,6 +70,11 @@ export function createCardApi() {
     previewVersion: CRITICAL_CARD_PREVIEW_VERSION,
     preparePreview: (cardOrId, options = {}) => prepareCriticalCardPreview(resolveCard(cardOrId), options),
     publishPreview: (cardOrId, options = {}) => publishCriticalCardPreview(resolveCard(cardOrId), options),
+    visibilityModes: CRITICAL_CARD_VISIBILITY_MODES,
+    normalizeVisibilityMode,
+    inspectPreviewApplication: (message, options = {}) => inspectCriticalCardApplication(message, options),
+    resolvePreviewTarget: (previewData, options = {}) => resolveCriticalCardEffectTarget(previewData, options),
+    applyPreviewEffect: (message, options = {}) => applyCriticalCardEffect(message, options),
     summarizeEffect: (definition, options = {}) => summarizeCriticalEffectDefinition(definition, options),
 
     createContext: (input, { system = "pf2e" } = {}) => {

@@ -78,7 +78,7 @@ The suite contains 136 tests covering:
 - manual diagnostic candidate evaluation, chat-message discovery, Item UUID resolution, target handling, and drop validation;
 - localized critical-card effect summaries, preview presentation data, ChatMessage payloads, structured preview flags, and public preview APIs.
 
-Coverage is a diagnostic rather than a release gate. Version `0.5.5-dev` measures 93.27% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, diagnostics, and preview services.
+Coverage is a diagnostic rather than a release gate. Version `0.5.6-dev` measures 92.12% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, diagnostics, result-card visibility, and manual application services.
 
 ## Foundry mock
 
