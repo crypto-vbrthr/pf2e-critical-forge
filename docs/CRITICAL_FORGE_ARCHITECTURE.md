@@ -1,9 +1,9 @@
 # Critical Forge Architecture
 
-Version 0.5.0 introduces the headless Critical Forge domain layer. It deliberately contains no chat cards, roll hooks, directory buttons, actor inspection, or automatic effect application.
+Version 0.5.1 extends the headless Critical Forge domain layer with a separate PF2e Context Adapter. It deliberately contains no chat cards, automatic roll hooks, directory buttons, or automatic effect application.
 
 ```text
-PF2e adapter (future)
+PF2e Context Adapter
         │
         ▼
 Selection Context
@@ -25,6 +25,7 @@ Effect Engine
 
 ```text
 critical-forge/
+├─ adapters/pf2e/       PF2e data readers and diagnostic context adapter
 ├─ core/                 bundled architecture test pack
 ├─ localization/         key resolution and Effect materialization
 ├─ registry/             pack and card registries
@@ -45,6 +46,6 @@ critical-forge/
 - Mechanical consequences remain Effect Definitions and are handled by the Effect Engine.
 - No effect is applied automatically in this milestone.
 
-## Future adapters
+## Adapter boundary
 
-Later versions may add separate adapters for PF2e strikes, spells, and other checks. Those adapters must produce the same selection context instead of adding PF2e document knowledge to the card domain.
+The PF2e adapter may inspect only documents explicitly supplied by its caller. It normalizes PF2e roll outcomes, weapon data, NPC melee damage, traits, actor metadata, and roll options into neutral data. It never selects a card, registers a hook, renders HTML, or applies an effect. Further spell- or skill-specific readers can extend this adapter without adding PF2e document knowledge to the card domain.

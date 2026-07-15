@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.1-dev
+
+- Added the first headless PF2e Context Adapter without Foundry hooks or Critical Forge UI integration.
+- Added readers for PF2e degree of success, chat flags, weapons, selected versatile/modular damage, NPC melee damage rolls, strikes, actors, tokens, and roll options.
+- Added neutral context output for category, damage types, weapon groups, attack traits, source traits, and target traits.
+- Added diagnostic metadata for roll, source, target, attack, provenance, and unresolved optional data.
+- Added stable adapter diagnostics and non-throwing reports for incomplete input.
+- Added public `api.cards.adapters.pf2e.createContext()` and `api.cards.createContext()` entry points.
+- Added dedicated PF2e Context Adapter documentation and architecture updates.
+- Added regression tests for explicit data, PF2e weapon/actor extraction, versatile damage, NPC melee attacks, roll-option fallback, degree mapping, invalid input, and public API exposure.
+
 ## 0.5.0-dev
 
 - Added the first headless Critical Forge architecture without Foundry UI or roll-hook integration.

@@ -39,3 +39,18 @@ test("public card API selects, localizes, and materializes cards", () => {
   const effect = api.materializeEffect(selected.id, { localize: () => null });
   assert.ok(effect.definition.name);
 });
+
+test("public card API exposes the headless PF2e context adapter", () => {
+  assert.equal(api.adapters.pf2e.version, "1.0.0");
+  const direct = api.adapters.pf2e.createContext({
+    category: "criticalHit",
+    damageTypes: ["slashing"]
+  });
+  const generic = api.createContext({
+    category: "criticalHit",
+    damageTypes: ["slashing"]
+  });
+  assert.equal(direct.valid, true);
+  assert.deepEqual(generic.context, direct.context);
+  assert.throws(() => api.createContext({}, { system: "other" }), /Unsupported/);
+});

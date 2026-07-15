@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.5.0-dev` begins the **Critical Forge architecture** while keeping the existing Effect Engine and Effect Forge stable. This milestone is deliberately headless: it adds versioned card and pack schemas, registries, localization resolution, filtering, weighted selection, and a small localized test pack. It does **not** add roll hooks, chat cards, automatic PF2e document inspection, or effect application from critical results.
+Version `0.5.1-dev` adds the first **headless PF2e Context Adapter** to the Critical Forge architecture while keeping the Effect Engine and Effect Forge stable. It translates explicitly supplied PF2e roll, message, item, strike, actor, and token data into the neutral card-selection context. It still does **not** register roll hooks, render chat cards, or apply critical effects automatically.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -24,7 +24,8 @@ The current engine includes:
 - conversion of card effect templates into immutable Effect Definitions;
 - a small localized `core` architecture test pack;
 - a public API for external card packs and selectors;
-- no Foundry UI integration or automatic roll handling for Critical Forge yet.
+- a diagnostic PF2e Context Adapter for explicitly supplied messages, rolls, strikes, items, actors, tokens, and roll options;
+- no Foundry UI integration, automatic roll hooks, chat cards, or effect application for Critical Forge yet.
 
 ## API access
 
@@ -71,6 +72,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/CARD_SCHEMA.md`](docs/CARD_SCHEMA.md): Critical Card data model and filter semantics
 - [`docs/CARD_PACKS.md`](docs/CARD_PACKS.md): pack registration and extension model
 - [`docs/CARD_SELECTION.md`](docs/CARD_SELECTION.md): candidate evaluation and weighted selection
+- [`docs/PF2E_CONTEXT_ADAPTER.md`](docs/PF2E_CONTEXT_ADAPTER.md): PF2e document-to-context translation and diagnostics
 - [`docs/EDITING_ITEMS.md`](docs/EDITING_ITEMS.md): loading, updating, and preserving existing Effect Items
 - [`docs/IMPORT_EXPORT.md`](docs/IMPORT_EXPORT.md): portable JSON files, clipboard transfer, and API helpers
 - [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md): Effect Definition schema

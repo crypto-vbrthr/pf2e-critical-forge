@@ -12,6 +12,10 @@ import { localizeCard, materializeCardEffect } from "../critical-forge/localizat
 import { matchCard } from "../critical-forge/selection/card-matcher.js";
 import { normalizeCardDefinition, normalizePackDefinition } from "../critical-forge/schema/card-normalizer.js";
 import { validateCardDefinition, validatePackDefinition } from "../critical-forge/schema/card-validator.js";
+import {
+  createPf2eSelectionContext,
+  PF2E_CONTEXT_ADAPTER_VERSION
+} from "../critical-forge/adapters/pf2e/pf2e-context-adapter.js";
 
 export function createCardApi() {
   const resolveCard = (cardOrId) => {
@@ -44,7 +48,18 @@ export function createCardApi() {
     candidates: (context, options = {}) => criticalCardSelector.candidates(context, options),
     select: (context, options = {}) => criticalCardSelector.select(context, options),
     localize: (cardOrId, options = {}) => localizeCard(resolveCard(cardOrId), options),
-    materializeEffect: (cardOrId, options = {}) => materializeCardEffect(resolveCard(cardOrId), options)
+    materializeEffect: (cardOrId, options = {}) => materializeCardEffect(resolveCard(cardOrId), options),
+
+    createContext: (input, { system = "pf2e" } = {}) => {
+      if (system !== "pf2e") throw new Error(`Unsupported Critical Forge context adapter: ${system}`);
+      return createPf2eSelectionContext(input);
+    },
+    adapters: Object.freeze({
+      pf2e: Object.freeze({
+        version: PF2E_CONTEXT_ADAPTER_VERSION,
+        createContext: (input) => createPf2eSelectionContext(input)
+      })
+    })
   });
 }
 

@@ -1,4 +1,4 @@
-> Historical document for the Effect Forge 0.4.0 release-candidate line. The current 0.5.0 development line adds headless Critical Forge architecture.
+> Historical document for the Effect Forge 0.4.0 release-candidate line. The current 0.5.1 development line adds headless Critical Forge architecture.
 
 # Release Candidate 0.4.0-rc.2
 

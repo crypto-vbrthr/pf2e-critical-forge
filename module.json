@@ -1,8 +1,8 @@
 {
   "id": "pf2e-critical-forge",
   "title": "PF2E Critical Forge",
-  "description": "A modular PF2e Effect Engine, Effect Forge, and headless Critical Forge card architecture for localized critical-hit and fumble packs.",
-  "version": "0.5.0-dev",
+  "description": "A modular PF2e Effect Engine, polished Effect Forge, and headless Critical Forge architecture with localized card packs and a diagnostic PF2e Context Adapter.",
+  "version": "0.5.1-dev",
   "authors": [
     {
       "name": "crypto-vbrthr"

@@ -1,0 +1,203 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { installFoundryMock, assertDeepFrozen } from "./helpers/foundry-mock.js";
+
+installFoundryMock();
+
+const {
+  createPf2eSelectionContext,
+  PF2E_CONTEXT_ADAPTER_VERSION
+} = await import("../scripts/critical-forge/adapters/pf2e/pf2e-context-adapter.js");
+
+function actor({
+  id,
+  uuid = `Actor.${id}`,
+  name = id,
+  type = "npc",
+  traits = [],
+  level = 1,
+  size = "med"
+}) {
+  return {
+    id,
+    uuid,
+    name,
+    type,
+    level,
+    size,
+    system: {
+      traits: { value: traits, size: { value: size } },
+      details: { level: { value: level } }
+    }
+  };
+}
+
+function weapon(overrides = {}) {
+  return {
+    id: "weapon-1",
+    uuid: "Actor.source.Item.weapon-1",
+    name: "Longsword",
+    type: "weapon",
+    isMelee: true,
+    isRanged: false,
+    system: {
+      category: "martial",
+      group: "sword",
+      baseItem: "longsword",
+      damage: { damageType: "slashing" },
+      range: null,
+      traits: {
+        value: ["versatile-p"],
+        otherTags: [],
+        toggles: { versatile: { selected: null }, modular: { selected: null } }
+      }
+    },
+    ...overrides
+  };
+}
+
+test("adapter creates a frozen neutral context from explicit data", () => {
+  const report = createPf2eSelectionContext({
+    category: "criticalHit",
+    damageTypes: ["fire"],
+    weaponGroups: ["bomb"],
+    attackTraits: ["splash"],
+    sourceTraits: ["human"],
+    targetTraits: ["undead"],
+    requiredTags: ["elemental"]
+  });
+
+  assert.equal(report.valid, true);
+  assert.deepEqual(report.context, {
+    category: "criticalHit",
+    damageTypes: ["fire"],
+    weaponGroups: ["bomb"],
+    attackTraits: ["splash"],
+    sourceTraits: ["human"],
+    targetTraits: ["undead"],
+    requiredTags: ["elemental"],
+    excludedTags: []
+  });
+  assert.equal(report.metadata.adapterVersion, PF2E_CONTEXT_ADAPTER_VERSION);
+  assertDeepFrozen(report);
+});
+
+test("adapter reads PF2e weapon, actor, and roll data", () => {
+  const source = actor({ id: "source", type: "character", traits: ["human", "humanoid"], level: 8 });
+  const target = actor({ id: "target", traits: ["undead"], level: 9, size: "lg" });
+  const item = weapon();
+  item.actor = source;
+
+  const report = createPf2eSelectionContext({
+    roll: { options: { degreeOfSuccess: 3, type: "attack-roll", identifier: "weapon-1.longsword.melee" } },
+    item,
+    sourceActor: source,
+    targetActor: target
+  });
+
+  assert.equal(report.valid, true);
+  assert.equal(report.context.category, "criticalHit");
+  assert.deepEqual(report.context.damageTypes, ["slashing"]);
+  assert.deepEqual(report.context.weaponGroups, ["sword"]);
+  assert.deepEqual(report.context.attackTraits, ["versatile-p"]);
+  assert.deepEqual(report.context.sourceTraits, ["human", "humanoid"]);
+  assert.deepEqual(report.context.targetTraits, ["undead"]);
+  assert.equal(report.metadata.source.level, 8);
+  assert.equal(report.metadata.target.size, "lg");
+  assert.equal(report.metadata.attack.category, "martial");
+  assert.equal(report.metadata.attack.isMelee, true);
+  assert.equal(report.metadata.roll.type, "attack-roll");
+});
+
+test("selected versatile or modular damage replaces the weapon base damage type", () => {
+  const item = weapon();
+  item.system.traits.toggles.versatile.selected = "piercing";
+
+  const report = createPf2eSelectionContext({ category: "criticalHit", item });
+  assert.deepEqual(report.context.damageTypes, ["piercing"]);
+  assert.equal(report.metadata.attack.selectedDamageType, "piercing");
+});
+
+test("adapter reads all NPC melee damage types", () => {
+  const item = {
+    id: "jaws",
+    uuid: "Actor.dragon.Item.jaws",
+    name: "Jaws",
+    type: "melee",
+    isMelee: true,
+    system: {
+      traits: { value: ["reach-10"], otherTags: [] },
+      range: null,
+      damageRolls: {
+        first: { damage: "2d10+8", damageType: "piercing" },
+        second: { damage: "1d6", damageType: "fire" }
+      }
+    }
+  };
+
+  const report = createPf2eSelectionContext({ category: "criticalHit", item });
+  assert.deepEqual(report.context.damageTypes, ["piercing", "fire"]);
+  assert.deepEqual(report.context.attackTraits, ["reach-10"]);
+});
+
+test("chat roll options provide a fallback when documents are unavailable", () => {
+  const message = {
+    flags: {
+      pf2e: {
+        context: {
+          type: "attack-roll",
+          outcome: "criticalSuccess",
+          options: [
+            "item:damage:type:fire",
+            "item:group:bomb",
+            "item:trait:agile",
+            "self:trait:human",
+            "target:trait:undead"
+          ],
+          actor: "Actor.source",
+          token: "Scene.scene.Token.source",
+          target: {
+            actor: "Actor.target",
+            token: "Scene.scene.Token.target"
+          }
+        }
+      }
+    },
+    rolls: []
+  };
+
+  const report = createPf2eSelectionContext({ message });
+  assert.equal(report.valid, true);
+  assert.deepEqual(report.context.damageTypes, ["fire"]);
+  assert.deepEqual(report.context.weaponGroups, ["bomb"]);
+  assert.deepEqual(report.context.attackTraits, ["agile"]);
+  assert.deepEqual(report.context.sourceTraits, ["human"]);
+  assert.deepEqual(report.context.targetTraits, ["undead"]);
+  assert.equal(report.metadata.source.uuid, "Actor.source");
+  assert.equal(report.metadata.target.token, "Scene.scene.Token.target");
+});
+
+test("critical failure maps to the fumble category", () => {
+  const report = createPf2eSelectionContext({
+    message: {
+      flags: { pf2e: { context: { outcome: "criticalFailure", options: [] } } },
+      rolls: []
+    }
+  });
+  assert.equal(report.context.category, "criticalFumble");
+  assert.equal(report.metadata.degreeOfSuccess.index, 0);
+});
+
+test("non-critical outcomes produce a structured unusable report", () => {
+  const report = createPf2eSelectionContext({ degreeOfSuccess: 2 });
+  assert.equal(report.valid, false);
+  assert.equal(report.context.category, "");
+  assert.equal(report.errors.some((entry) => entry.code === "PF2E_CONTEXT_CATEGORY_UNRESOLVED"), true);
+  assert.equal(report.information.some((entry) => entry.code === "PF2E_CONTEXT_OUTCOME_NOT_CRITICAL"), true);
+});
+
+test("invalid adapter input never throws", () => {
+  const report = createPf2eSelectionContext(null);
+  assert.equal(report.valid, false);
+  assert.equal(report.errors[0].code, "PF2E_CONTEXT_INPUT_INVALID");
+});

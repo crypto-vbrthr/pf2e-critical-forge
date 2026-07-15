@@ -614,7 +614,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture is available through `api.cards` even though no Foundry roll hooks or chat-card UI are included in version 0.5.0-dev.
+Critical Forge card architecture and the headless PF2e Context Adapter are available through `api.cards`. Version 0.5.1-dev still includes no automatic Foundry roll hooks or chat-card UI.
 
 ### Registration and lookup
 
@@ -638,6 +638,38 @@ const packReport = api.cards.validatePack(packDefinition);
 ```
 
 Reports contain stable codes in `issues`, `errors`, and `warnings`.
+
+
+### PF2e Context Adapter
+
+The adapter translates explicitly supplied PF2e data into the plain selection context consumed by the card selector. It does not register hooks or select a card by itself.
+
+```js
+const report = api.cards.adapters.pf2e.createContext({
+  message,
+  roll,
+  item,
+  strike,
+  sourceActor,
+  targetActor,
+  sourceToken,
+  targetToken
+});
+
+console.log(report.valid);
+console.log(report.context);
+console.log(report.diagnostics);
+```
+
+The generic entry point is equivalent:
+
+```js
+const report = api.cards.createContext(input, { system: "pf2e" });
+```
+
+`report.context` contains only the neutral fields used by card matching. `report.metadata` preserves diagnostic details such as degree of success, actor level and size, item identity, range mode, and roll options. Missing optional data produces structured information entries rather than exceptions. A missing critical category is an error because the resulting context cannot be selected.
+
+See [`PF2E_CONTEXT_ADAPTER.md`](PF2E_CONTEXT_ADAPTER.md).
 
 ### Matching and selection
 

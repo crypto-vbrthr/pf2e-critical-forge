@@ -36,6 +36,7 @@ tests/
 ├─ gui-state.test.js
 ├─ item-editing.test.js
 ├─ migration.test.js
+├─ pf2e-context-adapter.test.js
 ├─ release-metadata.test.js
 ├─ validation.test.js
 ├─ view-state.test.js
@@ -45,7 +46,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 92 tests covering:
+The suite contains 119 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -62,7 +63,8 @@ The suite contains 92 tests covering:
 - reconstructing legacy and compatible foreign Items from PF2e Rule Elements;
 - preserving unsupported Rule Elements during an Item update;
 - updating only Forge-managed Item fields;
-- synchronized release metadata, manifest paths, localization parity, and archive hygiene.
+- synchronized release metadata, manifest paths, localization parity, and archive hygiene;
+- headless PF2e context translation from rolls, chat flags, weapons, NPC attacks, actors, tokens, and roll options.
 
 Coverage is a diagnostic rather than a release gate. The headless Critical Forge tests are included in the same report as the Effect Engine and Effect Forge tests.
 
@@ -143,6 +145,7 @@ Those paths should be checked in a Foundry test world using a short release chec
 - `card-registry.test.js`: pack ownership, duplicate protection, and filtering
 - `card-selection.test.js`: matching semantics, candidate reports, and deterministic weighting
 - `card-localization.test.js`: translation fallbacks and Effect Definition materialization
+- `pf2e-context-adapter.test.js`: PF2e document readers, diagnostics, and neutral context output
 
 The Critical Forge tests remain headless and inject random/localization functions where deterministic behavior matters.
 
