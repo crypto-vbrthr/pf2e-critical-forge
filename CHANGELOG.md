@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.1-dev
+
+### Added
+- Dedicated drag-and-drop zone in Effect Forge for loading existing PF2e Effect Items directly into edit mode.
+- Support for world Items, embedded Actor effects, and compendium effects through Foundry UUID resolution.
+- Localized feedback for unsupported documents, non-effect Items, and unresolved drops.
+- Reusable drag-data and Item-resolution helpers in `scripts/effect-forge/effect-item-drop.js`.
+- Six regression tests for Foundry drag parsing, fallback JSON parsing, world Item lookup, UUID resolution, and rejection paths.
+
+### Changed
+- The automated suite expanded from 66 to 72 tests.
+- Module version increased to `0.3.1-dev`; public API remains `0.3.0` and Effect Definition schema remains version `1`.
+
 ## 0.3.0-dev
 
 ### Added

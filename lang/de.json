@@ -334,7 +334,12 @@
       "NoItemLoaded": "Es ist kein Effekt-Item zum Aktualisieren geladen.",
       "ItemUpdated": "„{name}“ wurde aktualisiert.",
       "CreateNewItem": "Als neues Item erstellen",
-      "UpdateItem": "Item aktualisieren"
+      "UpdateItem": "Item aktualisieren",
+      "DropEffectHere": "Effekt hierher ziehen, um ihn zu bearbeiten",
+      "DropEffectHint": "Unterstützt Effekte aus der Welt, von Actoren und aus Kompendien.",
+      "DropUnsupportedDocument": "Nur Item-Dokumente können in die Effect Forge gezogen werden.",
+      "DropOnlyEffectItems": "Das abgelegte Item ist kein PF2e-Effekt.",
+      "DropItemNotFound": "Der abgelegte Effekt konnte nicht gefunden oder geladen werden."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialisiert.",

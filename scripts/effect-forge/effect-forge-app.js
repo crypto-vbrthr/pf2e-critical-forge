@@ -9,6 +9,7 @@ import { getWeaknessTypeGroups } from "../effect-engine/catalogs/weakness-type-c
 import { getImmunityTypeGroups } from "../effect-engine/catalogs/immunity-type-catalog.js";
 import { getBaseSpeedTypeGroups, getMovementTypeGroups } from "../effect-engine/catalogs/movement-type-catalog.js";
 import { captureScrollState, restoreScrollState } from "./view-state.js";
+import { getEffectItemDragData, resolveDroppedEffectItem } from "./effect-item-drop.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -276,7 +277,84 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       updateCustomSelector();
     }
 
+    this.#activateEffectDropZone(root);
     this.#restoreScrollPositions();
+  }
+
+  #activateEffectDropZone(root) {
+    const dropZone = root.querySelector("[data-effect-drop-zone]");
+    if (!(dropZone instanceof HTMLElement)) return;
+
+    let dragDepth = 0;
+    const clearHighlight = () => {
+      dragDepth = 0;
+      dropZone.classList.remove("drag-active");
+      dropZone.removeAttribute("aria-busy");
+    };
+
+    dropZone.addEventListener("dragenter", (event) => {
+      event.preventDefault();
+      dragDepth += 1;
+      dropZone.classList.add("drag-active");
+      dropZone.setAttribute("aria-busy", "true");
+    });
+
+    dropZone.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
+    });
+
+    dropZone.addEventListener("dragleave", (event) => {
+      event.preventDefault();
+      dragDepth = Math.max(0, dragDepth - 1);
+      if (dragDepth === 0) clearHighlight();
+    });
+
+    dropZone.addEventListener("drop", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      clearHighlight();
+      await this.#loadDroppedEffect(event);
+    });
+  }
+
+  async #loadDroppedEffect(event) {
+    try {
+      const data = getEffectItemDragData(event);
+      const result = await resolveDroppedEffectItem(data);
+
+      if (result.status === "unsupported") {
+        ui.notifications.warn(
+          game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.DropUnsupportedDocument")
+        );
+        return;
+      }
+
+      if (result.status === "not-effect") {
+        ui.notifications.warn(
+          game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.DropOnlyEffectItems")
+        );
+        return;
+      }
+
+      if (result.status === "not-found") {
+        ui.notifications.warn(
+          game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.DropItemNotFound")
+        );
+        return;
+      }
+
+      await this.loadItem(result.item, { render: false });
+      this.preservedScrollState = new Map();
+      await this.render({ force: true });
+      ui.notifications.info(game.i18n.format(
+        "PF2E_CRITICAL_FORGE.EffectForge.ItemLoaded",
+        { name: result.item.name }
+      ));
+    } catch (error) {
+      console.error(`${MODULE_ID} | Dropped effect Item could not be loaded`, error);
+      ui.notifications.error(error.message);
+    }
   }
 
   #captureScrollPositions() {

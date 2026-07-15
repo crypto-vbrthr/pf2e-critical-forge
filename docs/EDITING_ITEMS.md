@@ -5,13 +5,20 @@ Effect Forge can open existing world-level PF2e Effect Items, translate supporte
 ## GUI workflow
 
 1. Open Effect Forge from the Items Directory.
-2. Choose an effect under **Existing effects**.
-3. Select **Load effect**.
-4. Edit basic data, duration, or components.
-5. Use **Update Item** to overwrite the loaded Item, or **Create as new Item** to make a copy.
-6. Use **New effect** to leave edit mode and start with an empty definition.
+2. Either choose an effect under **Existing effects** and select **Load effect**, or drag an Effect Item onto the drop zone.
+3. Edit basic data, duration, or components.
+4. Use **Update Item** to overwrite the loaded Item, or **Create as new Item** to make a copy.
+5. Use **New effect** to leave edit mode and start with an empty definition.
 
 The update button is disabled until an Item has been loaded or created by the current Forge window.
+
+The drop zone accepts:
+
+- world-level Effect Items from the Items Directory;
+- embedded Effect Items from Actor sheets;
+- Effect Items from compendiums.
+
+A compendium or embedded Item can always be loaded and copied. Updating it in place still depends on Foundry permissions and whether the source compendium is unlocked.
 
 ## Round-trip data
 
@@ -91,4 +98,4 @@ The update service changes the Item name, image, description, duration, managed 
 await api.ui.openEffectForge(item);
 ```
 
-This works with a world Item and can also be used by another module to pass a writable embedded effect Item directly to the editor. The built-in dropdown lists world-level effect Items only.
+This works with a world Item and can also be used by another module to pass a writable embedded effect Item directly to the editor. The built-in dropdown lists world-level effect Items only. Drag-and-drop additionally accepts embedded Actor effects and compendium effects by UUID.

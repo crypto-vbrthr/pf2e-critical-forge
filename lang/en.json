@@ -334,7 +334,12 @@
       "NoItemLoaded": "No effect Item is loaded for updating.",
       "ItemUpdated": "“{name}” was updated.",
       "CreateNewItem": "Create as new Item",
-      "UpdateItem": "Update Item"
+      "UpdateItem": "Update Item",
+      "DropEffectHere": "Drop an effect here to edit it",
+      "DropEffectHint": "Supports effects from the world, Actors, and compendiums.",
+      "DropUnsupportedDocument": "Only Item documents can be dropped into Effect Forge.",
+      "DropOnlyEffectItems": "The dropped Item is not a PF2e effect.",
+      "DropItemNotFound": "The dropped effect could not be found or loaded."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialized.",

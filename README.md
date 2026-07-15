@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.3.0-dev` introduces the first complete editing workflow for existing PF2e Effect Items. World effects can be loaded into the GUI, translated back into supported components, updated in place, or saved as a new Item. Unsupported Rule Elements are preserved unchanged instead of being discarded.
+Version `0.3.1-dev` extends the editing workflow with drag-and-drop. PF2e Effect Items can be dropped into the GUI from the world, an Actor, or a compendium, translated back into supported components, updated in place where writable, or saved as a new Item. Unsupported Rule Elements are preserved unchanged instead of being discarded.
 
 The current engine includes:
 
@@ -21,6 +21,7 @@ The current engine includes:
 - compilation to native PF2e Effect Items and Rule Elements;
 - world Item creation, in-place Item updates, Actor/Token application, and removal by definition ID;
 - round-trip loading from stored definitions and compatible PF2e Rule Elements;
+- drag-and-drop loading of world, embedded Actor, and compendium effects;
 - preservation of unsupported or advanced Rule Elements during updates;
 - a resizable, localized, component-based GM interface;
 - an extension API for third-party components.
@@ -57,7 +58,7 @@ npm test
 npm run test:coverage
 ```
 
-The suite covers the Builder, catalogs, Validation Engine, compiler, PF2e Rule Elements, Item source generation, Item round-tripping, unmanaged-rule preservation, and the valued/non-valued condition boundary.
+The suite covers the Builder, catalogs, Validation Engine, compiler, PF2e Rule Elements, Item source generation, Item round-tripping, drag-and-drop resolution, unmanaged-rule preservation, and the valued/non-valued condition boundary.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 

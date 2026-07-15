@@ -708,6 +708,54 @@
   white-space: nowrap;
 }
 
+.effect-forge-item-drop-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 3.6rem;
+  padding: 0.72rem 0.9rem;
+  border: 1px dashed rgba(145, 91, 208, 0.7);
+  border-radius: 6px;
+  color: var(--ef-muted);
+  background: rgba(117, 66, 178, 0.055);
+  text-align: left;
+  transition: border-color 120ms ease, background 120ms ease, color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.effect-forge-item-drop-zone > i {
+  color: var(--ef-purple-bright);
+  font-size: 1.35rem;
+}
+
+.effect-forge-item-drop-zone > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.effect-forge-item-drop-zone strong {
+  color: var(--ef-text);
+  font-size: 0.86rem;
+}
+
+.effect-forge-item-drop-zone small {
+  color: inherit;
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+.effect-forge-item-drop-zone.drag-active {
+  border-color: var(--ef-orange);
+  color: #f4d7af;
+  background: rgba(246, 162, 58, 0.11);
+  box-shadow: 0 0 0 2px rgba(246, 162, 58, 0.14), 0 0 20px rgba(246, 162, 58, 0.08);
+  transform: translateY(-1px);
+}
+
+.effect-forge-item-drop-zone.drag-active > i {
+  color: var(--ef-orange);
+}
+
 .effect-forge-editing-badge,
 .effect-forge-new-badge {
   display: inline-flex;
