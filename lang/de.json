@@ -610,8 +610,8 @@
       "SelectionContext": "Selection Context",
       "AdapterMetadata": "Adapter-Metadaten",
       "WelcomeTitle": "Diagnosewerkbank bereit",
-      "WelcomeText": "Wähle eine vorhandene PF2e-Wurfnachricht oder ziehe sie aus dem Chat hierher. Die Forge zeigt anschließend, was der Adapter erkannt hat und welche Karten die Auswahlpipeline akzeptiert oder verwirft.",
-      "NoAutomationNotice": "Die Diagnose erzeugt keine Chatkarte, wählt keinen Effekt aus und verändert keine Actors.",
+      "WelcomeText": "Wähle eine vorhandene PF2e-Wurfnachricht oder ziehe sie aus dem Chat hierher. Die Forge zeigt, was der Adapter erkannt hat und welche Karten passen. Passende Karten können anschließend manuell als reine Vorschau im Chat dargestellt werden.",
+      "NoAutomationNotice": "Die Diagnose veröffentlicht nur nach einem bewussten Knopfdruck eine Vorschau-Chatkarte. Sie wendet keine Effekte an und verändert keine Actors.",
       "CopyReport": "Bericht kopieren",
       "ReportCopied": "Diagnosebericht wurde in die Zwischenablage kopiert.",
       "CopyFailed": "Der Diagnosebericht konnte nicht kopiert werden.",
@@ -630,6 +630,56 @@
         "excludedCardIds": "kürzlich verwendete oder ausgeschlossene Karte"
       },
       "OpenFailed": "Die Krit-Diagnose konnte nicht geöffnet werden. Details stehen in der Konsole."
+    },
+    "CriticalPreview": {
+      "ShowInChat": "Vorschau im Chat",
+      "CardUnavailable": "Die gewählte Karte ist nicht mehr verfügbar.",
+      "Posted": "Vorschau „{title}“ wurde im Chat veröffentlicht.",
+      "PublishFailed": "Die Karten-Vorschau konnte nicht im Chat veröffentlicht werden.",
+      "ChatFlavor": "Critical Forge · Manuelle Vorschau",
+      "PreviewNotice": "Manuelle Vorschau. Es wurde kein Effekt angewendet.",
+      "MechanicalEffect": "Mechanische Folge",
+      "NoMechanicalEffect": "Diese Karte besitzt keine mechanische Folge.",
+      "EffectTarget": "Effektziel",
+      "EffectTargetNamed": "{target}: {name}",
+      "SourceMessage": "Ausgangsnachricht",
+      "Feet": "Fuß",
+      "Categories": {
+        "criticalHit": "Kritischer Treffer",
+        "criticalFumble": "Kritischer Fehlschlag"
+      },
+      "EffectTargets": {
+        "source": "Angreifer",
+        "target": "Ziel"
+      },
+      "Duration": {
+        "Label": "Dauer",
+        "Unlimited": "Unbegrenzt",
+        "Value": "{value} {unit}",
+        "RoundOne": "Runde",
+        "RoundMany": "Runden",
+        "MinuteOne": "Minute",
+        "MinuteMany": "Minuten",
+        "HourOne": "Stunde",
+        "HourMany": "Stunden",
+        "DayOne": "Tag",
+        "DayMany": "Tage"
+      },
+      "Components": {
+        "Condition": "Zustand: {condition}",
+        "Modifier": "{value} {modifierType} auf {selector}",
+        "PersistentDamage": "{formula} anhaltender {damageType}-Schaden",
+        "RecoveryDC": "Erholungs-SG {dc}",
+        "Resistance": "Resistenz {type} {value}",
+        "Weakness": "Schwäche {type} {value}",
+        "Immunity": "Immunität {type}",
+        "FastHealing": "Schnelle Heilung {value}",
+        "Regeneration": "Regeneration {value}, deaktiviert durch {types}",
+        "TemporaryHitPoints": "{value} temporäre Trefferpunkte",
+        "Movement": "{value} {modifierType} auf {movement}",
+        "BaseSpeed": "{movement} {value} {feet}",
+        "Unknown": "Nicht unterstützte Komponente: {type}"
+      }
     }
   }
 }

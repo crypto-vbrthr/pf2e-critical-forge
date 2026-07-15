@@ -610,8 +610,8 @@
       "SelectionContext": "Selection context",
       "AdapterMetadata": "Adapter metadata",
       "WelcomeTitle": "Diagnostic workbench ready",
-      "WelcomeText": "Select an existing PF2e roll message or drag one here from chat. The Forge will show what the adapter detected and which cards the selection pipeline accepts or rejects.",
-      "NoAutomationNotice": "Diagnostics create no chat card, select no effect, and change no actors.",
+      "WelcomeText": "Select an existing PF2e roll message or drag one here from chat. The Forge shows what the adapter detected and which cards match. Eligible cards can then be posted manually as preview-only chat cards.",
+      "NoAutomationNotice": "Diagnostics post a preview chat card only after an explicit button press. They apply no effects and change no actors.",
       "CopyReport": "Copy report",
       "ReportCopied": "The diagnostic report was copied to the clipboard.",
       "CopyFailed": "The diagnostic report could not be copied.",
@@ -630,6 +630,56 @@
         "excludedCardIds": "recently used or excluded card"
       },
       "OpenFailed": "Critical diagnostics could not be opened. See the console for details."
+    },
+    "CriticalPreview": {
+      "ShowInChat": "Preview in chat",
+      "CardUnavailable": "The selected card is no longer available.",
+      "Posted": "Preview “{title}” was posted to chat.",
+      "PublishFailed": "The card preview could not be posted to chat.",
+      "ChatFlavor": "Critical Forge · Manual Preview",
+      "PreviewNotice": "Manual preview only. No effect was applied.",
+      "MechanicalEffect": "Mechanical consequence",
+      "NoMechanicalEffect": "This card has no mechanical consequence.",
+      "EffectTarget": "Effect target",
+      "EffectTargetNamed": "{target}: {name}",
+      "SourceMessage": "Source message",
+      "Feet": "ft.",
+      "Categories": {
+        "criticalHit": "Critical Hit",
+        "criticalFumble": "Critical Fumble"
+      },
+      "EffectTargets": {
+        "source": "Attacker",
+        "target": "Target"
+      },
+      "Duration": {
+        "Label": "Duration",
+        "Unlimited": "Unlimited",
+        "Value": "{value} {unit}",
+        "RoundOne": "round",
+        "RoundMany": "rounds",
+        "MinuteOne": "minute",
+        "MinuteMany": "minutes",
+        "HourOne": "hour",
+        "HourMany": "hours",
+        "DayOne": "day",
+        "DayMany": "days"
+      },
+      "Components": {
+        "Condition": "Condition: {condition}",
+        "Modifier": "{value} {modifierType} to {selector}",
+        "PersistentDamage": "{formula} persistent {damageType} damage",
+        "RecoveryDC": "Recovery DC {dc}",
+        "Resistance": "Resistance {type} {value}",
+        "Weakness": "Weakness {type} {value}",
+        "Immunity": "Immunity {type}",
+        "FastHealing": "Fast Healing {value}",
+        "Regeneration": "Regeneration {value}, deactivated by {types}",
+        "TemporaryHitPoints": "{value} temporary Hit Points",
+        "Movement": "{value} {modifierType} to {movement}",
+        "BaseSpeed": "{movement} {value} {feet}",
+        "Unknown": "Unsupported component: {type}"
+      }
     }
   }
 }

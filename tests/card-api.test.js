@@ -68,3 +68,20 @@ test("public card API exposes manual diagnostics", () => {
   assert.equal(typeof api.diagnostics.resolveMessageInput, "function");
   assert.throws(() => api.diagnose({}, { system: "other" }), /Unsupported/);
 });
+
+test("public card API exposes manual chat-card previews", async () => {
+  assert.equal(api.previewVersion, 1);
+  const preview = api.preparePreview("core.generic.off-balance", {
+    context: { category: "criticalHit" }
+  });
+  assert.equal(preview.cardId, "core.generic.off-balance");
+  assert.equal(preview.hasEffect, true);
+
+  const published = await api.publishPreview("core.generic.off-balance", {
+    context: { category: "criticalHit" },
+    renderTemplateFn: async (_path, data) => `<article>${data.title}</article>`,
+    createMessageFn: async (data) => ({ id: "chat-preview", data })
+  });
+  assert.equal(published.message.id, "chat-preview");
+  assert.equal(typeof api.summarizeEffect, "function");
+});

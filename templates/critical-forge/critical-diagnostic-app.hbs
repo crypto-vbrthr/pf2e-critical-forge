@@ -139,6 +139,12 @@
                       {{/each}}
                     </div>
                   {{/if}}
+                  <div class="critical-diagnostic-card-actions">
+                    <button type="button" class="primary" data-action="previewCard" data-card-id="{{id}}">
+                      <i class="fa-solid fa-comment-medical"></i>
+                      {{localize "PF2E_CRITICAL_FORGE.CriticalPreview.ShowInChat"}}
+                    </button>
+                  </div>
                 </article>
               {{/each}}
             </div>

@@ -1451,3 +1451,147 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.critical-diagnostic-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.15rem;
+}
+
+.critical-diagnostic-card-actions button {
+  width: auto;
+  min-width: 9.5rem;
+}
+
+.pf2e-critical-card-preview {
+  --cf-card-orange: #d98a2b;
+  --cf-card-purple: #7040a3;
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.75rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--cf-card-orange) 65%, var(--color-border-light-2, #777));
+  border-radius: 7px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(112, 64, 163, 0.18), transparent 42%),
+    color-mix(in srgb, var(--color-cool-5, #20232b) 90%, black);
+  color: var(--color-text-light-highlight, #f0e8df);
+}
+
+.pf2e-critical-card-preview-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--cf-card-orange) 42%, transparent);
+}
+
+.pf2e-critical-card-preview-header > div {
+  display: grid;
+  gap: 0.14rem;
+}
+
+.pf2e-critical-card-preview-header > i {
+  color: var(--cf-card-orange);
+  font-size: 1.55rem;
+  filter: drop-shadow(0 0 6px rgba(217, 138, 43, 0.28));
+}
+
+.pf2e-critical-card-preview-category {
+  color: var(--cf-card-orange);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pf2e-critical-card-preview h3 {
+  margin: 0;
+  color: inherit;
+  font-size: 1.12rem;
+}
+
+.pf2e-critical-card-preview-description {
+  margin: 0;
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.pf2e-critical-card-preview-effect {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--cf-card-purple) 60%, transparent);
+  border-radius: 6px;
+  background: rgba(112, 64, 163, 0.12);
+}
+
+.pf2e-critical-card-preview-effect > header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: color-mix(in srgb, #fff 82%, var(--cf-card-purple));
+}
+
+.pf2e-critical-card-preview-effect-name {
+  color: var(--cf-card-orange);
+  font-weight: 750;
+}
+
+.pf2e-critical-card-preview-effect dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.pf2e-critical-card-preview-effect dl > div {
+  display: grid;
+  gap: 0.08rem;
+  min-width: 0;
+  padding: 0.38rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.pf2e-critical-card-preview-effect dt {
+  color: var(--color-text-light-6, #aaa4ac);
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pf2e-critical-card-preview-effect dd {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.pf2e-critical-card-preview-effect ul {
+  display: grid;
+  gap: 0.28rem;
+  margin: 0;
+  padding-left: 1.15rem;
+}
+
+.pf2e-critical-card-preview-no-effect,
+.pf2e-critical-card-preview-source,
+.pf2e-critical-card-preview > footer {
+  display: flex;
+  align-items: center;
+  gap: 0.38rem;
+  margin: 0;
+  color: var(--color-text-light-6, #aaa4ac);
+  font-size: 0.75rem;
+}
+
+.pf2e-critical-card-preview > footer {
+  padding-top: 0.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-border-light-2, #777) 45%, transparent);
+}
+
+@media (max-width: 460px) {
+  .pf2e-critical-card-preview-effect dl {
+    grid-template-columns: 1fr;
+  }
+}

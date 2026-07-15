@@ -21,6 +21,12 @@ import {
   listDiagnosticMessages,
   resolveDiagnosticMessageInput
 } from "../critical-forge/diagnostics/chat-message-resolver.js";
+import {
+  prepareCriticalCardPreview,
+  publishCriticalCardPreview,
+  summarizeCriticalEffectDefinition,
+  CRITICAL_CARD_PREVIEW_VERSION
+} from "../critical-forge/presentation/critical-card-preview.js";
 
 export function createCardApi() {
   const resolveCard = (cardOrId) => {
@@ -54,6 +60,10 @@ export function createCardApi() {
     select: (context, options = {}) => criticalCardSelector.select(context, options),
     localize: (cardOrId, options = {}) => localizeCard(resolveCard(cardOrId), options),
     materializeEffect: (cardOrId, options = {}) => materializeCardEffect(resolveCard(cardOrId), options),
+    previewVersion: CRITICAL_CARD_PREVIEW_VERSION,
+    preparePreview: (cardOrId, options = {}) => prepareCriticalCardPreview(resolveCard(cardOrId), options),
+    publishPreview: (cardOrId, options = {}) => publishCriticalCardPreview(resolveCard(cardOrId), options),
+    summarizeEffect: (definition, options = {}) => summarizeCriticalEffectDefinition(definition, options),
 
     createContext: (input, { system = "pf2e" } = {}) => {
       if (system !== "pf2e") throw new Error(`Unsupported Critical Forge context adapter: ${system}`);

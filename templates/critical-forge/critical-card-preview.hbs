@@ -1,0 +1,53 @@
+<article class="pf2e-critical-card-preview" data-card-id="{{cardId}}" data-pack-id="{{packId}}">
+  <header class="pf2e-critical-card-preview-header">
+    <div>
+      <span class="pf2e-critical-card-preview-category">{{categoryLabel}}</span>
+      <h3>{{title}}</h3>
+    </div>
+    <i class="fa-solid fa-burst" aria-hidden="true"></i>
+  </header>
+
+  <p class="pf2e-critical-card-preview-description">{{description}}</p>
+
+  {{#if hasEffect}}
+    <section class="pf2e-critical-card-preview-effect">
+      <header>
+        <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+        <strong>{{localize "PF2E_CRITICAL_FORGE.CriticalPreview.MechanicalEffect"}}</strong>
+      </header>
+      <div class="pf2e-critical-card-preview-effect-name">{{effect.name}}</div>
+      <dl>
+        <div>
+          <dt>{{localize "PF2E_CRITICAL_FORGE.CriticalPreview.EffectTarget"}}</dt>
+          <dd>{{effect.targetDisplay}}</dd>
+        </div>
+        <div>
+          <dt>{{localize "PF2E_CRITICAL_FORGE.CriticalPreview.Duration.Label"}}</dt>
+          <dd>{{effect.duration}}</dd>
+        </div>
+      </dl>
+      <ul>
+        {{#each effect.components}}
+          <li>{{summary}}</li>
+        {{/each}}
+      </ul>
+    </section>
+  {{else}}
+    <p class="pf2e-critical-card-preview-no-effect">
+      <i class="fa-solid fa-feather" aria-hidden="true"></i>
+      {{localize "PF2E_CRITICAL_FORGE.CriticalPreview.NoMechanicalEffect"}}
+    </p>
+  {{/if}}
+
+  {{#if hasSourceMessage}}
+    <div class="pf2e-critical-card-preview-source">
+      <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
+      {{localize "PF2E_CRITICAL_FORGE.CriticalPreview.SourceMessage"}}: {{sourceMessageLabel}}
+    </div>
+  {{/if}}
+
+  <footer>
+    <i class="fa-solid fa-eye" aria-hidden="true"></i>
+    <span>{{previewNotice}}</span>
+  </footer>
+</article>

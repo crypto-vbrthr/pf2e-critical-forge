@@ -616,7 +616,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the headless PF2e Context Adapter, and manual diagnostics are available through `api.cards`. Version 0.5.4-dev still includes no automatic roll hooks, result chat cards, or effect application.
+Critical Forge card architecture, the headless PF2e Context Adapter, manual diagnostics, and preview-only result chat cards are available through `api.cards`. Version 0.5.5-dev still includes no automatic roll hooks, automatic card selection, or effect application.
 
 ### Registration and lookup
 
@@ -703,7 +703,7 @@ Recent PF2e roll messages can be listed with:
 api.cards.diagnostics.listMessages({ limit: 50 });
 ```
 
-The GM-only workbench can be opened with `api.ui.openCriticalDiagnostics(message?)`. It never selects or applies a card. See [`CRITICAL_DIAGNOSTICS.md`](CRITICAL_DIAGNOSTICS.md).
+The GM-only workbench can be opened with `api.ui.openCriticalDiagnostics(message?)`. It never performs a weighted selection or applies a card. A GM may explicitly publish one eligible candidate as a preview-only chat card. See [`CRITICAL_DIAGNOSTICS.md`](CRITICAL_DIAGNOSTICS.md).
 
 ### Matching and selection
 
@@ -745,3 +745,38 @@ console.log(result.definition);  // immutable Effect Definition
 ```
 
 Narrative-only cards return `null`. Materialization does not create or apply Foundry documents.
+
+### Manual result previews
+
+Prepare localized preview data without creating a Foundry document:
+
+```js
+const preview = api.cards.preparePreview("core.slashing.deep-cut", {
+  context,
+  metadata,
+  sourceMessage
+});
+```
+
+Publish one explicitly chosen card as a ChatMessage:
+
+```js
+const result = await api.cards.publishPreview("core.slashing.deep-cut", {
+  context,
+  metadata,
+  sourceMessage
+});
+
+console.log(result.preview);
+console.log(result.message);
+```
+
+The message contains localized narrative and effect summaries plus structured flags under `flags.pf2e-critical-forge.criticalCardPreview`. It has no apply action and changes no Actor.
+
+Effect Definitions can be summarized independently:
+
+```js
+const summary = api.cards.summarizeEffect(definition);
+```
+
+`api.cards.previewVersion` identifies the stored preview-flag shape. See [`CRITICAL_CARD_PREVIEW.md`](CRITICAL_CARD_PREVIEW.md).

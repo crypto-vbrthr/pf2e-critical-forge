@@ -1,5 +1,6 @@
 import { MODULE_ID } from "../../constants.js";
 import { diagnosePf2eCriticalInput } from "./critical-diagnostic-service.js";
+import { publishCriticalCardPreview } from "../presentation/critical-card-preview.js";
 import {
   getChatMessageDragData,
   listDiagnosticMessages,
@@ -38,6 +39,7 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
       analyzeLatest: CriticalDiagnosticApp.#analyzeLatest,
       clearReport: CriticalDiagnosticApp.#clearReport,
       copyReport: CriticalDiagnosticApp.#copyReport,
+      previewCard: CriticalDiagnosticApp.#previewCard,
       closeWindow: CriticalDiagnosticApp.#closeWindow
     }
   };
@@ -260,6 +262,30 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
     } catch (error) {
       console.warn(`${MODULE_ID} | Could not copy diagnostic report`, error);
       ui.notifications.warn(game.i18n.localize("PF2E_CRITICAL_FORGE.CriticalDiagnostic.CopyFailed"));
+    }
+  }
+
+  static async #previewCard(_event, target) {
+    const cardId = String(target?.dataset?.cardId ?? "");
+    const candidate = this.report?.eligible?.find((entry) => entry.id === cardId);
+    if (!candidate) {
+      ui.notifications.warn(game.i18n.localize("PF2E_CRITICAL_FORGE.CriticalPreview.CardUnavailable"));
+      return;
+    }
+
+    try {
+      await publishCriticalCardPreview(cardId, {
+        context: this.report.context,
+        metadata: this.report.metadata,
+        sourceMessage: this.sourceMessage
+      });
+      ui.notifications.info(game.i18n.format(
+        "PF2E_CRITICAL_FORGE.CriticalPreview.Posted",
+        { title: candidate.title }
+      ));
+    } catch (error) {
+      console.error(`${MODULE_ID} | Could not publish Critical Forge card preview`, error);
+      ui.notifications.error(game.i18n.localize("PF2E_CRITICAL_FORGE.CriticalPreview.PublishFailed"));
     }
   }
 

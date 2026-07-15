@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.5-dev
+
+- Added a manual **Preview in chat** action to every eligible card in Critical Forge Diagnostics.
+- Added localized result chat cards with category, narrative description, effect name, effect target, duration, and summaries for all built-in Effect components.
+- Preview cards contain no apply controls and perform no Actor, Token, Item, or source-message changes.
+- Stored versioned preview data, selection context, adapter metadata, and the materialized Effect Definition in module ChatMessage flags for a future confirmation workflow.
+- Added public `api.cards.preparePreview()`, `publishPreview()`, `summarizeEffect()`, and `previewVersion` capabilities.
+- Added a dedicated Handlebars chat-card template and chat-safe styling.
+- Added `docs/CRITICAL_CARD_PREVIEW.md` and updated diagnostics, API, architecture, testing, and README documentation.
+- Added regression tests for localized effect summaries, preview data, ChatMessage payloads, structured flags, and public API exposure.
+- The complete suite now contains 136 passing tests with 93.27% measured line coverage.
+- Public API version increased to `0.5.3`; Effect, Critical Card, and Card Pack schema versions remain unchanged.
+
 ## 0.5.4-dev
 
 - Fixed the Critical Diagnostic launcher being injected twice, including a misplaced copy in the sidebar header.

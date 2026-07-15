@@ -29,9 +29,17 @@ The test command forces single-file concurrency so shared Foundry-style globals 
 ```text
 tests/
 ├─ builder.test.js
+├─ card-api.test.js
+├─ card-localization.test.js
+├─ card-registry.test.js
+├─ card-schema.test.js
+├─ card-selection.test.js
 ├─ catalogs.test.js
 ├─ chat-message-resolver.test.js
 ├─ compiler.test.js
+├─ critical-architecture.test.js
+├─ critical-card-preview.test.js
+├─ critical-diagnostic-button.test.js
 ├─ critical-diagnostic.test.js
 ├─ effect-item-drop.test.js
 ├─ effect-transfer.test.js
@@ -48,7 +56,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 127 tests covering:
+The suite contains 136 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -67,9 +75,10 @@ The suite contains 127 tests covering:
 - updating only Forge-managed Item fields;
 - synchronized release metadata, manifest paths, localization parity, and archive hygiene;
 - headless PF2e context translation from rolls, chat flags, weapons, NPC attacks, actors, tokens, and roll options;
-- manual diagnostic candidate evaluation, chat-message discovery, Item UUID resolution, target handling, and drop validation.
+- manual diagnostic candidate evaluation, chat-message discovery, Item UUID resolution, target handling, and drop validation;
+- localized critical-card effect summaries, preview presentation data, ChatMessage payloads, structured preview flags, and public preview APIs.
 
-Coverage is a diagnostic rather than a release gate. The headless Critical Forge tests are included in the same report as the Effect Engine and Effect Forge tests.
+Coverage is a diagnostic rather than a release gate. Version `0.5.5-dev` measures 93.27% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, diagnostics, and preview services.
 
 ## Foundry mock
 
@@ -137,7 +146,8 @@ The Node suite does not attempt to prove:
 - FilePicker behavior;
 - actual PF2e Actor embedded Item creation;
 - token ownership and permission behavior;
-- interaction with third-party modules.
+- interaction with third-party modules;
+- final visual rendering of Critical Forge preview chat cards.
 
 Those paths should be checked in a Foundry test world using a short release checklist. Automated Foundry integration tests can be added later without replacing the fast Node suite.
 
@@ -148,6 +158,7 @@ Those paths should be checked in a Foundry test world using a short release chec
 - `card-registry.test.js`: pack ownership, duplicate protection, and filtering
 - `card-selection.test.js`: matching semantics, candidate reports, and deterministic weighting
 - `card-localization.test.js`: translation fallbacks and Effect Definition materialization
+- `critical-card-preview.test.js`: effect summaries, preview data, ChatMessage payloads, and no-application boundaries
 - `pf2e-context-adapter.test.js`: PF2e document readers, diagnostics, and neutral context output
 
 The Critical Forge tests remain headless and inject random/localization functions where deterministic behavior matters.

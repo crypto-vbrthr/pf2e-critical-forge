@@ -1,8 +1,8 @@
 # Critical Forge Diagnostics
 
-Version `0.5.4-dev` introduces a manual GM workbench for testing the PF2e Context Adapter and card-selection pipeline against real chat messages.
+Version `0.5.5-dev` provides a manual GM workbench for testing the PF2e Context Adapter and card-selection pipeline against real chat messages. Eligible cards can be deliberately published as preview-only chat cards.
 
-It is diagnostic only. It creates no result chat card, chooses no effect, applies no Item, and changes no Actor.
+It still applies no effect, creates no Item, changes no Actor, and registers no automatic attack-roll hook.
 
 ## Opening the workbench
 
@@ -51,7 +51,9 @@ The workbench shows:
 - raw normalized selection context and adapter metadata;
 - a copyable JSON report.
 
-No weighted random selection occurs. Candidate evaluation is deterministic.
+Candidate evaluation is deterministic. No weighted random selection occurs.
+
+Each eligible card also offers **Preview in chat**. That action publishes exactly the chosen card. It does not choose a different candidate and does not apply the card effect. See [`CRITICAL_CARD_PREVIEW.md`](CRITICAL_CARD_PREVIEW.md).
 
 ## Headless API
 
