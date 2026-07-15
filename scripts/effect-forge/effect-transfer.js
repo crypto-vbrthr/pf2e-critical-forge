@@ -220,22 +220,16 @@ export async function readEffectImportFile(file, {
 }
 
 export function downloadEffectExport(text, filename, {
-  documentRef = globalThis.document,
-  urlRef = globalThis.URL,
-  BlobCtor = globalThis.Blob
+  saveDataToFileFn = globalThis.foundry?.utils?.saveDataToFile
+    ?? globalThis.saveDataToFile
 } = {}) {
-  if (!documentRef || !urlRef || !BlobCtor) {
-    throw new Error("Browser download APIs are unavailable.");
+  if (typeof saveDataToFileFn !== "function") {
+    throw new Error("Foundry file-download API is unavailable.");
   }
 
-  const blob = new BlobCtor([String(text)], { type: "application/json;charset=utf-8" });
-  const url = urlRef.createObjectURL(blob);
-  const anchor = documentRef.createElement("a");
-  anchor.href = url;
-  anchor.download = String(filename || "effect.pf2e-critical-forge.json");
-  anchor.hidden = true;
-  documentRef.body.append(anchor);
-  anchor.click();
-  anchor.remove();
-  globalThis.setTimeout(() => urlRef.revokeObjectURL(url), 0);
+  saveDataToFileFn(
+    String(text),
+    "application/json;charset=utf-8",
+    String(filename || "effect.pf2e-critical-forge.json")
+  );
 }

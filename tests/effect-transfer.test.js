@@ -11,6 +11,7 @@ const {
   EffectTransferError,
   buildEffectExportFilename,
   createEffectExportPackage,
+  downloadEffectExport,
   effectDescriptionToPlainText,
   parseEffectImport,
   readEffectImportFile,
@@ -104,4 +105,18 @@ test("file imports enforce the configured size limit", async () => {
     await readEffectImportFile({ size: 2, text: async () => "{}" }, { maxBytes: 100 }),
     "{}"
   );
+});
+
+test("JSON exports use Foundry's file-download utility instead of opening a Blob URL", () => {
+  const calls = [];
+
+  downloadEffectExport("{\n  \"ok\": true\n}", "test-effect.json", {
+    saveDataToFileFn: (...args) => calls.push(args)
+  });
+
+  assert.deepEqual(calls, [[
+    "{\n  \"ok\": true\n}",
+    "application/json;charset=utf-8",
+    "test-effect.json"
+  ]]);
 });

@@ -7,6 +7,7 @@ Effect Forge can move editable effects between worlds without requiring the sour
 The GUI offers two equivalent export actions:
 
 - **Export as JSON file** downloads a portable `.pf2e-critical-forge.json` file.
+  The download is handed to Foundry VTT through `foundry.utils.saveDataToFile()`, so the desktop client treats it as a file download rather than trying to open a temporary `blob:` URL.
 - **Copy export package** writes the same JSON to the clipboard.
 
 Exports are allowed only for Effect Definitions that pass the Validation Engine. The package contains:
@@ -18,7 +19,7 @@ Exports are allowed only for Effect Definitions that pass the Validation Engine.
   "exportedAt": "2026-07-15T08:00:00.000Z",
   "generator": {
     "moduleId": "pf2e-critical-forge",
-    "moduleVersion": "0.3.2-dev",
+    "moduleVersion": "0.3.3-dev",
     "apiVersion": "0.3.1",
     "schemaVersion": 1
   },

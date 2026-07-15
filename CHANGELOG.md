@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.3-dev
+
+### Fixed
+- JSON file export now uses Foundry VTT's native `foundry.utils.saveDataToFile()` utility.
+- The desktop client no longer tries to open the temporary `blob:` URL with an external application.
+
+### Changed
+- Added a regression test that verifies export data, MIME type, and filename are passed to Foundry's download API.
+- The automated suite expanded from 79 to 80 tests; measured line coverage is about 93.74%.
+- Module version increased to `0.3.3-dev`; public API remains `0.3.1` and Effect Definition schema remains version `1`.
+
 ## 0.3.2-dev
 
 ### Added

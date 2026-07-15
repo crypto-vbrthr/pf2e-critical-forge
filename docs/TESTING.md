@@ -57,7 +57,7 @@ The suite contains 79 tests covering:
 - preserving unsupported Rule Elements during an Item update;
 - updating only Forge-managed Item fields.
 
-At `0.3.2-dev`, the measured line coverage of files loaded by the suite is about 93.44%. Coverage is a diagnostic, not a release gate yet.
+At `0.3.3-dev`, the measured line coverage of files loaded by the suite is about 93.74%. Coverage is a diagnostic, not a release gate yet.
 
 ## Foundry mock
 
