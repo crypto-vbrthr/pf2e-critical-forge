@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.5.1-dev` adds the first **headless PF2e Context Adapter** to the Critical Forge architecture while keeping the Effect Engine and Effect Forge stable. It translates explicitly supplied PF2e roll, message, item, strike, actor, and token data into the neutral card-selection context. It still does **not** register roll hooks, render chat cards, or apply critical effects automatically.
+Version `0.5.4-dev` adds the first **manual Critical Forge diagnostic workbench**. A GM can select or drop an existing PF2e roll message and inspect the adapter context, diagnostics, eligible cards, rejected cards, filter reasons, and selection weights. It still does **not** register automatic roll hooks, render result chat cards, select an effect, or modify Actors.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -25,7 +25,8 @@ The current engine includes:
 - a small localized `core` architecture test pack;
 - a public API for external card packs and selectors;
 - a diagnostic PF2e Context Adapter for explicitly supplied messages, rolls, strikes, items, actors, tokens, and roll options;
-- no Foundry UI integration, automatic roll hooks, chat cards, or effect application for Critical Forge yet.
+- a GM-only manual diagnostic workbench for real PF2e chat messages;
+- no automatic roll hooks, result chat cards, card application, or Actor changes for Critical Forge yet.
 
 ## API access
 
@@ -40,7 +41,7 @@ console.log(api.cards);
 
 The API is available whenever the module is active. Critical card registries are initialized regardless of the future Critical Forge UI setting.
 
-## Opening Effect Forge
+## Opening Forge tools
 
 The normal entry point is the **Open Effect Forge** button in the Items Directory. For diagnostics or macros:
 
@@ -49,6 +50,9 @@ game.modules.get("pf2e-critical-forge")?.api.ui.openEffectForge();
 
 // Open an existing Item directly
 await game.modules.get("pf2e-critical-forge")?.api.ui.openEffectForge(item);
+
+// Open the manual Critical Forge diagnostic workbench
+game.modules.get("pf2e-critical-forge")?.api.ui.openCriticalDiagnostics();
 ```
 
 ## Automated tests
@@ -73,6 +77,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/CARD_PACKS.md`](docs/CARD_PACKS.md): pack registration and extension model
 - [`docs/CARD_SELECTION.md`](docs/CARD_SELECTION.md): candidate evaluation and weighted selection
 - [`docs/PF2E_CONTEXT_ADAPTER.md`](docs/PF2E_CONTEXT_ADAPTER.md): PF2e document-to-context translation and diagnostics
+- [`docs/CRITICAL_DIAGNOSTICS.md`](docs/CRITICAL_DIAGNOSTICS.md): manual chat-message diagnostic workbench and report format
 - [`docs/EDITING_ITEMS.md`](docs/EDITING_ITEMS.md): loading, updating, and preserving existing Effect Items
 - [`docs/IMPORT_EXPORT.md`](docs/IMPORT_EXPORT.md): portable JSON files, clipboard transfer, and API helpers
 - [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md): Effect Definition schema

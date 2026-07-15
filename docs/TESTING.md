@@ -30,7 +30,9 @@ The test command forces single-file concurrency so shared Foundry-style globals 
 tests/
 ├─ builder.test.js
 ├─ catalogs.test.js
+├─ chat-message-resolver.test.js
 ├─ compiler.test.js
+├─ critical-diagnostic.test.js
 ├─ effect-item-drop.test.js
 ├─ effect-transfer.test.js
 ├─ gui-state.test.js
@@ -46,7 +48,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 119 tests covering:
+The suite contains 127 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -64,7 +66,8 @@ The suite contains 119 tests covering:
 - preserving unsupported Rule Elements during an Item update;
 - updating only Forge-managed Item fields;
 - synchronized release metadata, manifest paths, localization parity, and archive hygiene;
-- headless PF2e context translation from rolls, chat flags, weapons, NPC attacks, actors, tokens, and roll options.
+- headless PF2e context translation from rolls, chat flags, weapons, NPC attacks, actors, tokens, and roll options;
+- manual diagnostic candidate evaluation, chat-message discovery, Item UUID resolution, target handling, and drop validation.
 
 Coverage is a diagnostic rather than a release gate. The headless Critical Forge tests are included in the same report as the Effect Engine and Effect Forge tests.
 

@@ -1,0 +1,236 @@
+<div class="critical-diagnostic-shell">
+  <section class="critical-diagnostic-toolbar effect-forge-panel">
+    <div class="critical-diagnostic-toolbar-main">
+      <label class="effect-forge-field critical-diagnostic-message-select">
+        <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ChatMessage"}}</span>
+        <select name="messageId" {{#unless hasMessages}}disabled{{/unless}}>
+          {{#unless hasMessages}}
+            <option value="">{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.NoMessages"}}</option>
+          {{/unless}}
+          {{#each messages}}
+            <option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+          {{/each}}
+        </select>
+      </label>
+
+      <div class="critical-diagnostic-toolbar-actions">
+        <button type="button" class="primary" data-action="analyzeSelected" {{#unless hasMessages}}disabled{{/unless}}>
+          <i class="fa-solid fa-magnifying-glass-chart"></i>
+          {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Analyze"}}
+        </button>
+        <button type="button" data-action="analyzeLatest" {{#unless hasMessages}}disabled{{/unless}}>
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.AnalyzeLatest"}}
+        </button>
+        <button type="button" data-action="clearReport" {{#unless hasReport}}disabled{{/unless}}>
+          <i class="fa-solid fa-eraser"></i>
+          {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Clear"}}
+        </button>
+      </div>
+    </div>
+
+    <div class="critical-diagnostic-drop-zone" data-chat-message-drop-zone>
+      <i class="fa-solid fa-comment-dots"></i>
+      <div>
+        <strong>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.DropMessageHere"}}</strong>
+        <small>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.DropMessageHint"}}</small>
+      </div>
+    </div>
+
+    <div class="critical-diagnostic-target-state">
+      <i class="fa-solid fa-crosshairs"></i>
+      <span>{{localize targetStatusKey}}</span>
+      {{#if targetNames}}<strong>{{targetNames}}</strong>{{/if}}
+    </div>
+  </section>
+
+  {{#if hasReport}}
+    <div class="critical-diagnostic-workspace">
+      <main class="critical-diagnostic-column">
+        <section class="effect-forge-panel critical-diagnostic-summary">
+          <header class="critical-diagnostic-section-header">
+            <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ContextSummary"}}</h2>
+            <span class="critical-diagnostic-status {{report.statusClass}}">
+              <i class="fa-solid {{report.statusIcon}}"></i>
+              {{report.statusText}}
+            </span>
+          </header>
+
+          <div class="critical-diagnostic-facts">
+            <div>
+              <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Category"}}</span>
+              <strong>{{report.category}}</strong>
+            </div>
+            <div>
+              <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Outcome"}}</span>
+              <strong>{{report.outcome}}</strong>
+            </div>
+            <div>
+              <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.EligibleCards"}}</span>
+              <strong>{{report.eligibleCount}}</strong>
+            </div>
+            <div>
+              <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.TotalWeight"}}</span>
+              <strong>{{report.totalWeight}}</strong>
+            </div>
+          </div>
+
+          <div class="critical-diagnostic-tag-groups">
+            <div class="critical-diagnostic-tag-group">
+              <h3>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.DamageTypes"}}</h3>
+              <div class="critical-diagnostic-tags">
+                {{#each report.damageTypes}}<span>{{this}}</span>{{else}}<em>—</em>{{/each}}
+              </div>
+            </div>
+            <div class="critical-diagnostic-tag-group">
+              <h3>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.WeaponGroups"}}</h3>
+              <div class="critical-diagnostic-tags">
+                {{#each report.weaponGroups}}<span>{{this}}</span>{{else}}<em>—</em>{{/each}}
+              </div>
+            </div>
+            <div class="critical-diagnostic-tag-group">
+              <h3>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.AttackTraits"}}</h3>
+              <div class="critical-diagnostic-tags">
+                {{#each report.attackTraits}}<span>{{this}}</span>{{else}}<em>—</em>{{/each}}
+              </div>
+            </div>
+            <div class="critical-diagnostic-tag-group">
+              <h3>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.SourceTraits"}}</h3>
+              <div class="critical-diagnostic-tags">
+                {{#each report.sourceTraits}}<span>{{this}}</span>{{else}}<em>—</em>{{/each}}
+              </div>
+            </div>
+            <div class="critical-diagnostic-tag-group">
+              <h3>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.TargetTraits"}}</h3>
+              <div class="critical-diagnostic-tags">
+                {{#each report.targetTraits}}<span>{{this}}</span>{{else}}<em>—</em>{{/each}}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="effect-forge-panel critical-diagnostic-candidates">
+          <header class="critical-diagnostic-section-header">
+            <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.EligibleCards"}} ({{report.eligibleCount}})</h2>
+          </header>
+
+          {{#if report.hasEligible}}
+            <div class="critical-diagnostic-card-list">
+              {{#each report.eligible}}
+                <article class="critical-diagnostic-card eligible">
+                  <header>
+                    <div>
+                      <strong>{{title}}</strong>
+                      <code>{{id}}</code>
+                    </div>
+                    <span class="critical-diagnostic-weight" title="{{localize 'PF2E_CRITICAL_FORGE.CriticalDiagnostic.EffectiveWeight'}}">
+                      {{effectiveWeight}}
+                    </span>
+                  </header>
+                  <p>{{description}}</p>
+                  <div class="critical-diagnostic-card-meta">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Specificity"}}: {{specificity}}</span>
+                    <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.BaseWeight"}}: {{baseWeight}}</span>
+                  </div>
+                  {{#if hasMatches}}
+                    <div class="critical-diagnostic-match-list">
+                      {{#each matchedFilters}}
+                        <span><strong>{{label}}:</strong> {{values}}</span>
+                      {{/each}}
+                    </div>
+                  {{/if}}
+                </article>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="critical-diagnostic-empty">{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.NoEligibleCards"}}</p>
+          {{/if}}
+        </section>
+
+        <section class="effect-forge-panel critical-diagnostic-candidates rejected-section">
+          <header class="critical-diagnostic-section-header">
+            <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.RejectedCards"}} ({{report.rejectedCount}})</h2>
+          </header>
+
+          {{#if report.hasRejected}}
+            <div class="critical-diagnostic-card-list">
+              {{#each report.rejected}}
+                <article class="critical-diagnostic-card rejected">
+                  <header>
+                    <div>
+                      <strong>{{title}}</strong>
+                      <code>{{id}}</code>
+                    </div>
+                  </header>
+                  <div class="critical-diagnostic-reasons">
+                    {{#each rejectedReasons}}<span>{{this}}</span>{{/each}}
+                  </div>
+                </article>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="critical-diagnostic-empty">{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.NoRejectedCards"}}</p>
+          {{/if}}
+        </section>
+      </main>
+
+      <aside class="critical-diagnostic-column">
+        <section class="effect-forge-panel critical-diagnostic-diagnostics">
+          <header class="critical-diagnostic-section-header">
+            <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Diagnostics"}}</h2>
+          </header>
+          {{#if report.hasDiagnostics}}
+            <div class="critical-diagnostic-issue-list">
+              {{#each report.diagnostics}}
+                <div class="critical-diagnostic-issue {{severity}}">
+                  <i class="fa-solid {{icon}}"></i>
+                  <div>
+                    <strong>{{code}}</strong>
+                    <span>{{text}}</span>
+                  </div>
+                </div>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="critical-diagnostic-empty">{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.NoDiagnostics"}}</p>
+          {{/if}}
+        </section>
+
+        <section class="effect-forge-panel critical-diagnostic-json">
+          <header class="critical-diagnostic-section-header">
+            <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.SelectionContext"}}</h2>
+          </header>
+          <pre>{{report.contextJson}}</pre>
+        </section>
+
+        <section class="effect-forge-panel critical-diagnostic-json">
+          <header class="critical-diagnostic-section-header">
+            <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.AdapterMetadata"}}</h2>
+          </header>
+          <pre>{{report.metadataJson}}</pre>
+        </section>
+      </aside>
+    </div>
+  {{else}}
+    <section class="effect-forge-panel critical-diagnostic-welcome">
+      <i class="fa-solid fa-microscope"></i>
+      <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.WelcomeTitle"}}</h2>
+      <p>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.WelcomeText"}}</p>
+      <p class="critical-diagnostic-safety-note">
+        <i class="fa-solid fa-shield-halved"></i>
+        {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.NoAutomationNotice"}}
+      </p>
+    </section>
+  {{/if}}
+
+  <footer class="critical-diagnostic-footer">
+    <button type="button" data-action="copyReport" {{#unless hasReport}}disabled{{/unless}}>
+      <i class="fa-regular fa-copy"></i>
+      {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.CopyReport"}}
+    </button>
+    <button type="button" data-action="closeWindow">
+      <i class="fa-solid fa-xmark"></i>
+      {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Close"}}
+    </button>
+  </footer>
+</div>

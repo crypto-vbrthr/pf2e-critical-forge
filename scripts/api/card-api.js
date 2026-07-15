@@ -16,6 +16,11 @@ import {
   createPf2eSelectionContext,
   PF2E_CONTEXT_ADAPTER_VERSION
 } from "../critical-forge/adapters/pf2e/pf2e-context-adapter.js";
+import { diagnosePf2eCriticalInput } from "../critical-forge/diagnostics/critical-diagnostic-service.js";
+import {
+  listDiagnosticMessages,
+  resolveDiagnosticMessageInput
+} from "../critical-forge/diagnostics/chat-message-resolver.js";
 
 export function createCardApi() {
   const resolveCard = (cardOrId) => {
@@ -54,6 +59,14 @@ export function createCardApi() {
       if (system !== "pf2e") throw new Error(`Unsupported Critical Forge context adapter: ${system}`);
       return createPf2eSelectionContext(input);
     },
+    diagnose: (input, { system = "pf2e", ...options } = {}) => {
+      if (system !== "pf2e") throw new Error(`Unsupported Critical Forge diagnostic adapter: ${system}`);
+      return diagnosePf2eCriticalInput(input, options);
+    },
+    diagnostics: Object.freeze({
+      listMessages: (options = {}) => listDiagnosticMessages(options),
+      resolveMessageInput: (message, options = {}) => resolveDiagnosticMessageInput(message, options)
+    }),
     adapters: Object.freeze({
       pf2e: Object.freeze({
         version: PF2E_CONTEXT_ADAPTER_VERSION,

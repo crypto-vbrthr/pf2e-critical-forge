@@ -1,0 +1,66 @@
+import { criticalCardSelector } from "../critical-forge.js";
+import { localizeCard } from "../localization/card-localizer.js";
+import { createPf2eSelectionContext } from "../adapters/pf2e/pf2e-context-adapter.js";
+import { deepFreeze } from "../utils.js";
+
+/**
+ * Analyze PF2e input without selecting or applying a card.
+ *
+ * The result is suitable for diagnostics, tests, and future UI consumers.
+ */
+export function diagnosePf2eCriticalInput(input = {}, {
+  includeRejected = true,
+  excludeCardIds = [],
+  createContext = createPf2eSelectionContext,
+  selector = criticalCardSelector,
+  localize = localizeCard
+} = {}) {
+  const contextReport = createContext(input);
+  const candidateReport = contextReport.valid
+    ? selector.candidates(contextReport.context, { includeRejected, excludeCardIds })
+    : emptyCandidateReport(contextReport.context);
+
+  const eligible = candidateReport.eligible.map((entry) => prepareCandidate(entry, localize));
+  const rejected = candidateReport.rejected.map((entry) => prepareCandidate(entry, localize));
+
+  return deepFreeze({
+    valid: contextReport.valid,
+    contextReport,
+    context: contextReport.context,
+    metadata: contextReport.metadata,
+    diagnostics: contextReport.diagnostics,
+    eligible,
+    rejected,
+    totalWeight: candidateReport.totalWeight,
+    counts: {
+      eligible: eligible.length,
+      rejected: rejected.length,
+      diagnostics: contextReport.diagnostics.length
+    }
+  });
+}
+
+function prepareCandidate(entry, localize) {
+  return {
+    card: entry.card,
+    localized: localize(entry.card),
+    eligible: entry.eligible,
+    rejectedBy: [...entry.rejectedBy],
+    matchedFilters: entry.matchedFilters.map((match) => ({
+      filter: match.filter,
+      values: [...match.values]
+    })),
+    specificity: entry.specificity,
+    baseWeight: entry.baseWeight,
+    effectiveWeight: entry.effectiveWeight
+  };
+}
+
+function emptyCandidateReport(context) {
+  return {
+    context,
+    eligible: [],
+    rejected: [],
+    totalWeight: 0
+  };
+}

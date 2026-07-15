@@ -1,0 +1,102 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { installFoundryMock } from "./helpers/foundry-mock.js";
+
+installFoundryMock();
+
+const {
+  diagnosticMessageLabel,
+  listDiagnosticMessages,
+  resolveDiagnosticMessageInput,
+  resolveDroppedChatMessage
+} = await import("../scripts/critical-forge/diagnostics/chat-message-resolver.js");
+
+test("diagnostic message list keeps roll messages and sorts newest first", () => {
+  const messages = {
+    contents: [
+      { id: "old", timestamp: 10, rolls: [{}], speaker: { alias: "A" } },
+      { id: "text", timestamp: 30, rolls: [], speaker: { alias: "B" } },
+      { id: "new", timestamp: 20, flags: { pf2e: { context: { outcome: "criticalSuccess" } } }, speaker: { alias: "C" } }
+    ]
+  };
+
+  const result = listDiagnosticMessages({ messages });
+  assert.deepEqual(result.map((entry) => entry.id), ["new", "old"]);
+  assert.match(result[0].label, /C/);
+});
+
+test("resolver combines message, origin item, speaker actor, and one selected target", async () => {
+  const sourceActor = { id: "source", name: "Source" };
+  const targetActor = { id: "target", name: "Target" };
+  const item = { id: "weapon", actor: sourceActor };
+  const targetToken = { id: "target-token", actor: targetActor };
+  const message = {
+    id: "message",
+    speaker: { actor: "source" },
+    flags: { pf2e: { context: { origin: { item: "Actor.source.Item.weapon" } } } },
+    rolls: [{ degreeOfSuccess: 3 }]
+  };
+
+  const result = await resolveDiagnosticMessageInput(message, {
+    targetTokens: new Set([targetToken]),
+    actors: { get: (id) => id === "source" ? sourceActor : null },
+    fromUuidFn: async (uuid) => uuid === "Actor.source.Item.weapon" ? item : null,
+    canvas: null,
+    user: null
+  });
+
+  assert.equal(result.input.item, item);
+  assert.equal(result.input.sourceActor, sourceActor);
+  assert.equal(result.input.targetActor, targetActor);
+  assert.equal(result.input.targetToken, targetToken);
+  assert.equal(result.diagnostics.length, 0);
+});
+
+test("resolver refuses to choose among multiple selected targets", async () => {
+  const message = { id: "message", rolls: [{}] };
+  const result = await resolveDiagnosticMessageInput(message, {
+    targetTokens: [{ id: "a" }, { id: "b" }],
+    fromUuidFn: null,
+    canvas: null,
+    user: null
+  });
+
+  assert.equal(result.input.targetToken, null);
+  assert.deepEqual(result.diagnostics.map((entry) => entry.code), [
+    "CRITICAL_DIAGNOSTIC_MULTIPLE_TARGETS",
+    "CRITICAL_DIAGNOSTIC_TARGET_NOT_SELECTED"
+  ]);
+});
+
+test("dropped ChatMessage resolves by UUID or collection id", async () => {
+  const byUuid = { id: "uuid-message" };
+  assert.equal(
+    await resolveDroppedChatMessage(
+      { type: "ChatMessage", uuid: "ChatMessage.uuid-message" },
+      { fromUuidFn: async () => byUuid, messages: null }
+    ),
+    byUuid
+  );
+
+  const byId = { id: "id-message" };
+  assert.equal(
+    await resolveDroppedChatMessage(
+      { documentName: "ChatMessage", id: "id-message" },
+      { fromUuidFn: null, messages: { get: (id) => id === "id-message" ? byId : null } }
+    ),
+    byId
+  );
+
+  await assert.rejects(
+    resolveDroppedChatMessage({ type: "Actor", id: "actor" }, { fromUuidFn: null, messages: null }),
+    (error) => error.code === "CRITICAL_DIAGNOSTIC_DROP_NOT_CHAT_MESSAGE"
+  );
+});
+
+test("diagnostic labels include speaker, action, and outcome", () => {
+  const label = diagnosticMessageLabel({
+    speaker: { alias: "Valeros" },
+    flags: { pf2e: { context: { action: "Longsword", outcome: "criticalSuccess" } } }
+  });
+  assert.equal(label, "Valeros · Longsword · criticalSuccess");
+});

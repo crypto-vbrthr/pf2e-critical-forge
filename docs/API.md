@@ -8,11 +8,13 @@ const api = game.modules.get("pf2e-critical-forge")?.api;
 
 The API is published during Foundry's `init` hook and remains available regardless of the Effect Forge and Critical Forge settings.
 
-The GUI can be opened empty or with an existing Item:
+The Effect Forge and manual Critical Forge diagnostics can be opened through the UI API:
 
 ```js
 api.ui.openEffectForge();
 await api.ui.openEffectForge(item);
+api.ui.openCriticalDiagnostics();
+await api.ui.openCriticalDiagnostics(message);
 ```
 
 For module integrations, prefer the ready hook:
@@ -614,7 +616,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture and the headless PF2e Context Adapter are available through `api.cards`. Version 0.5.1-dev still includes no automatic Foundry roll hooks or chat-card UI.
+Critical Forge card architecture, the headless PF2e Context Adapter, and manual diagnostics are available through `api.cards`. Version 0.5.4-dev still includes no automatic roll hooks, result chat cards, or effect application.
 
 ### Registration and lookup
 
@@ -670,6 +672,38 @@ const report = api.cards.createContext(input, { system: "pf2e" });
 `report.context` contains only the neutral fields used by card matching. `report.metadata` preserves diagnostic details such as degree of success, actor level and size, item identity, range mode, and roll options. Missing optional data produces structured information entries rather than exceptions. A missing critical category is an error because the resulting context cannot be selected.
 
 See [`PF2E_CONTEXT_ADAPTER.md`](PF2E_CONTEXT_ADAPTER.md).
+
+### Manual diagnostics
+
+Analyze PF2e input and evaluate candidates without choosing a card:
+
+```js
+const diagnostic = api.cards.diagnose({
+  message,
+  sourceActor,
+  targetActor
+});
+
+console.log(diagnostic.context);
+console.log(diagnostic.diagnostics);
+console.log(diagnostic.eligible);
+console.log(diagnostic.rejected);
+```
+
+Resolve a real ChatMessage with the current user's target selection before diagnosing it:
+
+```js
+const resolved = await api.cards.diagnostics.resolveMessageInput(message);
+const diagnostic = api.cards.diagnose(resolved.input);
+```
+
+Recent PF2e roll messages can be listed with:
+
+```js
+api.cards.diagnostics.listMessages({ limit: 50 });
+```
+
+The GM-only workbench can be opened with `api.ui.openCriticalDiagnostics(message?)`. It never selects or applies a card. See [`CRITICAL_DIAGNOSTICS.md`](CRITICAL_DIAGNOSTICS.md).
 
 ### Matching and selection
 

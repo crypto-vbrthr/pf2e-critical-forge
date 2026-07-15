@@ -1,8 +1,11 @@
 # Critical Forge Architecture
 
-Version 0.5.1 extends the headless Critical Forge domain layer with a separate PF2e Context Adapter. It deliberately contains no chat cards, automatic roll hooks, directory buttons, or automatic effect application.
+Version 0.5.4 includes a thin manual diagnostic presentation around the headless Critical Forge domain and PF2e Context Adapter. It deliberately contains no automatic roll hooks, result chat cards, random result selection, or automatic effect application.
 
 ```text
+Manual Chat Diagnostic UI ── explicit message input
+        │
+        ▼
 PF2e Context Adapter
         │
         ▼
@@ -26,6 +29,7 @@ Effect Engine
 ```text
 critical-forge/
 ├─ adapters/pf2e/       PF2e data readers and diagnostic context adapter
+├─ diagnostics/          manual message resolution, diagnostic service, and workbench UI
 ├─ core/                 bundled architecture test pack
 ├─ localization/         key resolution and Effect materialization
 ├─ registry/             pack and card registries
@@ -44,6 +48,7 @@ critical-forge/
 - Card registration is independent from the Critical Forge world setting.
 - Localization happens only when a consumer asks for presentation data.
 - Mechanical consequences remain Effect Definitions and are handled by the Effect Engine.
+- The manual diagnostic UI evaluates candidates but performs no weighted selection.
 - No effect is applied automatically in this milestone.
 
 ## Adapter boundary

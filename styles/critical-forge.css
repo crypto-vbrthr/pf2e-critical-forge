@@ -1024,3 +1024,430 @@
     justify-content: flex-end;
   }
 }
+
+/* Critical Forge diagnostic workbench */
+.pf2e-critical-forge-diagnostic-toolbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: stretch;
+  width: 100%;
+  padding: 0.3rem 0.45rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-border-light-2, #666) 55%, transparent);
+  background: color-mix(in srgb, var(--color-cool-5, #242730) 78%, transparent);
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.pf2e-critical-forge-diagnostic-toolbar .pf2e-critical-forge-diagnostic-open {
+  width: 100%;
+  pointer-events: auto;
+}
+
+.pf2e-critical-forge-diagnostic-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: auto;
+  min-width: 2rem;
+}
+
+.critical-diagnostic .window-content {
+  overflow: hidden;
+}
+
+.critical-diagnostic-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  height: 100%;
+  min-height: 0;
+  padding: 0.65rem;
+  box-sizing: border-box;
+}
+
+.critical-diagnostic-toolbar {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.8rem;
+}
+
+.critical-diagnostic-toolbar-main {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) auto;
+  gap: 0.8rem;
+  align-items: end;
+}
+
+.critical-diagnostic-toolbar-actions {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.critical-diagnostic-toolbar-actions button {
+  width: auto;
+  white-space: nowrap;
+}
+
+.critical-diagnostic-drop-zone {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 58px;
+  padding: 0.7rem 0.9rem;
+  border: 1px dashed var(--ef-purple-bright);
+  border-radius: 7px;
+  background: rgba(117, 66, 178, 0.08);
+  transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+}
+
+.critical-diagnostic-drop-zone > i {
+  color: var(--ef-purple-bright);
+  font-size: 1.45rem;
+}
+
+.critical-diagnostic-drop-zone div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.critical-diagnostic-drop-zone small {
+  color: var(--ef-muted);
+}
+
+.critical-diagnostic-drop-zone.drag-active {
+  border-color: var(--ef-orange);
+  background: rgba(246, 162, 58, 0.12);
+  transform: translateY(-1px);
+}
+
+.critical-diagnostic-target-state {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--ef-muted);
+  font-size: 0.82rem;
+}
+
+.critical-diagnostic-target-state i {
+  color: var(--ef-orange);
+}
+
+.critical-diagnostic-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.22fr) minmax(360px, 0.78fr);
+  gap: 0.65rem;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.critical-diagnostic-column {
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+  scrollbar-gutter: stable;
+}
+
+.critical-diagnostic-summary,
+.critical-diagnostic-candidates,
+.critical-diagnostic-diagnostics,
+.critical-diagnostic-json {
+  padding: 0.85rem;
+}
+
+.critical-diagnostic-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.critical-diagnostic-section-header h2,
+.critical-diagnostic-welcome h2 {
+  margin: 0;
+  color: var(--ef-orange);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.critical-diagnostic-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.critical-diagnostic-status.valid {
+  color: #bdeac3;
+  background: rgba(103, 191, 114, 0.16);
+}
+
+.critical-diagnostic-status.invalid {
+  color: #ffc0c0;
+  background: rgba(220, 103, 103, 0.16);
+}
+
+.critical-diagnostic-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.critical-diagnostic-facts > div {
+  display: grid;
+  gap: 0.18rem;
+  padding: 0.55rem;
+  border: 1px solid var(--ef-border-soft);
+  border-radius: 6px;
+  background: var(--ef-field);
+}
+
+.critical-diagnostic-facts span {
+  color: var(--ef-muted);
+  font-size: 0.72rem;
+}
+
+.critical-diagnostic-facts strong {
+  font-size: 0.92rem;
+}
+
+.critical-diagnostic-tag-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+}
+
+.critical-diagnostic-tag-group {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.critical-diagnostic-tag-group h3 {
+  margin: 0;
+  color: var(--ef-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.critical-diagnostic-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  min-height: 1.35rem;
+}
+
+.critical-diagnostic-tags span,
+.critical-diagnostic-reasons span {
+  padding: 0.18rem 0.42rem;
+  border-radius: 999px;
+  background: rgba(145, 91, 208, 0.17);
+  color: #d9c5ee;
+  font-size: 0.72rem;
+}
+
+.critical-diagnostic-tags em {
+  color: var(--ef-muted);
+}
+
+.critical-diagnostic-card-list,
+.critical-diagnostic-issue-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.critical-diagnostic-card {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.7rem;
+  border: 1px solid var(--ef-border-soft);
+  border-left-width: 3px;
+  border-radius: 6px;
+  background: var(--ef-panel-alt);
+}
+
+.critical-diagnostic-card.eligible {
+  border-left-color: var(--ef-green);
+}
+
+.critical-diagnostic-card.rejected {
+  border-left-color: var(--ef-red);
+  opacity: 0.88;
+}
+
+.critical-diagnostic-card > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.critical-diagnostic-card > header > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.critical-diagnostic-card code {
+  color: var(--ef-muted);
+  font-size: 0.7rem;
+}
+
+.critical-diagnostic-card p {
+  margin: 0;
+  color: var(--ef-muted);
+  line-height: 1.35;
+}
+
+.critical-diagnostic-weight {
+  display: grid;
+  place-items: center;
+  min-width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: rgba(103, 191, 114, 0.16);
+  color: #bdeac3;
+  font-weight: 800;
+}
+
+.critical-diagnostic-card-meta,
+.critical-diagnostic-match-list,
+.critical-diagnostic-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.65rem;
+  color: var(--ef-muted);
+  font-size: 0.72rem;
+}
+
+.critical-diagnostic-match-list span {
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.critical-diagnostic-reasons span {
+  background: rgba(220, 103, 103, 0.13);
+  color: #efb0b0;
+}
+
+.critical-diagnostic-issue {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.55rem;
+  padding: 0.58rem;
+  border-radius: 5px;
+  background: var(--ef-field);
+}
+
+.critical-diagnostic-issue > div {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.critical-diagnostic-issue strong {
+  font-size: 0.73rem;
+  word-break: break-word;
+}
+
+.critical-diagnostic-issue span {
+  color: var(--ef-muted);
+  line-height: 1.35;
+}
+
+.critical-diagnostic-issue.error i { color: var(--ef-red); }
+.critical-diagnostic-issue.warning i { color: var(--ef-orange); }
+.critical-diagnostic-issue.info i { color: var(--ef-blue); }
+
+.critical-diagnostic-json pre {
+  max-height: 320px;
+  margin: 0;
+  padding: 0.7rem;
+  overflow: auto;
+  border: 1px solid var(--ef-border-soft);
+  border-radius: 5px;
+  background: #0d0d14;
+  color: #d8d2dd;
+  font-size: 0.72rem;
+  line-height: 1.38;
+  white-space: pre;
+}
+
+.critical-diagnostic-welcome {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.7rem;
+  min-height: 0;
+  padding: 2rem;
+  text-align: center;
+}
+
+.critical-diagnostic-welcome > i {
+  color: var(--ef-purple-bright);
+  font-size: 3rem;
+}
+
+.critical-diagnostic-welcome p {
+  max-width: 700px;
+  margin: 0;
+  color: var(--ef-muted);
+  line-height: 1.5;
+}
+
+.critical-diagnostic-safety-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #bdeac3 !important;
+}
+
+.critical-diagnostic-empty {
+  margin: 0;
+  padding: 0.6rem;
+  color: var(--ef-muted);
+  text-align: center;
+}
+
+.critical-diagnostic-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.1rem;
+}
+
+.critical-diagnostic-footer button {
+  width: auto;
+}
+
+@media (max-width: 920px) {
+  .critical-diagnostic-workspace {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .critical-diagnostic-column {
+    overflow: visible;
+  }
+
+  .critical-diagnostic-toolbar-main {
+    grid-template-columns: 1fr;
+  }
+
+  .critical-diagnostic-facts,
+  .critical-diagnostic-tag-groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

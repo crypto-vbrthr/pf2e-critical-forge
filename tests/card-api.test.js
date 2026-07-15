@@ -54,3 +54,17 @@ test("public card API exposes the headless PF2e context adapter", () => {
   assert.deepEqual(generic.context, direct.context);
   assert.throws(() => api.createContext({}, { system: "other" }), /Unsupported/);
 });
+
+
+test("public card API exposes manual diagnostics", () => {
+  const report = api.diagnose({
+    category: "criticalHit",
+    damageTypes: ["slashing"],
+    targetTraits: ["humanoid"]
+  });
+  assert.equal(report.valid, true);
+  assert.ok(report.eligible.length >= 1);
+  assert.equal(typeof api.diagnostics.listMessages, "function");
+  assert.equal(typeof api.diagnostics.resolveMessageInput, "function");
+  assert.throws(() => api.diagnose({}, { system: "other" }), /Unsupported/);
+});

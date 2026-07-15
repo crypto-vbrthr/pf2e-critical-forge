@@ -4,6 +4,7 @@ import { initializeEffectEngine } from "./effect-engine/effect-engine.js";
 import { initializePublicApi } from "./api/public-api.js";
 import { initializeEffectForgeUi } from "./effect-forge/effect-forge.js";
 import { initializeCriticalForge } from "./critical-forge/critical-forge.js";
+import { initializeCriticalDiagnosticUi } from "./critical-forge/diagnostics/critical-diagnostic-ui.js";
 import { initializeConditionCatalog } from "./effect-engine/catalogs/condition-catalog.js";
 
 Hooks.once("init", () => {
@@ -26,6 +27,9 @@ Hooks.once("ready", async () => {
     initializeEffectForgeUi();
   }
 
+  if (game.settings.get(MODULE_ID, SETTINGS.ENABLE_CRITICAL_FORGE)) {
+    initializeCriticalDiagnosticUi();
+  }
 
   Hooks.callAll("pf2eCriticalForgeReady", api);
   console.info(`${MODULE_ID} | Ready`, {

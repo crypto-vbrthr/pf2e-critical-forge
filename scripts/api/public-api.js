@@ -10,6 +10,7 @@ import { componentRegistry } from "../effect-engine/component-registry.js";
 import { createEffectApi } from "./effect-api.js";
 import { createCardApi } from "./card-api.js";
 import { openEffectForge } from "../effect-forge/effect-forge.js";
+import { openCriticalDiagnostics } from "../critical-forge/diagnostics/critical-diagnostic-ui.js";
 import {
   EffectBuilder,
   createEffectBuilder
@@ -149,7 +150,7 @@ export function initializePublicApi() {
       list: () => componentRegistry.list()
     }),
 
-    ui: Object.freeze({ openEffectForge }),
+    ui: Object.freeze({ openEffectForge, openCriticalDiagnostics }),
 
     cards: createCardApi()
   });

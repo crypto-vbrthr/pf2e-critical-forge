@@ -2,7 +2,7 @@
 
 The PF2e Context Adapter is a headless translation boundary. It accepts PF2e/Foundry objects explicitly supplied by a caller and returns the neutral context consumed by Critical Forge card matching.
 
-It does not register hooks, render chat cards, choose a card, or apply effects.
+It does not register automatic roll hooks, render result chat cards, choose a card, or apply effects. Version 0.5.4-dev includes a manual diagnostic workbench that invokes the adapter only after a GM explicitly selects or drops a message.
 
 ## API
 
@@ -117,3 +117,22 @@ if (adapted.valid) {
 ```
 
 The adapter and selector remain separate so callers can inspect, amend, cache, or reject a context before card selection.
+
+
+## Manual chat-message diagnostics
+
+The diagnostic workbench resolves convenient live-world inputs before calling the adapter:
+
+- the selected ChatMessage and its primary roll;
+- an exposed message Item or an Item UUID from PF2e context flags;
+- the speaker Actor and source Token when available;
+- exactly one currently targeted Token as the target.
+
+Multiple selected targets are not guessed. They produce `CRITICAL_DIAGNOSTIC_MULTIPLE_TARGETS`, and target context remains empty. No selected target produces `CRITICAL_DIAGNOSTIC_TARGET_NOT_SELECTED`.
+
+```js
+const resolved = await api.cards.diagnostics.resolveMessageInput(message);
+const report = api.cards.diagnose(resolved.input);
+```
+
+See [`CRITICAL_DIAGNOSTICS.md`](CRITICAL_DIAGNOSTICS.md) for the UI and combined report.

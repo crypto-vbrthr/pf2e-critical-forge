@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.5.4-dev
+
+- Fixed the Critical Diagnostic launcher being injected twice, including a misplaced copy in the sidebar header.
+- Restricted launcher injection to the actual Foundry 14 ChatLog input part.
+- Moved the inline launcher below the chat input and hardened its pointer/click handling.
+- Diagnostic windows are now brought to the foreground after opening.
+- Opening failures now produce a localized notification and a detailed console error.
+- Added regression tests preventing parent sidebar applications from being mistaken for ChatLog.
+
+## 0.5.3-dev
+
+- Fixed the Critical Forge diagnostic control not appearing when Foundry 14 had already rendered the ChatLog before the module registered its hooks.
+- The diagnostic launcher now resolves the live `ui.chat` ApplicationV2 element after `ready` and reinjects itself when the sidebar DOM is replaced.
+- Added Foundry 14-specific `renderChatLog`, `activateChatLog`, and header-control integration with generic ApplicationV2 fallbacks.
+- Added a persistent inline launcher near the chat input plus a native ChatLog header control fallback.
+- Added regression tests for ChatLog recognition, ApplicationV2 root resolution, input-part placement, and duplicate header-control prevention.
+
+## 0.5.2-dev
+
+- Added a GM-only manual Critical Forge diagnostic workbench without automatic roll hooks.
+- Added selection and drag-and-drop loading of existing PF2e chat messages.
+- Added real-message resolution for speaker Actors, source Tokens, attack Item UUIDs, the primary roll, and exactly one selected target.
+- Added visual inspection of normalized context, adapter metadata, stable diagnostics, eligible cards, rejected cards, matched filters, specificity, and effective weights.
+- Added copyable JSON diagnostic reports.
+- Added public `api.cards.diagnose()`, `api.cards.diagnostics.listMessages()`, `api.cards.diagnostics.resolveMessageInput()`, and `api.ui.openCriticalDiagnostics()` entry points.
+- Added a Chat sidebar button when Critical Forge is enabled. The button performs no analysis until the GM explicitly chooses a message.
+- Added headless diagnostic-service and chat-message-resolver tests.
+- Added `docs/CRITICAL_DIAGNOSTICS.md` and updated API, adapter, architecture, testing, and README documentation.
+
 ## 0.5.1-dev
 
 - Added the first headless PF2e Context Adapter without Foundry hooks or Critical Forge UI integration.
