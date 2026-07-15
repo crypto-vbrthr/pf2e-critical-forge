@@ -26,21 +26,30 @@ Each card receives:
 - `matchedFilters`
 - `specificity`
 - `baseWeight`
+- `unprofiledWeight`
+- `profileMultiplier`
 - `effectiveWeight`
 
-`effectiveWeight` is calculated as:
+Without a profile, `effectiveWeight` is:
 
 ```text
 baseWeight × (1 + specificity)
 ```
 
-This gives a matching specialized card more weight than a generic fallback while preserving explicit pack weighting.
+With a profile it becomes:
+
+```text
+baseWeight × (1 + specificity) × toneMultiplier × impactMultiplier
+```
+
+The built-in profiles are `relaxed`, `balanced`, `dramatic`, `brutal`, and `custom`. They bias the draw rather than hard-filtering cards.
 
 ## Selection
 
 ```js
 const result = api.cards.select(context, {
   excludeCardIds: recentlyUsed,
+  profile: "dramatic",
   random: Math.random
 });
 
@@ -67,3 +76,15 @@ if (report.valid) {
 ```
 
 The adapter is optional. External modules may continue constructing the neutral context directly.
+
+
+## Trigger policy
+
+The selection service does not subscribe to Foundry rolls. The separate trigger-policy service decides whether an already adapted critical result should be ignored, prompt the GM, or draw automatically:
+
+```js
+const policy = api.cards.triggers.configured(report.context.category);
+const trigger = api.cards.triggers.evaluate(report, policy);
+```
+
+For `scope: "natural"`, a hit requires both a natural 20 and a final critical success; a fumble requires both a natural 1 and a final critical failure. A natural die result that only upgrades the roll to a normal success or failure does not trigger a card.

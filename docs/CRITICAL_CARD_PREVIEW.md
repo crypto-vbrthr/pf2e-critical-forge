@@ -1,6 +1,6 @@
 # Critical Card Chat Workflow
 
-Version `0.5.6-dev` turns the manual Critical Forge preview into a controlled result-card workflow. Cards are still chosen explicitly from diagnostics; no roll hook or automatic selection is active.
+Version `0.5.7-dev` adds profile metadata and a controlled redraw workflow to the manual result-card system. Cards can still be chosen explicitly from diagnostics; the automatic roll hook is not active yet.
 
 ## Visibility setting
 
@@ -30,7 +30,7 @@ If the target no longer exists or validation returns an error, the Actor is not 
 
 ```js
 flags["pf2e-critical-forge"].criticalCardPreview = {
-  previewVersion: 2,
+  previewVersion: 3,
   cardId: "core.slashing.deep-cut",
   packId: "core",
   category: "criticalHit",
@@ -38,6 +38,10 @@ flags["pf2e-critical-forge"].criticalCardPreview = {
   visibilityMode: "blind",
   context: {},
   metadata: {},
+  draw: {
+    profileId: "balanced",
+    history: ["core.slashing.deep-cut"]
+  },
   effect: {
     target: "target",
     definition: EffectDefinition
@@ -67,6 +71,7 @@ await api.cards.publishPreview(cardId, {
 
 const inspection = await api.cards.inspectPreviewApplication(message);
 const result = await api.cards.applyPreviewEffect(message);
+const redraw = await api.cards.redrawPreview(message);
 ```
 
 `api.cards.visibilityModes` exposes the stable mode constants and `normalizeVisibilityMode()` provides safe fallback to `blind`.
@@ -74,3 +79,14 @@ const result = await api.cards.applyPreviewEffect(message);
 ## Safety boundary
 
 This milestone still does not register attack-roll hooks or choose cards automatically. Every card publication and every effect application requires an explicit GM action.
+
+
+## Draw again
+
+If the world setting permits redraws, an unapplied card shows a GM-only **Draw again** control. The existing ChatMessage is updated in place. Critical Forge preserves its context, target metadata, visibility, and source-message reference while replacing the card and resetting application state.
+
+The `draw.history` array is bounded by the configured history size. The selector first excludes every recent card and, if that exhausts the eligible pool, falls back to excluding only the currently displayed card. Applied cards cannot be redrawn.
+
+## Tone and impact
+
+Cards display localized tone and impact badges. These values are descriptive and feed profile weighting; they do not change the stored Effect Definition.

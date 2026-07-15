@@ -164,3 +164,7 @@ Those paths should be checked in a Foundry test world using a short release chec
 The Critical Forge tests remain headless and inject random/localization functions where deterministic behavior matters.
 
 `quality:check` runs the full test suite and the release metadata, localization, syntax, and archive-hygiene checks while permitting a development version suffix. `release:check` remains strict and rejects `-dev` versions.
+
+## Critical trigger and redraw tests
+
+The suite includes deterministic checks for profile multipliers, natural-20/natural-1 trigger semantics, extraction of the d20 result independently from the final degree, bounded redraw history, alternative selection, and the guard that prevents redrawing an applied card.

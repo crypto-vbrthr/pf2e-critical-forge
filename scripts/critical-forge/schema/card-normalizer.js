@@ -25,11 +25,14 @@ export function normalizeCardDefinition(card, { packId = null } = {}) {
     normalizedFilters[key] = normalizeStringArray(card.filters?.[key] ?? []);
   }
 
+  const normalizedEffect = normalizeEffectTemplate(card.effect);
   const normalized = {
     schemaVersion: Number(card.schemaVersion ?? CARD_SCHEMA_VERSION),
     id: normalizeString(card.id),
     packId: normalizeString(packId ?? card.packId),
     category: normalizeString(card.category),
+    tone: normalizeString(card.tone, "neutral"),
+    impact: normalizeString(card.impact, normalizedEffect ? "moderate" : "narrative"),
     titleKey: normalizeString(card.titleKey),
     descriptionKey: normalizeString(card.descriptionKey),
     fallbackTitle: normalizeString(card.fallbackTitle) || null,
@@ -37,7 +40,7 @@ export function normalizeCardDefinition(card, { packId = null } = {}) {
     weight: Number(card.weight ?? 1),
     tags: normalizeStringArray(card.tags ?? []),
     filters: normalizedFilters,
-    effect: normalizeEffectTemplate(card.effect),
+    effect: normalizedEffect,
     metadata: deepClone(card.metadata ?? {})
   };
 

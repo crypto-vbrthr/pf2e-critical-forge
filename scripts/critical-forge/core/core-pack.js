@@ -11,7 +11,7 @@ export const CORE_CRITICAL_CARD_PACK = Object.freeze({
   descriptionKey: "PF2E_CRITICAL_FORGE.CriticalForge.Packs.Core.Description",
   fallbackTitle: "Critical Forge Core",
   fallbackDescription: "Core architecture test cards for critical hits and fumbles.",
-  version: "0.5.6",
+  version: "0.5.7",
   sourceModule: "pf2e-critical-forge",
   priority: 0,
   enabled: true,
@@ -19,6 +19,8 @@ export const CORE_CRITICAL_CARD_PACK = Object.freeze({
     {
       schemaVersion: CARD_SCHEMA_VERSION,
       id: "core.slashing.deep-cut",
+      tone: "dramatic",
+      impact: "moderate",
       packId: "core",
       category: "criticalHit",
       titleKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.Slashing.DeepCut.Title",
@@ -42,6 +44,8 @@ export const CORE_CRITICAL_CARD_PACK = Object.freeze({
     {
       schemaVersion: CARD_SCHEMA_VERSION,
       id: "core.piercing.puncture",
+      tone: "serious",
+      impact: "light",
       packId: "core",
       category: "criticalHit",
       titleKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.Piercing.Puncture.Title",
@@ -65,6 +69,8 @@ export const CORE_CRITICAL_CARD_PACK = Object.freeze({
     {
       schemaVersion: CARD_SCHEMA_VERSION,
       id: "core.bludgeoning.ringing-blow",
+      tone: "dramatic",
+      impact: "strong",
       packId: "core",
       category: "criticalHit",
       titleKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.Bludgeoning.RingingBlow.Title",
@@ -88,6 +94,8 @@ export const CORE_CRITICAL_CARD_PACK = Object.freeze({
     {
       schemaVersion: CARD_SCHEMA_VERSION,
       id: "core.generic.off-balance",
+      tone: "neutral",
+      impact: "light",
       packId: "core",
       category: "criticalHit",
       titleKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.Generic.OffBalance.Title",
@@ -111,6 +119,8 @@ export const CORE_CRITICAL_CARD_PACK = Object.freeze({
     {
       schemaVersion: CARD_SCHEMA_VERSION,
       id: "core.fumble.overextended",
+      tone: "humorous",
+      impact: "light",
       packId: "core",
       category: "criticalFumble",
       titleKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.Fumble.Overextended.Title",
@@ -134,6 +144,8 @@ export const CORE_CRITICAL_CARD_PACK = Object.freeze({
     {
       schemaVersion: CARD_SCHEMA_VERSION,
       id: "core.fumble.weapon-jolt",
+      tone: "humorous",
+      impact: "light",
       packId: "core",
       category: "criticalFumble",
       titleKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.Fumble.WeaponJolt.Title",

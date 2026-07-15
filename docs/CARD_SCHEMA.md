@@ -10,6 +10,8 @@ Critical Forge cards are immutable, versioned data objects. They contain localiz
   id: "core.slashing.deep-cut",
   packId: "core",
   category: "criticalHit",
+  tone: "dramatic",
+  impact: "moderate",
 
   titleKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.Slashing.DeepCut.Title",
   descriptionKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.Slashing.DeepCut.Description",
@@ -54,6 +56,15 @@ The first schema supports:
 - `criticalFumble`
 
 Additional categories require a future card-schema migration rather than ad-hoc string parsing.
+
+## Tone and impact
+
+Every card carries two independent presentation and selection attributes:
+
+- `tone`: `neutral`, `serious`, `dramatic`, or `humorous`;
+- `impact`: `narrative`, `light`, `moderate`, or `strong`.
+
+They do not alter the Effect Definition. Selection profiles use them only as weight multipliers, so a non-preferred card remains eligible unless another filter rejects it. Cards that omit these additive fields normalize to `neutral` and either `moderate` for mechanical cards or `narrative` for effect-free cards.
 
 ## Localization
 

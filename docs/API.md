@@ -616,7 +616,24 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the headless PF2e Context Adapter, manual diagnostics, configurable result chat cards, and GM-confirmed effect application are available through `api.cards`. Version 0.5.6-dev includes manual GM-confirmed application from result cards, but still no automatic roll hooks or automatic card selection.
+Critical Forge card architecture, the headless PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, redraws, and GM-confirmed effect application are available through `api.cards`. Version 0.5.7-dev prepares automatic/prompt behavior without yet registering an automatic roll hook.
+
+
+### Profiles and trigger policies
+
+```js
+api.cards.tones;
+api.cards.impacts;
+api.cards.profiles.ids;
+
+const profile = api.cards.profiles.resolve("brutal");
+const multiplier = api.cards.profiles.multiplier(cardId, profile);
+
+const policy = api.cards.triggers.configured("criticalHit");
+const trigger = api.cards.triggers.evaluate(contextReport, policy);
+```
+
+`scope: "natural"` requires a natural 20 plus final critical success for hits, or a natural 1 plus final critical failure for fumbles.
 
 ### Registration and lookup
 
@@ -795,6 +812,7 @@ await api.cards.publishPreview(cardId, {
 const inspection = await api.cards.inspectPreviewApplication(message);
 const target = await api.cards.resolvePreviewTarget(previewFlag);
 const result = await api.cards.applyPreviewEffect(message);
+const redraw = await api.cards.redrawPreview(message);
 ```
 
 Supported visibility values are `blind`, `gm`, `public`, and `self`. Invalid values normalize to `blind`. Application is GM-only and records an audit status in the ChatMessage flags.

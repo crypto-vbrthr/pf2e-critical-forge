@@ -3,6 +3,10 @@
     <div>
       <span class="pf2e-critical-card-preview-category">{{categoryLabel}}</span>
       <h3>{{title}}</h3>
+      <div class="pf2e-critical-card-preview-tags">
+        <span data-tone="{{tone}}">{{toneLabel}}</span>
+        <span data-impact="{{impact}}">{{impactLabel}}</span>
+      </div>
     </div>
     <i class="fa-solid fa-burst" aria-hidden="true"></i>
   </header>
@@ -47,6 +51,15 @@
       <i class="fa-solid fa-feather" aria-hidden="true"></i>
       {{localize "PF2E_CRITICAL_FORGE.CriticalPreview.NoMechanicalEffect"}}
     </p>
+  {{/if}}
+
+  {{#if allowRedraw}}
+    <section class="pf2e-critical-card-preview-actions" data-critical-card-actions>
+      <button type="button" data-action="redraw-critical-card">
+        <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+        <span>{{localize "PF2E_CRITICAL_FORGE.CriticalPreview.Redraw.Button"}}</span>
+      </button>
+    </section>
   {{/if}}
 
   {{#if hasSourceMessage}}

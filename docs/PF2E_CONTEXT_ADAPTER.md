@@ -136,3 +136,18 @@ const report = api.cards.diagnose(resolved.input);
 ```
 
 See [`CRITICAL_DIAGNOSTICS.md`](CRITICAL_DIAGNOSTICS.md) for the UI and combined report.
+
+
+## Natural d20 metadata
+
+The adapter stores the unmodified d20 result independently from the final degree of success:
+
+```js
+report.metadata.roll = {
+  dieResult: 20,
+  isNatural20: true,
+  isNatural1: false
+};
+```
+
+Trigger policies use both values. A natural 20/1 qualifies only when the final PF2e result is also a critical success/failure respectively.

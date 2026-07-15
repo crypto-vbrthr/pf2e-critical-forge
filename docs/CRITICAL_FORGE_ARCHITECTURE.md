@@ -64,3 +64,23 @@ The PF2e adapter may inspect only documents explicitly supplied by its caller. I
 ## Presentation boundary
 
 The preview service accepts a card plus neutral context, adapter metadata, and an optional source ChatMessage. It materializes the card's existing Effect Definition, creates localized human-readable summaries, and renders a dedicated Handlebars template. The rendered HTML is never parsed back into mechanics. Future application controls will read the structured module flags stored on the preview ChatMessage.
+
+## Trigger and profile layer
+
+Version 0.5.7 introduces two headless services between PF2e context adaptation and card publication:
+
+```text
+PF2e Context Adapter
+        ↓
+Critical Trigger Policy
+        ↓
+Card Profile Weighting
+        ↓
+Card Selector
+        ↓
+Chat Card / Redraw
+```
+
+The trigger policy knows behavior (`disabled`, `prompt`, `automatic`) and scope (`all`, `natural`) but does not register Foundry hooks. Natural scope requires both the natural d20 value and the final PF2e degree of success.
+
+The profile service weights `tone` and `impact` metadata. It never compiles effects and never changes eligibility produced by mechanical filters.

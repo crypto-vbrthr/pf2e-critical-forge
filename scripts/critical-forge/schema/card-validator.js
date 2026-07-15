@@ -5,6 +5,7 @@ import {
 } from "../../constants.js";
 import { analyzeEffectDefinition } from "../../effect-engine/validation/validation-engine.js";
 import { CARD_CATEGORIES, CARD_ID_PATTERN, EFFECT_TARGETS } from "../constants.js";
+import { CARD_IMPACTS, CARD_TONES } from "../profile/card-profile.js";
 import { CARD_FILTER_KEYS } from "./card-normalizer.js";
 
 function issue(code, data = {}, severity = "error") {
@@ -44,6 +45,12 @@ export function validateCardDefinition(card) {
 
   if (!CARD_CATEGORIES.includes(card.category)) {
     issues.push(issue("CARD_CATEGORY_INVALID", { category: card.category }));
+  }
+  if (!CARD_TONES.includes(card.tone)) {
+    issues.push(issue("CARD_TONE_INVALID", { tone: card.tone }));
+  }
+  if (!CARD_IMPACTS.includes(card.impact)) {
+    issues.push(issue("CARD_IMPACT_INVALID", { impact: card.impact }));
   }
 
   for (const field of ["titleKey", "descriptionKey"]) {

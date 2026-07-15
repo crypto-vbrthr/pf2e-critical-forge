@@ -1,4 +1,5 @@
 import { matchCard, normalizeSelectionContext } from "./card-matcher.js";
+import { cardProfileMultiplier, resolveCardProfile } from "../profile/card-profile.js";
 
 export class CardSelector {
   #cardRegistry;
@@ -7,34 +8,48 @@ export class CardSelector {
     this.#cardRegistry = cardRegistry;
   }
 
-  candidates(context, { excludeCardIds = [], includeRejected = true } = {}) {
+  candidates(context, { excludeCardIds = [], includeRejected = true, profile = null } = {}) {
     const normalized = normalizeSelectionContext(context);
     const excluded = new Set(excludeCardIds.map(String));
+    const resolvedProfile = profile ? resolveCardProfile(profile) : null;
     const evaluated = this.#cardRegistry
       .list({ category: normalized.category })
-      .map((card) => excluded.has(card.id)
-        ? Object.freeze({
-            card,
-            eligible: false,
-            rejectedBy: ["excludedCardIds"],
-            matchedFilters: [],
-            specificity: 0,
-            baseWeight: card.weight,
-            effectiveWeight: 0
-          })
-        : matchCard(card, normalized));
+      .map((card) => {
+        const matched = excluded.has(card.id)
+          ? Object.freeze({
+              card,
+              eligible: false,
+              rejectedBy: ["excludedCardIds"],
+              matchedFilters: [],
+              specificity: 0,
+              baseWeight: card.weight,
+              effectiveWeight: 0
+            })
+          : matchCard(card, normalized);
+        const profileMultiplier = matched.eligible && resolvedProfile
+          ? cardProfileMultiplier(card, resolvedProfile)
+          : matched.eligible ? 1 : 0;
+        return Object.freeze({
+          ...matched,
+          unprofiledWeight: matched.effectiveWeight,
+          profileId: resolvedProfile?.id ?? null,
+          profileMultiplier,
+          effectiveWeight: matched.effectiveWeight * profileMultiplier
+        });
+      });
 
     return Object.freeze({
       context: normalized,
+      profile: resolvedProfile,
       eligible: evaluated.filter((entry) => entry.eligible),
       rejected: includeRejected ? evaluated.filter((entry) => !entry.eligible) : [],
       totalWeight: evaluated.reduce((sum, entry) => sum + entry.effectiveWeight, 0)
     });
   }
 
-  select(context, { excludeCardIds = [], random = Math.random } = {}) {
+  select(context, { excludeCardIds = [], random = Math.random, profile = null } = {}) {
     if (typeof random !== "function") throw new TypeError("random must be a function.");
-    const result = this.candidates(context, { excludeCardIds, includeRejected: true });
+    const result = this.candidates(context, { excludeCardIds, includeRejected: true, profile });
     if (!result.eligible.length || result.totalWeight <= 0) {
       return Object.freeze({ ...result, selected: null, roll: null });
     }

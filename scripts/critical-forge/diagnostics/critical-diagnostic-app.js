@@ -159,6 +159,11 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
           specificity: entry.specificity,
           baseWeight: entry.baseWeight,
           effectiveWeight: entry.effectiveWeight,
+          unprofiledWeight: entry.unprofiledWeight,
+          profileId: entry.profileId,
+          profileMultiplier: entry.profileMultiplier,
+          tone: entry.card.tone,
+          impact: entry.card.impact,
           matchedFilters: entry.matchedFilters
         })),
         rejected: diagnostic.rejected.map((entry) => ({
@@ -174,6 +179,13 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
       eligibleCount: diagnostic.eligible.length,
       rejectedCount: diagnostic.rejected.length,
       totalWeight: diagnostic.totalWeight,
+      profileId: diagnostic.profile?.id ?? null,
+      profileLabel: this.#localizeProfile(diagnostic.profile?.id),
+      triggerAction: this.#localizeTrigger("Behavior", diagnostic.trigger?.behavior),
+      triggerScope: this.#localizeTrigger("Scope", diagnostic.trigger?.scope),
+      triggerMatched: diagnostic.trigger?.matched
+        ? game.i18n.localize("PF2E_CRITICAL_FORGE.CriticalDiagnostic.TriggerMatched")
+        : game.i18n.localize("PF2E_CRITICAL_FORGE.CriticalDiagnostic.TriggerNotMatched"),
       hasEligible: diagnostic.eligible.length > 0,
       hasRejected: diagnostic.rejected.length > 0,
       category: diagnostic.context.category || "—",
@@ -195,6 +207,13 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
       specificity: entry.specificity,
       baseWeight: entry.baseWeight,
       effectiveWeight: entry.effectiveWeight,
+      unprofiledWeight: entry.unprofiledWeight,
+      profileId: entry.profileId,
+      profileMultiplier: entry.profileMultiplier,
+      tone: entry.card.tone,
+      toneLabel: this.#localizeCardAttribute("Tones", entry.card.tone),
+      impact: entry.card.impact,
+      impactLabel: this.#localizeCardAttribute("Impacts", entry.card.impact),
       matchedFilters: entry.matchedFilters.map((match) => ({
         label: this.#localizeFilter(match.filter),
         values: match.values.join(", ")
@@ -203,6 +222,34 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
       hasMatches: entry.matchedFilters.length > 0,
       hasRejections: entry.rejectedBy.length > 0
     };
+  }
+
+
+
+  #localizeTrigger(group, value) {
+    const suffixes = {
+      Behavior: { disabled: "Disabled", prompt: "Prompt", automatic: "Automatic", ignore: "Disabled" },
+      Scope: { all: "All", natural: "Natural" }
+    };
+    const setting = group === "Behavior" ? "CriticalHitBehavior" : "CriticalHitTrigger";
+    const suffix = suffixes[group]?.[value];
+    const key = suffix ? `PF2E_CRITICAL_FORGE.Settings.${setting}.Choices.${suffix}` : "";
+    const localized = key ? game.i18n.localize(key) : value;
+    return localized && localized !== key ? localized : value ?? "—";
+  }
+
+  #localizeProfile(profile) {
+    if (!profile) return "—";
+    const suffix = { relaxed: "Relaxed", balanced: "Balanced", dramatic: "Dramatic", brutal: "Brutal", custom: "Custom" }[profile];
+    const key = suffix ? `PF2E_CRITICAL_FORGE.Settings.CriticalCardProfile.Choices.${suffix}` : "";
+    const localized = key ? game.i18n.localize(key) : profile;
+    return localized && localized !== key ? localized : profile;
+  }
+
+  #localizeCardAttribute(group, value) {
+    const key = `PF2E_CRITICAL_FORGE.CriticalPreview.${group}.${value}`;
+    const localized = game.i18n.localize(key);
+    return localized && localized !== key ? localized : value;
   }
 
   #localizeDiagnostic(entry) {

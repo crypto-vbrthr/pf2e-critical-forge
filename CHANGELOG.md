@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.7-dev
+
+- Added card `tone` and `impact` metadata with validated values and localized chat-card badges.
+- Added relaxed, balanced, dramatic, brutal, and custom card profiles that weight tone and mechanical impact without hard-excluding other eligible cards.
+- Added independent critical-hit and critical-fumble behavior settings: disabled, prompt, or automatic.
+- Added independent trigger scopes for all critical results or only natural 20/1 results that also finish as a critical success/failure.
+- PF2e Context Adapter metadata now exposes the natural d20 result separately from the final degree of success.
+- Added headless trigger-policy and profile APIs through `api.cards.triggers` and `api.cards.profiles`.
+- Added GM-only **Draw again** controls for unapplied cards, bounded draw history, recent-card avoidance, and fallback selection when the configured history exhausts the candidate pool.
+- Redrawing replaces the existing chat card, resets application state, and preserves source/target context and visibility.
+- Added world settings for profiles, custom tone/impact preferences, redraw permission, and draw-history size.
+- No automatic Foundry roll hook is enabled yet; this version prepares and tests the policy layer first.
+- Added regression tests for profile weighting, natural-roll trigger semantics, PF2e d20 extraction, redraw history, and redraw application guards.
+- Public API version increased to `0.5.5`; Critical Card Preview format increased to version `3`; Effect and card schemas remain unchanged.
+
 ## 0.5.6-dev
 
 - Added configurable Critical Forge card visibility with `GM Blind` as the default and optional GM-only, public, or self-only modes.

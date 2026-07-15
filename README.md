@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.5.6-dev` adds the first **manual application workflow** for Critical Forge result cards. A GM can publish an eligible card from diagnostics, keep it GM-blind by default or choose another visibility mode in module settings, and explicitly apply its stored Effect Definition to the recorded source or target Actor. The card revalidates the effect before application, records an audit status, and blocks duplicate application.
+Version `0.5.7-dev` adds the **trigger and card-profile architecture** that will drive the later automatic roll hook. Critical hits and fumbles can be configured independently for all critical results or only natural 20/1 results that actually end as a critical success/failure. Cards now carry tone and impact metadata, selection can use relaxed, balanced, dramatic, brutal, or custom weighting profiles, and an unapplied chat card can be redrawn without immediately repeating recent cards.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -18,12 +18,14 @@ The current engine includes:
 - versioned Critical Card and Card Pack schemas;
 - transactional Pack Registry and globally indexed Card Registry;
 - localized title, description, and effect-name resolution with fallbacks;
-- headless filter matching and transparent weighted candidate reports;
+- headless filter matching, tone/impact profile weighting, and transparent candidate reports;
 - a diagnostic PF2e Context Adapter and GM-only manual workbench for real chat messages;
 - localized result cards with configurable `blind`, `gm`, `public`, or `self` visibility;
+- configurable trigger policies for all critical results or natural 20/1 final critical outcomes;
+- redrawable cards with bounded draw history and no immediate repeats;
 - GM-confirmed effect application to the stored source or target Actor;
 - target re-resolution, target-aware validation, duplicate protection, and application audit flags;
-- no automatic roll hooks or automatic card selection yet.
+- no automatic roll hook yet; trigger and automatic/prompt behavior are currently exposed as tested policy services and world settings.
 
 ## API access
 
@@ -62,7 +64,7 @@ npm run test:coverage
 npm run quality:check
 ```
 
-The suite covers the Effect Engine and Forge as well as card normalization, selection, localization, diagnostics, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
+The suite covers the Effect Engine and Forge as well as card normalization, profile weighting, natural-roll trigger policies, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 

@@ -73,6 +73,18 @@
               <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.TotalWeight"}}</span>
               <strong>{{report.totalWeight}}</strong>
             </div>
+            <div>
+              <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.TriggerBehavior"}}</span>
+              <strong>{{report.triggerAction}}</strong>
+            </div>
+            <div>
+              <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.TriggerScope"}}</span>
+              <strong>{{report.triggerScope}}</strong>
+            </div>
+            <div>
+              <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.TriggerResult"}}</span>
+              <strong>{{report.triggerMatched}}</strong>
+            </div>
           </div>
 
           <div class="critical-diagnostic-tag-groups">
@@ -112,6 +124,7 @@
         <section class="effect-forge-panel critical-diagnostic-candidates">
           <header class="critical-diagnostic-section-header">
             <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.EligibleCards"}} ({{report.eligibleCount}})</h2>
+            <span class="critical-diagnostic-profile">{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.CardProfile"}}: {{report.profileLabel}}</span>
           </header>
 
           {{#if report.hasEligible}}
@@ -131,6 +144,9 @@
                   <div class="critical-diagnostic-card-meta">
                     <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Specificity"}}: {{specificity}}</span>
                     <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.BaseWeight"}}: {{baseWeight}}</span>
+                    <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ProfileMultiplier"}}: {{profileMultiplier}}</span>
+                    <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Tone"}}: {{toneLabel}}</span>
+                    <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Impact"}}: {{impactLabel}}</span>
                   </div>
                   {{#if hasMatches}}
                     <div class="critical-diagnostic-match-list">

@@ -2,6 +2,8 @@ import { criticalCardSelector } from "../critical-forge.js";
 import { localizeCard } from "../localization/card-localizer.js";
 import { createPf2eSelectionContext } from "../adapters/pf2e/pf2e-context-adapter.js";
 import { deepFreeze } from "../utils.js";
+import { configuredCardProfile } from "../profile/card-profile.js";
+import { configuredTriggerPolicy, evaluateCriticalTrigger } from "../trigger/critical-trigger-policy.js";
 
 /**
  * Analyze PF2e input without selecting or applying a card.
@@ -13,11 +15,14 @@ export function diagnosePf2eCriticalInput(input = {}, {
   excludeCardIds = [],
   createContext = createPf2eSelectionContext,
   selector = criticalCardSelector,
-  localize = localizeCard
+  localize = localizeCard,
+  profile = configuredCardProfile()
 } = {}) {
   const contextReport = createContext(input);
+  const triggerPolicy = configuredTriggerPolicy(contextReport.context.category);
+  const trigger = evaluateCriticalTrigger(contextReport, triggerPolicy);
   const candidateReport = contextReport.valid
-    ? selector.candidates(contextReport.context, { includeRejected, excludeCardIds })
+    ? selector.candidates(contextReport.context, { includeRejected, excludeCardIds, profile })
     : emptyCandidateReport(contextReport.context);
 
   const eligible = candidateReport.eligible.map((entry) => prepareCandidate(entry, localize));
@@ -32,6 +37,9 @@ export function diagnosePf2eCriticalInput(input = {}, {
     eligible,
     rejected,
     totalWeight: candidateReport.totalWeight,
+    profile: candidateReport.profile,
+    triggerPolicy,
+    trigger,
     counts: {
       eligible: eligible.length,
       rejected: rejected.length,
@@ -52,7 +60,10 @@ function prepareCandidate(entry, localize) {
     })),
     specificity: entry.specificity,
     baseWeight: entry.baseWeight,
-    effectiveWeight: entry.effectiveWeight
+    effectiveWeight: entry.effectiveWeight,
+    unprofiledWeight: entry.unprofiledWeight,
+    profileId: entry.profileId,
+    profileMultiplier: entry.profileMultiplier
   };
 }
 

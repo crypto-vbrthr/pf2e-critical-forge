@@ -49,12 +49,14 @@ test("card definitions normalize and freeze nested values", () => {
   assert.equal(validateCardDefinition(normalized).valid, true);
 });
 
-test("card validation rejects unsupported categories and invalid weights", () => {
-  const normalized = normalizeCardDefinition(card({ category: "criticalDance", weight: 0 }));
+test("card validation rejects unsupported categories, tone, impact, and invalid weights", () => {
+  const normalized = normalizeCardDefinition(card({ category: "criticalDance", tone: "silly", impact: "catastrophic", weight: 0 }));
   const result = validateCardDefinition(normalized);
   assert.equal(result.valid, false);
   assert.equal(result.issues.some((issue) => issue.code === "CARD_CATEGORY_INVALID"), true);
   assert.equal(result.issues.some((issue) => issue.code === "CARD_WEIGHT_INVALID"), true);
+  assert.equal(result.issues.some((issue) => issue.code === "CARD_TONE_INVALID"), true);
+  assert.equal(result.issues.some((issue) => issue.code === "CARD_IMPACT_INVALID"), true);
 });
 
 test("card validation rejects malformed effect templates", () => {

@@ -1655,3 +1655,58 @@
     text-align: left;
   }
 }
+
+.pf2e-critical-card-preview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+  margin-top: 0.15rem;
+}
+
+.pf2e-critical-card-preview-tags span {
+  padding: 0.12rem 0.38rem;
+  border: 1px solid color-mix(in srgb, var(--cf-card-purple) 45%, transparent);
+  border-radius: 999px;
+  background: rgba(112, 64, 163, 0.13);
+  color: var(--color-text-light-6, #aaa4ac);
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+
+.pf2e-critical-card-preview-tags [data-impact="strong"] {
+  border-color: color-mix(in srgb, #d45b5b 55%, transparent);
+  color: #efb0b0;
+}
+
+.pf2e-critical-card-preview-tags [data-tone="humorous"] {
+  border-color: color-mix(in srgb, #d9c85d 55%, transparent);
+  color: #e7d98a;
+}
+
+.pf2e-critical-card-preview-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pf2e-critical-card-preview-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.38rem;
+  width: auto;
+  min-height: 2rem;
+  margin: 0;
+  padding: 0.35rem 0.65rem;
+  border-color: color-mix(in srgb, var(--cf-card-purple) 65%, var(--color-border-light-2, #777));
+  background: color-mix(in srgb, var(--cf-card-purple) 35%, transparent);
+  color: var(--color-text-light-highlight, #f0e8df);
+}
+
+.pf2e-critical-card-preview-actions button:hover:not(:disabled) {
+  border-color: var(--cf-card-orange);
+}
+
+.critical-diagnostic-profile {
+  color: var(--ef-muted);
+  font-size: 0.75rem;
+}

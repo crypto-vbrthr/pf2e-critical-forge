@@ -196,6 +196,18 @@ test("non-critical outcomes produce a structured unusable report", () => {
   assert.equal(report.information.some((entry) => entry.code === "PF2E_CONTEXT_OUTCOME_NOT_CRITICAL"), true);
 });
 
+test("adapter exposes the natural d20 result separately from the final degree", () => {
+  const report = createPf2eSelectionContext({
+    roll: {
+      dice: [{ total: 20, results: [{ result: 20, active: true }] }],
+      options: { degreeOfSuccess: 3 }
+    }
+  });
+  assert.equal(report.metadata.roll.dieResult, 20);
+  assert.equal(report.metadata.roll.isNatural20, true);
+  assert.equal(report.metadata.roll.isNatural1, false);
+});
+
 test("invalid adapter input never throws", () => {
   const report = createPf2eSelectionContext(null);
   assert.equal(report.valid, false);

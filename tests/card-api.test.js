@@ -70,7 +70,7 @@ test("public card API exposes manual diagnostics", () => {
 });
 
 test("public card API exposes manual chat-card previews", async () => {
-  assert.equal(api.previewVersion, 2);
+  assert.equal(api.previewVersion, 3);
   const preview = api.preparePreview("core.generic.off-balance", {
     context: { category: "criticalHit" }
   });
@@ -87,5 +87,9 @@ test("public card API exposes manual chat-card previews", async () => {
   assert.equal(api.visibilityModes.BLIND, "blind");
   assert.equal(typeof api.inspectPreviewApplication, "function");
   assert.equal(typeof api.applyPreviewEffect, "function");
+  assert.equal(typeof api.redrawPreview, "function");
   assert.equal(typeof api.summarizeEffect, "function");
+  assert.deepEqual(api.tones, ["neutral", "serious", "dramatic", "humorous"]);
+  assert.deepEqual(api.impacts, ["narrative", "light", "moderate", "strong"]);
+  assert.equal(typeof api.triggers.evaluate, "function");
 });

@@ -104,7 +104,10 @@ export function createPf2eSelectionContext(input = {}) {
     roll: {
       type: rollResult.rollType,
       identifier: rollResult.identifier,
-      action: rollResult.action
+      action: rollResult.action,
+      dieResult: rollResult.dieResult,
+      isNatural20: rollResult.isNatural20,
+      isNatural1: rollResult.isNatural1
     },
     source: source.metadata,
     target: target.metadata,
@@ -136,7 +139,7 @@ function emptyMetadata() {
     adapterVersion: PF2E_CONTEXT_ADAPTER_VERSION,
     degreeOfSuccess: null,
     outcome: null,
-    roll: { type: null, identifier: null, action: null },
+    roll: { type: null, identifier: null, action: null, dieResult: null, isNatural20: false, isNatural1: false },
     source: null,
     target: null,
     attack: null,

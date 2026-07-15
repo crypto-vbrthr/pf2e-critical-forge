@@ -45,8 +45,13 @@ export function readRollResult(input = {}) {
       ? "criticalFumble"
       : null;
 
+  const dieResult = readDieResult(input, roll);
+
   return {
     roll,
+    dieResult,
+    isNatural20: dieResult === 20,
+    isNatural1: dieResult === 1,
     contextFlag,
     damageRollFlag,
     degree,
@@ -79,4 +84,20 @@ function resolveRoll(explicitRoll, message) {
   return rolls.find((candidate) => candidate?.degreeOfSuccess != null || candidate?.options?.degreeOfSuccess != null)
     ?? rolls[0]
     ?? null;
+}
+
+
+function readDieResult(input, roll) {
+  const explicit = firstDefined(input.dieResult, input.naturalRoll, input.d20Result);
+  const candidates = [
+    explicit,
+    roll?.dice?.[0]?.total,
+    roll?.dice?.[0]?.results?.find?.((entry) => entry?.active !== false)?.result,
+    roll?.terms?.find?.((term) => Array.isArray(term?.results) && Number(term?.faces) === 20)?.results?.find?.((entry) => entry?.active !== false)?.result
+  ];
+  for (const value of candidates) {
+    const number = Number(value);
+    if (Number.isInteger(number) && number >= 1 && number <= 20) return number;
+  }
+  return null;
 }

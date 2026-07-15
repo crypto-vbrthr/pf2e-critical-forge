@@ -19,6 +19,81 @@
           "Public": "Public",
           "Self": "Self only"
         }
+      },
+      "CriticalHitBehavior": {
+        "Name": "Critical hits",
+        "Hint": "Determines whether critical hits are ignored, require confirmation, or will later draw a card automatically.",
+        "Choices": {
+          "Disabled": "Disabled",
+          "Prompt": "Ask first",
+          "Automatic": "Draw automatically"
+        }
+      },
+      "CriticalFumbleBehavior": {
+        "Name": "Critical fumbles",
+        "Hint": "Determines whether critical fumbles are ignored, require confirmation, or will later draw a card automatically.",
+        "Choices": {
+          "Disabled": "Disabled",
+          "Prompt": "Ask first",
+          "Automatic": "Draw automatically"
+        }
+      },
+      "CriticalHitTrigger": {
+        "Name": "Critical hit trigger",
+        "Hint": "Trigger on every critical hit or only on a natural 20 that actually ends as a critical success.",
+        "Choices": {
+          "All": "All critical hits",
+          "Natural": "Natural 20 with critical success only"
+        }
+      },
+      "CriticalFumbleTrigger": {
+        "Name": "Critical fumble trigger",
+        "Hint": "Trigger on every critical fumble or only on a natural 1 that actually ends as a critical failure.",
+        "Choices": {
+          "All": "All critical fumbles",
+          "Natural": "Natural 1 with critical failure only"
+        }
+      },
+      "CriticalCardProfile": {
+        "Name": "Card profile",
+        "Hint": "Weights the tone and mechanical impact of drawn cards. Non-preferred cards remain possible, but appear less often.",
+        "Choices": {
+          "Relaxed": "Relaxed",
+          "Balanced": "Balanced",
+          "Dramatic": "Dramatic",
+          "Brutal": "Brutal",
+          "Custom": "Custom"
+        }
+      },
+      "CriticalCardCustomTone": {
+        "Name": "Preferred card tone",
+        "Hint": "Used only by the custom card profile.",
+        "Choices": {
+          "Any": "Any",
+          "Humorous": "Humorous",
+          "Neutral": "Neutral",
+          "Serious": "Serious",
+          "Dramatic": "Dramatic"
+        }
+      },
+      "CriticalCardCustomImpact": {
+        "Name": "Preferred mechanical impact",
+        "Hint": "Used only by the custom card profile.",
+        "Choices": {
+          "Any": "Any",
+          "Narrative": "Narrative only",
+          "Light": "Light",
+          "Moderate": "Moderate",
+          "Strong": "Strong"
+        }
+      },
+      "CriticalCardAllowRedraw": {
+        "Name": "Allow redraws",
+        "Hint": "Allows a Gamemaster to replace a not-yet-applied Critical Card with another eligible card."
+      },
+      "CriticalCardHistorySize": {
+        "Name": "Draw history size",
+        "Hint": "Number of recently drawn cards that redraws try to avoid."
       }
     },
     "EffectForge": {
@@ -639,7 +714,16 @@
         "excludedTags": "excluded card tag",
         "excludedCardIds": "recently used or excluded card"
       },
-      "OpenFailed": "Critical diagnostics could not be opened. See the console for details."
+      "OpenFailed": "Critical diagnostics could not be opened. See the console for details.",
+      "CardProfile": "Card profile",
+      "ProfileMultiplier": "Profile multiplier",
+      "Tone": "Tone",
+      "Impact": "Impact",
+      "TriggerBehavior": "Trigger behavior",
+      "TriggerScope": "Trigger scope",
+      "TriggerResult": "Trigger check",
+      "TriggerMatched": "Would trigger",
+      "TriggerNotMatched": "Would not trigger"
     },
     "CriticalPreview": {
       "ShowInChat": "Show card in chat",
@@ -707,6 +791,31 @@
           "CRITICAL_CARD_TARGET_UNRESOLVED": "The intended target could no longer be resolved.",
           "CRITICAL_CARD_EFFECT_INVALID": "The effect is invalid for the target and was not applied.",
           "CRITICAL_CARD_APPLICATION_FAILED": "The effect could not be applied. See the console for details."
+        }
+      },
+      "Tones": {
+        "neutral": "Neutral",
+        "serious": "Serious",
+        "dramatic": "Dramatic",
+        "humorous": "Humorous"
+      },
+      "Impacts": {
+        "narrative": "Narrative",
+        "light": "Light",
+        "moderate": "Moderate",
+        "strong": "Strong"
+      },
+      "Redraw": {
+        "Button": "Draw again",
+        "Success": "A new eligible card was drawn.",
+        "Errors": {
+          "CRITICAL_CARD_REDRAW_IN_PROGRESS": "This card is already being redrawn.",
+          "CRITICAL_CARD_PREVIEW_MISSING": "The Critical Forge data for this chat card is missing.",
+          "CRITICAL_CARD_REDRAW_GM_ONLY": "Only a Gamemaster may redraw a card.",
+          "CRITICAL_CARD_REDRAW_DISABLED": "Redrawing is disabled in the module settings.",
+          "CRITICAL_CARD_ALREADY_APPLIED": "An applied card cannot be redrawn.",
+          "CRITICAL_CARD_REDRAW_NO_ALTERNATIVE": "No other eligible card is available for this roll.",
+          "CRITICAL_CARD_REDRAW_FAILED": "The card could not be redrawn. See the console for details."
         }
       }
     }

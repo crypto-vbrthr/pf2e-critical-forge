@@ -6,6 +6,7 @@ import { initializeEffectForgeUi } from "./effect-forge/effect-forge.js";
 import { initializeCriticalForge } from "./critical-forge/critical-forge.js";
 import { initializeCriticalDiagnosticUi } from "./critical-forge/diagnostics/critical-diagnostic-ui.js";
 import { initializeCriticalCardApplicationUi } from "./critical-forge/presentation/critical-card-application.js";
+import { initializeCriticalCardRedrawUi } from "./critical-forge/presentation/critical-card-redraw.js";
 import { initializeConditionCatalog } from "./effect-engine/catalogs/condition-catalog.js";
 
 Hooks.once("init", () => {
@@ -31,6 +32,7 @@ Hooks.once("ready", async () => {
   if (game.settings.get(MODULE_ID, SETTINGS.ENABLE_CRITICAL_FORGE)) {
     initializeCriticalDiagnosticUi();
     initializeCriticalCardApplicationUi();
+    initializeCriticalCardRedrawUi();
   }
 
   Hooks.callAll("pf2eCriticalForgeReady", api);

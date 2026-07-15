@@ -8,8 +8,9 @@ import { getMovementTypeDefinition, getBaseSpeedTypeDefinition } from "../../eff
 import { getResistanceTypeDefinition } from "../../effect-engine/catalogs/resistance-type-catalog.js";
 import { getSelectorDefinition } from "../../effect-engine/catalogs/selector-catalog.js";
 import { getWeaknessTypeDefinition } from "../../effect-engine/catalogs/weakness-type-catalog.js";
+import { configuredCardProfile, resolveCardProfile } from "../profile/card-profile.js";
 
-export const CRITICAL_CARD_PREVIEW_VERSION = 2;
+export const CRITICAL_CARD_PREVIEW_VERSION = 3;
 
 export const CRITICAL_CARD_VISIBILITY_MODES = Object.freeze({
   BLIND: "blind",
@@ -58,6 +59,10 @@ export function prepareCriticalCardPreview(cardOrId, {
     packId: card.packId,
     category: card.category,
     categoryLabel,
+    tone: card.tone,
+    toneLabel: localizeKey(`PF2E_CRITICAL_FORGE.CriticalPreview.Tones.${card.tone}`, card.tone, i18n),
+    impact: card.impact,
+    impactLabel: localizeKey(`PF2E_CRITICAL_FORGE.CriticalPreview.Impacts.${card.impact}`, card.impact, i18n),
     title: localized.title,
     description: localized.description,
     sourceName,
@@ -70,6 +75,7 @@ export function prepareCriticalCardPreview(cardOrId, {
     metadata: deepClone(metadata),
     effect,
     hasEffect: Boolean(effect),
+    allowRedraw: defaultAllowRedraw(),
     previewNotice: localizeKey(
       "PF2E_CRITICAL_FORGE.CriticalPreview.PreviewNotice",
       "Manual preview only. No effect was applied.",
@@ -88,6 +94,8 @@ export async function publishCriticalCardPreview(cardOrId, {
   applyChatModeFn = defaultApplyChatMode,
   visibilityMode = defaultVisibilityMode(),
   chatStyle = defaultChatStyle(),
+  profile = configuredCardProfile(),
+  drawHistory = [],
   i18n = globalThis.game?.i18n
 } = {}) {
   const preview = prepareCriticalCardPreview(cardOrId, {
@@ -115,9 +123,14 @@ export async function publishCriticalCardPreview(cardOrId, {
           packId: preview.packId,
           category: preview.category,
           sourceMessageUuid: preview.sourceMessageUuid,
+          sourceMessageLabel: preview.sourceMessageLabel,
           visibilityMode: normalizeVisibilityMode(visibilityMode),
           context: deepClone(preview.context),
           metadata: deepClone(preview.metadata),
+          draw: {
+            profileId: resolveCardProfile(profile).id,
+            history: [...new Set([...drawHistory, preview.cardId])]
+          },
           effect: preview.effect
             ? {
                 target: preview.effect.target,
@@ -464,4 +477,13 @@ function defaultSpeaker() {
 
 function defaultChatStyle() {
   return globalThis.CONST?.CHAT_MESSAGE_STYLES?.OTHER ?? 0;
+}
+
+
+function defaultAllowRedraw() {
+  try {
+    return globalThis.game?.settings?.get?.(MODULE_ID, SETTINGS.CRITICAL_CARD_ALLOW_REDRAW) !== false;
+  } catch (_error) {
+    return true;
+  }
 }

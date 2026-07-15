@@ -34,6 +34,22 @@ import {
   inspectCriticalCardApplication,
   resolveCriticalCardEffectTarget
 } from "../critical-forge/presentation/critical-card-application.js";
+import {
+  CARD_IMPACTS,
+  CARD_PROFILE_IDS,
+  CARD_TONES,
+  cardProfileMultiplier,
+  configuredCardProfile,
+  listCardProfiles,
+  resolveCardProfile
+} from "../critical-forge/profile/card-profile.js";
+import {
+  CRITICAL_TRIGGER_BEHAVIORS,
+  CRITICAL_TRIGGER_SCOPES,
+  configuredTriggerPolicy,
+  evaluateCriticalTrigger
+} from "../critical-forge/trigger/critical-trigger-policy.js";
+import { redrawCriticalCard } from "../critical-forge/presentation/critical-card-redraw.js";
 
 export function createCardApi() {
   const resolveCard = (cardOrId) => {
@@ -49,6 +65,21 @@ export function createCardApi() {
     schemaVersion: CARD_SCHEMA_VERSION,
     packSchemaVersion: CARD_PACK_SCHEMA_VERSION,
     categories: [...CARD_CATEGORIES],
+    tones: [...CARD_TONES],
+    impacts: [...CARD_IMPACTS],
+    profiles: Object.freeze({
+      ids: [...CARD_PROFILE_IDS],
+      list: () => listCardProfiles(),
+      resolve: (profile = null) => resolveCardProfile(profile),
+      configured: () => configuredCardProfile(),
+      multiplier: (cardOrId, profile = null) => cardProfileMultiplier(resolveCard(cardOrId), profile)
+    }),
+    triggers: Object.freeze({
+      behaviors: [...CRITICAL_TRIGGER_BEHAVIORS],
+      scopes: [...CRITICAL_TRIGGER_SCOPES],
+      evaluate: (report, policy = {}) => evaluateCriticalTrigger(report, policy),
+      configured: (category) => configuredTriggerPolicy(category)
+    }),
 
     registerPack: (pack, options = {}) => registerCriticalPack(pack, options),
     unregisterPack: (packId) => unregisterCriticalPack(packId),
@@ -75,6 +106,7 @@ export function createCardApi() {
     inspectPreviewApplication: (message, options = {}) => inspectCriticalCardApplication(message, options),
     resolvePreviewTarget: (previewData, options = {}) => resolveCriticalCardEffectTarget(previewData, options),
     applyPreviewEffect: (message, options = {}) => applyCriticalCardEffect(message, options),
+    redrawPreview: (message, options = {}) => redrawCriticalCard(message, options),
     summarizeEffect: (definition, options = {}) => summarizeCriticalEffectDefinition(definition, options),
 
     createContext: (input, { system = "pf2e" } = {}) => {

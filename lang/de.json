@@ -19,6 +19,81 @@
           "Public": "Öffentlich",
           "Self": "Nur für mich"
         }
+      },
+      "CriticalHitBehavior": {
+        "Name": "Kritische Treffer",
+        "Hint": "Legt fest, ob kritische Treffer ignoriert, zunächst bestätigt oder später automatisch mit einer Karte versehen werden.",
+        "Choices": {
+          "Disabled": "Deaktiviert",
+          "Prompt": "Nachfragen",
+          "Automatic": "Automatisch Karte ziehen"
+        }
+      },
+      "CriticalFumbleBehavior": {
+        "Name": "Kritische Patzer",
+        "Hint": "Legt fest, ob kritische Patzer ignoriert, zunächst bestätigt oder später automatisch mit einer Karte versehen werden.",
+        "Choices": {
+          "Disabled": "Deaktiviert",
+          "Prompt": "Nachfragen",
+          "Automatic": "Automatisch Karte ziehen"
+        }
+      },
+      "CriticalHitTrigger": {
+        "Name": "Auslöser für kritische Treffer",
+        "Hint": "Alle kritischen Treffer auslösen lassen oder nur natürliche 20, die tatsächlich in einem kritischen Erfolg enden.",
+        "Choices": {
+          "All": "Alle kritischen Treffer",
+          "Natural": "Nur natürliche 20 mit kritischem Erfolg"
+        }
+      },
+      "CriticalFumbleTrigger": {
+        "Name": "Auslöser für kritische Patzer",
+        "Hint": "Alle kritischen Patzer auslösen lassen oder nur natürliche 1, die tatsächlich in einem kritischen Fehlschlag endet.",
+        "Choices": {
+          "All": "Alle kritischen Patzer",
+          "Natural": "Nur natürliche 1 mit kritischem Fehlschlag"
+        }
+      },
+      "CriticalCardProfile": {
+        "Name": "Kartenprofil",
+        "Hint": "Gewichtet Ton und mechanische Stärke der gezogenen Karten. Nicht bevorzugte Karten bleiben möglich, erscheinen aber seltener.",
+        "Choices": {
+          "Relaxed": "Locker",
+          "Balanced": "Ausgewogen",
+          "Dramatic": "Dramatisch",
+          "Brutal": "Brutal",
+          "Custom": "Benutzerdefiniert"
+        }
+      },
+      "CriticalCardCustomTone": {
+        "Name": "Bevorzugter Kartenton",
+        "Hint": "Wird nur vom benutzerdefinierten Kartenprofil verwendet.",
+        "Choices": {
+          "Any": "Beliebig",
+          "Humorous": "Humorvoll",
+          "Neutral": "Neutral",
+          "Serious": "Ernst",
+          "Dramatic": "Dramatisch"
+        }
+      },
+      "CriticalCardCustomImpact": {
+        "Name": "Bevorzugte Effektstärke",
+        "Hint": "Wird nur vom benutzerdefinierten Kartenprofil verwendet.",
+        "Choices": {
+          "Any": "Beliebig",
+          "Narrative": "Nur erzählerisch",
+          "Light": "Leicht",
+          "Moderate": "Mittel",
+          "Strong": "Stark"
+        }
+      },
+      "CriticalCardAllowRedraw": {
+        "Name": "Neuziehen erlauben",
+        "Hint": "Erlaubt der Spielleitung, eine noch nicht angewendete Critical Card durch eine andere passende Karte zu ersetzen."
+      },
+      "CriticalCardHistorySize": {
+        "Name": "Größe der Ziehhistorie",
+        "Hint": "Anzahl zuletzt gezogener Karten, die beim Neuziehen nach Möglichkeit vermieden werden."
       }
     },
     "EffectForge": {
@@ -639,7 +714,16 @@
         "excludedTags": "ausgeschlossener Karten-Tag",
         "excludedCardIds": "kürzlich verwendete oder ausgeschlossene Karte"
       },
-      "OpenFailed": "Die Krit-Diagnose konnte nicht geöffnet werden. Details stehen in der Konsole."
+      "OpenFailed": "Die Krit-Diagnose konnte nicht geöffnet werden. Details stehen in der Konsole.",
+      "CardProfile": "Kartenprofil",
+      "ProfileMultiplier": "Profilfaktor",
+      "Tone": "Ton",
+      "Impact": "Stärke",
+      "TriggerBehavior": "Auslöseverhalten",
+      "TriggerScope": "Auslöser",
+      "TriggerResult": "Trigger-Prüfung",
+      "TriggerMatched": "Würde auslösen",
+      "TriggerNotMatched": "Würde nicht auslösen"
     },
     "CriticalPreview": {
       "ShowInChat": "Karte im Chat anzeigen",
@@ -707,6 +791,31 @@
           "CRITICAL_CARD_TARGET_UNRESOLVED": "Das vorgesehene Ziel konnte nicht mehr gefunden werden.",
           "CRITICAL_CARD_EFFECT_INVALID": "Der Effekt ist für das Ziel nicht gültig und wurde nicht angewendet.",
           "CRITICAL_CARD_APPLICATION_FAILED": "Der Effekt konnte nicht angewendet werden. Details stehen in der Konsole."
+        }
+      },
+      "Tones": {
+        "neutral": "Neutral",
+        "serious": "Ernst",
+        "dramatic": "Dramatisch",
+        "humorous": "Humorvoll"
+      },
+      "Impacts": {
+        "narrative": "Erzählerisch",
+        "light": "Leicht",
+        "moderate": "Mittel",
+        "strong": "Stark"
+      },
+      "Redraw": {
+        "Button": "Neu ziehen",
+        "Success": "Eine neue passende Karte wurde gezogen.",
+        "Errors": {
+          "CRITICAL_CARD_REDRAW_IN_PROGRESS": "Die Karte wird bereits neu gezogen.",
+          "CRITICAL_CARD_PREVIEW_MISSING": "Die Critical-Forge-Daten der Chatkarte fehlen.",
+          "CRITICAL_CARD_REDRAW_GM_ONLY": "Nur die Spielleitung darf eine Karte neu ziehen.",
+          "CRITICAL_CARD_REDRAW_DISABLED": "Das Neuziehen ist in den Moduleinstellungen deaktiviert.",
+          "CRITICAL_CARD_ALREADY_APPLIED": "Eine bereits angewendete Karte kann nicht neu gezogen werden.",
+          "CRITICAL_CARD_REDRAW_NO_ALTERNATIVE": "Für diesen Wurf ist keine weitere passende Karte verfügbar.",
+          "CRITICAL_CARD_REDRAW_FAILED": "Die Karte konnte nicht neu gezogen werden. Details stehen in der Konsole."
         }
       }
     }
