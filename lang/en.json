@@ -339,7 +339,32 @@
       "DropEffectHint": "Supports effects from the world, Actors, and compendiums.",
       "DropUnsupportedDocument": "Only Item documents can be dropped into Effect Forge.",
       "DropOnlyEffectItems": "The dropped Item is not a PF2e effect.",
-      "DropItemNotFound": "The dropped effect could not be found or loaded."
+      "DropItemNotFound": "The dropped effect could not be found or loaded.",
+      "ImportExport": "Import and Export",
+      "ExportFormatVersion": "Format",
+      "ImportJsonFile": "Import JSON file",
+      "ImportClipboard": "Import from clipboard",
+      "ExportJsonFile": "Export as JSON file",
+      "CopyExport": "Copy export package",
+      "ImportExportHint": "Exports contain a portable package with the Effect Definition and preserved unmanaged Rule Elements. Importing opens a new, unsaved effect.",
+      "ImportSuccess": "Imported “{name}” with {count} components.",
+      "ExportSuccess": "Exported “{name}”.",
+      "TransferErrors": {
+        "Empty": "The import data is empty.",
+        "InvalidJson": "The selected data is not valid JSON.",
+        "ObjectRequired": "The imported JSON must contain an object.",
+        "UnsupportedFormat": "This JSON is not a supported Effect Forge export.",
+        "UnsupportedFormatVersion": "Export format version {actual} is unsupported. Version {expected} is required.",
+        "MissingDefinition": "The export package does not contain an Effect Definition.",
+        "UnsupportedSchemaVersion": "Schema version {actual} is unsupported. Version {expected} is required.",
+        "InvalidUnmanagedRules": "The preserved unmanaged Rule Elements have an invalid format.",
+        "InvalidFile": "No readable JSON file was selected.",
+        "FileTooLarge": "The selected file is too large. The maximum is {maximum} bytes.",
+        "ValidationFailed": "The imported Effect Definition is invalid. First issue: {code} ({count} errors).",
+        "ExportValidationFailed": "The effect is not valid yet and cannot be exported. First issue: {code} ({count} errors).",
+        "ClipboardUnavailable": "Clipboard access is unavailable in this environment.",
+        "Unknown": "The import or export failed."
+      }
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialized.",

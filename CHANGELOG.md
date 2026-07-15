@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.3.2-dev
+
+### Added
+- Portable, versioned JSON export packages containing the complete Effect Definition and preserved unmanaged Rule Elements.
+- Effect Forge actions for importing JSON files, importing from the clipboard, downloading exports, and copying export packages.
+- Support for importing both Critical Forge export envelopes and raw Effect Definitions.
+- Stable transfer error codes, localized feedback, schema/version checks, and a 2 MB file-size guard.
+- Public `api.effects.createExport()`, `serializeExport()`, and `parseImport()` methods.
+- Import/export documentation in `docs/IMPORT_EXPORT.md`.
+- Seven regression tests for package round-trips, raw definitions, invalid formats, filenames, descriptions, and file limits.
+
+### Changed
+- Imported effects open as new unsaved effects to prevent accidental updates of source Items.
+- Unmanaged third-party Rule Elements survive export and import.
+- The automated suite expanded from 72 to 79 tests.
+- Module version increased to `0.3.2-dev`; public API version increased to `0.3.1`; Effect Definition schema remains version `1`.
+
 ## 0.3.1-dev
 
 ### Added

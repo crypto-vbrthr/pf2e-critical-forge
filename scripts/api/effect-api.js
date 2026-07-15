@@ -11,6 +11,11 @@ import {
 import { buildPf2eEffectSource } from "../effect-engine/compiler/pf2e-item-builder.js";
 import { NotImplementedError } from "../core/errors.js";
 import { extractEffectDefinitionFromItem } from "../effect-engine/item-definition-adapter.js";
+import {
+  createEffectExportPackage,
+  parseEffectImport,
+  serializeEffectExport
+} from "../effect-forge/effect-transfer.js";
 
 export function createEffectApi() {
   return Object.freeze({
@@ -25,6 +30,9 @@ export function createEffectApi() {
 
     createItem: (definition, options = {}) => createWorldEffectItem(definition, options),
     readItem: (item) => extractEffectDefinitionFromItem(item),
+    createExport: (definition, options = {}) => createEffectExportPackage(definition, options),
+    serializeExport: (definition, options = {}) => serializeEffectExport(definition, options),
+    parseImport: (value, options = {}) => parseEffectImport(value, options),
     updateItem: (item, definition, options = {}) => updateEffectItem(item, definition, options),
     apply: (definition, targets, options = {}) => applyEffectToTargets(definition, targets, options),
     remove: (definitionId, targets) => removeEffectsByDefinitionId(definitionId, targets),

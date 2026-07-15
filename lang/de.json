@@ -339,7 +339,32 @@
       "DropEffectHint": "Unterstützt Effekte aus der Welt, von Actoren und aus Kompendien.",
       "DropUnsupportedDocument": "Nur Item-Dokumente können in die Effect Forge gezogen werden.",
       "DropOnlyEffectItems": "Das abgelegte Item ist kein PF2e-Effekt.",
-      "DropItemNotFound": "Der abgelegte Effekt konnte nicht gefunden oder geladen werden."
+      "DropItemNotFound": "Der abgelegte Effekt konnte nicht gefunden oder geladen werden.",
+      "ImportExport": "Import und Export",
+      "ExportFormatVersion": "Format",
+      "ImportJsonFile": "JSON-Datei importieren",
+      "ImportClipboard": "Aus Zwischenablage importieren",
+      "ExportJsonFile": "Als JSON-Datei exportieren",
+      "CopyExport": "Exportpaket kopieren",
+      "ImportExportHint": "Exportiert wird ein portables Paket mit Effect Definition und erhaltenen, nicht verwalteten Rule Elements. Beim Import wird ein neuer, noch nicht gespeicherter Effekt geöffnet.",
+      "ImportSuccess": "„{name}“ mit {count} Komponenten wurde importiert.",
+      "ExportSuccess": "„{name}“ wurde exportiert.",
+      "TransferErrors": {
+        "Empty": "Die Importdaten sind leer.",
+        "InvalidJson": "Die ausgewählten Daten sind kein gültiges JSON.",
+        "ObjectRequired": "Die importierte JSON-Datei muss ein Objekt enthalten.",
+        "UnsupportedFormat": "Dieses JSON ist kein unterstütztes Effect-Forge-Exportformat.",
+        "UnsupportedFormatVersion": "Die Exportformat-Version {actual} wird nicht unterstützt. Erwartet wird Version {expected}.",
+        "MissingDefinition": "Das Exportpaket enthält keine Effect Definition.",
+        "UnsupportedSchemaVersion": "Die Schema-Version {actual} wird nicht unterstützt. Erwartet wird Version {expected}.",
+        "InvalidUnmanagedRules": "Die erhaltenen, nicht verwalteten Rule Elements besitzen ein ungültiges Format.",
+        "InvalidFile": "Es wurde keine lesbare JSON-Datei ausgewählt.",
+        "FileTooLarge": "Die ausgewählte Datei ist zu groß. Maximal zulässig sind {maximum} Byte.",
+        "ValidationFailed": "Die importierte Effect Definition ist ungültig. Erste Meldung: {code} ({count} Fehler).",
+        "ExportValidationFailed": "Der Effekt ist noch nicht gültig und kann deshalb nicht exportiert werden. Erste Meldung: {code} ({count} Fehler).",
+        "ClipboardUnavailable": "Der Zugriff auf die Zwischenablage ist in dieser Umgebung nicht verfügbar.",
+        "Unknown": "Der Import oder Export ist fehlgeschlagen."
+      }
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialisiert.",

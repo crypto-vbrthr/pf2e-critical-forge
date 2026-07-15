@@ -67,6 +67,40 @@
         {{/if}}
       </section>
 
+      <section class="effect-forge-section effect-forge-transfer-section">
+        <header class="effect-forge-section-header">
+          <h2>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ImportExport"}}</h2>
+          <span class="effect-forge-transfer-format">
+            <i class="fa-solid fa-code-branch"></i>
+            {{localize "PF2E_CRITICAL_FORGE.EffectForge.ExportFormatVersion"}} 1
+          </span>
+        </header>
+
+        <div class="effect-forge-transfer-actions">
+          <button type="button" data-action="importJsonFile">
+            <i class="fa-solid fa-file-import"></i>
+            {{localize "PF2E_CRITICAL_FORGE.EffectForge.ImportJsonFile"}}
+          </button>
+          <button type="button" data-action="importClipboard">
+            <i class="fa-solid fa-clipboard"></i>
+            {{localize "PF2E_CRITICAL_FORGE.EffectForge.ImportClipboard"}}
+          </button>
+          <button type="button" data-action="exportJson">
+            <i class="fa-solid fa-file-export"></i>
+            {{localize "PF2E_CRITICAL_FORGE.EffectForge.ExportJsonFile"}}
+          </button>
+          <button type="button" data-action="copyExport">
+            <i class="fa-regular fa-copy"></i>
+            {{localize "PF2E_CRITICAL_FORGE.EffectForge.CopyExport"}}
+          </button>
+        </div>
+
+        <p class="effect-forge-transfer-hint">
+          <i class="fa-solid fa-circle-info"></i>
+          {{localize "PF2E_CRITICAL_FORGE.EffectForge.ImportExportHint"}}
+        </p>
+      </section>
+
       <section class="effect-forge-section">
         <h2>{{localize "PF2E_CRITICAL_FORGE.EffectForge.BasicData"}}</h2>
 

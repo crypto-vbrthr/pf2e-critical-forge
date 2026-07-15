@@ -10,6 +10,13 @@ import { getImmunityTypeGroups } from "../effect-engine/catalogs/immunity-type-c
 import { getBaseSpeedTypeGroups, getMovementTypeGroups } from "../effect-engine/catalogs/movement-type-catalog.js";
 import { captureScrollState, restoreScrollState } from "./view-state.js";
 import { getEffectItemDragData, resolveDroppedEffectItem } from "./effect-item-drop.js";
+import {
+  EffectTransferError,
+  buildEffectExportFilename,
+  downloadEffectExport,
+  effectDescriptionToPlainText,
+  readEffectImportFile
+} from "./effect-transfer.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -36,6 +43,22 @@ const VALIDATION_GROUPS = [
   ["hint", "PF2E_CRITICAL_FORGE.EffectForge.Validation.Hints", "fa-circle-info"],
   ["info", "PF2E_CRITICAL_FORGE.EffectForge.Validation.Information", "fa-circle-info"]
 ];
+
+const TRANSFER_ERROR_KEYS = Object.freeze({
+  IMPORT_EMPTY: "Empty",
+  IMPORT_JSON_INVALID: "InvalidJson",
+  IMPORT_DOCUMENT_OBJECT: "ObjectRequired",
+  IMPORT_FORMAT_UNSUPPORTED: "UnsupportedFormat",
+  IMPORT_FORMAT_VERSION_UNSUPPORTED: "UnsupportedFormatVersion",
+  IMPORT_DEFINITION_MISSING: "MissingDefinition",
+  IMPORT_SCHEMA_VERSION_UNSUPPORTED: "UnsupportedSchemaVersion",
+  IMPORT_UNMANAGED_RULES_INVALID: "InvalidUnmanagedRules",
+  IMPORT_FILE_INVALID: "InvalidFile",
+  IMPORT_FILE_TOO_LARGE: "FileTooLarge",
+  IMPORT_VALIDATION_FAILED: "ValidationFailed",
+  EXPORT_VALIDATION_FAILED: "ExportValidationFailed",
+  CLIPBOARD_UNAVAILABLE: "ClipboardUnavailable"
+});
 
 function createInitialState({ example = true } = {}) {
   return {
@@ -98,6 +121,10 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     actions: {
       loadSelectedItem: EffectForgeApp.#loadSelectedItem,
+      importJsonFile: EffectForgeApp.#importJsonFile,
+      importClipboard: EffectForgeApp.#importClipboard,
+      exportJson: EffectForgeApp.#exportJson,
+      copyExport: EffectForgeApp.#copyExport,
       newEffect: EffectForgeApp.#newEffect,
       toggleComponentMenu: EffectForgeApp.#toggleComponentMenu,
       addCondition: EffectForgeApp.#addCondition,
@@ -135,6 +162,21 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.state = createInitialState();
   }
 
+  #setStateFromDefinition(definition, { fallbackName = "", fallbackImage = "icons/svg/aura.svg" } = {}) {
+    this.definitionApplication = foundry.utils.deepClone(definition.application ?? {});
+    this.definitionMetadata = foundry.utils.deepClone(definition.metadata ?? {});
+    this.state = {
+      effectId: definition.id ?? `pf2e-critical-forge.custom.${foundry.utils.randomID()}`,
+      effectName: definition.name ?? fallbackName,
+      description: effectDescriptionToPlainText(definition.description ?? ""),
+      img: definition.img ?? fallbackImage,
+      durationValue: definition.duration?.unit === "unlimited" ? 1 : (definition.duration?.value ?? 1),
+      durationUnit: definition.duration?.unit ?? "unlimited",
+      durationExpiry: definition.duration?.expiry ?? "turn-end",
+      components: foundry.utils.deepClone(definition.components ?? [])
+    };
+  }
+
   async loadItem(item, { render = true } = {}) {
     const result = await this.constructor.#api().effects.readItem(item);
     const definition = result.definition;
@@ -143,18 +185,10 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.selectedItemId = item.id ?? result.sourceItemId ?? "";
     this.unmanagedRules = foundry.utils.deepClone(result.unmanagedRules ?? []);
     this.itemReadWarnings = foundry.utils.deepClone(result.warnings ?? []);
-    this.definitionApplication = foundry.utils.deepClone(definition.application ?? {});
-    this.definitionMetadata = foundry.utils.deepClone(definition.metadata ?? {});
-    this.state = {
-      effectId: definition.id ?? `item.${item.id ?? foundry.utils.randomID()}`,
-      effectName: definition.name ?? item.name ?? "",
-      description: definition.description ?? "",
-      img: definition.img ?? item.img ?? "icons/svg/aura.svg",
-      durationValue: definition.duration?.unit === "unlimited" ? 1 : (definition.duration?.value ?? 1),
-      durationUnit: definition.duration?.unit ?? "unlimited",
-      durationExpiry: definition.duration?.expiry ?? "turn-end",
-      components: foundry.utils.deepClone(definition.components ?? [])
-    };
+    this.#setStateFromDefinition(definition, {
+      fallbackName: item.name ?? "",
+      fallbackImage: item.img ?? "icons/svg/aura.svg"
+    });
 
     this.componentMenuOpen = false;
     this.#invalidatePreviews();
@@ -742,6 +776,78 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.compiledPreview = null;
   }
 
+  #localizeTransferError(error) {
+    const suffix = TRANSFER_ERROR_KEYS[error?.code] ?? "Unknown";
+    return game.i18n.format(
+      `PF2E_CRITICAL_FORGE.EffectForge.TransferErrors.${suffix}`,
+      error?.data ?? {}
+    );
+  }
+
+  async #loadImportedData(value) {
+    const imported = this.constructor.#api().effects.parseImport(value);
+    const validation = this.constructor.#api().effects.analyze(imported.definition);
+    if (!validation.valid) {
+      const first = validation.errors?.[0];
+      throw new EffectTransferError(
+        "IMPORT_VALIDATION_FAILED",
+        "The imported Effect Definition did not pass validation.",
+        { code: first?.code ?? "UNKNOWN", count: validation.errors?.length ?? 0 }
+      );
+    }
+
+    this.sourceItem = null;
+    this.selectedItemId = "";
+    this.unmanagedRules = foundry.utils.deepClone(imported.unmanagedRules ?? []);
+    this.itemReadWarnings = this.unmanagedRules.length > 0
+      ? [{ code: "IMPORT_UNMANAGED_RULES_PRESERVED", count: this.unmanagedRules.length }]
+      : [];
+    this.#setStateFromDefinition(imported.definition);
+    this.componentMenuOpen = false;
+    this.#setValidationReport(validation);
+    this.definitionPreview = JSON.stringify(imported.definition, null, 2);
+    this.compiledPreview = null;
+    this.preservedScrollState = new Map();
+    await this.render({ force: true });
+
+    ui.notifications.info(game.i18n.format(
+      "PF2E_CRITICAL_FORGE.EffectForge.ImportSuccess",
+      { name: imported.definition.name, count: imported.definition.components.length }
+    ));
+    return imported;
+  }
+
+  #createExportJson() {
+    const definition = this.#buildDefinition();
+    const validation = this.constructor.#api().effects.analyze(definition);
+    if (!validation.valid) {
+      const first = validation.errors?.[0];
+      this.#setValidationReport(validation);
+      this.definitionPreview = JSON.stringify(definition, null, 2);
+      this.compiledPreview = null;
+      throw new EffectTransferError(
+        "EXPORT_VALIDATION_FAILED",
+        "The Effect Definition must be valid before it can be exported.",
+        { code: first?.code ?? "UNKNOWN", count: validation.errors?.length ?? 0 }
+      );
+    }
+
+    return {
+      definition,
+      text: this.constructor.#api().effects.serializeExport(definition, {
+        unmanagedRules: this.unmanagedRules
+      })
+    };
+  }
+
+  #showTransferError(error, operation) {
+    console.error(`${MODULE_ID} | ${operation} failed`, error);
+    const message = error instanceof EffectTransferError
+      ? this.#localizeTransferError(error)
+      : error.message;
+    ui.notifications.error(message);
+  }
+
   static async #loadSelectedItem() {
     this.#syncStateFromForm();
     const item = game.items?.get?.(this.selectedItemId)
@@ -765,6 +871,69 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     } catch (error) {
       console.error(`${MODULE_ID} | Loading effect Item failed`, error);
       ui.notifications.error(error.message);
+    }
+  }
+
+  static #importJsonFile() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json,application/json";
+    input.hidden = true;
+
+    input.addEventListener("change", async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      try {
+        const text = await readEffectImportFile(file);
+        await this.#loadImportedData(text);
+      } catch (error) {
+        this.#showTransferError(error, "JSON file import");
+      }
+    }, { once: true });
+
+    input.click();
+  }
+
+  static async #importClipboard() {
+    try {
+      if (!globalThis.navigator?.clipboard?.readText) {
+        throw new EffectTransferError(
+          "CLIPBOARD_UNAVAILABLE",
+          "Clipboard reading is unavailable."
+        );
+      }
+      const text = await globalThis.navigator.clipboard.readText();
+      await this.#loadImportedData(text);
+    } catch (error) {
+      this.#showTransferError(error, "clipboard import");
+    }
+  }
+
+  static #exportJson() {
+    try {
+      const { definition, text } = this.#createExportJson();
+      downloadEffectExport(text, buildEffectExportFilename(definition));
+      ui.notifications.info(game.i18n.format(
+        "PF2E_CRITICAL_FORGE.EffectForge.ExportSuccess",
+        { name: definition.name }
+      ));
+    } catch (error) {
+      this.#showTransferError(error, "JSON export");
+      if (error instanceof EffectTransferError && error.code === "EXPORT_VALIDATION_FAILED") {
+        this.#renderPreservingScroll();
+      }
+    }
+  }
+
+  static async #copyExport() {
+    try {
+      const { text } = this.#createExportJson();
+      await this.constructor.#copyText(text);
+    } catch (error) {
+      this.#showTransferError(error, "export copy");
+      if (error instanceof EffectTransferError && error.code === "EXPORT_VALIDATION_FAILED") {
+        this.#renderPreservingScroll();
+      }
     }
   }
 

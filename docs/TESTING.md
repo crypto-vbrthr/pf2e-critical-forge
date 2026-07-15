@@ -31,6 +31,7 @@ tests/
 ├─ catalogs.test.js
 ├─ compiler.test.js
 ├─ effect-item-drop.test.js
+├─ effect-transfer.test.js
 ├─ item-editing.test.js
 ├─ validation.test.js
 ├─ view-state.test.js
@@ -40,7 +41,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 72 tests covering:
+The suite contains 79 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -49,13 +50,14 @@ The suite contains 72 tests covering:
 - PF2e Effect Item duration, Rule Elements, complete definition flags, and origin metadata;
 - structured validation, cross-component stacking diagnostics, and compatibility context;
 - drag-and-drop parsing and resolution for world, embedded, and compendium Effect Items;
+- portable export-package round-trips, raw-definition imports, filenames, descriptions, and file-size guards;
 - scroll restoration and component-list bottom anchoring;
 - loading newly generated Items from their stored Effect Definition;
 - reconstructing legacy and compatible foreign Items from PF2e Rule Elements;
 - preserving unsupported Rule Elements during an Item update;
 - updating only Forge-managed Item fields.
 
-At `0.3.1-dev`, the measured line coverage of files loaded by the suite is about 94.14%. Coverage is a diagnostic, not a release gate yet.
+At `0.3.2-dev`, the measured line coverage of files loaded by the suite is about 93.44%. Coverage is a diagnostic, not a release gate yet.
 
 ## Foundry mock
 

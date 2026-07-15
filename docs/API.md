@@ -165,6 +165,48 @@ console.log(loaded.unmanagedRules);
 
 Unsupported or advanced Rule Elements are returned in `unmanagedRules` so callers can preserve them during an update. See [`EDITING_ITEMS.md`](EDITING_ITEMS.md).
 
+### `api.effects.createExport(definition, options?)`
+
+Creates a portable export envelope without serializing it.
+
+```js
+const exported = api.effects.createExport(definition, {
+  unmanagedRules: loaded?.unmanagedRules ?? []
+});
+```
+
+### `api.effects.serializeExport(definition, options?)`
+
+Creates the same versioned export package as formatted JSON.
+
+```js
+const json = api.effects.serializeExport(definition, {
+  unmanagedRules: loaded?.unmanagedRules ?? []
+});
+```
+
+### `api.effects.parseImport(value, options?)`
+
+Parses either a Critical Forge export package or a raw Effect Definition.
+
+```js
+const imported = api.effects.parseImport(json);
+const report = api.effects.analyze(imported.definition);
+```
+
+Return shape:
+
+```js
+{
+  definition: EffectDefinition,
+  unmanagedRules: RuleElementSource[],
+  sourceFormat: "critical-forge-export" | "effect-definition",
+  envelope: object | null
+}
+```
+
+Parsing checks transfer and schema versions but deliberately leaves rule validation to `analyze()`. See [`IMPORT_EXPORT.md`](IMPORT_EXPORT.md).
+
 ### `api.effects.updateItem(item, definition, options?)`
 
 Compiles the supplied definition and updates an existing writable PF2e Effect Item.

@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.3.1-dev` extends the editing workflow with drag-and-drop. PF2e Effect Items can be dropped into the GUI from the world, an Actor, or a compendium, translated back into supported components, updated in place where writable, or saved as a new Item. Unsupported Rule Elements are preserved unchanged instead of being discarded.
+Version `0.3.2-dev` adds portable JSON import and export. Effects can be moved between worlds as files or clipboard data while retaining the complete Effect Definition and preserved third-party Rule Elements. Existing Items can still be loaded by selection or drag-and-drop and updated in place where writable.
 
 The current engine includes:
 
@@ -22,6 +22,7 @@ The current engine includes:
 - world Item creation, in-place Item updates, Actor/Token application, and removal by definition ID;
 - round-trip loading from stored definitions and compatible PF2e Rule Elements;
 - drag-and-drop loading of world, embedded Actor, and compendium effects;
+- versioned JSON file and clipboard import/export;
 - preservation of unsupported or advanced Rule Elements during updates;
 - a resizable, localized, component-based GM interface;
 - an extension API for third-party components.
@@ -66,6 +67,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 
 - [`docs/API.md`](docs/API.md): public API reference
 - [`docs/EDITING_ITEMS.md`](docs/EDITING_ITEMS.md): loading, updating, and preserving existing Effect Items
+- [`docs/IMPORT_EXPORT.md`](docs/IMPORT_EXPORT.md): portable JSON files, clipboard transfer, and API helpers
 - [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md): Effect Definition schema
 - [`docs/VALIDATION.md`](docs/VALIDATION.md): report format, phases, and issue codes
 - [`docs/SELECTORS.md`](docs/SELECTORS.md): selector catalog and custom selectors

@@ -99,3 +99,7 @@ await api.ui.openEffectForge(item);
 ```
 
 This works with a world Item and can also be used by another module to pass a writable embedded effect Item directly to the editor. The built-in dropdown lists world-level effect Items only. Drag-and-drop additionally accepts embedded Actor effects and compendium effects by UUID.
+
+## Moving edited effects between worlds
+
+Use the versioned JSON export package to carry the editable definition and all preserved unmanaged Rule Elements to another world. Importing deliberately opens a new unsaved effect. See [`IMPORT_EXPORT.md`](IMPORT_EXPORT.md).
