@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.2.9-dev` adds `baseSpeed` as the eleventh built-in effect component. It grants a climb, burrow, fly, or swim Speed through PF2e's native `BaseSpeed` Rule Element, while the existing `movement` component remains responsible for bonuses and penalties.
+Version `0.3.0-dev` introduces the first complete editing workflow for existing PF2e Effect Items. World effects can be loaded into the GUI, translated back into supported components, updated in place, or saved as a new Item. Unsupported Rule Elements are preserved unchanged instead of being discarded.
 
 The current engine includes:
 
@@ -16,16 +16,12 @@ The current engine includes:
 - a fluent immutable Builder API;
 - structured schema, rule, and compatibility validation;
 - stable validation codes and severities;
-- a central PF2e selector catalog with grouped selectors and dynamic skills;
-- a central damage-type catalog backed by `CONFIG.PF2E.damageTypes`;
-- a central resistance-type catalog backed by `CONFIG.PF2E.resistanceTypes`;
-- a central weakness-type catalog backed by `CONFIG.PF2E.weaknessTypes`;
-- a grouped immunity-type catalog backed by `CONFIG.PF2E.immunityTypes`;
-- a PF2e condition catalog that distinguishes valued and non-valued conditions;
+- central selector, condition, damage, resistance, weakness, immunity, and movement catalogs;
 - `condition`, `modifier`, `persistentDamage`, `resistance`, `weakness`, `immunity`, `fastHealing`, `regeneration`, `temporaryHitPoints`, `movement`, and `baseSpeed` components;
-- compilation to PF2e `GrantItem`, `FlatModifier`, `BaseSpeed`, `Resistance`, `Weakness`, `Immunity`, `FastHealing`, and `TempHP` Rule Elements, including persistent-damage and recovery-DC alterations;
-- PF2e Effect Item source generation;
-- world Item creation, Actor/Token application, and removal by definition ID;
+- compilation to native PF2e Effect Items and Rule Elements;
+- world Item creation, in-place Item updates, Actor/Token application, and removal by definition ID;
+- round-trip loading from stored definitions and compatible PF2e Rule Elements;
+- preservation of unsupported or advanced Rule Elements during updates;
 - a resizable, localized, component-based GM interface;
 - an extension API for third-party components.
 
@@ -47,6 +43,9 @@ The normal entry point is the **Open Effect Forge** button in the Items Director
 
 ```js
 game.modules.get("pf2e-critical-forge")?.api.ui.openEffectForge();
+
+// Open an existing Item directly
+await game.modules.get("pf2e-critical-forge")?.api.ui.openEffectForge(item);
 ```
 
 ## Automated tests
@@ -58,13 +57,14 @@ npm test
 npm run test:coverage
 ```
 
-The suite covers the Builder, selector and condition catalogs, Validation Engine, compiler, PF2e Rule Elements, Item source generation, and the valued/non-valued condition boundary.
+The suite covers the Builder, catalogs, Validation Engine, compiler, PF2e Rule Elements, Item source generation, Item round-tripping, unmanaged-rule preservation, and the valued/non-valued condition boundary.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 
 ## Documentation
 
 - [`docs/API.md`](docs/API.md): public API reference
+- [`docs/EDITING_ITEMS.md`](docs/EDITING_ITEMS.md): loading, updating, and preserving existing Effect Items
 - [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md): Effect Definition schema
 - [`docs/VALIDATION.md`](docs/VALIDATION.md): report format, phases, and issue codes
 - [`docs/SELECTORS.md`](docs/SELECTORS.md): selector catalog and custom selectors

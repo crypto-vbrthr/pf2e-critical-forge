@@ -36,6 +36,10 @@ External module ─┘       │
                                   │
                                   ▼
                          Application Service
+
+Existing PF2e Item ── Item Definition Adapter ──► Effect Definition
+        │                         │
+        └── unmanaged rules ─────┴── preserved by Item update
 ```
 
 ## Subsystems
@@ -98,9 +102,18 @@ effect-engine/compiler/
 
 Compilation may be asynchronous because catalogs can resolve compendium content.
 
+
+### Item Definition Adapter
+
+`effect-engine/item-definition-adapter.js` provides the reverse path from a PF2e Effect Item to an Effect Definition. It prefers a complete stored definition when all components are representable by the GUI and otherwise reconstructs supported components from native Rule Elements.
+
+Rules that cannot be represented safely are classified as unmanaged. The application service appends them unchanged when the Item is updated. This prevents an editor round trip from destroying third-party or advanced PF2e automation.
+
+Newly compiled Items store the complete source definition in module flags, while legacy Items remain readable through the Rule Element parser.
+
 ### Application Service
 
-The application layer is the only engine layer that creates or deletes Foundry documents. It accepts compiled definitions through the public API and isolates document ownership and target normalization from the compiler.
+The application layer is the only engine layer that creates, updates, or deletes Foundry documents. It accepts compiled definitions through the public API and isolates document ownership and target normalization from the compiler.
 
 ### GUI
 

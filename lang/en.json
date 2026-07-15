@@ -320,7 +320,21 @@
       "BaseSpeed": "Base Speed",
       "BaseSpeedType": "Granted movement mode",
       "BaseSpeedValue": "Speed in feet",
-      "BaseSpeedHint": "Grants climb, burrow, fly, or swim as a new base Speed. Existing movement modifiers can then alter it."
+      "BaseSpeedHint": "Grants climb, burrow, fly, or swim as a new base Speed. Existing movement modifiers can then alter it.",
+      "ItemWorkflow": "Existing effects",
+      "Editing": "Edit mode",
+      "NewEffect": "New effect",
+      "WorldEffect": "World Item",
+      "SelectWorldEffect": "Select an effect …",
+      "LoadItem": "Load effect",
+      "LoadedItem": "Loaded Item",
+      "UnmanagedRulesPreserved": "{count} Rule Elements not supported by Effect Forge will be preserved unchanged when the Item is updated.",
+      "SelectEffectToLoad": "Select an effect Item first.",
+      "ItemLoaded": "“{name}” was loaded into Effect Forge.",
+      "NoItemLoaded": "No effect Item is loaded for updating.",
+      "ItemUpdated": "“{name}” was updated.",
+      "CreateNewItem": "Create as new Item",
+      "UpdateItem": "Update Item"
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialized.",

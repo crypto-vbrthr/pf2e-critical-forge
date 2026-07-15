@@ -570,7 +570,7 @@
   position: relative;
   z-index: 20;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1.55fr 0.9fr;
+  grid-template-columns: 0.95fr 0.95fr 1.2fr 1.2fr 1.45fr 0.8fr;
   gap: 0.7rem;
   flex: 0 0 auto;
   padding: 0.65rem;
@@ -689,4 +689,82 @@
   color: var(--ef-muted);
   font-size: 0.75rem;
   line-height: 1.35;
+}
+
+.effect-forge-item-workflow {
+  background: linear-gradient(135deg, rgba(117, 66, 178, 0.09), transparent 55%);
+}
+
+.effect-forge-load-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0.7rem;
+  align-items: end;
+}
+
+.effect-forge-load-row > button {
+  width: auto;
+  min-width: 9rem;
+  white-space: nowrap;
+}
+
+.effect-forge-editing-badge,
+.effect-forge-new-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.58rem;
+  border: 1px solid rgba(90, 162, 242, 0.55);
+  border-radius: 999px;
+  color: var(--ef-blue);
+  background: rgba(90, 162, 242, 0.08);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.effect-forge-new-badge {
+  border-color: rgba(103, 191, 114, 0.55);
+  color: var(--ef-green);
+  background: rgba(103, 191, 114, 0.08);
+}
+
+.effect-forge-loaded-item,
+.effect-forge-preserved-rules-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.62rem 0.72rem;
+  border: 1px solid rgba(90, 162, 242, 0.4);
+  border-radius: 5px;
+  color: var(--ef-text);
+  background: rgba(90, 162, 242, 0.07);
+}
+
+.effect-forge-loaded-item i {
+  color: var(--ef-blue);
+}
+
+.effect-forge-preserved-rules-warning {
+  border-color: rgba(246, 162, 58, 0.55);
+  color: #f4d7af;
+  background: rgba(246, 162, 58, 0.08);
+}
+
+.effect-forge-preserved-rules-warning i {
+  color: var(--ef-orange);
+}
+
+.effect-forge-update-button:not(:disabled) {
+  border-color: rgba(90, 162, 242, 0.72);
+  background: linear-gradient(180deg, #315f91, #284e77);
+}
+
+@media (max-width: 690px) {
+  .effect-forge-load-row {
+    grid-template-columns: 1fr;
+  }
+
+  .effect-forge-load-row > button {
+    width: 100%;
+  }
 }

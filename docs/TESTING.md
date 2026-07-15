@@ -30,43 +30,30 @@ tests/
 ├─ builder.test.js
 ├─ catalogs.test.js
 ├─ compiler.test.js
+├─ item-editing.test.js
 ├─ validation.test.js
+├─ view-state.test.js
 ├─ fixtures/
 │  └─ effects.js
 └─ helpers/
    └─ foundry-mock.js
 ```
 
-The suite contains 60 tests covering:
+The suite contains 66 tests covering:
 
-- Builder normalization and immutable output;
-- cloning existing definitions without mutation;
-- component list operations and invalid Builder input;
-- dynamic PF2e skill selectors and selector syntax;
-- condition metadata loaded from `pf2e.conditionitems`;
-- valued conditions producing `badge-value` alterations;
-- non-valued conditions omitting those alterations;
-- modifier compilation to `FlatModifier`;
-- persistent-damage Builder normalization and input rejection;
-- damage-type catalog grouping and dynamically registered types;
-- persistent-damage `GrantItem`, formula, damage type, and optional recovery-DC alterations;
-- persistent-damage validation codes and duplicate-type stacking warnings;
-- resistance, weakness, and immunity catalogs, validation, duplicate diagnostics, and native PF2e Rule Elements;
-- fast-healing Builder normalization, value validation, multi-source diagnostics, and native PF2e `FastHealing`;
-- temporary-Hit-Point Builder normalization, value validation, non-stacking diagnostics, and native PF2e `TempHP`;
-- regeneration normalization, multi-select damage types, validation diagnostics, and native PF2e regeneration output;
-- movement-type catalog mapping, signed Speed modifiers, stacking diagnostics, and native PF2e Speed selectors;
-- grantable movement-mode filtering, Base Speed validation, duplicate diagnostics, and native PF2e `BaseSpeed`;
-- PF2e Effect Item duration, Rule Elements, and origin flags;
-- compiler rejection through `EffectValidationError`;
-- frightened/status stacking warnings;
-- frightened/circumstance compatibility information;
-- legacy values on non-valued conditions;
-- custom and malformed selectors;
-- schema short-circuit behavior;
-- target context reaching the compatibility validator.
+- Builder normalization, cloning, immutable output, and invalid input;
+- selector, condition, damage, IWR, and movement catalogs;
+- all eleven built-in component validators and compilers;
+- valued and non-valued condition behavior;
+- PF2e Effect Item duration, Rule Elements, complete definition flags, and origin metadata;
+- structured validation, cross-component stacking diagnostics, and compatibility context;
+- scroll restoration and component-list bottom anchoring;
+- loading newly generated Items from their stored Effect Definition;
+- reconstructing legacy and compatible foreign Items from PF2e Rule Elements;
+- preserving unsupported Rule Elements during an Item update;
+- updating only Forge-managed Item fields.
 
-At `0.2.9-dev`, the measured line coverage of files loaded by the suite is about 95.97%. Coverage is a diagnostic, not a release gate yet. Coverage is a diagnostic, not a release gate yet.
+At `0.3.0-dev`, the measured line coverage of files loaded by the suite is about 94.05%. Coverage is a diagnostic, not a release gate yet.
 
 ## Foundry mock
 

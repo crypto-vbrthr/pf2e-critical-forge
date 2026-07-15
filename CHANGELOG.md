@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.3.0-dev
+
+### Added
+- Existing world Effect Items can be selected and loaded directly in Effect Forge.
+- Edit mode with separate actions for updating the loaded Item or creating a new copy.
+- Public `api.effects.readItem(item)` adapter for reconstructing Effect Definitions.
+- Public `api.effects.updateItem(item, definition, options)` application service.
+- Public `api.ui.openEffectForge(item)` overload for opening a specific writable effect Item.
+- Reverse mapping for every Rule Element produced by the eleven built-in components.
+- Complete Effect Definitions are now stored in generated Item flags.
+- Preservation of unsupported, advanced, and third-party Rule Elements during Item updates, copies, and token application.
+- Editing workflow documentation in `docs/EDITING_ITEMS.md`.
+- Six regression tests for stored definitions, legacy Item reconstruction, condition and persistent-damage parsing, and safe Item updates.
+
+### Changed
+- Item updates modify only Forge-managed fields while leaving unrelated PF2e Item data intact.
+- The automated suite expanded from 60 to 66 tests.
+- Public API version increased to `0.3.0`; Effect Definition schema remains version `1`.
+
 ## 0.2.9-dev
 
 ### Added

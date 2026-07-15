@@ -320,7 +320,21 @@
       "BaseSpeed": "Grundbewegungsrate",
       "BaseSpeedType": "Verliehene Bewegungsart",
       "BaseSpeedValue": "Bewegungsrate in Fuß",
-      "BaseSpeedHint": "Verleiht Klettern, Graben, Fliegen oder Schwimmen als neue Grundbewegungsrate. Bestehende Bewegungsmodifikatoren können sie anschließend verändern."
+      "BaseSpeedHint": "Verleiht Klettern, Graben, Fliegen oder Schwimmen als neue Grundbewegungsrate. Bestehende Bewegungsmodifikatoren können sie anschließend verändern.",
+      "ItemWorkflow": "Bestehende Effekte",
+      "Editing": "Bearbeitungsmodus",
+      "NewEffect": "Neuer Effekt",
+      "WorldEffect": "Welt-Item",
+      "SelectWorldEffect": "Effekt auswählen …",
+      "LoadItem": "Effekt laden",
+      "LoadedItem": "Geladenes Item",
+      "UnmanagedRulesPreserved": "{count} nicht von der Effect Forge unterstützte Rule Elements werden beim Aktualisieren unverändert erhalten.",
+      "SelectEffectToLoad": "Bitte zuerst ein Effekt-Item auswählen.",
+      "ItemLoaded": "„{name}“ wurde in die Effect Forge geladen.",
+      "NoItemLoaded": "Es ist kein Effekt-Item zum Aktualisieren geladen.",
+      "ItemUpdated": "„{name}“ wurde aktualisiert.",
+      "CreateNewItem": "Als neues Item erstellen",
+      "UpdateItem": "Item aktualisieren"
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialisiert.",

@@ -8,6 +8,13 @@ const api = game.modules.get("pf2e-critical-forge")?.api;
 
 The API is published during Foundry's `init` hook and remains available regardless of the Effect Forge and Critical Forge settings.
 
+The GUI can be opened empty or with an existing Item:
+
+```js
+api.ui.openEffectForge();
+await api.ui.openEffectForge(item);
+```
+
 For module integrations, prefer the ready hook:
 
 ```js
@@ -92,6 +99,7 @@ Important fields:
 
 ```js
 {
+  definition: { /* immutable source Effect Definition */ },
   schemaVersion: 1,
   id: "example.effect",
   name: "Example Effect",
@@ -139,16 +147,45 @@ Creates a world-level PF2e Effect Item.
 
 ```js
 const item = await api.effects.createItem(definition, {
-  renderSheet: true
+  renderSheet: true,
+  unmanagedRules: loaded?.unmanagedRules ?? []
 });
 ```
+
+### `api.effects.readItem(item)`
+
+Reads an existing PF2e Effect Item and reconstructs an editable Effect Definition.
+
+```js
+const loaded = await api.effects.readItem(item);
+
+console.log(loaded.definition);
+console.log(loaded.unmanagedRules);
+```
+
+Unsupported or advanced Rule Elements are returned in `unmanagedRules` so callers can preserve them during an update. See [`EDITING_ITEMS.md`](EDITING_ITEMS.md).
+
+### `api.effects.updateItem(item, definition, options?)`
+
+Compiles the supplied definition and updates an existing writable PF2e Effect Item.
+
+```js
+await api.effects.updateItem(item, loaded.definition, {
+  unmanagedRules: loaded.unmanagedRules,
+  render: false
+});
+```
+
+The update changes the Item name, image, description, duration, managed rules, and Critical Forge flags. Other Item data is left intact.
 
 ### `api.effects.apply(definition, targets, options?)`
 
 Creates the compiled Effect Item as an embedded Item on one or more Actor or Token targets.
 
 ```js
-await api.effects.apply(definition, [actorA, tokenB]);
+await api.effects.apply(definition, [actorA, tokenB], {
+  unmanagedRules: loaded?.unmanagedRules ?? []
+});
 ```
 
 Targets may be supplied as Actors, Tokens, TokenDocuments, or arrays supported by the application service.

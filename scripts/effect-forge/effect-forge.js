@@ -3,14 +3,17 @@ import { EffectForgeApp } from "./effect-forge-app.js";
 
 let app = null;
 
-export function openEffectForge() {
+export async function openEffectForge(item = null) {
   if (!game.user?.isGM) {
     ui.notifications.warn(game.i18n.localize("PF2E_CRITICAL_FORGE.Notifications.GmOnly"));
     return;
   }
 
   app ??= new EffectForgeApp();
-  app.render({ force: true });
+  if (item) {
+    await app.loadItem(item, { render: false });
+  }
+  return app.render({ force: true });
 }
 
 function getRoot(html) {

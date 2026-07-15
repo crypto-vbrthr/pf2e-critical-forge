@@ -36,26 +36,51 @@ const VALIDATION_GROUPS = [
   ["info", "PF2E_CRITICAL_FORGE.EffectForge.Validation.Information", "fa-circle-info"]
 ];
 
+function createInitialState({ example = true } = {}) {
+  return {
+    effectId: example ? "example.shaken-nerves" : `pf2e-critical-forge.custom.${foundry.utils.randomID()}`,
+    effectName: example
+      ? game.i18n.localize("PF2E_CRITICAL_FORGE.Examples.ShakenNerves.Name")
+      : "",
+    description: example
+      ? game.i18n.localize("PF2E_CRITICAL_FORGE.Examples.ShakenNerves.PlainDescription")
+      : "",
+    img: example ? "icons/svg/terror.svg" : "icons/svg/aura.svg",
+    durationValue: example ? 2 : 1,
+    durationUnit: "rounds",
+    durationExpiry: "turn-end",
+    components: example
+      ? [
+          { type: "condition", slug: "frightened", value: 2 },
+          { type: "modifier", selector: "will", value: -1, modifierType: "circumstance" }
+        ]
+      : []
+  };
+}
+
+function listWorldEffects() {
+  const collection = game.items;
+  if (!collection) return [];
+  const items = typeof collection.filter === "function"
+    ? collection.filter((item) => item.type === "effect")
+    : [...collection].filter((item) => item.type === "effect");
+  return [...items].sort((a, b) => String(a.name).localeCompare(String(b.name), game.i18n.lang));
+}
+
 export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   validationReport = null;
   definitionPreview = null;
   compiledPreview = null;
   componentMenuOpen = false;
   preservedScrollState = new Map();
+  sourceItem = null;
+  selectedItemId = "";
+  unmanagedRules = [];
+  itemReadWarnings = [];
+  definitionApplication = {};
+  definitionMetadata = {};
 
-  state = {
-    effectId: "example.shaken-nerves",
-    effectName: "",
-    description: "",
-    img: "icons/svg/terror.svg",
-    durationValue: 2,
-    durationUnit: "rounds",
-    durationExpiry: "turn-end",
-    components: [
-      { type: "condition", slug: "frightened", value: 2 },
-      { type: "modifier", selector: "will", value: -1, modifierType: "circumstance" }
-    ]
-  };
+  state = null;
 
   static DEFAULT_OPTIONS = {
     id: "pf2e-critical-forge-effect-forge",
@@ -71,6 +96,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       height: 820
     },
     actions: {
+      loadSelectedItem: EffectForgeApp.#loadSelectedItem,
+      newEffect: EffectForgeApp.#newEffect,
       toggleComponentMenu: EffectForgeApp.#toggleComponentMenu,
       addCondition: EffectForgeApp.#addCondition,
       addModifier: EffectForgeApp.#addModifier,
@@ -88,6 +115,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       validateEffect: EffectForgeApp.#validateEffect,
       compileEffect: EffectForgeApp.#compileEffect,
       createItem: EffectForgeApp.#createItem,
+      updateItem: EffectForgeApp.#updateItem,
       applySelected: EffectForgeApp.#applySelected,
       copyDefinition: EffectForgeApp.#copyDefinition,
       copyCompiled: EffectForgeApp.#copyCompiled,
@@ -103,12 +131,48 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   constructor(options = {}) {
     super(options);
-    this.state.effectName = game.i18n.localize(
-      "PF2E_CRITICAL_FORGE.Examples.ShakenNerves.Name"
-    );
-    this.state.description = game.i18n.localize(
-      "PF2E_CRITICAL_FORGE.Examples.ShakenNerves.PlainDescription"
-    );
+    this.state = createInitialState();
+  }
+
+  async loadItem(item, { render = true } = {}) {
+    const result = await this.constructor.#api().effects.readItem(item);
+    const definition = result.definition;
+
+    this.sourceItem = item;
+    this.selectedItemId = item.id ?? result.sourceItemId ?? "";
+    this.unmanagedRules = foundry.utils.deepClone(result.unmanagedRules ?? []);
+    this.itemReadWarnings = foundry.utils.deepClone(result.warnings ?? []);
+    this.definitionApplication = foundry.utils.deepClone(definition.application ?? {});
+    this.definitionMetadata = foundry.utils.deepClone(definition.metadata ?? {});
+    this.state = {
+      effectId: definition.id ?? `item.${item.id ?? foundry.utils.randomID()}`,
+      effectName: definition.name ?? item.name ?? "",
+      description: definition.description ?? "",
+      img: definition.img ?? item.img ?? "icons/svg/aura.svg",
+      durationValue: definition.duration?.unit === "unlimited" ? 1 : (definition.duration?.value ?? 1),
+      durationUnit: definition.duration?.unit ?? "unlimited",
+      durationExpiry: definition.duration?.expiry ?? "turn-end",
+      components: foundry.utils.deepClone(definition.components ?? [])
+    };
+
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    if (render) await this.render({ force: true });
+    return result;
+  }
+
+  resetToNewEffect({ render = true } = {}) {
+    this.sourceItem = null;
+    this.selectedItemId = "";
+    this.unmanagedRules = [];
+    this.itemReadWarnings = [];
+    this.definitionApplication = {};
+    this.definitionMetadata = {};
+    this.state = createInitialState({ example: false });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    if (render) return this.render({ force: true });
+    return this;
   }
 
   async _prepareContext() {
@@ -116,11 +180,30 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     await initializeConditionCatalog();
     await this.#ensurePreviewData();
 
+    const worldEffects = listWorldEffects();
+    const selectedItemId = this.selectedItemId || this.sourceItem?.id || "";
+
     return {
       apiReady: Boolean(api),
       apiVersion: api?.version ?? "—",
       schemaVersion: api?.schemaVersion ?? "—",
       state: this.state,
+      editingItem: Boolean(this.sourceItem),
+      sourceItemName: this.sourceItem?.name ?? "",
+      sourceItemUuid: this.sourceItem?.uuid ?? "",
+      unmanagedRuleCount: this.unmanagedRules.length,
+      unmanagedRulesWarningText: game.i18n.format(
+        "PF2E_CRITICAL_FORGE.EffectForge.UnmanagedRulesPreserved",
+        { count: this.unmanagedRules.length }
+      ),
+      itemReadWarnings: this.itemReadWarnings,
+      hasItemReadWarnings: this.itemReadWarnings.length > 0,
+      hasWorldEffects: worldEffects.length > 0,
+      worldEffectOptions: worldEffects.map((item) => ({
+        value: item.id,
+        label: item.name,
+        selected: item.id === selectedItemId
+      })),
       descriptionLength: this.state.description.length,
       unlimitedDuration: this.state.durationUnit === "unlimited",
       componentMenuOpen: this.componentMenuOpen,
@@ -343,6 +426,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!(form instanceof HTMLFormElement)) return;
 
     const data = new FormData(form);
+    this.selectedItemId = String(data.get("selectedItemId") ?? this.selectedItemId ?? "").trim();
     this.state.effectId = String(data.get("effectId") ?? "").trim();
     this.state.effectName = String(data.get("effectName") ?? "");
     this.state.description = String(data.get("description") ?? "").slice(0, 1000);
@@ -467,9 +551,11 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         `<p>${foundry.utils.escapeHTML(this.state.description.trim())}</p>`
       )
       .setImage(this.state.img)
+      .setApplication(this.definitionApplication)
       .setMetadata({
-        originModule: MODULE_ID,
-        originFeature: "effect-forge-ui"
+        ...this.definitionMetadata,
+        originModule: this.definitionMetadata.originModule ?? MODULE_ID,
+        originFeature: this.definitionMetadata.originFeature ?? "effect-forge-ui"
       });
 
     if (this.state.durationUnit === "unlimited") {
@@ -563,7 +649,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this.#setValidationReport(validation);
       this.definitionPreview = JSON.stringify(definition, null, 2);
 
-      if (this.compiledPreview === null) {
+      if (this.compiledPreview === null && validation.valid) {
         const compiled = await this.constructor.#api().effects.toItemSource(definition);
         this.compiledPreview = JSON.stringify(compiled, null, 2);
       }
@@ -576,6 +662,37 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.validationReport = null;
     this.definitionPreview = null;
     this.compiledPreview = null;
+  }
+
+  static async #loadSelectedItem() {
+    this.#syncStateFromForm();
+    const item = game.items?.get?.(this.selectedItemId)
+      ?? listWorldEffects().find((candidate) => candidate.id === this.selectedItemId);
+
+    if (!item) {
+      ui.notifications.warn(
+        game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.SelectEffectToLoad")
+      );
+      return;
+    }
+
+    try {
+      await this.loadItem(item, { render: false });
+      this.preservedScrollState = new Map();
+      await this.render({ force: true });
+      ui.notifications.info(game.i18n.format(
+        "PF2E_CRITICAL_FORGE.EffectForge.ItemLoaded",
+        { name: item.name }
+      ));
+    } catch (error) {
+      console.error(`${MODULE_ID} | Loading effect Item failed`, error);
+      ui.notifications.error(error.message);
+    }
+  }
+
+  static #newEffect() {
+    this.preservedScrollState = new Map();
+    this.resetToNewEffect({ render: true });
   }
 
   static #toggleComponentMenu() {
@@ -784,9 +901,12 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     try {
       const definition = this.#buildDefinition();
       const item = await this.constructor.#api().effects.createItem(definition, {
-        renderSheet: true
+        renderSheet: true,
+        unmanagedRules: this.unmanagedRules
       });
       if (item) {
+        await this.loadItem(item, { render: false });
+        await this.#renderPreservingScroll();
         ui.notifications.info(game.i18n.format(
           "PF2E_CRITICAL_FORGE.EffectForge.ItemCreated",
           { name: item.name }
@@ -794,6 +914,35 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }
     } catch (error) {
       console.error(`${MODULE_ID} | Item creation failed`, error);
+      ui.notifications.error(error.message);
+    }
+  }
+
+  static async #updateItem() {
+    if (!this.sourceItem) {
+      ui.notifications.warn(
+        game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.NoItemLoaded")
+      );
+      return;
+    }
+
+    try {
+      const definition = this.#buildDefinition();
+      const updated = await this.constructor.#api().effects.updateItem(
+        this.sourceItem,
+        definition,
+        { unmanagedRules: this.unmanagedRules, render: false }
+      );
+      this.sourceItem = updated ?? this.sourceItem;
+      this.selectedItemId = this.sourceItem.id ?? this.selectedItemId;
+      this.#invalidatePreviews();
+      await this.#renderPreservingScroll();
+      ui.notifications.info(game.i18n.format(
+        "PF2E_CRITICAL_FORGE.EffectForge.ItemUpdated",
+        { name: this.sourceItem.name }
+      ));
+    } catch (error) {
+      console.error(`${MODULE_ID} | Item update failed`, error);
       ui.notifications.error(error.message);
     }
   }
@@ -809,7 +958,9 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     try {
       const definition = this.#buildDefinition();
-      const created = await this.constructor.#api().effects.apply(definition, targets);
+      const created = await this.constructor.#api().effects.apply(definition, targets, {
+        unmanagedRules: this.unmanagedRules
+      });
       ui.notifications.info(game.i18n.format(
         "PF2E_CRITICAL_FORGE.EffectForge.Applied",
         { count: created.length }

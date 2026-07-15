@@ -5,10 +5,12 @@ import { checkEffectCompatibility } from "../effect-engine/effect-compatibility.
 import {
   applyEffectToTargets,
   createWorldEffectItem,
+  updateEffectItem,
   removeEffectsByDefinitionId
 } from "../effect-engine/effect-application.js";
 import { buildPf2eEffectSource } from "../effect-engine/compiler/pf2e-item-builder.js";
 import { NotImplementedError } from "../core/errors.js";
+import { extractEffectDefinitionFromItem } from "../effect-engine/item-definition-adapter.js";
 
 export function createEffectApi() {
   return Object.freeze({
@@ -22,6 +24,8 @@ export function createEffectApi() {
     },
 
     createItem: (definition, options = {}) => createWorldEffectItem(definition, options),
+    readItem: (item) => extractEffectDefinitionFromItem(item),
+    updateItem: (item, definition, options = {}) => updateEffectItem(item, definition, options),
     apply: (definition, targets, options = {}) => applyEffectToTargets(definition, targets, options),
     remove: (definitionId, targets) => removeEffectsByDefinitionId(definitionId, targets),
     checkCompatibility: (definition, target, options = {}) =>

@@ -19,6 +19,7 @@ export async function compileEffectDefinition(definition, context = {}) {
   }
 
   return Object.freeze({
+    definition: foundry.utils.deepFreeze(foundry.utils.deepClone(cloned)),
     schemaVersion: cloned.schemaVersion,
     id: cloned.id ?? null,
     name: cloned.name,
