@@ -1,6 +1,6 @@
 # Critical Card Pack Editor
 
-Version `0.7.0-dev` provides the GM-only visual editor for Critical Forge card packs, the Effect Forge return workflow, deterministic collision-free card IDs, and a tested end-to-end pack roundtrip.
+Version `0.8.0-rc.1` freezes the GM-only visual editor for Critical Forge card packs, the Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
 
 ## Opening the editor
 

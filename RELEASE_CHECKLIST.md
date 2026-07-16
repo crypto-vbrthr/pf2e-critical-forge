@@ -11,6 +11,8 @@
 - [ ] Verify German and English UI paths.
 - [ ] Verify JSON file export in the Foundry desktop client.
 - [ ] Copy a protected core card into a custom pack, edit its effect in Effect Forge, save it, export/import the pack, and confirm the card can still be drawn and applied.
+- [ ] Disable and re-enable that custom pack through **Paket aktivieren** and verify selection changes immediately while the pack remains editable.
+- [ ] Register and unregister a small external test pack through `api.cards.registerPack()` / `unregisterPack()` and confirm core cards remain untouched.
 - [ ] Verify world Item update, copy, Actor application, and unmanaged-rule preservation.
 - [ ] Create the ZIP with a single top-level `pf2e-critical-forge/` directory.
 - [ ] Test the ZIP with `unzip -t` or an equivalent archive test.

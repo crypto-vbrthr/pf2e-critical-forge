@@ -616,7 +616,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, and GM-confirmed effect application are available through `api.cards`. Version 0.7.0-dev adds spell-attack and saving-throw categories, filters, triggers, automation, and core cards while retaining the visual Card Pack Editor, world-persistent custom packs, Effect Forge handoff, and portable pack transfer while preserving the live roll hook and all headless services for tests and integrations.
+Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.8.0-rc.1` freezes these APIs for release-candidate testing.
 
 
 ### Profiles and trigger policies

@@ -1,6 +1,6 @@
 # Core Test Card Library
 
-Version `0.7.1-dev` expands the deliberately balanced playtest library from 72 to 96 localized cards. The four spell-attack and saving-throw categories now contain enough generic fallbacks and focused results for repeated table use, while their prose and weighting remain playtest material.
+Version `0.8.0-rc.1` freezes the deliberately balanced 96-card playtest library. The four spell-attack and saving-throw categories contain generic fallbacks and focused results for repeated table use, while their prose and weighting remain playtest material.
 
 ## Composition
 

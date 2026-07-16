@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.0-rc.1
+
+- Froze the feature set after the 96-card attack, spell-attack, and saving-throw expansion.
+- Hardened world-managed Card Pack persistence so live registries are updated transactionally and restored if the Foundry world-setting write fails.
+- Prevented corrupt stored world data from replacing protected packs or protected card IDs during startup synchronization.
+- Added regression coverage for the **Paket aktivieren** switch: disabled packs remain editable and exportable but are excluded from candidates and weighted selection until re-enabled.
+- Added an optional-extension-module lifecycle test covering disabled registration, activation through pack replacement, transactional collision rollback, selection, and clean unregistration.
+- Replaced the historical release-candidate document with the complete Effect Forge and Critical Forge 0.8.0 manual test matrix.
+- Documented the intended architecture for future optional card-library modules without adding a hard dependency or changing the public API.
+- The complete suite now contains 187 passing tests with 92.80% measured line coverage. Module and bundled core-pack versions increased to `0.8.0-rc.1`; public API and schema versions remain unchanged.
+
 ## 0.7.1-dev
 
 - Added 24 localized playtest cards, increasing the bundled core library from 72 to 96 cards.

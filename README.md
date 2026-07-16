@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.7.1-dev` expands the playtest library for spell attacks and saving throws. The four newer categories now have enough generic and focused results for repeated table use without immediately circling back to the same few cards.
+Version `0.8.0-rc.1` freezes the current feature set for release-candidate testing. It combines the Effect Forge, six Critical Forge result categories, the 96-card core library, automatic PF2e roll handling, and the visual Card Pack Editor in one stabilization line.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -16,7 +16,7 @@ The current module includes:
 
 - the complete Effect Engine and polished Effect Forge from the `0.4.0` release-candidate line;
 - versioned Critical Card and Card Pack schemas;
-- transactional Pack Registry and globally indexed Card Registry;
+- transactional Pack Registry, globally indexed Card Registry, and rollback-safe world-pack persistence;
 - localized title, description, and effect-name resolution with fallbacks;
 - a 96-card localized core test library:
   - 30 critical weapon hits;
@@ -25,7 +25,7 @@ The current module includes:
   - 12 critical spell fumbles;
   - 12 critically successful saving throws;
   - 12 critically failed saving throws;
-- a GM-only Card Pack Editor for world-managed packs, cards, filters, tone, impact, weights, fallback text, and localization keys;
+- a GM-only Card Pack Editor for world-managed packs, cards, filters, tone, impact, weights, fallback text, localization keys, and per-pack activation;
 - filters for damage types, weapon groups, attack traits, save types, spell traditions, spell traits, source traits, and target traits;
 - direct mechanical-effect editing through a dedicated Effect Forge handoff;
 - portable card-pack JSON import and export through files or the clipboard;
@@ -37,6 +37,7 @@ The current module includes:
 - GM-confirmed effect application to the stored source or target Actor;
 - target re-resolution, target-aware validation, duplicate protection, and application audit flags;
 - a primary-GM-owned `createChatMessage` hook that detects supported PF2e critical rolls, asks or draws according to world settings, and never applies effects automatically.
+- an extension API that allows a separate optional Foundry module to register and remove its own protected card packs without modifying this module.
 
 ## API access
 
@@ -78,7 +79,7 @@ npm run test:coverage
 npm run quality:check
 ```
 
-The suite covers the Effect Engine and Forge as well as card normalization, Card Pack Editor round-trips, spell/save filters, PF2e context adaptation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
+The suite covers the Effect Engine and Forge as well as card normalization, Card Pack Editor round-trips, pack activation, rollback-safe world persistence, external extension-pack lifecycles, spell/save filters, PF2e context adaptation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 

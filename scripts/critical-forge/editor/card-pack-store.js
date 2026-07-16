@@ -15,7 +15,11 @@ const registeredManagedPackIds = new Set();
 
 export async function initializeCustomCardPacks() {
   const stored = listStoredCustomPacks();
-  synchronizeManagedRegistries(stored);
+  try {
+    synchronizeManagedRegistries(stored);
+  } catch (error) {
+    console.error(`${MODULE_ID} | Could not initialize custom Critical Forge packs`, error);
+  }
   return stored;
 }
 
@@ -40,21 +44,23 @@ export async function saveCustomCardPack(rawPack, { previousId = null } = {}) {
   assertNoProtectedCollision(pack.id, previousId);
   assertNoCardCollisions(pack, previousId);
 
-  const packs = listStoredCustomPacks()
+  const previousPacks = listStoredCustomPacks();
+  const packs = previousPacks
     .filter((entry) => entry.id !== previousId && entry.id !== pack.id);
   packs.push(pack);
   packs.sort((left, right) => left.id.localeCompare(right.id));
 
-  await persist(packs);
-  synchronizeManagedRegistries(packs);
-  return criticalPackRegistry.get(pack.id);
+  await commitManagedPacks(packs, previousPacks);
+  const registered = criticalPackRegistry.get(pack.id);
+  if (!registered) throw new Error(`Critical card pack was not registered after saving: ${pack.id}`);
+  return registered;
 }
 
 export async function deleteCustomCardPack(packId) {
   if (!game.user?.isGM) throw new Error("Only a GM can delete Critical Forge card packs.");
-  const packs = listStoredCustomPacks().filter((entry) => entry.id !== String(packId));
-  await persist(packs);
-  synchronizeManagedRegistries(packs);
+  const previousPacks = listStoredCustomPacks();
+  const packs = previousPacks.filter((entry) => entry.id !== String(packId));
+  await commitManagedPacks(packs, previousPacks);
   return true;
 }
 
@@ -119,6 +125,23 @@ function assertNoCardCollisions(pack, previousId) {
   }
 }
 
+async function commitManagedPacks(packs, previousPacks) {
+  synchronizeManagedRegistries(packs);
+  try {
+    await persist(packs);
+  } catch (error) {
+    try {
+      synchronizeManagedRegistries(previousPacks);
+    } catch (rollbackError) {
+      throw new AggregateError(
+        [error, rollbackError],
+        "Could not persist Critical Forge card packs and could not restore the previous live registry state."
+      );
+    }
+    throw error;
+  }
+}
+
 async function persist(packs) {
   await game.settings.set(MODULE_ID, SETTINGS.CRITICAL_CUSTOM_CARD_PACKS, {
     storageVersion: STORAGE_VERSION,
@@ -127,17 +150,64 @@ async function persist(packs) {
 }
 
 function synchronizeManagedRegistries(packs) {
-  for (const id of [...registeredManagedPackIds]) {
-    unregisterCriticalPack(id);
-    registeredManagedPackIds.delete(id);
+  const previousPacks = [...registeredManagedPackIds]
+    .map((id) => hydrateRegisteredPack(id))
+    .filter(Boolean);
+  const previousIds = new Set(registeredManagedPackIds);
+  assertManagedPackSetCanRegister(packs, previousIds);
+
+  for (const id of previousIds) unregisterCriticalPack(id);
+  registeredManagedPackIds.clear();
+
+  const registeredNextIds = [];
+  try {
+    for (const pack of packs) {
+      registerCriticalPack(pack);
+      registeredManagedPackIds.add(pack.id);
+      registeredNextIds.push(pack.id);
+    }
+  } catch (error) {
+    for (const id of registeredNextIds) unregisterCriticalPack(id);
+    registeredManagedPackIds.clear();
+
+    try {
+      for (const previousPack of previousPacks) {
+        registerCriticalPack(previousPack);
+        registeredManagedPackIds.add(previousPack.id);
+      }
+    } catch (rollbackError) {
+      throw new AggregateError(
+        [error, rollbackError],
+        "Could not synchronize Critical Forge card packs and could not restore the previous live registry state."
+      );
+    }
+    throw error;
   }
 
+  return packs.map((pack) => criticalPackRegistry.get(pack.id)).filter(Boolean);
+}
+
+function assertManagedPackSetCanRegister(packs, previousManagedIds) {
+  const packIds = new Set();
+  const cardIds = new Set();
+
   for (const pack of packs) {
-    try {
-      registerCriticalPack(pack, { replace: true });
-      registeredManagedPackIds.add(pack.id);
-    } catch (error) {
-      console.error(`${MODULE_ID} | Could not register custom Critical Forge pack ${pack.id}`, error);
+    if (packIds.has(pack.id)) throw new Error(`Duplicate editable card pack id: ${pack.id}`);
+    packIds.add(pack.id);
+
+    const existingPack = criticalPackRegistry.get(pack.id);
+    if (existingPack && !previousManagedIds.has(pack.id)) {
+      throw new Error(`The card pack id is already owned by a protected pack: ${pack.id}`);
+    }
+
+    for (const card of pack.cards ?? []) {
+      if (cardIds.has(card.id)) throw new Error(`Duplicate editable card id: ${card.id}`);
+      cardIds.add(card.id);
+
+      const existingCard = criticalCardRegistry.get(card.id);
+      if (existingCard && !previousManagedIds.has(existingCard.packId)) {
+        throw new Error(`The card id is already used by a protected pack: ${card.id}`);
+      }
     }
   }
 }

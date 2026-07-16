@@ -48,6 +48,7 @@ tests/
 ├─ critical-diagnostic.test.js
 ├─ effect-item-drop.test.js
 ├─ effect-transfer.test.js
+├─ extension-pack-integration.test.js
 ├─ gui-state.test.js
 ├─ item-editing.test.js
 ├─ migration.test.js
@@ -61,7 +62,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 181 tests covering:
+The suite contains 187 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -84,9 +85,10 @@ The suite contains 181 tests covering:
 - localized critical-card effect summaries, preview presentation data, ChatMessage payloads, structured preview flags, and public preview APIs;
 - the complete card-editor roundtrip from protected template through Effect Forge, JSON transfer, persistence, selection, preview, and compilation;
 - deterministic collision-free IDs for new cards, duplicated cards, duplicated packs, and imported protected packs;
-- dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation.
+- dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation;
+- pack activation semantics, transactional world-setting rollback, protected-data startup guards, and optional extension-module registration lifecycles.
 
-Coverage is a diagnostic rather than a release gate. Version `0.7.1-dev` measures 92.68% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core test library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, and manual application services.
+Coverage is a diagnostic rather than a release gate. Version `0.8.0-rc.1` measures 92.80% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
 
 ## Foundry mock
 
@@ -165,7 +167,8 @@ Those paths should be checked in a Foundry test world using a short release chec
 - `card-schema.test.js`: card/pack normalization and validation
 - `card-pack-editor.test.js`: editor defaults, cloning, ID collision handling, transfer parsing, and Effect Forge bridging
 - `card-editor-roundtrip.test.js`: protected-template to live-preview and compiler integration
-- `card-pack-store.test.js`: world persistence and live registry synchronization
+- `card-pack-store.test.js`: world persistence, pack activation, protected-data guards, and transactional live-registry rollback
+- `extension-pack-integration.test.js`: optional-module registration, activation, replacement rollback, selection, and removal
 - `core-card-library.test.js`: bundled-card matrix, profile distribution, localization coverage, stable ids, and pack validity
 - `card-registry.test.js`: pack ownership, duplicate protection, and filtering
 - `card-selection.test.js`: matching semantics, candidate reports, and deterministic weighting
