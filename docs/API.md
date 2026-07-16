@@ -616,7 +616,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.8.0-rc.1` freezes these APIs for release-candidate testing.
+Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.8.0-rc.2` freezes these APIs for release-candidate testing.
 
 
 ### Profiles and trigger policies
@@ -659,7 +659,38 @@ api.cards.getPack("my-pack");
 api.cards.listPacks();
 ```
 
-Pack registration is transactional. Use `{ replace: true }` to replace an existing pack only after the complete replacement has validated.
+Pack registration is transactional. Use `{ replace: true }` to replace an existing pack only after the complete replacement has validated. The low-level methods are retained for advanced integrations and internal use. Optional modules should prefer the ownership-safe extension API.
+
+### Extension card-pack modules
+
+```js
+Hooks.once("pf2eCriticalForgeReady", (api) => {
+  const extension = api.cards.extensions.forModule("my-critical-expansion");
+  extension.registerPacks([darkFantasyPack, heroicPack]);
+});
+```
+
+The bound controller exposes:
+
+```js
+extension.sourceModule;
+extension.registerPack(pack, { replace: false });
+extension.registerPacks(packs, { replace: false });
+extension.getPack(packId);
+extension.listPacks();
+extension.unregisterPack(packId);
+extension.unregisterAll();
+```
+
+Direct equivalents are available under `api.cards.extensions.registerPack(sourceModule, ...)` and related methods. The recommended controller prevents the extension from replacing or removing packs owned by another source. Batch registration is atomic. Supplied `sourceModule` and editor-ownership metadata are overridden with the bound module id.
+
+```js
+Hooks.on(api.cards.extensions.changedHook, (change) => {
+  console.log(change.action, change.sourceModule, change.packIds);
+});
+```
+
+The change-hook name is `pf2eCriticalForgePacksChanged`. See [`EXTENSION_MODULES.md`](EXTENSION_MODULES.md).
 
 ### Validation
 

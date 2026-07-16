@@ -62,7 +62,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 187 tests covering:
+The suite contains 193 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -86,9 +86,9 @@ The suite contains 187 tests covering:
 - the complete card-editor roundtrip from protected template through Effect Forge, JSON transfer, persistence, selection, preview, and compilation;
 - deterministic collision-free IDs for new cards, duplicated cards, duplicated packs, and imported protected packs;
 - dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation;
-- pack activation semantics, transactional world-setting rollback, protected-data startup guards, and optional extension-module registration lifecycles.
+- pack activation semantics, transactional world-setting rollback, protected-data startup guards, module-bound extension ownership, atomic multi-pack registration, change hooks, and optional extension-module lifecycles.
 
-Coverage is a diagnostic rather than a release gate. Version `0.8.0-rc.1` measures 92.80% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
+Coverage is a diagnostic rather than a release gate. Version `0.8.0-rc.2` measures 92.88% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
 
 ## Foundry mock
 

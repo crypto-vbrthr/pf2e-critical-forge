@@ -2,7 +2,7 @@
   "id": "pf2e-critical-forge",
   "title": "PF2E Critical Forge",
   "description": "A modular PF2e Effect Engine, polished Effect Forge, and Critical Forge for critical attacks, spell attacks, and saving throws with localized cards, automation, and a visual card-pack editor.",
-  "version": "0.8.0-rc.1",
+  "version": "0.8.0-rc.2",
   "authors": [
     {
       "name": "crypto-vbrthr"
@@ -42,8 +42,5 @@
     }
   ],
   "license": "LICENSE",
-  "readme": "README.md",
-  "url": "https://github.com/crypto-vbrthr/pf2e-critical-forge",
-  "manifest": "https://raw.githubusercontent.com/crypto-vbrthr/pf2e-critical-forge/main/module.json",
-  "download": "https://github.com/crypto-vbrthr/pf2e-critical-forge/releases/download/v0.8.0/pf2e-critical-forge.zip"
+  "readme": "README.md"
 }

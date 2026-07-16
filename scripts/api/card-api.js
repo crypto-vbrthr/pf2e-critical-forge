@@ -70,6 +70,15 @@ import {
   isSupportedCriticalReport,
   processCriticalChatMessage
 } from "../critical-forge/automation/critical-roll-automation.js";
+import {
+  createExtensionPackApi,
+  CRITICAL_FORGE_PACKS_CHANGED_HOOK,
+  listExtensionPacks,
+  registerExtensionPack,
+  registerExtensionPacks,
+  unregisterExtensionPack,
+  unregisterExtensionPacks
+} from "../critical-forge/extensions/extension-pack-service.js";
 
 export function createCardApi() {
   const resolveCard = (cardOrId) => {
@@ -111,6 +120,15 @@ export function createCardApi() {
 
     registerPack: (pack, options = {}) => registerCriticalPack(pack, options),
     unregisterPack: (packId) => unregisterCriticalPack(packId),
+    extensions: Object.freeze({
+      changedHook: CRITICAL_FORGE_PACKS_CHANGED_HOOK,
+      forModule: (sourceModule) => createExtensionPackApi(sourceModule),
+      registerPack: (sourceModule, pack, options = {}) => registerExtensionPack(sourceModule, pack, options),
+      registerPacks: (sourceModule, packs, options = {}) => registerExtensionPacks(sourceModule, packs, options),
+      unregisterPack: (sourceModule, packId) => unregisterExtensionPack(sourceModule, packId),
+      unregisterAll: (sourceModule) => unregisterExtensionPacks(sourceModule),
+      listPacks: (sourceModule) => listExtensionPacks(sourceModule)
+    }),
     getPack: (packId) => criticalPackRegistry.get(packId),
     listPacks: (options = {}) => criticalPackRegistry.list(options),
     validatePack: (pack) => safeValidate(pack, normalizePackDefinition, validatePackDefinition, "CARD_PACK_NORMALIZATION_FAILED"),

@@ -36,8 +36,13 @@ Effect Engine
 ```text
 critical-forge/
 ├─ adapters/pf2e/       PF2e data readers and diagnostic context adapter
+├─ automation/           primary-GM supported-roll pipeline
 ├─ diagnostics/          manual message resolution, diagnostic service, and workbench UI
+├─ editor/               world-managed pack store, transfer, UI, and Effect Forge bridge
+├─ extensions/           ownership-safe optional-module pack registration
 ├─ presentation/         effect summaries, ChatMessage publication, visibility, and manual application
+├─ profile/              tone and impact weighting
+├─ trigger/              behavior and natural-result policy
 ├─ core/                 bundled localized test-card library
 ├─ localization/         key resolution and Effect materialization
 ├─ registry/             pack and card registries
@@ -54,6 +59,8 @@ critical-forge/
 - The selector consumes plain JavaScript data only.
 - The selector never reads Foundry documents directly.
 - Card registration is independent from the Critical Forge world setting.
+- Optional-module registration is bound to a source module and cannot replace or remove foreign packs.
+- Multi-pack extension registration is atomic across the full batch.
 - Localization happens only when a consumer asks for presentation data.
 - Mechanical consequences remain Effect Definitions and are handled by the Effect Engine.
 - The manual diagnostic UI evaluates candidates but performs no weighted selection.

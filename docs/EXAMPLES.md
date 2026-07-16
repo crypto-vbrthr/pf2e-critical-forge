@@ -366,3 +366,23 @@ Compiled rule:
 ```
 
 A separate `movement` component can modify the granted Speed.
+
+
+## Register card packs from an optional module
+
+```js
+Hooks.once("pf2eCriticalForgeReady", (forge) => {
+  const extension = forge.cards.extensions.forModule("my-critical-expansion");
+
+  extension.registerPacks([
+    darkFantasyPack,
+    heroicMishapsPack
+  ]);
+});
+```
+
+To update a pack during development, register the complete replacement with `{ replace: true }`. The controller refuses to replace a pack belonging to the core, a world, or another module.
+
+```js
+extension.registerPack(darkFantasyPackV2, { replace: true });
+```

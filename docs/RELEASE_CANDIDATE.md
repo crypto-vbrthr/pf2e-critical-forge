@@ -1,4 +1,4 @@
-# Release Candidate 0.8.0-rc.1
+# Release Candidate 0.8.0-rc.2
 
 This candidate freezes the combined Effect Forge and Critical Forge feature set. The objective is to find regressions, PF2e context mismatches, permission issues, localization gaps, and awkward table workflows before the stable `0.8.0` tag.
 
@@ -7,7 +7,7 @@ This candidate freezes the combined Effect Forge and Critical Forge feature set.
 - Foundry VTT: 14
 - Pathfinder Second Edition system: 8.1.2 or newer
 - Node.js for development tests: 20 or newer
-- Public API: 0.7.0
+- Public API: 0.8.0
 - Effect Definition schema: 1
 - Critical Card schema: 1
 - Critical Card Pack schema: 1

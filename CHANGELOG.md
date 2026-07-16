@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.0-rc.2
+
+- Added a dedicated module-bound extension API at `api.cards.extensions.forModule(moduleId)` for optional Critical Forge card-library modules.
+- Added atomic registration of one or several external packs through `registerPack()` and `registerPacks()`. A failed batch leaves the previous registry state untouched.
+- Forced external ownership metadata from the bound module id so extension packs remain protected and cannot masquerade as world-managed editor packs.
+- Prevented an extension from replacing or unregistering the core pack or packs owned by another module, even when `{ replace: true }` is requested.
+- Added extension-scoped lookup, listing, single-pack removal, and `unregisterAll()` without exposing unrelated packs.
+- Added the `pf2eCriticalForgePacksChanged` hook for integrations that need to react when extension packs enter, leave, or are replaced in the live registry.
+- Added complete extension-module documentation and regression coverage for multi-pack registration, ownership enforcement, disabled packs, replacement, rollback safety, change hooks, and clean removal.
+- The complete suite now contains 193 passing tests with 92.88% measured line coverage. Module and bundled core-pack versions increased to `0.8.0-rc.2`; public API version increased to `0.8.0`; Effect, Critical Card, and Card Pack schema versions remain unchanged.
+
 ## 0.8.0-rc.1
 
 - Froze the feature set after the 96-card attack, spell-attack, and saving-throw expansion.
