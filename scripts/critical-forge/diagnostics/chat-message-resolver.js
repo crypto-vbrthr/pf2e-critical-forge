@@ -37,11 +37,20 @@ export async function resolveDiagnosticMessageInput(message, {
   if (!message) throw new TypeError("A ChatMessage is required for diagnostics.");
 
   const diagnostics = [];
+  const speaker = message.speaker ?? {};
+  const targetReference = getPath(message, "flags.pf2e.context.target") ?? null;
+  const sourceReference = getPath(message, "flags.pf2e.context.origin")
+    ?? getPath(message, "flags.pf2e.context")
+    ?? null;
+
+  const flaggedTarget = await resolveDocumentReference(targetReference, { fromUuidFn, actors, canvas });
   const selectedTargets = normalizeTokens(targetTokens ?? user?.targets ?? []);
-  let resolvedTargetToken = targetToken;
-  if (!resolvedTargetToken && selectedTargets.length === 1) {
+  let resolvedTargetToken = targetToken ?? flaggedTarget.token ?? null;
+  let resolvedTargetActor = flaggedTarget.actor ?? resolvedTargetToken?.actor ?? null;
+  if (!resolvedTargetToken && !resolvedTargetActor && selectedTargets.length === 1) {
     [resolvedTargetToken] = selectedTargets;
-  } else if (!resolvedTargetToken && selectedTargets.length > 1) {
+    resolvedTargetActor = resolvedTargetToken?.actor ?? null;
+  } else if (!resolvedTargetToken && !resolvedTargetActor && selectedTargets.length > 1) {
     diagnostics.push({
       severity: "warning",
       code: "CRITICAL_DIAGNOSTIC_MULTIPLE_TARGETS",
@@ -49,9 +58,10 @@ export async function resolveDiagnosticMessageInput(message, {
     });
   }
 
-  const speaker = message.speaker ?? {};
+  const flaggedSource = await resolveDocumentReference(sourceReference, { fromUuidFn, actors, canvas });
   const resolvedSourceToken = sourceToken
     ?? message.token
+    ?? flaggedSource.token
     ?? resolveCanvasToken(speaker.token, canvas)
     ?? null;
 
@@ -76,12 +86,13 @@ export async function resolveDiagnosticMessageInput(message, {
   const sourceActor = message.speakerActor
     ?? message.actor
     ?? resolvedSourceToken?.actor
+    ?? flaggedSource.actor
     ?? item?.actor
     ?? resolveActor(speaker.actor, actors)
     ?? null;
-  const targetActor = resolvedTargetToken?.actor ?? null;
+  const targetActor = resolvedTargetActor ?? resolvedTargetToken?.actor ?? null;
 
-  if (!resolvedTargetToken) {
+  if (!resolvedTargetToken && !targetActor) {
     diagnostics.push({
       severity: "info",
       code: "CRITICAL_DIAGNOSTIC_TARGET_NOT_SELECTED",
@@ -169,6 +180,40 @@ function resolvePrimaryRoll(message) {
   return rolls.find((roll) => roll?.degreeOfSuccess != null || roll?.options?.degreeOfSuccess != null)
     ?? rolls[0]
     ?? null;
+}
+
+async function resolveDocumentReference(reference, { fromUuidFn, actors, canvas }) {
+  if (!reference) return { actor: null, token: null };
+  if (reference.actor?.documentName === "Actor" || reference.actor?.type) {
+    return { actor: reference.actor, token: reference.token?.actor ? reference.token : null };
+  }
+  if (reference.token?.actor) return { actor: reference.token.actor, token: reference.token };
+
+  const tokenValue = typeof reference === "object" ? reference.token : null;
+  const actorValue = typeof reference === "object" ? reference.actor : reference;
+  const token = await resolveReferenceValue(tokenValue, { fromUuidFn, actors, canvas, preferToken: true });
+  const actor = token?.actor
+    ?? await resolveReferenceValue(actorValue, { fromUuidFn, actors, canvas, preferToken: false });
+  return {
+    actor: actor?.actor ?? actor ?? null,
+    token: token?.object ?? token ?? null
+  };
+}
+
+async function resolveReferenceValue(value, { fromUuidFn, actors, canvas, preferToken }) {
+  if (!value) return null;
+  if (typeof value === "object") return value;
+  const text = String(value);
+  if (text.includes(".") && typeof fromUuidFn === "function") {
+    try {
+      const document = await fromUuidFn(text);
+      if (document) return document;
+    } catch (_error) {
+      // Fall through to local collection resolution.
+    }
+  }
+  if (preferToken) return resolveCanvasToken(text, canvas);
+  return resolveActor(text, actors);
 }
 
 function resolveCanvasToken(id, canvas) {

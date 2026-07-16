@@ -1710,3 +1710,19 @@
   color: var(--ef-muted);
   font-size: 0.75rem;
 }
+
+.pf2e-critical-forge-automation-prompt dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.35rem 0.75rem;
+  margin: 0.75rem 0 0;
+}
+
+.pf2e-critical-forge-automation-prompt dt {
+  font-weight: 700;
+}
+
+.pf2e-critical-forge-automation-prompt dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}

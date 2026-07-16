@@ -8,7 +8,7 @@
       },
       "EnableCriticalForge": {
         "Name": "Enable Critical Forge",
-        "Hint": "Enables Critical Forge integration with the diagnostic workbench, manual chat cards, and confirmed effect application. Automatic roll hooks and automatic card selection are not included yet."
+        "Hint": "Enables Critical Forge integration with automatic critical attack detection, optional confirmation, automatic card draws, the diagnostic workbench, and confirmed effect application."
       },
       "CriticalCardVisibility": {
         "Name": "Critical Forge card visibility",
@@ -22,7 +22,7 @@
       },
       "CriticalHitBehavior": {
         "Name": "Critical hits",
-        "Hint": "Determines whether critical hits are ignored, require confirmation, or will later draw a card automatically.",
+        "Hint": "Determines whether critical hits are ignored, require confirmation, or immediately draw a card.",
         "Choices": {
           "Disabled": "Disabled",
           "Prompt": "Ask first",
@@ -31,7 +31,7 @@
       },
       "CriticalFumbleBehavior": {
         "Name": "Critical fumbles",
-        "Hint": "Determines whether critical fumbles are ignored, require confirmation, or will later draw a card automatically.",
+        "Hint": "Determines whether critical fumbles are ignored, require confirmation, or immediately draw a card.",
         "Choices": {
           "Disabled": "Disabled",
           "Prompt": "Ask first",
@@ -817,6 +817,27 @@
           "CRITICAL_CARD_REDRAW_NO_ALTERNATIVE": "No other eligible card is available for this roll.",
           "CRITICAL_CARD_REDRAW_FAILED": "The card could not be redrawn. See the console for details."
         }
+      }
+    },
+    "CriticalAutomation": {
+      "Prompt": {
+        "criticalHit": {
+          "Title": "Critical Hit",
+          "Question": "Draw a Critical Forge card for this critical hit?"
+        },
+        "criticalFumble": {
+          "Title": "Critical Fumble",
+          "Question": "Draw a Critical Forge card for this critical fumble?"
+        },
+        "Source": "Attacker",
+        "Target": "Target",
+        "Attack": "Attack",
+        "Draw": "Draw Card",
+        "Ignore": "Ignore"
+      },
+      "Errors": {
+        "NoEligibleCard": "Critical Forge found no eligible card for this roll.",
+        "Failed": "Critical Forge could not process the critical roll. See the console for details."
       }
     }
   }

@@ -616,7 +616,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the headless PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, redraws, and GM-confirmed effect application are available through `api.cards`. Version 0.5.7-dev prepares automatic/prompt behavior without yet registering an automatic roll hook.
+Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack-roll processing, redraws, and GM-confirmed effect application are available through `api.cards`. Version 0.5.8-dev registers the live roll hook while preserving all headless services for tests and integrations.
 
 
 ### Profiles and trigger policies
@@ -634,6 +634,16 @@ const trigger = api.cards.triggers.evaluate(contextReport, policy);
 ```
 
 `scope: "natural"` requires a natural 20 plus final critical success for hits, or a natural 1 plus final critical failure for fumbles.
+
+### Automatic attack-roll processing
+
+```js
+const result = await api.cards.automation.processMessage(message);
+const audit = api.cards.automation.inspectMessage(message);
+const isAttack = api.cards.automation.isAttackReport(report, input);
+```
+
+`processMessage()` performs the same primary-GM, attack-message, trigger-policy, profile, recent-history, prompt, and publication pipeline used by the Foundry hook. It never applies a mechanical effect. See [`CRITICAL_AUTOMATION.md`](CRITICAL_AUTOMATION.md).
 
 ### Registration and lookup
 

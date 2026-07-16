@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.8-dev
+
+- Added the first automatic PF2e attack-roll hook through Foundry's `createChatMessage` document hook.
+- Only the primary active GM processes new roll messages, preventing duplicate prompts and cards in multi-GM worlds.
+- Critical-hit and critical-fumble behavior settings now operate live: disabled, ask first, or draw automatically.
+- Trigger policies continue to support every final critical result or only natural 20/1 rolls that also finish as a critical success/failure.
+- Added a localized GM confirmation dialog that shows attacker, target, and attack before drawing a card.
+- Added attack-message guards so skill checks, saves, and damage-roll messages do not trigger Critical Forge cards.
+- PF2e message resolution now prefers source and target references stored in `flags.pf2e.context`, with the rolling user's current targets as a fallback.
+- Added persistent recent-card history for automatic draws, bounded by the existing history-size setting, with safe fallback when the history exhausts all candidates.
+- Source roll messages receive an audit flag recording ignored, dismissed, no-card, or published automation outcomes.
+- Added public `api.cards.automation` helpers for manual processing, inspection, and attack-report checks.
+- Added six regression tests for automatic drawing, prompt dismissal, attack filtering, multi-GM ownership, damage-message rejection, and PF2e flagged-target resolution.
+- Public API version increased to `0.5.6`; Effect and card schemas remain unchanged.
+
 ## 0.5.7-dev
 
 - Added card `tone` and `impact` metadata with validated values and localized chat-card badges.

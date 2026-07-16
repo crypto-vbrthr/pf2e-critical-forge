@@ -92,4 +92,8 @@ test("public card API exposes manual chat-card previews", async () => {
   assert.deepEqual(api.tones, ["neutral", "serious", "dramatic", "humorous"]);
   assert.deepEqual(api.impacts, ["narrative", "light", "moderate", "strong"]);
   assert.equal(typeof api.triggers.evaluate, "function");
+  assert.equal(api.automation.version, 1);
+  assert.equal(typeof api.automation.processMessage, "function");
+  assert.equal(typeof api.automation.inspectMessage, "function");
+  assert.equal(typeof api.automation.isAttackReport, "function");
 });

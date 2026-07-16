@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.5.7-dev` adds the **trigger and card-profile architecture** that will drive the later automatic roll hook. Critical hits and fumbles can be configured independently for all critical results or only natural 20/1 results that actually end as a critical success/failure. Cards now carry tone and impact metadata, selection can use relaxed, balanced, dramatic, brutal, or custom weighting profiles, and an unapplied chat card can be redrawn without immediately repeating recent cards.
+Version `0.5.8-dev` activates the **automatic PF2e attack-roll pipeline**. Critical hits and fumbles can be disabled, confirmed by the GM, or drawn automatically; trigger scopes still support all final critical results or only natural 20/1 results that also finish as critical success/failure. Card profiles, redraws, configurable visibility, and manual GM effect application remain intact.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -25,7 +25,7 @@ The current engine includes:
 - redrawable cards with bounded draw history and no immediate repeats;
 - GM-confirmed effect application to the stored source or target Actor;
 - target re-resolution, target-aware validation, duplicate protection, and application audit flags;
-- no automatic roll hook yet; trigger and automatic/prompt behavior are currently exposed as tested policy services and world settings.
+- a primary-GM-owned `createChatMessage` hook that detects PF2e critical attack rolls, asks or draws according to world settings, and never applies effects automatically.
 
 ## API access
 
@@ -64,7 +64,7 @@ npm run test:coverage
 npm run quality:check
 ```
 
-The suite covers the Effect Engine and Forge as well as card normalization, profile weighting, natural-roll trigger policies, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
+The suite covers the Effect Engine and Forge as well as card normalization, profile weighting, natural-roll trigger policies, automatic attack-message processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 
@@ -77,7 +77,8 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/CARD_SELECTION.md`](docs/CARD_SELECTION.md): candidate evaluation and weighted selection
 - [`docs/PF2E_CONTEXT_ADAPTER.md`](docs/PF2E_CONTEXT_ADAPTER.md): PF2e document-to-context translation and diagnostics
 - [`docs/CRITICAL_DIAGNOSTICS.md`](docs/CRITICAL_DIAGNOSTICS.md): manual chat-message diagnostic workbench and report format
-- [`docs/CRITICAL_CARD_PREVIEW.md`](docs/CRITICAL_CARD_PREVIEW.md): manual result chat cards, visibility, stored flags, and effect application
+- [`docs/CRITICAL_CARD_PREVIEW.md`](docs/CRITICAL_CARD_PREVIEW.md): result chat cards, visibility, stored flags, redraws, and effect application
+- [`docs/CRITICAL_AUTOMATION.md`](docs/CRITICAL_AUTOMATION.md): live PF2e attack-roll hook, prompt/automatic behavior, ownership, and audit flags
 - [`docs/EDITING_ITEMS.md`](docs/EDITING_ITEMS.md): loading, updating, and preserving existing Effect Items
 - [`docs/IMPORT_EXPORT.md`](docs/IMPORT_EXPORT.md): portable JSON files, clipboard transfer, and API helpers
 - [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md): Effect Definition schema

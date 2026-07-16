@@ -7,6 +7,7 @@ import { initializeCriticalForge } from "./critical-forge/critical-forge.js";
 import { initializeCriticalDiagnosticUi } from "./critical-forge/diagnostics/critical-diagnostic-ui.js";
 import { initializeCriticalCardApplicationUi } from "./critical-forge/presentation/critical-card-application.js";
 import { initializeCriticalCardRedrawUi } from "./critical-forge/presentation/critical-card-redraw.js";
+import { initializeCriticalRollAutomation } from "./critical-forge/automation/critical-roll-automation.js";
 import { initializeConditionCatalog } from "./effect-engine/catalogs/condition-catalog.js";
 
 Hooks.once("init", () => {
@@ -33,6 +34,7 @@ Hooks.once("ready", async () => {
     initializeCriticalDiagnosticUi();
     initializeCriticalCardApplicationUi();
     initializeCriticalCardRedrawUi();
+    initializeCriticalRollAutomation();
   }
 
   Hooks.callAll("pf2eCriticalForgeReady", api);

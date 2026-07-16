@@ -8,7 +8,7 @@
       },
       "EnableCriticalForge": {
         "Name": "Critical Forge aktivieren",
-        "Hint": "Aktiviert die Foundry-Einbindung der Critical Forge mit Diagnosewerkbank, manuellen Chatkarten und bestätigter Effektanwendung. Automatische Wurfhooks und automatische Kartenauswahl sind noch nicht enthalten."
+        "Hint": "Aktiviert die Foundry-Einbindung der Critical Forge mit automatischer Erkennung kritischer Angriffswürfe, optionaler Nachfrage, automatischer Kartenauswahl, Diagnosewerkbank und bestätigter Effektanwendung."
       },
       "CriticalCardVisibility": {
         "Name": "Sichtbarkeit von Critical-Forge-Karten",
@@ -22,7 +22,7 @@
       },
       "CriticalHitBehavior": {
         "Name": "Kritische Treffer",
-        "Hint": "Legt fest, ob kritische Treffer ignoriert, zunächst bestätigt oder später automatisch mit einer Karte versehen werden.",
+        "Hint": "Legt fest, ob kritische Treffer ignoriert, zunächst bestätigt oder automatisch mit einer Karte versehen werden.",
         "Choices": {
           "Disabled": "Deaktiviert",
           "Prompt": "Nachfragen",
@@ -31,7 +31,7 @@
       },
       "CriticalFumbleBehavior": {
         "Name": "Kritische Patzer",
-        "Hint": "Legt fest, ob kritische Patzer ignoriert, zunächst bestätigt oder später automatisch mit einer Karte versehen werden.",
+        "Hint": "Legt fest, ob kritische Patzer ignoriert, zunächst bestätigt oder automatisch mit einer Karte versehen werden.",
         "Choices": {
           "Disabled": "Deaktiviert",
           "Prompt": "Nachfragen",
@@ -817,6 +817,27 @@
           "CRITICAL_CARD_REDRAW_NO_ALTERNATIVE": "Für diesen Wurf ist keine weitere passende Karte verfügbar.",
           "CRITICAL_CARD_REDRAW_FAILED": "Die Karte konnte nicht neu gezogen werden. Details stehen in der Konsole."
         }
+      }
+    },
+    "CriticalAutomation": {
+      "Prompt": {
+        "criticalHit": {
+          "Title": "Kritischer Treffer",
+          "Question": "Soll für diesen kritischen Treffer eine Critical-Forge-Karte gezogen werden?"
+        },
+        "criticalFumble": {
+          "Title": "Kritischer Patzer",
+          "Question": "Soll für diesen kritischen Patzer eine Critical-Forge-Karte gezogen werden?"
+        },
+        "Source": "Angreifer",
+        "Target": "Ziel",
+        "Attack": "Angriff",
+        "Draw": "Karte ziehen",
+        "Ignore": "Ignorieren"
+      },
+      "Errors": {
+        "NoEligibleCard": "Für diesen Wurf wurde keine passende Critical-Forge-Karte gefunden.",
+        "Failed": "Critical Forge konnte den kritischen Wurf nicht verarbeiten. Details stehen in der Konsole."
       }
     }
   }

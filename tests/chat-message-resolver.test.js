@@ -68,6 +68,44 @@ test("resolver refuses to choose among multiple selected targets", async () => {
   ]);
 });
 
+
+test("resolver prefers target references stored in PF2e message context", async () => {
+  const sourceActor = { id: "source", name: "Source" };
+  const targetActor = { id: "target", name: "Target" };
+  const targetTokenDocument = { id: "target-token", actor: targetActor, object: { id: "target-token", actor: targetActor } };
+  const message = {
+    id: "flagged-target",
+    speaker: { actor: "source" },
+    flags: {
+      pf2e: {
+        context: {
+          type: "attack-roll",
+          origin: { actor: "Actor.source" },
+          target: { actor: "Actor.target", token: "Scene.scene.Token.target-token" }
+        }
+      }
+    },
+    rolls: [{ degreeOfSuccess: 3 }]
+  };
+  const documents = new Map([
+    ["Actor.source", sourceActor],
+    ["Actor.target", targetActor],
+    ["Scene.scene.Token.target-token", targetTokenDocument]
+  ]);
+  const result = await resolveDiagnosticMessageInput(message, {
+    targetTokens: [],
+    actors: { get: () => null },
+    fromUuidFn: async (uuid) => documents.get(uuid) ?? null,
+    canvas: null,
+    user: null
+  });
+
+  assert.equal(result.input.sourceActor, sourceActor);
+  assert.equal(result.input.targetActor, targetActor);
+  assert.equal(result.input.targetToken.id, "target-token");
+  assert.equal(result.diagnostics.length, 0);
+});
+
 test("dropped ChatMessage resolves by UUID or collection id", async () => {
   const byUuid = { id: "uuid-message" };
   assert.equal(

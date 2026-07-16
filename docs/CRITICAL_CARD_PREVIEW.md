@@ -1,6 +1,6 @@
 # Critical Card Chat Workflow
 
-Version `0.5.7-dev` adds profile metadata and a controlled redraw workflow to the manual result-card system. Cards can still be chosen explicitly from diagnostics; the automatic roll hook is not active yet.
+Version `0.5.8-dev` uses the same result-card system for both manual diagnostic previews and cards drawn by the automatic PF2e attack-roll hook. Publication may be manual, prompted, or automatic; effect application remains explicitly GM-controlled.
 
 ## Visibility setting
 
@@ -78,7 +78,7 @@ const redraw = await api.cards.redrawPreview(message);
 
 ## Safety boundary
 
-This milestone still does not register attack-roll hooks or choose cards automatically. Every card publication and every effect application requires an explicit GM action.
+Automatic mode may choose and publish a card after a qualifying attack roll. Prompt mode requires an explicit GM confirmation first. In every mode, applying the card's mechanical effect still requires the GM-only **Apply effect** action.
 
 
 ## Draw again

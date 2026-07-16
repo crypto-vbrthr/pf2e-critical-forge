@@ -50,6 +50,12 @@ import {
   evaluateCriticalTrigger
 } from "../critical-forge/trigger/critical-trigger-policy.js";
 import { redrawCriticalCard } from "../critical-forge/presentation/critical-card-redraw.js";
+import {
+  CRITICAL_ROLL_AUTOMATION_VERSION,
+  getCriticalRollAutomationData,
+  isAttackCriticalReport,
+  processCriticalChatMessage
+} from "../critical-forge/automation/critical-roll-automation.js";
 
 export function createCardApi() {
   const resolveCard = (cardOrId) => {
@@ -79,6 +85,12 @@ export function createCardApi() {
       scopes: [...CRITICAL_TRIGGER_SCOPES],
       evaluate: (report, policy = {}) => evaluateCriticalTrigger(report, policy),
       configured: (category) => configuredTriggerPolicy(category)
+    }),
+    automation: Object.freeze({
+      version: CRITICAL_ROLL_AUTOMATION_VERSION,
+      processMessage: (message, options = {}) => processCriticalChatMessage(message, options),
+      inspectMessage: (message) => getCriticalRollAutomationData(message),
+      isAttackReport: (report, input = {}) => isAttackCriticalReport(report, input)
     }),
 
     registerPack: (pack, options = {}) => registerCriticalPack(pack, options),

@@ -1,8 +1,12 @@
 # Critical Forge Architecture
 
-Version 0.5.6 adds a thin, manual presentation and application layer around the headless Critical Forge domain and PF2e Context Adapter. It deliberately contains no automatic roll hooks or automatic card choice.
+Version 0.5.8 adds a thin Foundry automation shell around the headless Critical Forge domain and PF2e Context Adapter. The hook owns only message detection, GM prompting, and publication; card matching, trigger policy, profile weighting, presentation, and effect application remain separate services.
 
 ```text
+Foundry createChatMessage Hook ── new PF2e attack messages
+        │
+        ├── prompt / automatic policy
+        │
 Manual Chat Diagnostic UI ── explicit message input
         │
         ▼
@@ -81,6 +85,6 @@ Card Selector
 Chat Card / Redraw
 ```
 
-The trigger policy knows behavior (`disabled`, `prompt`, `automatic`) and scope (`all`, `natural`) but does not register Foundry hooks. Natural scope requires both the natural d20 value and the final PF2e degree of success.
+The trigger policy knows behavior (`disabled`, `prompt`, `automatic`) and scope (`all`, `natural`). A separate automation service registers the Foundry hook and delegates every decision to that policy. Natural scope requires both the natural d20 value and the final PF2e degree of success.
 
 The profile service weights `tone` and `impact` metadata. It never compiles effects and never changes eligibility produced by mechanical filters.

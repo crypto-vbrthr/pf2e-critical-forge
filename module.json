@@ -1,8 +1,8 @@
 {
   "id": "pf2e-critical-forge",
   "title": "PF2E Critical Forge",
-  "description": "A modular PF2e Effect Engine, polished Effect Forge, and Critical Forge with localized card profiles, trigger policies, diagnostics, redrawable chat cards, and manual GM effect application.",
-  "version": "0.5.7-dev",
+  "description": "A modular PF2e Effect Engine, polished Effect Forge, and Critical Forge with automatic critical-attack detection, configurable prompts and draws, localized card profiles, redrawable chat cards, and manual GM effect application.",
+  "version": "0.5.8-dev",
   "authors": [
     {
       "name": "crypto-vbrthr"
