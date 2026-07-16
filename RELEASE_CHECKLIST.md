@@ -10,6 +10,7 @@
 - [ ] Search the repository for raw localization keys, stale version strings, `TODO`, and `FIXME` markers.
 - [ ] Verify German and English UI paths.
 - [ ] Verify JSON file export in the Foundry desktop client.
+- [ ] Copy a protected core card into a custom pack, edit its effect in Effect Forge, save it, export/import the pack, and confirm the card can still be drawn and applied.
 - [ ] Verify world Item update, copy, Actor application, and unmanaged-rule preservation.
 - [ ] Create the ZIP with a single top-level `pf2e-critical-forge/` directory.
 - [ ] Test the ZIP with `unzip -t` or an equivalent archive test.

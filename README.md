@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.6.1-dev` fixes the Critical Card editing handoff: an Effect Forge session opened from the Card Pack Editor now exposes a dedicated **Use for Card** action and hides unrelated world-Item and Token actions. The visual Card Pack Editor, automatic PF2e attack-roll pipeline, and localized 48-card core test library remain intact.
+Version `0.6.2-dev` hardens the Critical Card Pack Editor with deterministic collision-free card IDs and a full regression path from protected core-card template through Effect Forge editing, JSON export/import, world persistence, live selection, chat preview, and Effect Engine compilation.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 

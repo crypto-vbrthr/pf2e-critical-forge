@@ -31,6 +31,9 @@ tests/
 ├─ builder.test.js
 ├─ card-api.test.js
 ├─ card-localization.test.js
+├─ card-editor-roundtrip.test.js
+├─ card-pack-editor.test.js
+├─ card-pack-store.test.js
 ├─ card-registry.test.js
 ├─ card-schema.test.js
 ├─ card-selection.test.js
@@ -58,7 +61,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 169 tests covering:
+The suite contains 174 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -78,9 +81,11 @@ The suite contains 169 tests covering:
 - synchronized release metadata, manifest paths, localization parity, and archive hygiene;
 - headless PF2e context translation from rolls, chat flags, weapons, NPC attacks, actors, tokens, and roll options;
 - manual diagnostic candidate evaluation, chat-message discovery, Item UUID resolution, target handling, and drop validation;
-- localized critical-card effect summaries, preview presentation data, ChatMessage payloads, structured preview flags, and public preview APIs.
+- localized critical-card effect summaries, preview presentation data, ChatMessage payloads, structured preview flags, and public preview APIs;
+- the complete card-editor roundtrip from protected template through Effect Forge, JSON transfer, persistence, selection, preview, and compilation;
+- deterministic collision-free IDs for new cards, duplicated cards, duplicated packs, and imported protected packs.
 
-Coverage is a diagnostic rather than a release gate. Version `0.6.0-dev` measures 91.79% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, card-pack editor services, the 48-card core test library, diagnostics, automatic roll pipeline, result-card visibility, and manual application services.
+Coverage is a diagnostic rather than a release gate. Version `0.6.2-dev` measures 92.16% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, card-pack editor services, the 48-card core test library, diagnostics, automatic roll pipeline, result-card visibility, and manual application services.
 
 ## Foundry mock
 
@@ -157,6 +162,9 @@ Those paths should be checked in a Foundry test world using a short release chec
 ## Critical Forge architecture tests
 
 - `card-schema.test.js`: card/pack normalization and validation
+- `card-pack-editor.test.js`: editor defaults, cloning, ID collision handling, transfer parsing, and Effect Forge bridging
+- `card-editor-roundtrip.test.js`: protected-template to live-preview and compiler integration
+- `card-pack-store.test.js`: world persistence and live registry synchronization
 - `core-card-library.test.js`: bundled-card matrix, profile distribution, localization coverage, stable ids, and pack validity
 - `card-registry.test.js`: pack ownership, duplicate protection, and filtering
 - `card-selection.test.js`: matching semantics, candidate reports, and deterministic weighting

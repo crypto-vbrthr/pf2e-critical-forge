@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.2-dev
+
+- Added deterministic collision handling for newly created and duplicated card IDs, including the deliberately hostile case where Foundry returns the same random suffix repeatedly.
+- Card creation, individual duplication, protected-pack duplication, and protected-pack import now share the same explicit set of already-used IDs.
+- Added an end-to-end Card Editor regression test covering a protected core-card template, Effect Forge handoff, portable JSON export/import, world-setting persistence, live registry selection, Critical Card preview materialization, and Effect Engine compilation.
+- Added regression coverage proving protected cards remain read-only at the source while their editable copies receive world ownership metadata and distinct IDs.
+- The complete suite now contains 174 passing tests.
+- Module version increased to `0.6.2-dev`; public API and schema versions remain unchanged.
+
 ## 0.6.1-dev
 
 - Fixed the Effect Forge card-editing handoff missing its visible **Use for Card** / **Zur Karte übernehmen** action.
