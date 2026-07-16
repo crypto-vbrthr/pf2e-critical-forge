@@ -54,7 +54,7 @@ export function readAttackContext(item, {
   const itemTraits = getPath(item, "system.traits.value") ?? [];
   const otherTags = getPath(item, "system.traits.otherTags") ?? [];
   const strikeTraits = normalizeStrikeTraits(strike?.traits ?? strike?.weaponTraits ?? []);
-  const attackTraits = uniqueSlugs(
+  const baseAttackTraits = uniqueSlugs(
     input.attackTraits,
     itemTraits,
     otherTags,
@@ -79,6 +79,13 @@ export function readAttackContext(item, {
   const isRanged = explicitRanged ?? itemIsRanged ?? (rangeIncrement != null ? true : null);
   const isMelee = explicitMelee ?? itemIsMelee ?? (isRanged === true ? false : range === null ? true : null);
   const itemType = normalizeSlug(item?.type);
+  const isSpell = typeof input.isSpell === "boolean" ? input.isSpell : itemType === "spell";
+  const attackTraits = uniqueSlugs(
+    baseAttackTraits,
+    isMelee === true ? ["melee"] : [],
+    isRanged === true ? ["ranged"] : [],
+    isSpell ? ["spell"] : []
+  );
 
   return {
     item,
@@ -93,7 +100,7 @@ export function readAttackContext(item, {
       rangeIncrement,
       isMelee,
       isRanged,
-      isSpell: typeof input.isSpell === "boolean" ? input.isSpell : itemType === "spell",
+      isSpell,
       altUsage: normalizeSlug(firstDefined(input.altUsage, getPath(input, "message.flags.pf2e.context.altUsage"))) || null,
       selectedDamageType: selectedDamageType || null
     }

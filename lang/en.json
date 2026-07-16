@@ -574,7 +574,7 @@
       "Packs": {
         "Core": {
           "Title": "Critical Forge Core Pack",
-          "Description": "A small localized test-card collection for the critical-hit and fumble architecture."
+          "Description": "Balanced test library for critical hits and fumbles."
         }
       },
       "Cards": {
@@ -582,27 +582,131 @@
           "DeepCut": {
             "Title": "Deep Cut",
             "Description": "The blade opens a wound that refuses to close."
+          },
+          "Hamstrung": {
+            "Title": "Hamstrung",
+            "Description": "The slash bites into the leg and steals the target’s sure footing."
+          },
+          "TornGuard": {
+            "Title": "Torn Guard",
+            "Description": "The blade tears protection and posture apart."
+          },
+          "NumbedArm": {
+            "Title": "Numbed Arm",
+            "Description": "The hit leaves the weapon arm numb and heavy."
+          },
+          "BloodInEyes": {
+            "Title": "Blood in the Eyes",
+            "Description": "Blood runs into the eyes and turns clear sight into red streaks."
+          },
+          "ArmorRent": {
+            "Title": "Armor Rent",
+            "Description": "The cut opens a dangerous gap in the target’s protection."
+          },
+          "FlourishOfSteel": {
+            "Title": "Flourish of Steel",
+            "Description": "The hit ends in a motion so flawless that even the dust seems to applaud."
+          },
+          "SeveredStrap": {
+            "Title": "Severed Strap",
+            "Description": "A severed strap catches exactly where it will hinder the next step."
           }
         },
         "Piercing": {
           "Puncture": {
             "Title": "Puncture",
             "Description": "The point leaves a narrow but stubbornly bleeding wound."
+          },
+          "PinnedStep": {
+            "Title": "Pinned Step",
+            "Description": "The point catches foot or hem and nearly nails the next step in place."
+          },
+          "NerveStrike": {
+            "Title": "Nerve Strike",
+            "Description": "A precise thrust catches a nerve, turning movement unsteady."
+          },
+          "BreathStolen": {
+            "Title": "Breath Stolen",
+            "Description": "The thrust steals the target’s breath and one precious moment."
+          },
+          "WeaponArm": {
+            "Title": "Weapon Arm",
+            "Description": "The thrust forces the weapon arm into an awkward posture."
+          },
+          "ExposedJoint": {
+            "Title": "Exposed Joint",
+            "Description": "The point finds the seam where every following thrust hurts more."
+          },
+          "NeedleThreaded": {
+            "Title": "Needle Threaded",
+            "Description": "The point passes armor, clothing, and dignity with the same astonishing precision."
+          },
+          "StuckFast": {
+            "Title": "Stuck Fast",
+            "Description": "For one embarrassingly long heartbeat, the weapon sits where it should not."
           }
         },
         "Bludgeoning": {
           "RingingBlow": {
             "Title": "Ringing Blow",
             "Description": "The impact turns the next heartbeat into thunder."
+          },
+          "KnockedFlat": {
+            "Title": "Knocked Flat",
+            "Description": "The impact takes away the target’s footing, direction, and remaining dignity."
+          },
+          "RattledBones": {
+            "Title": "Rattled Bones",
+            "Description": "The blow travels through bone and muscle and drains away strength."
+          },
+          "Winded": {
+            "Title": "Winded",
+            "Description": "The force drives the air from the chest, making every step laborious."
+          },
+          "CrackedGuard": {
+            "Title": "Cracked Guard",
+            "Description": "The hit makes protection and bone crack in the same note."
+          },
+          "DizzyingImpact": {
+            "Title": "Dizzying Impact",
+            "Description": "The world needs a moment to stand still again."
+          },
+          "BellRinger": {
+            "Title": "Bell Ringer",
+            "Description": "A bell rings somewhere. Nobody has seen a bell."
+          },
+          "BootScoot": {
+            "Title": "Boot Scoot",
+            "Description": "The impact sends the target half a dance step in the wrong direction."
           }
         },
         "Generic": {
           "OffBalance": {
             "Title": "Off Balance",
             "Description": "The hit tears the target out of its stance."
+          },
+          "Opening": {
+            "Title": "Perfect Opening",
+            "Description": "For one moment, every defense stands open like a badly closed door."
+          },
+          "ShakenConfidence": {
+            "Title": "Shaken Confidence",
+            "Description": "The hit is so clean that the target doubts its own future."
+          },
+          "Momentum": {
+            "Title": "Momentum",
+            "Description": "The perfect hit gives the attacker a brief surge of unshakable confidence."
+          },
+          "SpectacularHit": {
+            "Title": "Spectacularly Unnecessary",
+            "Description": "The hit looks far more expensive than it mechanically needs to be."
+          },
+          "PerfectFollowThrough": {
+            "Title": "Perfect Follow-Through",
+            "Description": "The motion ends exactly where the next attack should begin."
           }
         },
-        "Fumble": {
+        "FumbleMelee": {
           "Overextended": {
             "Title": "Overextended",
             "Description": "The failed attack leaves the attacker exposed."
@@ -610,6 +714,74 @@
           "WeaponJolt": {
             "Title": "Weapon Jolt",
             "Description": "The miss sends a painful vibration through the attacker’s grip."
+          },
+          "TangledFeet": {
+            "Title": "Tangled Feet",
+            "Description": "For one moment, the attacker chiefly defeats their own footwork."
+          },
+          "OpenFlank": {
+            "Title": "Open Flank",
+            "Description": "The swing carries the guard away and leaves the side exposed."
+          },
+          "WildSwing": {
+            "Title": "Wild Swing",
+            "Description": "The attack pulls the body out of line and takes control with it."
+          },
+          "GrandGesture": {
+            "Title": "Grand Gesture",
+            "Description": "The weapon traces an impressive arc that merely passes the foe."
+          }
+        },
+        "FumbleRanged": {
+          "BadRelease": {
+            "Title": "Bad Release",
+            "Description": "The shot leaves a heartbeat too early and leaves the hand uncertain."
+          },
+          "ExposedPosition": {
+            "Title": "Exposed Position",
+            "Description": "While aiming, the shooter forgets that others can shoot back."
+          },
+          "RecoilStumble": {
+            "Title": "Recoil Stumble",
+            "Description": "Recoil and footing briefly disagree. The ground wins."
+          },
+          "SightlineLost": {
+            "Title": "Sightline Lost",
+            "Description": "String, smoke, or sleeve crosses the sightline at exactly the wrong moment."
+          },
+          "StringBurn": {
+            "Title": "String Burn",
+            "Description": "The string hits something at least, unfortunately the shooter’s own arm."
+          },
+          "ShakyAim": {
+            "Title": "Shaky Aim",
+            "Description": "After this miss, the sightline trembles like a nervous compass needle."
+          }
+        },
+        "Fumble": {
+          "WrongFooted": {
+            "Title": "Wrong-Footed",
+            "Description": "The failed attempt ends one step farther than planned and in the wrong direction."
+          },
+          "Rattled": {
+            "Title": "Rattled",
+            "Description": "The failure cuts deeper than expected and gnaws at courage for a moment."
+          },
+          "LostTempo": {
+            "Title": "Lost Tempo",
+            "Description": "The attack devours the fighter’s rhythm and leaves a gap in the next moment."
+          },
+          "AudienceApproval": {
+            "Title": "Polite Applause",
+            "Description": "Polite applause seems to come from somewhere. It was probably only a goblin."
+          },
+          "MomentOfDoubt": {
+            "Title": "Moment of Doubt",
+            "Description": "For one moment, every decision looks suspicious, especially the last one."
+          },
+          "LuckyEscape": {
+            "Title": "Surely Intentional",
+            "Description": "The attack misses so thoroughly that everyone briefly checks whether it was intentional."
           }
         }
       },
@@ -617,29 +789,135 @@
         "Slashing": {
           "DeepCut": {
             "Name": "Deep Cut"
+          },
+          "Hamstrung": {
+            "Name": "Hamstrung"
+          },
+          "TornGuard": {
+            "Name": "Torn Guard"
+          },
+          "NumbedArm": {
+            "Name": "Numbed Arm"
+          },
+          "BloodInEyes": {
+            "Name": "Blood in the Eyes"
+          },
+          "ArmorRent": {
+            "Name": "Armor Rent"
+          },
+          "SeveredStrap": {
+            "Name": "Severed Strap"
           }
         },
         "Piercing": {
           "Puncture": {
             "Name": "Puncture"
+          },
+          "PinnedStep": {
+            "Name": "Pinned Step"
+          },
+          "NerveStrike": {
+            "Name": "Nerve Strike"
+          },
+          "BreathStolen": {
+            "Name": "Breath Stolen"
+          },
+          "WeaponArm": {
+            "Name": "Weapon Arm"
+          },
+          "ExposedJoint": {
+            "Name": "Exposed Joint"
+          },
+          "StuckFast": {
+            "Name": "Stuck Fast"
           }
         },
         "Bludgeoning": {
           "RingingBlow": {
             "Name": "Ringing Blow"
+          },
+          "KnockedFlat": {
+            "Name": "Knocked Flat"
+          },
+          "RattledBones": {
+            "Name": "Rattled Bones"
+          },
+          "Winded": {
+            "Name": "Winded"
+          },
+          "CrackedGuard": {
+            "Name": "Cracked Guard"
+          },
+          "DizzyingImpact": {
+            "Name": "Dizzying Impact"
+          },
+          "BootScoot": {
+            "Name": "Boot Scoot"
           }
         },
         "Generic": {
           "OffBalance": {
             "Name": "Off Balance"
+          },
+          "Opening": {
+            "Name": "Perfect Opening"
+          },
+          "ShakenConfidence": {
+            "Name": "Shaken Confidence"
+          },
+          "Momentum": {
+            "Name": "Momentum"
+          },
+          "PerfectFollowThrough": {
+            "Name": "Perfect Follow-Through"
           }
         },
-        "Fumble": {
+        "FumbleMelee": {
           "Overextended": {
             "Name": "Overextended"
           },
           "WeaponJolt": {
             "Name": "Weapon Jolt"
+          },
+          "TangledFeet": {
+            "Name": "Tangled Feet"
+          },
+          "OpenFlank": {
+            "Name": "Open Flank"
+          },
+          "WildSwing": {
+            "Name": "Wild Swing"
+          }
+        },
+        "FumbleRanged": {
+          "BadRelease": {
+            "Name": "Bad Release"
+          },
+          "ExposedPosition": {
+            "Name": "Exposed Position"
+          },
+          "RecoilStumble": {
+            "Name": "Recoil Stumble"
+          },
+          "SightlineLost": {
+            "Name": "Sightline Lost"
+          },
+          "ShakyAim": {
+            "Name": "Shaky Aim"
+          }
+        },
+        "Fumble": {
+          "WrongFooted": {
+            "Name": "Wrong-Footed"
+          },
+          "Rattled": {
+            "Name": "Rattled"
+          },
+          "LostTempo": {
+            "Name": "Lost Tempo"
+          },
+          "MomentOfDoubt": {
+            "Name": "Moment of Doubt"
           }
         }
       }

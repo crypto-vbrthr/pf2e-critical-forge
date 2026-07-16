@@ -99,7 +99,7 @@ test("adapter reads PF2e weapon, actor, and roll data", () => {
   assert.equal(report.context.category, "criticalHit");
   assert.deepEqual(report.context.damageTypes, ["slashing"]);
   assert.deepEqual(report.context.weaponGroups, ["sword"]);
-  assert.deepEqual(report.context.attackTraits, ["versatile-p"]);
+  assert.deepEqual(report.context.attackTraits, ["versatile-p", "melee"]);
   assert.deepEqual(report.context.sourceTraits, ["human", "humanoid"]);
   assert.deepEqual(report.context.targetTraits, ["undead"]);
   assert.equal(report.metadata.source.level, 8);
@@ -137,7 +137,7 @@ test("adapter reads all NPC melee damage types", () => {
 
   const report = createPf2eSelectionContext({ category: "criticalHit", item });
   assert.deepEqual(report.context.damageTypes, ["piercing", "fire"]);
-  assert.deepEqual(report.context.attackTraits, ["reach-10"]);
+  assert.deepEqual(report.context.attackTraits, ["reach-10", "melee"]);
 });
 
 test("chat roll options provide a fallback when documents are unavailable", () => {
@@ -212,4 +212,30 @@ test("invalid adapter input never throws", () => {
   const report = createPf2eSelectionContext(null);
   assert.equal(report.valid, false);
   assert.equal(report.errors[0].code, "PF2E_CONTEXT_INPUT_INVALID");
+});
+
+test("adapter adds stable melee, ranged, and spell attack-mode traits", () => {
+  const melee = createPf2eSelectionContext({ category: "criticalFumble", item: weapon() });
+  const ranged = createPf2eSelectionContext({
+    category: "criticalFumble",
+    item: weapon({
+      isMelee: false,
+      isRanged: true,
+      system: {
+        ...weapon().system,
+        range: { increment: 60 }
+      }
+    })
+  });
+  const spell = createPf2eSelectionContext({
+    category: "criticalFumble",
+    isRanged: true,
+    isSpell: true,
+    attackTraits: ["attack"]
+  });
+
+  assert.equal(melee.context.attackTraits.includes("melee"), true);
+  assert.equal(ranged.context.attackTraits.includes("ranged"), true);
+  assert.equal(spell.context.attackTraits.includes("ranged"), true);
+  assert.equal(spell.context.attackTraits.includes("spell"), true);
 });

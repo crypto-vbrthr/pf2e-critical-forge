@@ -574,7 +574,7 @@
       "Packs": {
         "Core": {
           "Title": "Critical Forge Kernpaket",
-          "Description": "Kleine lokalisierte Testkartensammlung für die Architektur von kritischen Treffern und Patzern."
+          "Description": "Ausgewogene Testbibliothek für kritische Treffer und Patzer."
         }
       },
       "Cards": {
@@ -582,34 +582,206 @@
           "DeepCut": {
             "Title": "Tiefe Schnittwunde",
             "Description": "Die Klinge reißt eine Wunde, die sich nicht schließen will."
+          },
+          "Hamstrung": {
+            "Title": "In die Sehne",
+            "Description": "Der Hieb trifft tief ins Bein und raubt dem Ziel den sicheren Schritt."
+          },
+          "TornGuard": {
+            "Title": "Zerrissene Deckung",
+            "Description": "Die Klinge reißt Schutz und Haltung auseinander."
+          },
+          "NumbedArm": {
+            "Title": "Tauber Waffenarm",
+            "Description": "Der Treffer lässt den Waffenarm taub und schwer werden."
+          },
+          "BloodInEyes": {
+            "Title": "Blut in den Augen",
+            "Description": "Blut läuft in die Augen und verwandelt klare Sicht in rote Schlieren."
+          },
+          "ArmorRent": {
+            "Title": "Aufgerissener Schutz",
+            "Description": "Der Schnitt öffnet eine gefährliche Lücke im Schutz des Ziels."
+          },
+          "FlourishOfSteel": {
+            "Title": "Stählerne Verbeugung",
+            "Description": "Der Treffer endet in einer so makellosen Bewegung, dass selbst der Staub kurz applaudiert."
+          },
+          "SeveredStrap": {
+            "Title": "Durchtrennte Schnalle",
+            "Description": "Eine durchtrennte Schnalle verfängt sich dort, wo sie beim nächsten Schritt garantiert stört."
           }
         },
         "Piercing": {
           "Puncture": {
             "Title": "Durchbohrt",
             "Description": "Die Spitze hinterlässt eine schmale, aber hartnäckig blutende Wunde."
+          },
+          "PinnedStep": {
+            "Title": "Festgenagelter Schritt",
+            "Description": "Die Spitze trifft Fuß oder Saum und nagelt den nächsten Schritt beinahe fest."
+          },
+          "NerveStrike": {
+            "Title": "Nerventreffer",
+            "Description": "Ein präziser Stich trifft einen Nerv; die Bewegung wird fahrig."
+          },
+          "BreathStolen": {
+            "Title": "Atem geraubt",
+            "Description": "Der Stoß raubt dem Ziel den Atem und einen kostbaren Augenblick."
+          },
+          "WeaponArm": {
+            "Title": "Getroffener Waffenarm",
+            "Description": "Der Stich zwingt den Waffenarm in eine ungünstige Haltung."
+          },
+          "ExposedJoint": {
+            "Title": "Offenes Gelenk",
+            "Description": "Die Spitze findet die Nahtstelle, an der jeder weitere Stich besonders schmerzt."
+          },
+          "NeedleThreaded": {
+            "Title": "Nadel eingefädelt",
+            "Description": "Die Spitze passiert Rüstung, Kleidung und Würde mit derselben verblüffenden Genauigkeit."
+          },
+          "StuckFast": {
+            "Title": "Kurz festgesteckt",
+            "Description": "Für einen peinlich langen Herzschlag sitzt die Waffe dort fest, wo sie nicht hingehört."
           }
         },
         "Bludgeoning": {
           "RingingBlow": {
             "Title": "Dröhnender Treffer",
             "Description": "Der Einschlag verwandelt den nächsten Herzschlag in Donner."
+          },
+          "KnockedFlat": {
+            "Title": "Umgehauen",
+            "Description": "Der Einschlag nimmt dem Ziel Boden, Richtung und Restwürde."
+          },
+          "RattledBones": {
+            "Title": "Erschütterte Knochen",
+            "Description": "Der Schlag fährt durch Knochen und Muskeln und lässt die Kraft versickern."
+          },
+          "Winded": {
+            "Title": "Die Luft genommen",
+            "Description": "Die Wucht presst die Luft aus der Brust; jeder Schritt wird zäh."
+          },
+          "CrackedGuard": {
+            "Title": "Geborstene Deckung",
+            "Description": "Der Treffer lässt Schutz und Knochen im selben Ton knacken."
+          },
+          "DizzyingImpact": {
+            "Title": "Taumelnder Einschlag",
+            "Description": "Die Welt braucht einen Moment, um wieder stillzustehen."
+          },
+          "BellRinger": {
+            "Title": "Glockenschlag",
+            "Description": "Irgendwo läutet eine Glocke. Niemand hat eine Glocke gesehen."
+          },
+          "BootScoot": {
+            "Title": "Unfreiwilliger Tanzschritt",
+            "Description": "Der Einschlag versetzt das Ziel einen halben Tanzschritt in die falsche Richtung."
           }
         },
         "Generic": {
           "OffBalance": {
             "Title": "Aus dem Gleichgewicht",
             "Description": "Der Treffer reißt das Ziel aus seiner Haltung."
+          },
+          "Opening": {
+            "Title": "Perfekte Öffnung",
+            "Description": "Für einen Augenblick liegt jede Verteidigung offen wie eine schlecht geschlossene Tür."
+          },
+          "ShakenConfidence": {
+            "Title": "Erschüttertes Selbstvertrauen",
+            "Description": "Der Treffer ist so sauber, dass das Ziel an der eigenen Zukunft zweifelt."
+          },
+          "Momentum": {
+            "Title": "Treffermomentum",
+            "Description": "Der perfekte Treffer gibt dem Angreifer einen kurzen Schub unerschütterlicher Zuversicht."
+          },
+          "SpectacularHit": {
+            "Title": "Spektakulär unnötig",
+            "Description": "Der Treffer sieht viel teurer aus, als er mechanisch sein müsste."
+          },
+          "PerfectFollowThrough": {
+            "Title": "Perfektes Nachsetzen",
+            "Description": "Die Bewegung endet bereits dort, wo der nächste Angriff beginnen sollte."
           }
         },
-        "Fumble": {
+        "FumbleMelee": {
           "Overextended": {
             "Title": "Überstreckt",
             "Description": "Der misslungene Angriff lässt den Angreifer offen dastehen."
           },
           "WeaponJolt": {
-            "Title": "Waffenschlag",
+            "Title": "Schmerzhafter Rückschlag",
             "Description": "Der Fehlschlag jagt eine schmerzhafte Erschütterung durch den Griff des Angreifers."
+          },
+          "TangledFeet": {
+            "Title": "Beine verknotet",
+            "Description": "Der Angreifer besiegt für einen Moment vor allem die eigene Beinarbeit."
+          },
+          "OpenFlank": {
+            "Title": "Offene Flanke",
+            "Description": "Der Schwung trägt die Deckung mit sich fort und lässt die Seite offen."
+          },
+          "WildSwing": {
+            "Title": "Wilder Schwung",
+            "Description": "Der Angriff zieht den Körper aus der Linie und die Kontrolle gleich mit."
+          },
+          "GrandGesture": {
+            "Title": "Große Geste",
+            "Description": "Die Waffe beschreibt einen eindrucksvollen Bogen, der nur am Gegner vorbeiführt."
+          }
+        },
+        "FumbleRanged": {
+          "BadRelease": {
+            "Title": "Zu früh gelöst",
+            "Description": "Der Schuss löst sich einen Herzschlag zu früh und hinterlässt eine unsichere Hand."
+          },
+          "ExposedPosition": {
+            "Title": "Offene Schussposition",
+            "Description": "Beim Zielen vergisst der Schütze, dass auch andere zurückschießen können."
+          },
+          "RecoilStumble": {
+            "Title": "Rückstoßstolpern",
+            "Description": "Rückstoß und Stand sind sich kurz uneinig. Der Boden gewinnt."
+          },
+          "SightlineLost": {
+            "Title": "Sichtlinie verloren",
+            "Description": "Sehne, Rauch oder eigener Ärmel kreuzen genau im falschen Moment das Sichtfeld."
+          },
+          "StringBurn": {
+            "Title": "Sehnenkuss",
+            "Description": "Die Sehne trifft wenigstens etwas, leider den eigenen Arm."
+          },
+          "ShakyAim": {
+            "Title": "Zitterndes Visier",
+            "Description": "Nach diesem Fehlschuss zittert die Visierlinie wie eine nervöse Kompassnadel."
+          }
+        },
+        "Fumble": {
+          "WrongFooted": {
+            "Title": "Falscher Schritt",
+            "Description": "Der Fehlversuch endet einen Schritt weiter als geplant und in der falschen Richtung."
+          },
+          "Rattled": {
+            "Title": "Verunsichert",
+            "Description": "Der Misserfolg sitzt tiefer als erwartet und nagt für einen Moment am Mut."
+          },
+          "LostTempo": {
+            "Title": "Takt verloren",
+            "Description": "Der Angriff verschlingt den Takt des Kämpfers und lässt eine Lücke im nächsten Augenblick."
+          },
+          "AudienceApproval": {
+            "Title": "Höflicher Applaus",
+            "Description": "Aus irgendeiner Ecke scheint höflicher Applaus zu kommen. Vermutlich war es nur ein Goblin."
+          },
+          "MomentOfDoubt": {
+            "Title": "Moment des Zweifels",
+            "Description": "Für einen Augenblick wirkt jede Entscheidung verdächtig, besonders die letzte."
+          },
+          "LuckyEscape": {
+            "Title": "Sicher absichtlich",
+            "Description": "Der Angriff verfehlt so gründlich, dass alle Beteiligten kurz prüfen, ob das Absicht war."
           }
         }
       },
@@ -617,29 +789,135 @@
         "Slashing": {
           "DeepCut": {
             "Name": "Tiefe Schnittwunde"
+          },
+          "Hamstrung": {
+            "Name": "In die Sehne"
+          },
+          "TornGuard": {
+            "Name": "Zerrissene Deckung"
+          },
+          "NumbedArm": {
+            "Name": "Tauber Waffenarm"
+          },
+          "BloodInEyes": {
+            "Name": "Blut in den Augen"
+          },
+          "ArmorRent": {
+            "Name": "Aufgerissener Schutz"
+          },
+          "SeveredStrap": {
+            "Name": "Durchtrennte Schnalle"
           }
         },
         "Piercing": {
           "Puncture": {
             "Name": "Durchbohrt"
+          },
+          "PinnedStep": {
+            "Name": "Festgenagelter Schritt"
+          },
+          "NerveStrike": {
+            "Name": "Nerventreffer"
+          },
+          "BreathStolen": {
+            "Name": "Atem geraubt"
+          },
+          "WeaponArm": {
+            "Name": "Getroffener Waffenarm"
+          },
+          "ExposedJoint": {
+            "Name": "Offenes Gelenk"
+          },
+          "StuckFast": {
+            "Name": "Kurz festgesteckt"
           }
         },
         "Bludgeoning": {
           "RingingBlow": {
             "Name": "Dröhnender Treffer"
+          },
+          "KnockedFlat": {
+            "Name": "Umgehauen"
+          },
+          "RattledBones": {
+            "Name": "Erschütterte Knochen"
+          },
+          "Winded": {
+            "Name": "Die Luft genommen"
+          },
+          "CrackedGuard": {
+            "Name": "Geborstene Deckung"
+          },
+          "DizzyingImpact": {
+            "Name": "Taumelnder Einschlag"
+          },
+          "BootScoot": {
+            "Name": "Unfreiwilliger Tanzschritt"
           }
         },
         "Generic": {
           "OffBalance": {
             "Name": "Aus dem Gleichgewicht"
+          },
+          "Opening": {
+            "Name": "Perfekte Öffnung"
+          },
+          "ShakenConfidence": {
+            "Name": "Erschüttertes Selbstvertrauen"
+          },
+          "Momentum": {
+            "Name": "Treffermomentum"
+          },
+          "PerfectFollowThrough": {
+            "Name": "Perfektes Nachsetzen"
           }
         },
-        "Fumble": {
+        "FumbleMelee": {
           "Overextended": {
             "Name": "Überstreckt"
           },
           "WeaponJolt": {
-            "Name": "Waffenschlag"
+            "Name": "Schmerzhafter Rückschlag"
+          },
+          "TangledFeet": {
+            "Name": "Beine verknotet"
+          },
+          "OpenFlank": {
+            "Name": "Offene Flanke"
+          },
+          "WildSwing": {
+            "Name": "Wilder Schwung"
+          }
+        },
+        "FumbleRanged": {
+          "BadRelease": {
+            "Name": "Zu früh gelöst"
+          },
+          "ExposedPosition": {
+            "Name": "Offene Schussposition"
+          },
+          "RecoilStumble": {
+            "Name": "Rückstoßstolpern"
+          },
+          "SightlineLost": {
+            "Name": "Sichtlinie verloren"
+          },
+          "ShakyAim": {
+            "Name": "Zitterndes Visier"
+          }
+        },
+        "Fumble": {
+          "WrongFooted": {
+            "Name": "Falscher Schritt"
+          },
+          "Rattled": {
+            "Name": "Verunsichert"
+          },
+          "LostTempo": {
+            "Name": "Takt verloren"
+          },
+          "MomentOfDoubt": {
+            "Name": "Moment des Zweifels"
           }
         }
       }

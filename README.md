@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.5.8-dev` activates the **automatic PF2e attack-roll pipeline**. Critical hits and fumbles can be disabled, confirmed by the GM, or drawn automatically; trigger scopes still support all final critical results or only natural 20/1 results that also finish as critical success/failure. Card profiles, redraws, configurable visibility, and manual GM effect application remain intact.
+Version `0.5.9-dev` adds the first **48-card localized test library** on top of the automatic PF2e attack-roll pipeline. Critical hits and fumbles can be disabled, confirmed by the GM, or drawn automatically; trigger scopes support all final critical results or only natural 20/1 results that also finish as critical success/failure. Card profiles, redraws, configurable visibility, and manual GM effect application remain intact.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -18,6 +18,7 @@ The current engine includes:
 - versioned Critical Card and Card Pack schemas;
 - transactional Pack Registry and globally indexed Card Registry;
 - localized title, description, and effect-name resolution with fallbacks;
+- a 48-card core test library covering slashing, piercing, bludgeoning, generic hits, melee fumbles, ranged fumbles, and generic fumbles;
 - headless filter matching, tone/impact profile weighting, and transparent candidate reports;
 - a diagnostic PF2e Context Adapter and GM-only manual workbench for real chat messages;
 - localized result cards with configurable `blind`, `gm`, `public`, or `self` visibility;
@@ -75,6 +76,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/CARD_SCHEMA.md`](docs/CARD_SCHEMA.md): Critical Card data model and filter semantics
 - [`docs/CARD_PACKS.md`](docs/CARD_PACKS.md): pack registration and extension model
 - [`docs/CARD_SELECTION.md`](docs/CARD_SELECTION.md): candidate evaluation and weighted selection
+- [`docs/CORE_CARD_LIBRARY.md`](docs/CORE_CARD_LIBRARY.md): bundled 48-card test-library matrix and content boundaries
 - [`docs/PF2E_CONTEXT_ADAPTER.md`](docs/PF2E_CONTEXT_ADAPTER.md): PF2e document-to-context translation and diagnostics
 - [`docs/CRITICAL_DIAGNOSTICS.md`](docs/CRITICAL_DIAGNOSTICS.md): manual chat-message diagnostic workbench and report format
 - [`docs/CRITICAL_CARD_PREVIEW.md`](docs/CRITICAL_CARD_PREVIEW.md): result chat cards, visibility, stored flags, redraws, and effect application

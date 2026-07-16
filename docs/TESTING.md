@@ -58,7 +58,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 153 tests covering:
+The suite contains 161 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -80,7 +80,7 @@ The suite contains 153 tests covering:
 - manual diagnostic candidate evaluation, chat-message discovery, Item UUID resolution, target handling, and drop validation;
 - localized critical-card effect summaries, preview presentation data, ChatMessage payloads, structured preview flags, and public preview APIs.
 
-Coverage is a diagnostic rather than a release gate. Version `0.5.8-dev` measures 90.79% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, diagnostics, automatic roll pipeline, result-card visibility, and manual application services.
+Coverage is a diagnostic rather than a release gate. Version `0.5.9-dev` measures 91.86% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, the 48-card core test library, diagnostics, automatic roll pipeline, result-card visibility, and manual application services.
 
 ## Foundry mock
 
@@ -157,6 +157,7 @@ Those paths should be checked in a Foundry test world using a short release chec
 ## Critical Forge architecture tests
 
 - `card-schema.test.js`: card/pack normalization and validation
+- `core-card-library.test.js`: bundled-card matrix, profile distribution, localization coverage, stable ids, and pack validity
 - `card-registry.test.js`: pack ownership, duplicate protection, and filtering
 - `card-selection.test.js`: matching semantics, candidate reports, and deterministic weighting
 - `card-localization.test.js`: translation fallbacks and Effect Definition materialization

@@ -38,7 +38,7 @@ critical-forge/
 ├─ adapters/pf2e/       PF2e data readers and diagnostic context adapter
 ├─ diagnostics/          manual message resolution, diagnostic service, and workbench UI
 ├─ presentation/         effect summaries, ChatMessage publication, visibility, and manual application
-├─ core/                 bundled architecture test pack
+├─ core/                 bundled localized test-card library
 ├─ localization/         key resolution and Effect materialization
 ├─ registry/             pack and card registries
 ├─ schema/               normalization and validation

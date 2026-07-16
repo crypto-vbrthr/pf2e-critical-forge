@@ -616,7 +616,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack-roll processing, redraws, and GM-confirmed effect application are available through `api.cards`. Version 0.5.8-dev registers the live roll hook while preserving all headless services for tests and integrations.
+Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack-roll processing, redraws, and GM-confirmed effect application are available through `api.cards`. Version 0.5.9-dev adds the localized 48-card core test library while preserving the live roll hook and all headless services for tests and integrations.
 
 
 ### Profiles and trigger policies

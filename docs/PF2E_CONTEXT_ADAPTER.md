@@ -44,7 +44,7 @@ const report = api.cards.createContext(input, { system: "pf2e" });
   },
   metadata: {
     adapter: "pf2e",
-    adapterVersion: "1.0.0",
+    adapterVersion: "1.1.0",
     degreeOfSuccess: {
       index: 3,
       key: "criticalSuccess",
@@ -72,11 +72,22 @@ Explicit fields supplied by the caller are combined with discovered PF2e data. T
 - degree of success from explicit values, a CheckRoll, or PF2e chat flags;
 - damage types from weapon data, selected versatile/modular damage, NPC melee damage rolls, damage-message flags, or roll options;
 - weapon groups and attack traits from the item, strike, or roll options;
+- synthetic `melee`, `ranged`, and `spell` attack traits when the resolved attack mode supports them;
 - source and target traits from Actors or `self:trait:*` and `target:trait:*` roll options;
 - actor identity, level, size, and token references;
 - item identity, weapon category, base item, range mode, and alternative usage.
 
 A selected versatile or modular damage type replaces the weapon's base damage type for the primary attack context.
+
+## Synthetic attack-mode traits
+
+Adapter version `1.1.0` appends stable mode traits to `context.attackTraits`:
+
+- `melee` when the attack is resolved as melee;
+- `ranged` when the attack is resolved as ranged;
+- `spell` when the attack is resolved as a spell attack.
+
+These values do not replace native item traits. They give card packs a stable filter surface without enumerating weapon groups or depending on private PF2e strike objects. If the attack mode cannot be resolved, no synthetic mode trait is invented.
 
 ## Degree of success mapping
 

@@ -6,7 +6,7 @@ import { createAdapterReport, diagnostic } from "./context-diagnostics.js";
 import { getPath, uniqueSlugs } from "./context-utils.js";
 import { readRollResult } from "./roll-result-reader.js";
 
-export const PF2E_CONTEXT_ADAPTER_VERSION = "1.0.0";
+export const PF2E_CONTEXT_ADAPTER_VERSION = "1.1.0";
 
 export function createPf2eSelectionContext(input = {}) {
   if (!input || typeof input !== "object" || Array.isArray(input)) {

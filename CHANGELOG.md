@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.9-dev
+
+- Replaced the six architecture samples with a localized 48-card core test library.
+- Added 30 critical-hit cards: eight each for slashing, piercing, and bludgeoning damage plus six generic results.
+- Added 18 critical-fumble cards: six melee, six ranged, and six generic results.
+- Distributed cards across neutral, serious, dramatic, and humorous tones and across narrative, light, moderate, and strong impacts so every profile has meaningful choices.
+- Added short-lived conditions, movement penalties, attack and AC modifiers, temporary Hit Points, weaknesses, persistent bleed, and narrative-only outcomes while avoiding permanent injuries or automatic item destruction.
+- Added stable synthetic `melee`, `ranged`, and `spell` attack traits to PF2e Context Adapter version `1.1.0` for mode-specific card filtering.
+- Preserved all six previously published sample card ids for draw-history and API compatibility.
+- Split bundled card data into focused files by damage type and fumble mode, backed by a shared core-card factory.
+- Added `docs/CORE_CARD_LIBRARY.md` with the library matrix, profile distribution, and content boundaries.
+- Added regression tests for card counts, distribution, pack validity, localization coverage, stable ids, attack-mode filtering, and adapter traits. The suite now contains 161 passing tests with 91.86% measured line coverage.
+- Module version increased to `0.5.9-dev`; public API and Effect/Card schema versions remain unchanged.
+
 ## 0.5.8-dev
 
 - Added the first automatic PF2e attack-roll hook through Foundry's `createChatMessage` document hook.
