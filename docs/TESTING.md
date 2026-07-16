@@ -86,7 +86,7 @@ The suite contains 181 tests covering:
 - deterministic collision-free IDs for new cards, duplicated cards, duplicated packs, and imported protected packs;
 - dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation.
 
-Coverage is a diagnostic rather than a release gate. Version `0.7.0-dev` measures 92.46% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 72-card core test library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, and manual application services.
+Coverage is a diagnostic rather than a release gate. Version `0.7.1-dev` measures 92.68% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core test library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, and manual application services.
 
 ## Foundry mock
 

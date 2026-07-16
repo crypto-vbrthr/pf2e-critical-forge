@@ -882,6 +882,30 @@
           "ExcessiveSparkles": {
             "Title": "Übertriebener Funkenregen",
             "Description": "Der Zauber gelingt mit so viel optischem Aufwand, dass eigentlich eine eigene Bühnencrew nötig wäre."
+          },
+          "FrozenInstant": {
+            "Title": "Gefrorener Augenblick",
+            "Description": "Die Kälte schließt sich für einen geraubten Herzschlag um das Ziel und bricht seinen Takt."
+          },
+          "CorrosiveOpening": {
+            "Title": "Ätzende Bresche",
+            "Description": "Die Magie frisst eine verwundbare Stelle frei, die noch einen Augenblick offen bleibt."
+          },
+          "BlindingDischarge": {
+            "Title": "Blendender Überschlag",
+            "Description": "Der Treffer entlädt sich in einem weißglühenden Blitz, der Sterne vor den Augen des Ziels tanzen lässt."
+          },
+          "BrokenDefense": {
+            "Title": "Gebrochene Abwehr",
+            "Description": "Der Zauber löst für einen Augenblick die magischen und körperlichen Schutzmuster des Ziels auf."
+          },
+          "HarmonicFocus": {
+            "Title": "Harmonischer Fokus",
+            "Description": "Die makellose Formel schwingt weiter und schärft den nächsten Zauber des Wirkenden."
+          },
+          "ProtectiveAfterglow": {
+            "Title": "Schützender Nachhall",
+            "Description": "Restmagie legt sich als dünner Schutzmantel um den Wirkenden."
           }
         },
         "SpellFumble": {
@@ -908,6 +932,30 @@
           "SpectacularFizzle": {
             "Title": "Spektakuläres Verpuffen",
             "Description": "Der Zauber erzeugt einen winzigen Funken und eine völlig unangemessene Menge Rauch."
+          },
+          "TwistedGeometry": {
+            "Title": "Verdrehte Geometrie",
+            "Description": "Der Raum faltet sich falsch um den Wirkenden und stiehlt ihm einen Splitter des nächsten Augenblicks."
+          },
+          "ScorchedFocus": {
+            "Title": "Versengter Fokus",
+            "Description": "Hitze schlägt durch den Zauber zurück und macht jede Bewegung schmerzhaft unsicher."
+          },
+          "FrozenGesture": {
+            "Title": "Gefrorene Geste",
+            "Description": "Kälte verriegelt die Haltung des Wirkenden und zerrt an jedem Schritt."
+          },
+          "MentalEcho": {
+            "Title": "Gedankenecho",
+            "Description": "Der letzte Gedanke des Zaubers kehrt mit Zähnen zurück."
+          },
+          "ReboundingGlare": {
+            "Title": "Zurückschlagendes Gleißen",
+            "Description": "Das Leuchten des Zaubers spiegelt sich nach innen und füllt den Blick des Wirkenden mit Nachbildern."
+          },
+          "ApplauseSign": {
+            "Title": "Applauszeichen",
+            "Description": "Der Zauber scheitert so theatralisch, dass irgendwo ein unsichtbarer Bühnenhelfer zum Applaus auffordert."
           }
         },
         "SaveSuccess": {
@@ -934,6 +982,30 @@
           "Unimpressed": {
             "Title": "Völlig unbeeindruckt",
             "Description": "Der Effekt erscheint dramatisch und erhält die emotionale Reaktion einer geschlossenen Tür."
+          },
+          "PerfectFooting": {
+            "Title": "Perfekter Stand",
+            "Description": "Die Kreatur findet genau den richtigen Stand und bewahrt diesen Rhythmus für die nächste Gefahr."
+          },
+          "IronPulse": {
+            "Title": "Eiserner Puls",
+            "Description": "Der Körper beantwortet den Angriff mit einem ruhigeren, härteren Rhythmus."
+          },
+          "LucidDefiance": {
+            "Title": "Klarer Widerstand",
+            "Description": "Die Kreatur erkennt den Eindringling als das, was er ist, und verweigert ihm den Zutritt."
+          },
+          "BattleHardened": {
+            "Title": "Vom Kampf gehärtet",
+            "Description": "Die perfekte Abwehr verwandelt den Schmerz in Bereitschaft für das, was als Nächstes kommt."
+          },
+          "SecondWind": {
+            "Title": "Zweiter Atem",
+            "Description": "Die Kreatur entkommt dem Effekt mit einem plötzlichen Schub neuer Kraft."
+          },
+          "NotToday": {
+            "Title": "Heute nicht",
+            "Description": "Der Effekt legt seine Referenzen vor. Die Kreatur lehnt den Termin ab."
           }
         },
         "SaveFailure": {
@@ -960,6 +1032,30 @@
           "PainfullyObvious": {
             "Title": "Schmerzhaft offensichtlich",
             "Description": "Es braucht keinen Experten, um festzustellen, dass dies schlecht gelaufen ist."
+          },
+          "TangledRecovery": {
+            "Title": "Verpatzte Korrektur",
+            "Description": "Nach dem misslungenen Ausweichen kommt jede Korrektur einen Herzschlag zu spät."
+          },
+          "DrainedReserves": {
+            "Title": "Erschöpfte Reserven",
+            "Description": "Der Körper verbraucht beim Widerstand zu viel Kraft und hat für die nächste Anstrengung nichts übrig."
+          },
+          "EchoingDread": {
+            "Title": "Nachhallende Furcht",
+            "Description": "Die gescheiterte Abwehr lässt den Geist immer wieder die schlimmstmögliche Antwort geben."
+          },
+          "OpenDefense": {
+            "Title": "Offene Abwehr",
+            "Description": "Die Kreatur wirft sich so vollständig in die gescheiterte Abwehr, dass ihre Deckung zusammenbricht."
+          },
+          "MagicalSaturation": {
+            "Title": "Magische Übersättigung",
+            "Description": "Der Zauber dringt zu tief in die Kreatur ein und macht sie gefährlich empfänglich für weitere Magie."
+          },
+          "WrongInstinct": {
+            "Title": "Jeder falsche Instinkt",
+            "Description": "Die Kreatur weicht hinein, stemmt sich dagegen und wählt irgendwie auch noch den unhilfreichsten Gedanken."
           }
         }
       },
@@ -1113,6 +1209,24 @@
           },
           "PrimalSurge": {
             "Name": "Urgewaltiger Schub"
+          },
+          "FrozenInstant": {
+            "Name": "Gefrorener Augenblick"
+          },
+          "CorrosiveOpening": {
+            "Name": "Ätzende Bresche"
+          },
+          "BlindingDischarge": {
+            "Name": "Blendender Überschlag"
+          },
+          "BrokenDefense": {
+            "Name": "Gebrochene Abwehr"
+          },
+          "HarmonicFocus": {
+            "Name": "Harmonischer Fokus"
+          },
+          "ProtectiveAfterglow": {
+            "Name": "Schützender Nachhall"
           }
         },
         "SpellFumble": {
@@ -1130,6 +1244,21 @@
           },
           "PrimalRecoil": {
             "Name": "Urgewaltiger Rückstoß"
+          },
+          "TwistedGeometry": {
+            "Name": "Verdrehte Geometrie"
+          },
+          "ScorchedFocus": {
+            "Name": "Versengter Fokus"
+          },
+          "FrozenGesture": {
+            "Name": "Gefrorene Geste"
+          },
+          "MentalEcho": {
+            "Name": "Gedankenecho"
+          },
+          "ReboundingGlare": {
+            "Name": "Zurückschlagendes Gleißen"
           }
         },
         "SaveSuccess": {
@@ -1147,6 +1276,21 @@
           },
           "DefensiveMomentum": {
             "Name": "Defensiver Schwung"
+          },
+          "PerfectFooting": {
+            "Name": "Perfekter Stand"
+          },
+          "IronPulse": {
+            "Name": "Eiserner Puls"
+          },
+          "LucidDefiance": {
+            "Name": "Klarer Widerstand"
+          },
+          "BattleHardened": {
+            "Name": "Vom Kampf gehärtet"
+          },
+          "SecondWind": {
+            "Name": "Zweiter Atem"
           }
         },
         "SaveFailure": {
@@ -1164,6 +1308,21 @@
           },
           "Staggered": {
             "Name": "Ins Taumeln geraten"
+          },
+          "TangledRecovery": {
+            "Name": "Verpatzte Korrektur"
+          },
+          "DrainedReserves": {
+            "Name": "Erschöpfte Reserven"
+          },
+          "EchoingDread": {
+            "Name": "Nachhallende Furcht"
+          },
+          "OpenDefense": {
+            "Name": "Offene Abwehr"
+          },
+          "MagicalSaturation": {
+            "Name": "Magische Übersättigung"
           }
         }
       }

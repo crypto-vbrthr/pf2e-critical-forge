@@ -41,13 +41,13 @@ function localizeValue(tree, key) {
 }
 
 test("core test library contains the intended hit and fumble matrix", () => {
-  assert.equal(cards.length, 72);
+  assert.equal(cards.length, 96);
   assert.equal(cards.filter((card) => card.category === "criticalHit").length, 30);
   assert.equal(cards.filter((card) => card.category === "criticalFumble").length, 18);
-  assert.equal(cards.filter((card) => card.category === "spellCriticalHit").length, 6);
-  assert.equal(cards.filter((card) => card.category === "spellCriticalFumble").length, 6);
-  assert.equal(cards.filter((card) => card.category === "savingThrowCriticalSuccess").length, 6);
-  assert.equal(cards.filter((card) => card.category === "savingThrowCriticalFailure").length, 6);
+  assert.equal(cards.filter((card) => card.category === "spellCriticalHit").length, 12);
+  assert.equal(cards.filter((card) => card.category === "spellCriticalFumble").length, 12);
+  assert.equal(cards.filter((card) => card.category === "savingThrowCriticalSuccess").length, 12);
+  assert.equal(cards.filter((card) => card.category === "savingThrowCriticalFailure").length, 12);
 
   for (const damageType of ["slashing", "piercing", "bludgeoning"]) {
     assert.equal(cards.filter((card) =>
@@ -88,18 +88,52 @@ test("melee and ranged fumble filters keep their own six cards plus generic fall
   assert.equal(ranged.some((id) => id.includes(".melee.")), false);
 });
 
+
+test("expanded spell pools retain generic fallbacks and gain focused matches", () => {
+  const eligible = (category, context = {}) => cards.filter((card) => matchCard(card, {
+    category,
+    ...context
+  }).eligible);
+
+  assert.equal(eligible("spellCriticalHit").length, 4);
+  assert.equal(eligible("spellCriticalFumble").length, 4);
+  assert.equal(eligible("spellCriticalHit", {
+    spellTraditions: ["arcane"],
+    spellTraits: ["cold"]
+  }).length, 6);
+  assert.equal(eligible("spellCriticalFumble", {
+    spellTraditions: ["arcane"],
+    spellTraits: ["fire"]
+  }).length, 6);
+});
+
+test("expanded saving-throw pools cover every save type and spell-specific failures", () => {
+  const eligible = (category, saveType, extra = {}) => cards.filter((card) => matchCard(card, {
+    category,
+    saveTypes: [saveType],
+    ...extra
+  }).eligible);
+
+  for (const saveType of ["reflex", "fortitude", "will"]) {
+    assert.equal(eligible("savingThrowCriticalSuccess", saveType).length, 8);
+    assert.equal(eligible("savingThrowCriticalFailure", saveType).length, 7);
+    assert.equal(eligible("savingThrowCriticalFailure", saveType, {
+      spellTraditions: ["arcane"]
+    }).length, 8);
+  }
+});
 test("core test library has enough material for every tone and impact profile", () => {
   assert.deepEqual(countBy(["neutral", "serious", "dramatic", "humorous"], "tone"), {
-    neutral: 11,
-    serious: 20,
-    dramatic: 21,
-    humorous: 20
+    neutral: 17,
+    serious: 28,
+    dramatic: 28,
+    humorous: 23
   });
   assert.deepEqual(countBy(["narrative", "light", "moderate", "strong"], "impact"), {
-    narrative: 12,
-    light: 26,
-    moderate: 22,
-    strong: 12
+    narrative: 15,
+    light: 34,
+    moderate: 31,
+    strong: 16
   });
 });
 

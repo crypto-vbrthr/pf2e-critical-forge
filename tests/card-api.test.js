@@ -14,7 +14,7 @@ test("public card API exposes registered packs, cards, and schema versions", () 
   assert.equal(api.schemaVersion, 1);
   assert.equal(api.packSchemaVersion, 1);
   assert.equal(api.getPack("core").id, "core");
-  assert.equal(api.list({ packId: "core" }).length, 72);
+  assert.equal(api.list({ packId: "core" }).length, 96);
 });
 
 test("public card API validates malformed input without throwing", () => {

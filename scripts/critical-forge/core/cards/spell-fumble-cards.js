@@ -100,5 +100,103 @@ export const CARDS = Object.freeze([
     tags: ["spell", "flourish"],
     filters: {},
     effect: null
+  }),
+  defineCoreCard({
+    id: "spell-fumble.twisted-geometry",
+    namespace: "SpellFumble",
+    key: "TwistedGeometry",
+    category: "spellCriticalFumble",
+    tone: "dramatic",
+    impact: "strong",
+    fallbackTitle: "Twisted Geometry",
+    fallbackDescription: "Space folds the wrong way around the caster and steals a fragment of the next moment.",
+    tags: ["spell", "control", "backlash"],
+    filters: {},
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "condition", slug: "slowed", value: 1 }]
+    }
+  }),
+  defineCoreCard({
+    id: "spell-fumble.scorched-focus",
+    namespace: "SpellFumble",
+    key: "ScorchedFocus",
+    category: "spellCriticalFumble",
+    tone: "serious",
+    impact: "moderate",
+    fallbackTitle: "Scorched Focus",
+    fallbackDescription: "Heat lashes back through the spell and leaves the caster's movements painfully uncertain.",
+    tags: ["spell", "fire", "backlash"],
+    filters: { spellTraits: ["fire"] },
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "condition", slug: "clumsy", value: 1 }]
+    }
+  }),
+  defineCoreCard({
+    id: "spell-fumble.frozen-gesture",
+    namespace: "SpellFumble",
+    key: "FrozenGesture",
+    category: "spellCriticalFumble",
+    tone: "neutral",
+    impact: "light",
+    fallbackTitle: "Frozen Gesture",
+    fallbackDescription: "Cold locks into the caster's stance and drags at every step.",
+    tags: ["spell", "cold", "backlash"],
+    filters: { spellTraits: ["cold"] },
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "movement", movementType: "all", value: -5, modifierType: "circumstance" }]
+    }
+  }),
+  defineCoreCard({
+    id: "spell-fumble.mental-echo",
+    namespace: "SpellFumble",
+    key: "MentalEcho",
+    category: "spellCriticalFumble",
+    tone: "serious",
+    impact: "moderate",
+    fallbackTitle: "Mental Echo",
+    fallbackDescription: "The spell's final thought returns with teeth.",
+    tags: ["spell", "mental", "emotion", "backlash"],
+    filters: { spellTraits: ["mental"], excludedSourceTraits: ["mindless"] },
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "condition", slug: "frightened", value: 1 }]
+    }
+  }),
+  defineCoreCard({
+    id: "spell-fumble.rebounding-glare",
+    namespace: "SpellFumble",
+    key: "ReboundingGlare",
+    category: "spellCriticalFumble",
+    tone: "dramatic",
+    impact: "light",
+    fallbackTitle: "Rebounding Glare",
+    fallbackDescription: "The spell's brilliance reflects inward and fills the caster's sight with afterimages.",
+    tags: ["spell", "light", "sensory", "backlash"],
+    filters: { spellTraits: ["light"] },
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "condition", slug: "dazzled" }]
+    }
+  }),
+  defineCoreCard({
+    id: "spell-fumble.applause-sign",
+    namespace: "SpellFumble",
+    key: "ApplauseSign",
+    category: "spellCriticalFumble",
+    tone: "humorous",
+    impact: "narrative",
+    fallbackTitle: "Applause Sign",
+    fallbackDescription: "The magic fails so theatrically that an invisible stagehand appears to be cueing applause.",
+    tags: ["spell", "flourish"],
+    filters: {},
+    effect: null
   })
 ]);

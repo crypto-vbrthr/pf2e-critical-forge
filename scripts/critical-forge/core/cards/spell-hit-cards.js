@@ -100,5 +100,107 @@ export const CARDS = Object.freeze([
     tags: ["spell", "flourish"],
     filters: {},
     effect: null
+  }),
+  defineCoreCard({
+    id: "spell-hit.frozen-instant",
+    namespace: "SpellHit",
+    key: "FrozenInstant",
+    category: "spellCriticalHit",
+    tone: "dramatic",
+    impact: "strong",
+    fallbackTitle: "Frozen Instant",
+    fallbackDescription: "Cold closes around the target for one stolen heartbeat and breaks its rhythm.",
+    tags: ["spell", "cold", "control"],
+    filters: { spellTraits: ["cold"] },
+    effect: {
+      target: "target",
+      duration: ONE_ROUND,
+      components: [{ type: "condition", slug: "slowed", value: 1 }]
+    }
+  }),
+  defineCoreCard({
+    id: "spell-hit.corrosive-opening",
+    namespace: "SpellHit",
+    key: "CorrosiveOpening",
+    category: "spellCriticalHit",
+    tone: "serious",
+    impact: "moderate",
+    fallbackTitle: "Corrosive Opening",
+    fallbackDescription: "The magic eats open a vulnerable seam that remains exposed for a moment.",
+    tags: ["spell", "acid", "vulnerability"],
+    filters: { spellTraits: ["acid"] },
+    effect: {
+      target: "target",
+      duration: ONE_ROUND,
+      components: [{ type: "weakness", weaknessType: "acid", value: 2 }]
+    }
+  }),
+  defineCoreCard({
+    id: "spell-hit.blinding-discharge",
+    namespace: "SpellHit",
+    key: "BlindingDischarge",
+    category: "spellCriticalHit",
+    tone: "dramatic",
+    impact: "moderate",
+    fallbackTitle: "Blinding Discharge",
+    fallbackDescription: "The hit erupts in a white-hot flash that leaves stars dancing across the target's sight.",
+    tags: ["spell", "electricity", "sensory"],
+    filters: { spellTraits: ["electricity"] },
+    effect: {
+      target: "target",
+      duration: ONE_ROUND,
+      components: [{ type: "condition", slug: "dazzled" }]
+    }
+  }),
+  defineCoreCard({
+    id: "spell-hit.broken-defense",
+    namespace: "SpellHit",
+    key: "BrokenDefense",
+    category: "spellCriticalHit",
+    tone: "neutral",
+    impact: "moderate",
+    fallbackTitle: "Broken Defense",
+    fallbackDescription: "The spell briefly unravels the target's magical and physical defenses.",
+    tags: ["spell", "debuff"],
+    filters: {},
+    effect: {
+      target: "target",
+      duration: ONE_ROUND,
+      components: [{ type: "modifier", selector: "saving-throw", value: -1, modifierType: "circumstance", predicate: [] }]
+    }
+  }),
+  defineCoreCard({
+    id: "spell-hit.harmonic-focus",
+    namespace: "SpellHit",
+    key: "HarmonicFocus",
+    category: "spellCriticalHit",
+    tone: "serious",
+    impact: "light",
+    fallbackTitle: "Harmonic Focus",
+    fallbackDescription: "The flawless formula continues to resonate and sharpens the caster's next spell.",
+    tags: ["spell", "boon"],
+    filters: {},
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "modifier", selector: "spell-dc", value: 1, modifierType: "circumstance", predicate: [] }]
+    }
+  }),
+  defineCoreCard({
+    id: "spell-hit.protective-afterglow",
+    namespace: "SpellHit",
+    key: "ProtectiveAfterglow",
+    category: "spellCriticalHit",
+    tone: "neutral",
+    impact: "light",
+    fallbackTitle: "Protective Afterglow",
+    fallbackDescription: "Residual magic settles around the caster in a thin protective mantle.",
+    tags: ["spell", "boon", "defense"],
+    filters: {},
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "modifier", selector: "ac", value: 1, modifierType: "circumstance", predicate: [] }]
+    }
   })
 ]);

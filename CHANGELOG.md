@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.7.1-dev
+
+- Added 24 localized playtest cards, increasing the bundled core library from 72 to 96 cards.
+- Expanded critical spell hits, critical spell fumbles, critically successful saving throws, and critically failed saving throws from 6 to 12 cards each.
+- Added generic spell fallbacks plus focused cards for acid, cold, electricity, fire, light, and mental spell traits.
+- Added additional short-lived spell boons, vulnerabilities, sensory effects, control effects, and caster backlash results.
+- Added a second focused result for Reflex, Fortitude, and Will in both saving-throw categories.
+- Added a spell-specific critically failed saving-throw card for recognized arcane, divine, occult, or primal effects.
+- Added regression coverage for generic spell fallback pools, tradition/trait-specific expansion, every save type, and spell-specific save failures.
+- The complete suite now contains 183 passing tests with 92.68% measured line coverage.
+- Module and bundled core-pack versions increased to `0.7.1-dev` and `0.7.1`; public API and schema versions remain unchanged.
+
 ## 0.7.0-dev
 
 - Added four Critical Card categories: `spellCriticalHit`, `spellCriticalFumble`, `savingThrowCriticalSuccess`, and `savingThrowCriticalFailure`.

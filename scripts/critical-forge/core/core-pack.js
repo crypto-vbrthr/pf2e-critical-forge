@@ -18,7 +18,7 @@ export const CORE_CRITICAL_CARD_PACK = Object.freeze({
   descriptionKey: "PF2E_CRITICAL_FORGE.CriticalForge.Packs.Core.Description",
   fallbackTitle: "Critical Forge Core",
   fallbackDescription: "Balanced test library for critical hits and fumbles.",
-  version: "0.7.0",
+  version: "0.7.1",
   sourceModule: "pf2e-critical-forge",
   priority: 0,
   enabled: true,

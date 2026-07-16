@@ -882,6 +882,30 @@
           "ExcessiveSparkles": {
             "Title": "Excessive Sparkles",
             "Description": "The spell succeeds with enough visual flourish to require its own stage crew."
+          },
+          "FrozenInstant": {
+            "Title": "Frozen Instant",
+            "Description": "Cold closes around the target for one stolen heartbeat and breaks its rhythm."
+          },
+          "CorrosiveOpening": {
+            "Title": "Corrosive Opening",
+            "Description": "The magic eats open a vulnerable seam that remains exposed for a moment."
+          },
+          "BlindingDischarge": {
+            "Title": "Blinding Discharge",
+            "Description": "The hit erupts in a white-hot flash that leaves stars dancing across the target's sight."
+          },
+          "BrokenDefense": {
+            "Title": "Broken Defense",
+            "Description": "The spell briefly unravels the target's magical and physical defenses."
+          },
+          "HarmonicFocus": {
+            "Title": "Harmonic Focus",
+            "Description": "The flawless formula continues to resonate and sharpens the caster's next spell."
+          },
+          "ProtectiveAfterglow": {
+            "Title": "Protective Afterglow",
+            "Description": "Residual magic settles around the caster in a thin protective mantle."
           }
         },
         "SpellFumble": {
@@ -908,6 +932,30 @@
           "SpectacularFizzle": {
             "Title": "Spectacular Fizzle",
             "Description": "The spell produces one tiny spark and an entirely unreasonable amount of smoke."
+          },
+          "TwistedGeometry": {
+            "Title": "Twisted Geometry",
+            "Description": "Space folds the wrong way around the caster and steals a fragment of the next moment."
+          },
+          "ScorchedFocus": {
+            "Title": "Scorched Focus",
+            "Description": "Heat lashes back through the spell and leaves the caster's movements painfully uncertain."
+          },
+          "FrozenGesture": {
+            "Title": "Frozen Gesture",
+            "Description": "Cold locks into the caster's stance and drags at every step."
+          },
+          "MentalEcho": {
+            "Title": "Mental Echo",
+            "Description": "The spell's final thought returns with teeth."
+          },
+          "ReboundingGlare": {
+            "Title": "Rebounding Glare",
+            "Description": "The spell's brilliance reflects inward and fills the caster's sight with afterimages."
+          },
+          "ApplauseSign": {
+            "Title": "Applause Sign",
+            "Description": "The magic fails so theatrically that an invisible stagehand appears to be cueing applause."
           }
         },
         "SaveSuccess": {
@@ -934,6 +982,30 @@
           "Unimpressed": {
             "Title": "Entirely Unimpressed",
             "Description": "The effect arrives dramatically and receives the emotional response of a closed door."
+          },
+          "PerfectFooting": {
+            "Title": "Perfect Footing",
+            "Description": "The creature finds exactly the right place to stand and keeps that rhythm for the next threat."
+          },
+          "IronPulse": {
+            "Title": "Iron Pulse",
+            "Description": "The body answers the assault with a steadier, harder rhythm."
+          },
+          "LucidDefiance": {
+            "Title": "Lucid Defiance",
+            "Description": "The creature names the intrusion for what it is and refuses it entry."
+          },
+          "BattleHardened": {
+            "Title": "Battle Hardened",
+            "Description": "The perfect defense turns pain into readiness against whatever comes next."
+          },
+          "SecondWind": {
+            "Title": "Second Wind",
+            "Description": "The creature emerges from the effect with a sudden pulse of recovery."
+          },
+          "NotToday": {
+            "Title": "Not Today",
+            "Description": "The effect presents its credentials. The creature declines the appointment."
           }
         },
         "SaveFailure": {
@@ -960,6 +1032,30 @@
           "PainfullyObvious": {
             "Title": "Painfully Obvious",
             "Description": "No expert is required to determine that this went badly."
+          },
+          "TangledRecovery": {
+            "Title": "Tangled Recovery",
+            "Description": "The failed escape leaves every corrective movement a fraction too late."
+          },
+          "DrainedReserves": {
+            "Title": "Drained Reserves",
+            "Description": "The body spends too much strength resisting and has nothing left for the next effort."
+          },
+          "EchoingDread": {
+            "Title": "Echoing Dread",
+            "Description": "The failed defense leaves the mind repeating the worst possible answer."
+          },
+          "OpenDefense": {
+            "Title": "Open Defense",
+            "Description": "The creature commits so completely to the failed defense that its guard falls away."
+          },
+          "MagicalSaturation": {
+            "Title": "Magical Saturation",
+            "Description": "The spell sinks too deeply into the creature and leaves it dangerously receptive to further magic."
+          },
+          "WrongInstinct": {
+            "Title": "Every Wrong Instinct",
+            "Description": "The creature dodges into it, braces against it, and somehow chooses the least helpful thought as well."
           }
         }
       },
@@ -1113,6 +1209,24 @@
           },
           "PrimalSurge": {
             "Name": "Primal Surge"
+          },
+          "FrozenInstant": {
+            "Name": "Frozen Instant"
+          },
+          "CorrosiveOpening": {
+            "Name": "Corrosive Opening"
+          },
+          "BlindingDischarge": {
+            "Name": "Blinding Discharge"
+          },
+          "BrokenDefense": {
+            "Name": "Broken Defense"
+          },
+          "HarmonicFocus": {
+            "Name": "Harmonic Focus"
+          },
+          "ProtectiveAfterglow": {
+            "Name": "Protective Afterglow"
           }
         },
         "SpellFumble": {
@@ -1130,6 +1244,21 @@
           },
           "PrimalRecoil": {
             "Name": "Primal Recoil"
+          },
+          "TwistedGeometry": {
+            "Name": "Twisted Geometry"
+          },
+          "ScorchedFocus": {
+            "Name": "Scorched Focus"
+          },
+          "FrozenGesture": {
+            "Name": "Frozen Gesture"
+          },
+          "MentalEcho": {
+            "Name": "Mental Echo"
+          },
+          "ReboundingGlare": {
+            "Name": "Rebounding Glare"
           }
         },
         "SaveSuccess": {
@@ -1147,6 +1276,21 @@
           },
           "DefensiveMomentum": {
             "Name": "Defensive Momentum"
+          },
+          "PerfectFooting": {
+            "Name": "Perfect Footing"
+          },
+          "IronPulse": {
+            "Name": "Iron Pulse"
+          },
+          "LucidDefiance": {
+            "Name": "Lucid Defiance"
+          },
+          "BattleHardened": {
+            "Name": "Battle Hardened"
+          },
+          "SecondWind": {
+            "Name": "Second Wind"
           }
         },
         "SaveFailure": {
@@ -1164,6 +1308,21 @@
           },
           "Staggered": {
             "Name": "Staggered"
+          },
+          "TangledRecovery": {
+            "Name": "Tangled Recovery"
+          },
+          "DrainedReserves": {
+            "Name": "Drained Reserves"
+          },
+          "EchoingDread": {
+            "Name": "Echoing Dread"
+          },
+          "OpenDefense": {
+            "Name": "Open Defense"
+          },
+          "MagicalSaturation": {
+            "Name": "Magical Saturation"
           }
         }
       }

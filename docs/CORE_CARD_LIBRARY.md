@@ -1,6 +1,6 @@
 # Core Test Card Library
 
-Version `0.7.0-dev` expands the deliberately balanced playtest library from 48 to 72 localized cards. The cards are complete enough to exercise filtering, profiles, redraw history, localization, chat presentation, and effect application, but their prose and weighting remain playtest material.
+Version `0.7.1-dev` expands the deliberately balanced playtest library from 72 to 96 localized cards. The four spell-attack and saving-throw categories now contain enough generic fallbacks and focused results for repeated table use, while their prose and weighting remain playtest material.
 
 ## Composition
 
@@ -13,26 +13,46 @@ Version `0.7.0-dev` expands the deliberately balanced playtest library from 48 t
   - 6 melee
   - 6 ranged
   - 6 generic
-- 6 critical spell-hit cards
-- 6 critical spell-fumble cards
-- 6 critically successful saving-throw cards
-- 6 critically failed saving-throw cards
+- 12 critical spell-hit cards
+- 12 critical spell-fumble cards
+- 12 critically successful saving-throw cards
+- 12 critically failed saving-throw cards
 
 ## Tone distribution
 
-- neutral: 11
-- serious: 20
-- dramatic: 21
-- humorous: 20
+- neutral: 17
+- serious: 28
+- dramatic: 28
+- humorous: 23
 
 ## Impact distribution
 
-- narrative: 12
-- light: 26
-- moderate: 22
-- strong: 12
+- narrative: 15
+- light: 34
+- moderate: 31
+- strong: 16
 
 The distribution is intentionally broad rather than perfectly symmetrical. Relaxed, balanced, dramatic, brutal, and custom profiles therefore have enough material to produce visibly different draws.
+
+## Expanded spell pools
+
+Every spell category retains four generic fallback cards even when no tradition or spell trait can be resolved. Focused cards add results for:
+
+- arcane, divine, occult, and primal traditions;
+- acid, cold, electricity, fire, light, and mental spell traits;
+- caster boons, target vulnerabilities, sensory disruption, magical backlash, and short-lived control effects.
+
+A spell attack with both a known tradition and a matching spell trait therefore draws from a wider pool without making generic cards disappear.
+
+## Expanded saving-throw pools
+
+Each save type now has two focused cards in both the critical-success and critical-failure categories:
+
+- Reflex
+- Fortitude
+- Will
+
+Generic fallback cards remain available for incomplete PF2e message context. Critically failed saves against recognized arcane, divine, occult, or primal spells additionally qualify for a spell-specific vulnerability result.
 
 ## Context filters
 

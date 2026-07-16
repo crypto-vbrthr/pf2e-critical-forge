@@ -100,5 +100,103 @@ export const CARDS = Object.freeze([
     tags: ["save", "flourish"],
     filters: {},
     effect: null
+  }),
+  defineCoreCard({
+    id: "save-success.perfect-footing",
+    namespace: "SaveSuccess",
+    key: "PerfectFooting",
+    category: "savingThrowCriticalSuccess",
+    tone: "neutral",
+    impact: "light",
+    fallbackTitle: "Perfect Footing",
+    fallbackDescription: "The creature finds exactly the right place to stand and keeps that rhythm for the next threat.",
+    tags: ["save", "reflex", "boon"],
+    filters: { saveTypes: ["reflex"] },
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "modifier", selector: "reflex", value: 1, modifierType: "circumstance", predicate: [] }]
+    }
+  }),
+  defineCoreCard({
+    id: "save-success.iron-pulse",
+    namespace: "SaveSuccess",
+    key: "IronPulse",
+    category: "savingThrowCriticalSuccess",
+    tone: "serious",
+    impact: "light",
+    fallbackTitle: "Iron Pulse",
+    fallbackDescription: "The body answers the assault with a steadier, harder rhythm.",
+    tags: ["save", "fortitude", "boon"],
+    filters: { saveTypes: ["fortitude"] },
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "modifier", selector: "fortitude", value: 1, modifierType: "circumstance", predicate: [] }]
+    }
+  }),
+  defineCoreCard({
+    id: "save-success.lucid-defiance",
+    namespace: "SaveSuccess",
+    key: "LucidDefiance",
+    category: "savingThrowCriticalSuccess",
+    tone: "serious",
+    impact: "light",
+    fallbackTitle: "Lucid Defiance",
+    fallbackDescription: "The creature names the intrusion for what it is and refuses it entry.",
+    tags: ["save", "will", "boon"],
+    filters: { saveTypes: ["will"] },
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "modifier", selector: "will", value: 1, modifierType: "circumstance", predicate: [] }]
+    }
+  }),
+  defineCoreCard({
+    id: "save-success.battle-hardened",
+    namespace: "SaveSuccess",
+    key: "BattleHardened",
+    category: "savingThrowCriticalSuccess",
+    tone: "dramatic",
+    impact: "moderate",
+    fallbackTitle: "Battle Hardened",
+    fallbackDescription: "The perfect defense turns pain into readiness against whatever comes next.",
+    tags: ["save", "boon", "defense"],
+    filters: {},
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "modifier", selector: "saving-throw", value: 1, modifierType: "circumstance", predicate: [] }]
+    }
+  }),
+  defineCoreCard({
+    id: "save-success.second-wind",
+    namespace: "SaveSuccess",
+    key: "SecondWind",
+    category: "savingThrowCriticalSuccess",
+    tone: "neutral",
+    impact: "moderate",
+    fallbackTitle: "Second Wind",
+    fallbackDescription: "The creature emerges from the effect with a sudden pulse of recovery.",
+    tags: ["save", "boon", "healing"],
+    filters: {},
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "fastHealing", value: 2 }]
+    }
+  }),
+  defineCoreCard({
+    id: "save-success.not-today",
+    namespace: "SaveSuccess",
+    key: "NotToday",
+    category: "savingThrowCriticalSuccess",
+    tone: "humorous",
+    impact: "narrative",
+    fallbackTitle: "Not Today",
+    fallbackDescription: "The effect presents its credentials. The creature declines the appointment.",
+    tags: ["save", "flourish"],
+    filters: {},
+    effect: null
   })
 ]);

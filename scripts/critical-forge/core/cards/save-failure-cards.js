@@ -100,5 +100,103 @@ export const CARDS = Object.freeze([
     tags: ["save", "flourish"],
     filters: {},
     effect: null
+  }),
+  defineCoreCard({
+    id: "save-failure.tangled-recovery",
+    namespace: "SaveFailure",
+    key: "TangledRecovery",
+    category: "savingThrowCriticalFailure",
+    tone: "neutral",
+    impact: "moderate",
+    fallbackTitle: "Tangled Recovery",
+    fallbackDescription: "The failed escape leaves every corrective movement a fraction too late.",
+    tags: ["save", "reflex", "debuff"],
+    filters: { saveTypes: ["reflex"] },
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "condition", slug: "clumsy", value: 1 }]
+    }
+  }),
+  defineCoreCard({
+    id: "save-failure.drained-reserves",
+    namespace: "SaveFailure",
+    key: "DrainedReserves",
+    category: "savingThrowCriticalFailure",
+    tone: "serious",
+    impact: "moderate",
+    fallbackTitle: "Drained Reserves",
+    fallbackDescription: "The body spends too much strength resisting and has nothing left for the next effort.",
+    tags: ["save", "fortitude", "debuff"],
+    filters: { saveTypes: ["fortitude"] },
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "condition", slug: "enfeebled", value: 1 }]
+    }
+  }),
+  defineCoreCard({
+    id: "save-failure.echoing-dread",
+    namespace: "SaveFailure",
+    key: "EchoingDread",
+    category: "savingThrowCriticalFailure",
+    tone: "dramatic",
+    impact: "strong",
+    fallbackTitle: "Echoing Dread",
+    fallbackDescription: "The failed defense leaves the mind repeating the worst possible answer.",
+    tags: ["save", "will", "mental", "emotion"],
+    filters: { saveTypes: ["will"], excludedSourceTraits: ["mindless"] },
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "condition", slug: "frightened", value: 2 }]
+    }
+  }),
+  defineCoreCard({
+    id: "save-failure.open-defense",
+    namespace: "SaveFailure",
+    key: "OpenDefense",
+    category: "savingThrowCriticalFailure",
+    tone: "serious",
+    impact: "light",
+    fallbackTitle: "Open Defense",
+    fallbackDescription: "The creature commits so completely to the failed defense that its guard falls away.",
+    tags: ["save", "debuff", "defense"],
+    filters: {},
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "condition", slug: "off-guard" }]
+    }
+  }),
+  defineCoreCard({
+    id: "save-failure.magical-saturation",
+    namespace: "SaveFailure",
+    key: "MagicalSaturation",
+    category: "savingThrowCriticalFailure",
+    tone: "dramatic",
+    impact: "strong",
+    fallbackTitle: "Magical Saturation",
+    fallbackDescription: "The spell sinks too deeply into the creature and leaves it dangerously receptive to further magic.",
+    tags: ["save", "spell", "vulnerability"],
+    filters: { spellTraditions: ["arcane", "divine", "occult", "primal"] },
+    effect: {
+      target: "source",
+      duration: ONE_ROUND,
+      components: [{ type: "weakness", weaknessType: "damage-from-spells", value: 2 }]
+    }
+  }),
+  defineCoreCard({
+    id: "save-failure.wrong-instinct",
+    namespace: "SaveFailure",
+    key: "WrongInstinct",
+    category: "savingThrowCriticalFailure",
+    tone: "humorous",
+    impact: "narrative",
+    fallbackTitle: "Every Wrong Instinct",
+    fallbackDescription: "The creature dodges into it, braces against it, and somehow chooses the least helpful thought as well.",
+    tags: ["save", "flourish"],
+    filters: {},
+    effect: null
   })
 ]);
