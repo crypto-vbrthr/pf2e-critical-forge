@@ -9,6 +9,7 @@ import { initializeCriticalCardApplicationUi } from "./critical-forge/presentati
 import { initializeCriticalCardRedrawUi } from "./critical-forge/presentation/critical-card-redraw.js";
 import { initializeCriticalRollAutomation } from "./critical-forge/automation/critical-roll-automation.js";
 import { initializeConditionCatalog } from "./effect-engine/catalogs/condition-catalog.js";
+import { initializeCustomCardPacks } from "./critical-forge/editor/card-pack-store.js";
 
 Hooks.once("init", () => {
   registerSettings();
@@ -24,6 +25,12 @@ Hooks.once("ready", async () => {
     await initializeConditionCatalog();
   } catch (error) {
     console.warn(`${MODULE_ID} | Condition catalog initialization failed; fallback metadata remains available.`, error);
+  }
+
+  try {
+    await initializeCustomCardPacks();
+  } catch (error) {
+    console.error(`${MODULE_ID} | Custom Critical Forge card packs could not be loaded.`, error);
   }
 
   if (game.settings.get(MODULE_ID, SETTINGS.ENABLE_EFFECT_FORGE)) {

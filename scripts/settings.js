@@ -82,6 +82,13 @@ export function registerSettings() {
     type: Object,
     default: { cardIds: [] }
   });
+  game.settings.register(MODULE_ID, SETTINGS.CRITICAL_CUSTOM_CARD_PACKS, {
+    name: "Critical Forge Custom Card Packs",
+    scope: "world",
+    config: false,
+    type: Object,
+    default: { storageVersion: 1, packs: [] }
+  });
 
   game.settings.register(MODULE_ID, SETTINGS.EFFECT_FORGE_WINDOW_STATE, {
     name: "Effect Forge Window State",

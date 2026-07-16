@@ -8,6 +8,7 @@ import {
   isChatApplication,
   isElementLike
 } from "./critical-diagnostic-button.js";
+import { createCardEditorButton } from "../editor/card-pack-editor-ui.js";
 
 let app = null;
 let initialized = false;
@@ -93,7 +94,7 @@ function injectDiagnosticButton(application, html) {
     void openCriticalDiagnostics();
   });
 
-  toolbar.append(button);
+  toolbar.append(button, createCardEditorButton());
   host.insertAdjacentElement?.("afterend", toolbar);
   if (!toolbar.isConnected) host.after(toolbar);
 }

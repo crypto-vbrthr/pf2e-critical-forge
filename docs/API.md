@@ -616,7 +616,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack-roll processing, redraws, and GM-confirmed effect application are available through `api.cards`. Version 0.5.9-dev adds the localized 48-card core test library while preserving the live roll hook and all headless services for tests and integrations.
+Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack-roll processing, redraws, and GM-confirmed effect application are available through `api.cards`. Version 0.6.0-dev adds the visual Card Pack Editor, world-persistent custom packs, Effect Forge handoff, and portable pack transfer while preserving the live roll hook and all headless services for tests and integrations.
 
 
 ### Profiles and trigger policies
@@ -826,3 +826,23 @@ const redraw = await api.cards.redrawPreview(message);
 ```
 
 Supported visibility values are `blind`, `gm`, `public`, and `self`. Invalid values normalize to `blind`. Application is GM-only and records an audit status in the ChatMessage flags.
+
+## Card Pack Editor API
+
+```js
+await api.ui.openCardPackEditor();
+await api.ui.openEffectForgeDefinition(definition, {
+  onCommit: async (updatedDefinition) => {}
+});
+
+const editor = api.cards.packEditor;
+editor.list();
+editor.get("core");
+editor.listCustom();
+await editor.save(pack, { previousId: null });
+await editor.remove("my-critical-cards");
+const json = editor.serialize(pack);
+const imported = editor.parseImport(json);
+```
+
+World-managed packs are persisted through Foundry settings and registered into the same runtime registries used by automatic card selection.

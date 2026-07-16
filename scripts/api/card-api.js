@@ -51,6 +51,18 @@ import {
 } from "../critical-forge/trigger/critical-trigger-policy.js";
 import { redrawCriticalCard } from "../critical-forge/presentation/critical-card-redraw.js";
 import {
+  createCardPackExport,
+  parseCardPackImport,
+  serializeCardPackExport
+} from "../critical-forge/editor/card-pack-transfer.js";
+import {
+  deleteCustomCardPack,
+  hydrateRegisteredPack,
+  listHydratedRegisteredPacks,
+  listStoredCustomPacks,
+  saveCustomCardPack
+} from "../critical-forge/editor/card-pack-store.js";
+import {
   CRITICAL_ROLL_AUTOMATION_VERSION,
   getCriticalRollAutomationData,
   isAttackCriticalReport,
@@ -98,6 +110,16 @@ export function createCardApi() {
     getPack: (packId) => criticalPackRegistry.get(packId),
     listPacks: (options = {}) => criticalPackRegistry.list(options),
     validatePack: (pack) => safeValidate(pack, normalizePackDefinition, validatePackDefinition, "CARD_PACK_NORMALIZATION_FAILED"),
+    packEditor: Object.freeze({
+      list: () => listHydratedRegisteredPacks(),
+      get: (packId) => hydrateRegisteredPack(packId),
+      listCustom: () => listStoredCustomPacks(),
+      save: (pack, options = {}) => saveCustomCardPack(pack, options),
+      remove: (packId) => deleteCustomCardPack(packId),
+      createExport: (pack) => createCardPackExport(pack),
+      serialize: (pack) => serializeCardPackExport(pack),
+      parseImport: (text) => parseCardPackImport(text)
+    }),
 
     registerCard: (card, options = {}) => registerCriticalCard(card, options),
     unregisterCard: (cardId) => criticalCardRegistry.unregister(cardId),

@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.5.9-dev` adds the first **48-card localized test library** on top of the automatic PF2e attack-roll pipeline. Critical hits and fumbles can be disabled, confirmed by the GM, or drawn automatically; trigger scopes support all final critical results or only natural 20/1 results that also finish as critical success/failure. Card profiles, redraws, configurable visibility, and manual GM effect application remain intact.
+Version `0.6.1-dev` fixes the Critical Card editing handoff: an Effect Forge session opened from the Card Pack Editor now exposes a dedicated **Use for Card** action and hides unrelated world-Item and Token actions. The visual Card Pack Editor, automatic PF2e attack-roll pipeline, and localized 48-card core test library remain intact.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -19,6 +19,9 @@ The current engine includes:
 - transactional Pack Registry and globally indexed Card Registry;
 - localized title, description, and effect-name resolution with fallbacks;
 - a 48-card core test library covering slashing, piercing, bludgeoning, generic hits, melee fumbles, ranged fumbles, and generic fumbles;
+- a GM-only Card Pack Editor for world-managed packs, cards, filters, tone, impact, weights, fallback text, and localization keys;
+- direct mechanical-effect editing through a dedicated Effect Forge handoff;
+- portable card-pack JSON import and export through files or the clipboard;
 - headless filter matching, tone/impact profile weighting, and transparent candidate reports;
 - a diagnostic PF2e Context Adapter and GM-only manual workbench for real chat messages;
 - localized result cards with configurable `blind`, `gm`, `public`, or `self` visibility;
@@ -53,6 +56,9 @@ await game.modules.get("pf2e-critical-forge")?.api.ui.openEffectForge(item);
 
 // Open the manual Critical Forge diagnostic workbench
 game.modules.get("pf2e-critical-forge")?.api.ui.openCriticalDiagnostics();
+
+// Open the Critical Card Pack Editor
+game.modules.get("pf2e-critical-forge")?.api.ui.openCardPackEditor();
 ```
 
 ## Automated tests
@@ -65,7 +71,7 @@ npm run test:coverage
 npm run quality:check
 ```
 
-The suite covers the Effect Engine and Forge as well as card normalization, profile weighting, natural-roll trigger policies, automatic attack-message processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
+The suite covers the Effect Engine and Forge as well as card normalization, pack-editor models, card-pack transfer, Effect Forge handoff, profile weighting, natural-roll trigger policies, automatic attack-message processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 
@@ -75,6 +81,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/CRITICAL_FORGE_ARCHITECTURE.md`](docs/CRITICAL_FORGE_ARCHITECTURE.md): headless Critical Forge subsystem boundaries
 - [`docs/CARD_SCHEMA.md`](docs/CARD_SCHEMA.md): Critical Card data model and filter semantics
 - [`docs/CARD_PACKS.md`](docs/CARD_PACKS.md): pack registration and extension model
+- [`docs/CARD_EDITOR.md`](docs/CARD_EDITOR.md): visual pack editor, protected templates, Effect Forge handoff, and JSON transfer
 - [`docs/CARD_SELECTION.md`](docs/CARD_SELECTION.md): candidate evaluation and weighted selection
 - [`docs/CORE_CARD_LIBRARY.md`](docs/CORE_CARD_LIBRARY.md): bundled 48-card test-library matrix and content boundaries
 - [`docs/PF2E_CONTEXT_ADAPTER.md`](docs/PF2E_CONTEXT_ADAPTER.md): PF2e document-to-context translation and diagnostics

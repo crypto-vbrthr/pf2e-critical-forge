@@ -16,6 +16,17 @@ export async function openEffectForge(item = null) {
   return app.render({ force: true });
 }
 
+export async function openEffectForgeDefinition(definition, options = {}) {
+  if (!game.user?.isGM) {
+    ui.notifications.warn(game.i18n.localize("PF2E_CRITICAL_FORGE.Notifications.GmOnly"));
+    return null;
+  }
+  const editor = new EffectForgeApp();
+  await editor.loadDefinition(definition, { ...options, render: true });
+  editor.bringToFront?.();
+  return editor;
+}
+
 function getRoot(html) {
   if (html instanceof HTMLElement) return html;
   if (html?.[0] instanceof HTMLElement) return html[0];

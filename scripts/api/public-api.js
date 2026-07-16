@@ -9,8 +9,9 @@ import {
 import { componentRegistry } from "../effect-engine/component-registry.js";
 import { createEffectApi } from "./effect-api.js";
 import { createCardApi } from "./card-api.js";
-import { openEffectForge } from "../effect-forge/effect-forge.js";
+import { openEffectForge, openEffectForgeDefinition } from "../effect-forge/effect-forge.js";
 import { openCriticalDiagnostics } from "../critical-forge/diagnostics/critical-diagnostic-ui.js";
+import { openCardPackEditor } from "../critical-forge/editor/card-pack-editor-ui.js";
 import {
   EffectBuilder,
   createEffectBuilder
@@ -150,7 +151,7 @@ export function initializePublicApi() {
       list: () => componentRegistry.list()
     }),
 
-    ui: Object.freeze({ openEffectForge, openCriticalDiagnostics }),
+    ui: Object.freeze({ openEffectForge, openEffectForgeDefinition, openCriticalDiagnostics, openCardPackEditor }),
 
     cards: createCardApi()
   });

@@ -119,6 +119,9 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   windowStateTimer = null;
   controlTokenHook = null;
   allowCloseWithoutPrompt = false;
+  externalCommit = null;
+  externalMode = false;
+  externalCloseOnCommit = true;
 
   state = null;
 
@@ -168,6 +171,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       applySelected: EffectForgeApp.#applySelected,
       copyDefinition: EffectForgeApp.#copyDefinition,
       copyCompiled: EffectForgeApp.#copyCompiled,
+      commitExternal: EffectForgeApp.#commitExternal,
       closeWindow: EffectForgeApp.#closeWindow
     }
   };
@@ -221,10 +225,35 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     };
   }
 
+  async loadDefinition(definition, {
+    render = true,
+    fallbackName = "",
+    fallbackImage = "icons/svg/aura.svg",
+    onCommit = null,
+    closeOnCommit = true
+  } = {}) {
+    this.sourceItem = null;
+    this.selectedItemId = "";
+    this.unmanagedRules = [];
+    this.itemReadWarnings = [];
+    this.migrationReport = null;
+    this.externalCommit = typeof onCommit === "function" ? onCommit : null;
+    this.externalMode = Boolean(this.externalCommit);
+    this.externalCloseOnCommit = closeOnCommit !== false;
+    this.#setStateFromDefinition(definition, { fallbackName, fallbackImage });
+    this.componentMenuOpen = false;
+    this.#invalidatePreviews();
+    this.#markClean();
+    if (render) await this.render({ force: true });
+    return this;
+  }
+
   async loadItem(item, { render = true } = {}) {
     const result = await this.constructor.#api().effects.readItem(item);
     const definition = result.definition;
 
+    this.externalCommit = null;
+    this.externalMode = false;
     this.sourceItem = item;
     this.selectedItemId = item.id ?? result.sourceItemId ?? "";
     this.unmanagedRules = foundry.utils.deepClone(result.unmanagedRules ?? []);
@@ -243,6 +272,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   resetToNewEffect({ render = true } = {}) {
+    this.externalCommit = null;
+    this.externalMode = false;
     this.sourceItem = null;
     this.selectedItemId = "";
     this.unmanagedRules = [];
@@ -271,6 +302,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       apiVersion: api?.version ?? "—",
       schemaVersion: api?.schemaVersion ?? "—",
       state: this.state,
+      externalMode: this.externalMode,
       editingItem: Boolean(this.sourceItem),
       sourceItemName: this.sourceItem?.name ?? "",
       sourceItemUuid: this.sourceItem?.uuid ?? "",
@@ -1620,6 +1652,33 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static async #copyCompiled() {
     await this.constructor.#copyText(this.compiledPreview);
+  }
+
+  static async #commitExternal() {
+    if (!this.externalCommit) return;
+    try {
+      const definition = this.#buildDefinition();
+      const validation = this.constructor.#api().effects.analyze(definition);
+      this.#setValidationReport(validation);
+      this.definitionPreview = JSON.stringify(definition, null, 2);
+      if (!validation.valid) {
+        await this.#renderPreservingScroll();
+        ui.notifications.warn(game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.ExternalInvalid"));
+        return;
+      }
+      await this.externalCommit(foundry.utils.deepClone(definition));
+      this.#markClean();
+      ui.notifications.info(game.i18n.localize("PF2E_CRITICAL_FORGE.EffectForge.ExternalCommitted"));
+      if (this.externalCloseOnCommit) {
+        this.allowCloseWithoutPrompt = true;
+        await this.close();
+      } else {
+        await this.#renderPreservingScroll();
+      }
+    } catch (error) {
+      console.error(`${MODULE_ID} | External Effect Forge commit failed`, error);
+      ui.notifications.error(error.message);
+    }
   }
 
   static #closeWindow() {

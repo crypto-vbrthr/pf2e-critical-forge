@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.6.1-dev
+
+- Fixed the Effect Forge card-editing handoff missing its visible **Use for Card** / **Zur Karte übernehmen** action.
+- External Effect Forge sessions now show a focused footer with Validate, Compile, return-to-card, and Close actions.
+- Hidden unrelated Create Item, Update Item, and Apply to Tokens actions while editing a Critical Card effect.
+- Added a template regression test for the external commit control.
+- Module version increased to `0.6.1-dev`; public API and schema versions remain unchanged.
+
+## 0.6.0-dev
+
+- Added a GM-only visual Critical Card Pack Editor beside the chat diagnostic launcher.
+- Added world-persistent custom card packs stored in a hidden Foundry world setting and synchronized into the live Pack and Card Registries.
+- Bundled and external packs remain read-only but can be duplicated or used as templates for editable world packs.
+- Added card editing for category, tone, impact, weight, tags, all existing filter groups, fallback text, and optional localization keys.
+- Added dedicated Effect Forge handoff mode for creating and editing a card’s mechanical Effect Definition without creating a world Item.
+- Added portable `pf2e-critical-forge.card-pack` JSON wrappers plus raw-pack import support, file download, file import, clipboard copy, and clipboard import.
+- Added collision protection for protected pack IDs and globally indexed card IDs.
+- Added public `api.ui.openCardPackEditor()`, `api.ui.openEffectForgeDefinition()`, and `api.cards.packEditor` helpers.
+- Added `docs/CARD_EDITOR.md` and regression tests for editor defaults, card cloning, pack round-trips, transfer errors, delimited fields, and Effect Forge bridging.
+- The complete suite now contains 169 passing tests with 91.79% measured line coverage.
+- Public API version increased to `0.6.0`; Effect, Critical Card, and Card Pack schema versions remain unchanged.
+
 ## 0.5.9-dev
 
 - Replaced the six architecture samples with a localized 48-card core test library.

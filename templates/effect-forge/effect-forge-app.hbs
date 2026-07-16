@@ -1,6 +1,18 @@
 <div class="effect-forge-shell">
   <div class="effect-forge-workspace">
     <main class="effect-forge-panel effect-forge-editor" data-preserve-scroll data-scroll-key="editor">
+      {{#if externalMode}}
+        <section class="effect-forge-section effect-forge-external-mode">
+          <header class="effect-forge-section-header">
+            <h2><i class="fa-solid fa-layer-group"></i> {{localize "PF2E_CRITICAL_FORGE.EffectForge.ExternalModeTitle"}}</h2>
+            <span class="effect-forge-dirty-indicator {{#if isDirty}}dirty{{else}}clean{{/if}}" data-dirty-indicator>
+              <i class="fa-solid {{#if isDirty}}fa-circle{{else}}fa-circle-check{{/if}}"></i>
+              <span data-dirty-text>{{dirtyStatusText}}</span>
+            </span>
+          </header>
+          <p>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ExternalModeHint"}}</p>
+        </section>
+      {{else}}
       <section class="effect-forge-section effect-forge-item-workflow">
         <header class="effect-forge-section-header">
           <h2>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ItemWorkflow"}}</h2>
@@ -113,6 +125,7 @@
           {{localize "PF2E_CRITICAL_FORGE.EffectForge.ImportExportHint"}}
         </p>
       </section>
+      {{/if}}
 
       <section class="effect-forge-section">
         <h2>{{localize "PF2E_CRITICAL_FORGE.EffectForge.BasicData"}}</h2>
@@ -749,8 +762,8 @@
     </aside>
   </div>
 
-  <footer class="effect-forge-actions">
-    <button type="button" class="primary" data-action="validateEffect" title="{{localize 'PF2E_CRITICAL_FORGE.EffectForge.ValidateTooltip'}}">
+  <footer class="effect-forge-actions {{#if externalMode}}external-mode{{/if}}">
+    <button type="button" class="{{#unless externalMode}}primary{{/unless}}" data-action="validateEffect" title="{{localize 'PF2E_CRITICAL_FORGE.EffectForge.ValidateTooltip'}}">
       <i class="fa-solid fa-gear"></i>
       {{localize "PF2E_CRITICAL_FORGE.EffectForge.Validate"}}
     </button>
@@ -758,18 +771,27 @@
       <i class="fa-solid fa-code"></i>
       {{localize "PF2E_CRITICAL_FORGE.EffectForge.Compile"}}
     </button>
-    <button type="button" data-action="createItem" title="{{localize 'PF2E_CRITICAL_FORGE.EffectForge.CreateItemTooltip'}}">
-      <i class="fa-regular fa-file-lines"></i>
-      {{localize "PF2E_CRITICAL_FORGE.EffectForge.CreateNewItem"}}
-    </button>
-    <button type="button" class="effect-forge-update-button" data-action="updateItem" title="{{#if editingItem}}{{localize 'PF2E_CRITICAL_FORGE.EffectForge.UpdateItemTooltip'}}{{else}}{{localize 'PF2E_CRITICAL_FORGE.EffectForge.UpdateItemDisabledTooltip'}}{{/if}}" {{#unless editingItem}}disabled{{/unless}}>
-      <i class="fa-solid fa-floppy-disk"></i>
-      {{localize "PF2E_CRITICAL_FORGE.EffectForge.UpdateItem"}}
-    </button>
-    <button type="button" data-action="applySelected" title="{{#if hasSelectedTokens}}{{localize 'PF2E_CRITICAL_FORGE.EffectForge.ApplySelectedTooltip'}}{{else}}{{localize 'PF2E_CRITICAL_FORGE.EffectForge.ApplySelectedDisabledTooltip'}}{{/if}}" {{#unless hasSelectedTokens}}disabled{{/unless}}>
-      <i class="fa-solid fa-user-group"></i>
-      {{localize "PF2E_CRITICAL_FORGE.EffectForge.ApplySelected"}}
-    </button>
+
+    {{#if externalMode}}
+      <button type="button" class="primary effect-forge-external-commit" data-action="commitExternal" title="{{localize 'PF2E_CRITICAL_FORGE.EffectForge.ExternalCommitHint'}}">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+        {{localize "PF2E_CRITICAL_FORGE.EffectForge.ExternalCommit"}}
+      </button>
+    {{else}}
+      <button type="button" data-action="createItem" title="{{localize 'PF2E_CRITICAL_FORGE.EffectForge.CreateItemTooltip'}}">
+        <i class="fa-regular fa-file-lines"></i>
+        {{localize "PF2E_CRITICAL_FORGE.EffectForge.CreateNewItem"}}
+      </button>
+      <button type="button" class="effect-forge-update-button" data-action="updateItem" title="{{#if editingItem}}{{localize 'PF2E_CRITICAL_FORGE.EffectForge.UpdateItemTooltip'}}{{else}}{{localize 'PF2E_CRITICAL_FORGE.EffectForge.UpdateItemDisabledTooltip'}}{{/if}}" {{#unless editingItem}}disabled{{/unless}}>
+        <i class="fa-solid fa-floppy-disk"></i>
+        {{localize "PF2E_CRITICAL_FORGE.EffectForge.UpdateItem"}}
+      </button>
+      <button type="button" data-action="applySelected" title="{{#if hasSelectedTokens}}{{localize 'PF2E_CRITICAL_FORGE.EffectForge.ApplySelectedTooltip'}}{{else}}{{localize 'PF2E_CRITICAL_FORGE.EffectForge.ApplySelectedDisabledTooltip'}}{{/if}}" {{#unless hasSelectedTokens}}disabled{{/unless}}>
+        <i class="fa-solid fa-user-group"></i>
+        {{localize "PF2E_CRITICAL_FORGE.EffectForge.ApplySelected"}}
+      </button>
+    {{/if}}
+
     <button type="button" data-action="closeWindow">
       <i class="fa-solid fa-xmark"></i>
       {{localize "PF2E_CRITICAL_FORGE.EffectForge.Close"}}
