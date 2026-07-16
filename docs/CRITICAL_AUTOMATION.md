@@ -1,6 +1,14 @@
 # Critical Roll Automation
 
-Version `0.5.8-dev` connects the existing PF2e Context Adapter, trigger policy, profile weighting, card selector, and chat-card publisher to real PF2e attack rolls.
+Version `0.7.0-dev` connects the PF2e Context Adapter, trigger policy, profile weighting, card selector, and chat-card publisher to supported PF2e critical rolls.
+
+## Supported roll families
+
+- weapon and unarmed attack critical successes and failures;
+- spell-attack critical successes and failures;
+- saving-throw critical successes and failures.
+
+Each category has its own behavior (`disabled`, `prompt`, or `automatic`) and trigger scope (`all` or `natural`). Critically successful saving throws default to disabled; the other new categories default to prompt.
 
 ## Hook boundary
 
@@ -12,7 +20,7 @@ Critical Forge ignores:
 - messages already carrying an automation audit flag;
 - ordinary successes and failures;
 - disabled or non-matching trigger policies;
-- skill checks, saving throws, damage rolls, and other non-attack messages.
+- skill checks, damage rolls, and unsupported roll families.
 
 ## Live flow
 
@@ -25,7 +33,7 @@ PF2e source / item / target resolution
         ↓
 PF2e Context Adapter
         ↓
-Attack-roll guard
+Supported-roll-family guard
         ↓
 Critical Trigger Policy
         ├─ disabled / mismatch → audit and stop
@@ -39,11 +47,20 @@ Critical result ChatMessage
 Manual Apply / Draw again controls
 ```
 
-Effects are never applied automatically. Automatic mode only draws and publishes the card. The existing GM-only **Apply effect** control remains the final mechanical gate.
+Effects are never applied automatically. Automatic mode only draws and publishes the card. The GM-only **Apply effect** control remains the final mechanical gate.
 
-## Target resolution
+## Natural trigger semantics
 
-The message resolver prefers actor and token references recorded by PF2e in `flags.pf2e.context.origin` and `flags.pf2e.context.target`. If no target is stored there, it can fall back to the rolling user's current target set. Manual diagnostics may still use an explicitly supplied or currently selected target.
+Natural scope requires both the natural die and the final PF2e result:
+
+- natural 20 plus final critical success for hit and save-success categories;
+- natural 1 plus final critical failure for fumble and save-failure categories.
+
+A natural 20/1 that produces only an ordinary success or failure does not trigger a card.
+
+## Source and target resolution
+
+For attack and spell-attack messages, the attack origin is the source and the attacked creature is the target. For saving throws, the rolling creature is the source and the originating Actor/effect is the target when PF2e records it. Missing references do not invent a target; the resulting card can remain narrative or report that a mechanical target is unavailable.
 
 ## Recent-card history
 
@@ -53,22 +70,22 @@ Redrawing an existing result card continues to use the history stored on that ca
 
 ## Source-message audit flag
 
-After evaluating a qualifying attack message, Critical Forge may store:
+After evaluating a supported critical message, Critical Forge may store:
 
 ```js
 flags["pf2e-critical-forge"].criticalRollAutomation = {
   version: 1,
   status: "published", // ignored | dismissed | no-card | published
   reason: "automatic",
-  category: "criticalHit",
-  cardId: "core.slashing.deep-cut",
+  category: "savingThrowCriticalFailure",
+  cardId: "core.save-failure.full-impact",
   previewMessageUuid: "ChatMessage...",
   processedAt: "...",
   processedBy: "..."
 };
 ```
 
-The flag prevents duplicate processing and provides a small audit trail without changing the PF2e roll itself.
+The flag prevents duplicate processing and provides an audit trail without changing the PF2e roll itself.
 
 ## Public API
 
@@ -78,6 +95,8 @@ const cards = game.modules.get("pf2e-critical-forge")?.api.cards;
 await cards.automation.processMessage(message);
 cards.automation.inspectMessage(message);
 cards.automation.isAttackReport(report, input);
+cards.automation.isSavingThrowReport(report, input);
+cards.automation.isSupportedReport(report, input);
 ```
 
 The processing method accepts injectable collaborators for deterministic tests and advanced module integrations.

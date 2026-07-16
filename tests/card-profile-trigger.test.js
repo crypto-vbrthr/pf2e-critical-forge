@@ -49,3 +49,25 @@ test("natural 1 fumble policy mirrors the hit policy", () => {
   assert.equal(result.matched, true);
   assert.equal(result.action, "automatic");
 });
+
+test("spell and saving throw categories use the same natural-result safeguards", () => {
+  const spellHit = evaluateCriticalTrigger({
+    context: { category: "spellCriticalHit" },
+    metadata: { degreeOfSuccess: { index: 3 }, roll: { dieResult: 20 } }
+  }, { behavior: "automatic", scope: "natural" });
+  assert.equal(spellHit.matched, true);
+
+  const saveSuccess = evaluateCriticalTrigger({
+    context: { category: "savingThrowCriticalSuccess" },
+    metadata: { degreeOfSuccess: { index: 3 }, roll: { dieResult: 19 } }
+  }, { behavior: "automatic", scope: "natural" });
+  assert.equal(saveSuccess.matched, false);
+  assert.equal(saveSuccess.reason, "natural-result-mismatch");
+
+  const saveFailure = evaluateCriticalTrigger({
+    context: { category: "savingThrowCriticalFailure" },
+    metadata: { degreeOfSuccess: { index: 0 }, roll: { dieResult: 1 } }
+  }, { behavior: "prompt", scope: "natural" });
+  assert.equal(saveFailure.matched, true);
+  assert.equal(saveFailure.action, "prompt");
+});

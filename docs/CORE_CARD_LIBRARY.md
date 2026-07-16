@@ -1,43 +1,48 @@
 # Core Test Card Library
 
-Version 0.5.9-dev replaces the six architecture samples with a deliberately balanced 48-card test library. The cards are still test content rather than final editorial copy, but they are complete enough to exercise filtering, profiles, redraw history, localization, chat presentation, and effect application in real sessions.
+Version `0.7.0-dev` expands the deliberately balanced playtest library from 48 to 72 localized cards. The cards are complete enough to exercise filtering, profiles, redraw history, localization, chat presentation, and effect application, but their prose and weighting remain playtest material.
 
 ## Composition
 
-- 30 critical-hit cards
+- 30 critical weapon-hit cards
   - 8 slashing
   - 8 piercing
   - 8 bludgeoning
   - 6 generic
-- 18 critical-fumble cards
+- 18 critical weapon-fumble cards
   - 6 melee
   - 6 ranged
   - 6 generic
+- 6 critical spell-hit cards
+- 6 critical spell-fumble cards
+- 6 critically successful saving-throw cards
+- 6 critically failed saving-throw cards
 
 ## Tone distribution
 
-- neutral: 8
-- serious: 12
-- dramatic: 12
-- humorous: 16
+- neutral: 11
+- serious: 20
+- dramatic: 21
+- humorous: 20
 
 ## Impact distribution
 
-- narrative: 8
-- light: 18
-- moderate: 14
-- strong: 8
+- narrative: 12
+- light: 26
+- moderate: 22
+- strong: 12
 
 The distribution is intentionally broad rather than perfectly symmetrical. Relaxed, balanced, dramatic, brutal, and custom profiles therefore have enough material to produce visibly different draws.
 
-## Attack-mode tags
+## Context filters
 
-The PF2e Context Adapter adds synthetic `melee`, `ranged`, and `spell` attack traits when those modes can be resolved. Core melee and ranged fumble cards use these stable traits instead of trying to enumerate every weapon group.
+The PF2e Context Adapter supplies stable `melee`, `ranged`, and `spell` attack traits when those modes can be resolved. It also supplies saving-throw types, spell traditions, and native spell traits. Core cards use these stable fields instead of depending on private strike or spell objects.
 
 ## Content boundaries
 
-- Strong effects are generally limited to one round.
-- Persistent bleed cards exclude obviously unsuitable targets where practical.
+- Strong effects are generally short-lived.
+- Persistent-damage cards exclude obviously unsuitable targets where practical.
 - Narrative cards never create an Effect Item.
-- The library avoids instant death, forced weapon destruction, permanent injuries, and other effects that bypass normal encounter expectations.
-- The text and weighting are expected to change after playtesting. Card IDs remain stable whenever possible so draw history and external references survive editorial revisions.
+- The library avoids instant death, forced item destruction, permanent injuries, and effects that bypass normal encounter expectations.
+- Saving-throw cards treat the roller as the effect source and may affect either that creature or the originating creature.
+- Text and weighting may change after playtesting. Card IDs remain stable whenever possible so draw history and external references survive editorial revisions.

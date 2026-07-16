@@ -51,8 +51,8 @@ export async function processCriticalChatMessage(message, {
     });
     const report = diagnose(resolved.input);
 
-    if (!isAttackCriticalReport(report, resolved.input)) {
-      return failure("CRITICAL_AUTOMATION_NOT_ATTACK_ROLL", { report, resolverDiagnostics: resolved.diagnostics });
+    if (!isSupportedCriticalReport(report, resolved.input)) {
+      return failure("CRITICAL_AUTOMATION_UNSUPPORTED_ROLL", { report, resolverDiagnostics: resolved.diagnostics });
     }
 
     const trigger = report.trigger;
@@ -139,27 +139,71 @@ export async function processCriticalChatMessage(message, {
   }
 }
 
+export function isSupportedCriticalReport(report, input = {}) {
+  const category = report?.context?.category;
+  if (!report?.valid || ![
+    "criticalHit",
+    "criticalFumble",
+    "spellCriticalHit",
+    "spellCriticalFumble",
+    "savingThrowCriticalSuccess",
+    "savingThrowCriticalFailure"
+  ].includes(category)) return false;
+
+  if (category.startsWith("savingThrow")) return isSavingThrowReport(report, input);
+  return isAttackCriticalReport(report, input);
+}
+
 export function isAttackCriticalReport(report, input = {}) {
-  if (!report?.valid || !["criticalHit", "criticalFumble"].includes(report.context?.category)) return false;
+  if (!report?.valid || ![
+    "criticalHit",
+    "criticalFumble",
+    "spellCriticalHit",
+    "spellCriticalFumble"
+  ].includes(report.context?.category)) return false;
 
   const messageContextType = normalize(input?.message?.flags?.pf2e?.context?.type);
   const rollType = normalize(report.metadata?.roll?.type);
+  const rollFamily = normalize(report.metadata?.roll?.family);
   const itemType = normalize(input?.item?.type);
   const action = normalize(report.metadata?.roll?.action);
   const identifier = normalize(report.metadata?.roll?.identifier);
   const rollOptions = Array.isArray(report.metadata?.rollOptions) ? report.metadata.rollOptions : [];
 
   if ([messageContextType, rollType].some((value) => value.includes("damage"))) return false;
+  if (["attack", "spellattack", "spell-attack"].includes(rollFamily)) return true;
   if ([messageContextType, rollType].some((value) => value.includes("attack"))) return true;
   if ([action, identifier].some((value) => value === "strike" || value.includes("attack"))) return true;
-  if (["weapon", "melee"].includes(itemType) && ![messageContextType, rollType].some((value) => value.includes("damage"))) {
+  if (["weapon", "melee", "spell"].includes(itemType) && ![messageContextType, rollType].some((value) => value.includes("damage"))) {
     return true;
   }
   return rollOptions.some((option) => {
     const value = normalize(option);
     return value === "action:slug:strike"
       || value.startsWith("check:statistic:attack")
-      || value.includes("attack-roll");
+      || value.includes("attack-roll")
+      || value === "item:type:spell";
+  });
+}
+
+export function isSavingThrowReport(report, input = {}) {
+  if (!report?.valid || !report.context?.category?.startsWith("savingThrow")) return false;
+  const messageContextType = normalize(input?.message?.flags?.pf2e?.context?.type);
+  const rollType = normalize(report.metadata?.roll?.type);
+  const rollFamily = normalize(report.metadata?.roll?.family);
+  const identifier = normalize(report.metadata?.roll?.identifier);
+  const saveTypes = report.context?.saveTypes ?? [];
+  const rollOptions = Array.isArray(report.metadata?.rollOptions) ? report.metadata.rollOptions : [];
+
+  if (rollFamily === "savingthrow" || rollFamily === "saving-throw") return true;
+  if ([messageContextType, rollType].some((value) => value.includes("saving-throw") || value.includes("savingthrow"))) return true;
+  if (["fortitude", "reflex", "will"].includes(identifier) || saveTypes.length > 0) return true;
+  return rollOptions.some((option) => {
+    const value = normalize(option);
+    return value.includes("saving-throw")
+      || value.startsWith("check:statistic:fortitude")
+      || value.startsWith("check:statistic:reflex")
+      || value.startsWith("check:statistic:will");
   });
 }
 
@@ -191,7 +235,7 @@ async function defaultPromptForCard({ report }) {
   const category = report.context.category;
   const title = localize(
     `PF2E_CRITICAL_FORGE.CriticalAutomation.Prompt.${category}.Title`,
-    category === "criticalHit" ? "Critical Hit" : "Critical Fumble"
+    categoryFallback(category)
   );
   const source = escapeHtml(report.metadata?.source?.name ?? "—");
   const target = escapeHtml(report.metadata?.target?.name ?? "—");
@@ -323,6 +367,17 @@ function escapeHtml(value) {
 function localize(key, fallback) {
   const value = globalThis.game?.i18n?.localize?.(key);
   return value && value !== key ? value : fallback;
+}
+
+function categoryFallback(category) {
+  return ({
+    criticalHit: "Critical Hit",
+    criticalFumble: "Critical Fumble",
+    spellCriticalHit: "Critical Spell Hit",
+    spellCriticalFumble: "Critical Spell Fumble",
+    savingThrowCriticalSuccess: "Critical Saving Throw Success",
+    savingThrowCriticalFailure: "Critical Saving Throw Failure"
+  })[category] ?? "Critical Result";
 }
 
 function failure(code, extra = {}) {

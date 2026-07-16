@@ -15,8 +15,8 @@ function report({ action = "automatic", rollType = "attack-roll", category = "cr
     valid: true,
     context: { category, damageTypes: ["slashing"], weaponGroups: ["sword"] },
     metadata: {
-      degreeOfSuccess: { index: category === "criticalHit" ? 3 : 0 },
-      roll: { type: rollType, action: "strike", identifier: "strike", dieResult: 20 },
+      degreeOfSuccess: { index: ["criticalHit", "spellCriticalHit", "savingThrowCriticalSuccess"].includes(category) ? 3 : 0 },
+      roll: { type: rollType, family: rollType.includes("saving") ? "savingThrow" : rollType.includes("spell") ? "spellAttack" : rollType.includes("attack") ? "attack" : "unknown", action: "strike", identifier: "strike", dieResult: 20 },
       source: { name: "Valeros", uuid: "Actor.source" },
       target: { name: "Goblin", uuid: "Actor.target" },
       attack: { name: "Longsword", isMelee: true, isRanged: false },
@@ -104,7 +104,7 @@ test("non-attack critical checks are ignored", async () => {
     })
   );
   assert.equal(result.valid, false);
-  assert.equal(result.code, "CRITICAL_AUTOMATION_NOT_ATTACK_ROLL");
+  assert.equal(result.code, "CRITICAL_AUTOMATION_UNSUPPORTED_ROLL");
 });
 
 test("only the primary active GM handles document hooks", () => {
@@ -123,4 +123,53 @@ test("attack report guard rejects damage messages and accepts attack messages", 
   damage.metadata.attack.isMelee = null;
   assert.equal(isAttackCriticalReport(attack, { item: { type: "spell" }, message: { flags: { pf2e: { context: { type: "attack-roll" } } } } }), true);
   assert.equal(isAttackCriticalReport(damage, { item: { type: "weapon" }, message: { flags: { pf2e: { context: { type: "damage-roll" } } } } }), false);
+});
+
+test("spell attack criticals are handled by the automatic pipeline", async () => {
+  const published = [];
+  const result = await processCriticalChatMessage(
+    { id: "spell-critical", flags: {} },
+    baseOptions({
+      resolveMessageInput: async (message) => ({ input: { message, item: { type: "spell" } }, diagnostics: [] }),
+      diagnose: () => {
+        const value = report({ category: "spellCriticalHit", rollType: "spell-attack-roll" });
+        value.metadata.attack.isSpell = true;
+        value.metadata.roll.action = "spell-attack";
+        return value;
+      },
+      publishPreview: async (card, options) => {
+        published.push({ card, options });
+        return { message: { uuid: "ChatMessage.spell-preview" } };
+      }
+    })
+  );
+  assert.equal(result.valid, true);
+  assert.equal(published.length, 1);
+  assert.equal(published[0].options.context.category, "spellCriticalHit");
+});
+
+test("critical saving throws are handled by the automatic pipeline", async () => {
+  const published = [];
+  const result = await processCriticalChatMessage(
+    { id: "save-critical", flags: {} },
+    baseOptions({
+      resolveMessageInput: async (message) => ({ input: { message, item: null }, diagnostics: [] }),
+      diagnose: () => {
+        const value = report({ category: "savingThrowCriticalFailure", rollType: "saving-throw" });
+        value.context.saveTypes = ["reflex"];
+        value.metadata.roll.family = "savingThrow";
+        value.metadata.roll.identifier = "reflex";
+        value.metadata.roll.dieResult = 1;
+        value.metadata.attack.isMelee = null;
+        return value;
+      },
+      publishPreview: async (card, options) => {
+        published.push({ card, options });
+        return { message: { uuid: "ChatMessage.save-preview" } };
+      }
+    })
+  );
+  assert.equal(result.valid, true);
+  assert.equal(published.length, 1);
+  assert.equal(published[0].options.context.category, "savingThrowCriticalFailure");
 });

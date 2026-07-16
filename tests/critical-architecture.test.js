@@ -19,7 +19,7 @@ initializeCriticalForge();
 
 test("bundled core pack initializes without Foundry UI integration", () => {
   assert.equal(criticalPackRegistry.has("core"), true);
-  assert.equal(criticalCardRegistry.list({ packId: "core" }).length, 48);
+  assert.equal(criticalCardRegistry.list({ packId: "core" }).length, 72);
 });
 
 test("core cards can be selected and materialized as Effect Definitions", () => {

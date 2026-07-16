@@ -1,0 +1,166 @@
+<div class="card-editor-shell">
+  <header class="card-editor-toolbar">
+    <div class="card-editor-title-block">
+      <h2><i class="fa-solid fa-layer-group"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.Title"}}</h2>
+      <span class="card-editor-dirty {{#if isDirty}}dirty{{else}}clean{{/if}}" data-dirty-indicator>
+        <i class="fa-solid {{#if isDirty}}fa-circle{{else}}fa-circle-check{{/if}}"></i>
+        <span data-dirty-text>{{#if isDirty}}{{localize "PF2E_CRITICAL_FORGE.CardEditor.Unsaved"}}{{else}}{{localize "PF2E_CRITICAL_FORGE.CardEditor.Saved"}}{{/if}}</span>
+      </span>
+    </div>
+    <div class="card-editor-toolbar-actions">
+      <button type="button" data-action="newPack"><i class="fa-solid fa-plus"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.NewPack"}}</button>
+      <button type="button" data-action="duplicatePack" {{#unless hasPack}}disabled{{/unless}}><i class="fa-solid fa-copy"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.DuplicatePack"}}</button>
+      <button type="button" data-action="importFile"><i class="fa-solid fa-file-import"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.ImportFile"}}</button>
+      <button type="button" data-action="importClipboard"><i class="fa-solid fa-paste"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.ImportClipboard"}}</button>
+      <button type="button" data-action="exportPack" {{#unless hasPack}}disabled{{/unless}} title="{{exportFilename}}"><i class="fa-solid fa-file-export"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.ExportFile"}}</button>
+      <button type="button" data-action="copyPack" {{#unless hasPack}}disabled{{/unless}}><i class="fa-solid fa-copy"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.CopyJson"}}</button>
+    </div>
+  </header>
+
+  <main class="card-editor-main">
+    <aside class="card-editor-list-panel pack-list-panel">
+      <div class="card-editor-panel-heading">
+        <h3>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Packs"}}</h3>
+        <span>{{packs.length}}</span>
+      </div>
+      <div class="card-editor-scroll-list">
+        {{#each packs as |entry|}}
+          <button type="button" class="card-editor-list-entry {{#if entry.selected}}selected{{/if}}" data-action="selectPack" data-pack-id="{{entry.id}}">
+            <span class="entry-icon"><i class="fa-solid {{#if entry.editable}}fa-pen-to-square{{else}}fa-lock{{/if}}"></i></span>
+            <span class="entry-text">
+              <strong>{{entry.title}}</strong>
+              <small>{{entry.id}} · {{entry.cardCount}} {{localize "PF2E_CRITICAL_FORGE.CardEditor.CardsShort"}}</small>
+            </span>
+            {{#unless entry.enabled}}<i class="fa-solid fa-eye-slash"></i>{{/unless}}
+          </button>
+        {{/each}}
+      </div>
+    </aside>
+
+    <aside class="card-editor-list-panel card-list-panel">
+      <div class="card-editor-panel-heading">
+        <h3>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Cards"}}</h3>
+        <button type="button" class="icon" data-action="newCard" title="{{localize 'PF2E_CRITICAL_FORGE.CardEditor.NewCard'}}" {{#unless packEditable}}disabled{{/unless}}><i class="fa-solid fa-plus"></i></button>
+      </div>
+      <div class="card-editor-scroll-list">
+        {{#each cards as |entry|}}
+          <button type="button" class="card-editor-list-entry card-entry {{#if entry.selected}}selected{{/if}}" data-action="selectCard" data-card-id="{{entry.id}}">
+            <span class="entry-icon"><i class="fa-solid {{#if entry.hasEffect}}fa-bolt{{else}}fa-feather{{/if}}"></i></span>
+            <span class="entry-text">
+              <strong>{{entry.title}}</strong>
+              <small>{{entry.category}} · {{entry.tone}} · {{entry.impact}}</small>
+            </span>
+          </button>
+        {{else}}
+          <div class="card-editor-empty">{{localize "PF2E_CRITICAL_FORGE.CardEditor.NoCards"}}</div>
+        {{/each}}
+      </div>
+    </aside>
+
+    <section class="card-editor-workspace">
+      {{#if hasPack}}
+        <section class="card-editor-section pack-fields">
+          <div class="card-editor-section-heading">
+            <h3>{{localize "PF2E_CRITICAL_FORGE.CardEditor.PackSettings"}}</h3>
+            <span class="card-editor-badge {{#if packEditable}}editable{{else}}readonly{{/if}}">{{packStatusLabel}}</span>
+          </div>
+          <div class="card-editor-grid pack-grid">
+            <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Id"}}</span><input name="pack.id" value="{{pack.id}}" {{#unless packEditable}}disabled{{/unless}}></label>
+            <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Version"}}</span><input name="pack.version" value="{{pack.version}}" {{#unless packEditable}}disabled{{/unless}}></label>
+            <label class="wide"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.TitleFallback"}}</span><input name="pack.fallbackTitle" value="{{pack.fallbackTitle}}" {{#unless packEditable}}disabled{{/unless}}></label>
+            <label class="wide"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.DescriptionFallback"}}</span><textarea name="pack.fallbackDescription" rows="2" {{#unless packEditable}}disabled{{/unless}}>{{pack.fallbackDescription}}</textarea></label>
+            <label class="wide advanced"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.TitleKey"}}</span><input name="pack.titleKey" value="{{pack.titleKey}}" {{#unless packEditable}}disabled{{/unless}}></label>
+            <label class="wide advanced"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.DescriptionKey"}}</span><input name="pack.descriptionKey" value="{{pack.descriptionKey}}" {{#unless packEditable}}disabled{{/unless}}></label>
+            <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Priority"}}</span><input type="number" name="pack.priority" value="{{pack.priority}}" step="1" {{#unless packEditable}}disabled{{/unless}}></label>
+            <label class="checkbox-field"><input type="checkbox" name="pack.enabled" {{#if pack.enabled}}checked{{/if}} {{#unless packEditable}}disabled{{/unless}}> <span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Enabled"}}</span></label>
+          </div>
+        </section>
+
+        {{#if hasCard}}
+          <section class="card-editor-section card-fields">
+            <div class="card-editor-section-heading">
+              <h3>{{localize "PF2E_CRITICAL_FORGE.CardEditor.CardSettings"}}</h3>
+              <div class="card-editor-inline-actions">
+                <button type="button" data-action="duplicateCard"><i class="fa-solid fa-copy"></i> {{#if packEditable}}{{localize "PF2E_CRITICAL_FORGE.CardEditor.DuplicateCard"}}{{else}}{{localize "PF2E_CRITICAL_FORGE.CardEditor.CopyAsTemplate"}}{{/if}}</button>
+                <button type="button" class="danger" data-action="deleteCard" {{#unless canEditCard}}disabled{{/unless}}><i class="fa-solid fa-trash"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.DeleteCard"}}</button>
+              </div>
+            </div>
+
+            <div class="card-editor-grid card-grid">
+              <label class="wide"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Id"}}</span><input name="card.id" value="{{card.id}}" {{#unless packEditable}}disabled{{/unless}}></label>
+              <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Category"}}</span><select name="card.category" {{#unless packEditable}}disabled{{/unless}}>{{#each card.categoryOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select></label>
+              <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Tone"}}</span><select name="card.tone" {{#unless packEditable}}disabled{{/unless}}>{{#each card.toneOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select></label>
+              <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Impact"}}</span><select name="card.impact" {{#unless packEditable}}disabled{{/unless}}>{{#each card.impactOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select></label>
+              <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Weight"}}</span><input type="number" name="card.weight" value="{{card.weight}}" min="0.01" step="0.25" {{#unless packEditable}}disabled{{/unless}}></label>
+              <label class="wide"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.TitleFallback"}}</span><input name="card.fallbackTitle" value="{{card.fallbackTitle}}" {{#unless packEditable}}disabled{{/unless}}></label>
+              <label class="wide"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.DescriptionFallback"}}</span><textarea name="card.fallbackDescription" rows="3" {{#unless packEditable}}disabled{{/unless}}>{{card.fallbackDescription}}</textarea></label>
+              <label class="wide advanced"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.TitleKey"}}</span><input name="card.titleKey" value="{{card.titleKey}}" {{#unless packEditable}}disabled{{/unless}}></label>
+              <label class="wide advanced"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.DescriptionKey"}}</span><input name="card.descriptionKey" value="{{card.descriptionKey}}" {{#unless packEditable}}disabled{{/unless}}></label>
+              <label class="wide"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Tags"}}</span><input name="card.tags" value="{{card.tagsText}}" placeholder="bleed, melee, rare" {{#unless packEditable}}disabled{{/unless}}></label>
+            </div>
+
+            <details class="card-editor-details" open>
+              <summary>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Filters"}}</summary>
+              <p class="hint">{{localize "PF2E_CRITICAL_FORGE.CardEditor.FiltersHint"}}</p>
+              <div class="card-editor-grid filter-grid">
+                <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.FilterDamageTypes"}}</span><input name="card.filters.damageTypes" value="{{card.filters.damageTypes}}" {{#unless packEditable}}disabled{{/unless}}></label>
+                <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.FilterWeaponGroups"}}</span><input name="card.filters.weaponGroups" value="{{card.filters.weaponGroups}}" {{#unless packEditable}}disabled{{/unless}}></label>
+                <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.FilterAttackTraits"}}</span><input name="card.filters.attackTraits" value="{{card.filters.attackTraits}}" {{#unless packEditable}}disabled{{/unless}}></label>
+                <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.FilterSaveTypes"}}</span><input name="card.filters.saveTypes" value="{{card.filters.saveTypes}}" placeholder="fortitude, reflex, will" {{#unless packEditable}}disabled{{/unless}}></label>
+                <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.FilterSpellTraditions"}}</span><input name="card.filters.spellTraditions" value="{{card.filters.spellTraditions}}" placeholder="arcane, divine, occult, primal" {{#unless packEditable}}disabled{{/unless}}></label>
+                <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.FilterSpellTraits"}}</span><input name="card.filters.spellTraits" value="{{card.filters.spellTraits}}" placeholder="fire, mental, healing" {{#unless packEditable}}disabled{{/unless}}></label>
+                <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.FilterSourceTraits"}}</span><input name="card.filters.sourceTraits" value="{{card.filters.sourceTraits}}" {{#unless packEditable}}disabled{{/unless}}></label>
+                <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.FilterTargetTraits"}}</span><input name="card.filters.targetTraits" value="{{card.filters.targetTraits}}" {{#unless packEditable}}disabled{{/unless}}></label>
+                <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.FilterExcludedSourceTraits"}}</span><input name="card.filters.excludedSourceTraits" value="{{card.filters.excludedSourceTraits}}" {{#unless packEditable}}disabled{{/unless}}></label>
+                <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.FilterExcludedTargetTraits"}}</span><input name="card.filters.excludedTargetTraits" value="{{card.filters.excludedTargetTraits}}" {{#unless packEditable}}disabled{{/unless}}></label>
+              </div>
+            </details>
+
+            <section class="card-editor-effect-panel {{#if card.effect}}has-effect{{/if}}">
+              <div class="card-editor-section-heading">
+                <div>
+                  <h4><i class="fa-solid fa-bolt"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.MechanicalEffect"}}</h4>
+                  <p>{{card.effectSummary}}</p>
+                </div>
+                <div class="card-editor-inline-actions">
+                  <button type="button" class="primary" data-action="editEffect" {{#unless packEditable}}disabled{{/unless}}><i class="fa-solid fa-hammer"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.EditInEffectForge"}}</button>
+                  <button type="button" data-action="clearEffect" {{#unless card.effect}}disabled{{/unless}} {{#unless packEditable}}disabled{{/unless}}><i class="fa-solid fa-eraser"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.RemoveEffect"}}</button>
+                </div>
+              </div>
+              {{#if card.effect}}
+                <div class="card-editor-grid effect-meta-grid">
+                  <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.EffectTarget"}}</span><select name="card.effect.target" {{#unless packEditable}}disabled{{/unless}}>{{#each card.effectTargetOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select></label>
+                  <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.EffectFallbackName"}}</span><input name="card.effect.fallbackName" value="{{card.effectFallbackName}}" {{#unless packEditable}}disabled{{/unless}}></label>
+                  <label class="wide advanced"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.EffectNameKey"}}</span><input name="card.effect.nameKey" value="{{card.effectNameKey}}" {{#unless packEditable}}disabled{{/unless}}></label>
+                </div>
+              {{/if}}
+            </section>
+          </section>
+        {{else}}
+          <div class="card-editor-empty workspace-empty">
+            <i class="fa-solid fa-clone"></i>
+            <p>{{localize "PF2E_CRITICAL_FORGE.CardEditor.SelectOrCreateCard"}}</p>
+          </div>
+        {{/if}}
+
+        {{#if validation}}
+          <section class="card-editor-validation {{#if validation.valid}}valid{{else}}invalid{{/if}}">
+            <strong><i class="fa-solid {{#if validation.valid}}fa-circle-check{{else}}fa-triangle-exclamation{{/if}}"></i> {{#if validation.valid}}{{localize "PF2E_CRITICAL_FORGE.CardEditor.ValidPack"}}{{else}}{{localize "PF2E_CRITICAL_FORGE.CardEditor.InvalidPack"}}{{/if}}</strong>
+            {{#if validation.count}}
+              <ul>{{#each validation.issues as |issue|}}<li class="{{issue.severity}}">{{issue.text}}</li>{{/each}}</ul>
+            {{/if}}
+          </section>
+        {{/if}}
+      {{else}}
+        <div class="card-editor-empty workspace-empty"><p>{{localize "PF2E_CRITICAL_FORGE.CardEditor.NoPack"}}</p></div>
+      {{/if}}
+    </section>
+  </main>
+
+  <footer class="card-editor-footer">
+    <button type="button" class="primary" data-action="savePack" {{#unless canSave}}disabled{{/unless}}><i class="fa-solid fa-floppy-disk"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.SavePack"}}</button>
+    <button type="button" class="danger" data-action="deletePack" {{#unless canDeletePack}}disabled{{/unless}}><i class="fa-solid fa-trash"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.DeletePack"}}</button>
+    <span class="spacer"></span>
+    <button type="button" data-action="closeWindow"><i class="fa-solid fa-xmark"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.Close"}}</button>
+  </footer>
+</div>

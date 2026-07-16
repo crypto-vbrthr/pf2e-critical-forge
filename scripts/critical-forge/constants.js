@@ -1,6 +1,10 @@
 export const CARD_CATEGORIES = Object.freeze([
   "criticalHit",
-  "criticalFumble"
+  "criticalFumble",
+  "spellCriticalHit",
+  "spellCriticalFumble",
+  "savingThrowCriticalSuccess",
+  "savingThrowCriticalFailure"
 ]);
 
 export const EFFECT_TARGETS = Object.freeze([

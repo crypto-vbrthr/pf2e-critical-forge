@@ -41,9 +41,13 @@ function localizeValue(tree, key) {
 }
 
 test("core test library contains the intended hit and fumble matrix", () => {
-  assert.equal(cards.length, 48);
+  assert.equal(cards.length, 72);
   assert.equal(cards.filter((card) => card.category === "criticalHit").length, 30);
   assert.equal(cards.filter((card) => card.category === "criticalFumble").length, 18);
+  assert.equal(cards.filter((card) => card.category === "spellCriticalHit").length, 6);
+  assert.equal(cards.filter((card) => card.category === "spellCriticalFumble").length, 6);
+  assert.equal(cards.filter((card) => card.category === "savingThrowCriticalSuccess").length, 6);
+  assert.equal(cards.filter((card) => card.category === "savingThrowCriticalFailure").length, 6);
 
   for (const damageType of ["slashing", "piercing", "bludgeoning"]) {
     assert.equal(cards.filter((card) =>
@@ -86,16 +90,16 @@ test("melee and ranged fumble filters keep their own six cards plus generic fall
 
 test("core test library has enough material for every tone and impact profile", () => {
   assert.deepEqual(countBy(["neutral", "serious", "dramatic", "humorous"], "tone"), {
-    neutral: 8,
-    serious: 12,
-    dramatic: 12,
-    humorous: 16
+    neutral: 11,
+    serious: 20,
+    dramatic: 21,
+    humorous: 20
   });
   assert.deepEqual(countBy(["narrative", "light", "moderate", "strong"], "impact"), {
-    narrative: 8,
-    light: 18,
-    moderate: 14,
-    strong: 8
+    narrative: 12,
+    light: 26,
+    moderate: 22,
+    strong: 12
   });
 });
 
@@ -109,7 +113,7 @@ test("every bundled core card and effect template validates", () => {
 });
 
 test("every mechanical core card materializes and compiles through the Effect Engine", async () => {
-  const valued = new Set(["clumsy", "enfeebled", "frightened", "slowed", "stunned"]);
+  const valued = new Set(["clumsy", "enfeebled", "frightened", "slowed", "stunned", "stupefied", "sickened"]);
   const conditionSlugs = [
     "persistent-damage",
     "off-guard",
@@ -119,7 +123,9 @@ test("every mechanical core card materializes and compiles through the Effect En
     "stunned",
     "prone",
     "enfeebled",
-    "frightened"
+    "frightened",
+    "stupefied",
+    "sickened"
   ];
   game.packs.set("pf2e.conditionitems", createConditionPack(
     conditionSlugs.map((slug) => ({ slug, isValued: valued.has(slug) }))

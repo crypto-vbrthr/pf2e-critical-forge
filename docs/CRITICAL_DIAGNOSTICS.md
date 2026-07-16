@@ -1,8 +1,8 @@
 # Critical Forge Diagnostics
 
-Version `0.5.6-dev` provides a manual GM workbench for testing the PF2e Context Adapter and card-selection pipeline against real chat messages. Eligible cards can be deliberately published as manual result chat cards.
+Version `0.7.0-dev` provides a manual GM workbench for testing the PF2e Context Adapter and card-selection pipeline against real chat messages. Eligible cards can be deliberately published as manual result chat cards.
 
-It still applies no effect, creates no Item, changes no Actor, and registers no automatic attack-roll hook.
+The diagnostic itself applies no effect, creates no Item, and changes no Actor. The separate automation service may process supported rolls according to world settings.
 
 ## Opening the workbench
 
@@ -43,8 +43,8 @@ No target is a valid diagnostic state. Multiple targets are never reduced to an 
 
 The workbench shows:
 
-- critical category and degree of success;
-- damage types, weapon groups, attack traits, source traits, and target traits;
+- critical category, roll family, natural die, and degree of success;
+- damage types, weapon groups, attack traits, save types, spell traditions, spell traits, source traits, and target traits;
 - structured adapter and resolver diagnostics;
 - every eligible card with matched filters, specificity, base weight, and effective weight;
 - every rejected card with stable rejection reasons;

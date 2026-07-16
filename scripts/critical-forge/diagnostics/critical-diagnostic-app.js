@@ -188,11 +188,14 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
         : game.i18n.localize("PF2E_CRITICAL_FORGE.CriticalDiagnostic.TriggerNotMatched"),
       hasEligible: diagnostic.eligible.length > 0,
       hasRejected: diagnostic.rejected.length > 0,
-      category: diagnostic.context.category || "—",
+      category: this.#localizeCategory(diagnostic.context.category),
       outcome: diagnostic.metadata.outcome || "—",
       damageTypes: diagnostic.context.damageTypes,
       weaponGroups: diagnostic.context.weaponGroups,
       attackTraits: diagnostic.context.attackTraits,
+      saveTypes: diagnostic.context.saveTypes,
+      spellTraditions: diagnostic.context.spellTraditions,
+      spellTraits: diagnostic.context.spellTraits,
       sourceTraits: diagnostic.context.sourceTraits,
       targetTraits: diagnostic.context.targetTraits
     };
@@ -244,6 +247,14 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
     const key = suffix ? `PF2E_CRITICAL_FORGE.Settings.CriticalCardProfile.Choices.${suffix}` : "";
     const localized = key ? game.i18n.localize(key) : profile;
     return localized && localized !== key ? localized : profile;
+  }
+
+  #localizeCategory(category) {
+    if (!category) return "—";
+    const suffix = category.charAt(0).toUpperCase() + category.slice(1);
+    const key = `PF2E_CRITICAL_FORGE.CardEditor.Categories.${suffix}`;
+    const localized = game.i18n.localize(key);
+    return localized && localized !== key ? localized : category;
   }
 
   #localizeCardAttribute(group, value) {

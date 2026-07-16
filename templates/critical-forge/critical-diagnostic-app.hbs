@@ -107,6 +107,24 @@
               </div>
             </div>
             <div class="critical-diagnostic-tag-group">
+              <h3>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.SaveTypes"}}</h3>
+              <div class="critical-diagnostic-tags">
+                {{#each report.saveTypes}}<span>{{this}}</span>{{else}}<em>—</em>{{/each}}
+              </div>
+            </div>
+            <div class="critical-diagnostic-tag-group">
+              <h3>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.SpellTraditions"}}</h3>
+              <div class="critical-diagnostic-tags">
+                {{#each report.spellTraditions}}<span>{{this}}</span>{{else}}<em>—</em>{{/each}}
+              </div>
+            </div>
+            <div class="critical-diagnostic-tag-group">
+              <h3>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.SpellTraits"}}</h3>
+              <div class="critical-diagnostic-tags">
+                {{#each report.spellTraits}}<span>{{this}}</span>{{else}}<em>—</em>{{/each}}
+              </div>
+            </div>
+            <div class="critical-diagnostic-tag-group">
               <h3>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.SourceTraits"}}</h3>
               <div class="critical-diagnostic-tags">
                 {{#each report.sourceTraits}}<span>{{this}}</span>{{else}}<em>—</em>{{/each}}

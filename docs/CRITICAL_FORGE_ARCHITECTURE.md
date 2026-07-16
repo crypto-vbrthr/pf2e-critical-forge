@@ -1,9 +1,9 @@
 # Critical Forge Architecture
 
-Version 0.5.8 adds a thin Foundry automation shell around the headless Critical Forge domain and PF2e Context Adapter. The hook owns only message detection, GM prompting, and publication; card matching, trigger policy, profile weighting, presentation, and effect application remain separate services.
+Version 0.7.0 extends the thin Foundry automation shell to weapon attacks, spell attacks, and saving throws. The hook owns only message detection, GM prompting, and publication; context adaptation, card matching, trigger policy, profile weighting, presentation, and effect application remain separate services.
 
 ```text
-Foundry createChatMessage Hook ── new PF2e attack messages
+Foundry createChatMessage Hook ── new supported PF2e roll messages
         │
         ├── prompt / automatic policy
         │
@@ -25,7 +25,7 @@ Localized Card / Materialized Effect Definition
 Manual Preview Publisher → Foundry ChatMessage
         │
         ▼
-User-confirmed effect application (future)
+User-confirmed effect application
         │
         ▼
 Effect Engine
@@ -59,11 +59,11 @@ critical-forge/
 - The manual diagnostic UI evaluates candidates but performs no weighted selection.
 - The preview publisher renders one explicitly chosen candidate into a ChatMessage.
 - Preview ChatMessages store structured card and Effect Definition flags, not application state.
-- No effect is applied automatically or manually in this milestone.
+- No effect is ever applied automatically. Manual application remains a separate GM-confirmed presentation service.
 
 ## Adapter boundary
 
-The PF2e adapter may inspect only documents explicitly supplied by its caller. It normalizes PF2e roll outcomes, weapon data, NPC melee damage, traits, actor metadata, and roll options into neutral data. It never selects a card, registers a hook, renders HTML, or applies an effect. Further spell- or skill-specific readers can extend this adapter without adding PF2e document knowledge to the card domain.
+The PF2e adapter may inspect only documents explicitly supplied by its caller. It normalizes PF2e roll outcomes, weapon and spell data, saving-throw context, NPC melee damage, traits, actor metadata, and roll options into neutral data. It never selects a card, registers a hook, renders HTML, or applies an effect. Further roll-family-specific readers can extend this adapter without adding PF2e document knowledge to the card domain.
 
 ## Presentation boundary
 

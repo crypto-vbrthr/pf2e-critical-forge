@@ -14,7 +14,7 @@ test("public card API exposes registered packs, cards, and schema versions", () 
   assert.equal(api.schemaVersion, 1);
   assert.equal(api.packSchemaVersion, 1);
   assert.equal(api.getPack("core").id, "core");
-  assert.equal(api.list({ packId: "core" }).length, 48);
+  assert.equal(api.list({ packId: "core" }).length, 72);
 });
 
 test("public card API validates malformed input without throwing", () => {
@@ -41,7 +41,7 @@ test("public card API selects, localizes, and materializes cards", () => {
 });
 
 test("public card API exposes the headless PF2e context adapter", () => {
-  assert.equal(api.adapters.pf2e.version, "1.1.0");
+  assert.equal(api.adapters.pf2e.version, "1.2.0");
   const direct = api.adapters.pf2e.createContext({
     category: "criticalHit",
     damageTypes: ["slashing"]

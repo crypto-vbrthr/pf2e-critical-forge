@@ -2,7 +2,7 @@
 
 The PF2e Context Adapter is a headless translation boundary. It accepts PF2e/Foundry objects explicitly supplied by a caller and returns the neutral context consumed by Critical Forge card matching.
 
-The adapter itself does not register hooks, choose cards, render HTML, or apply effects. Version 0.5.8-dev adds a separate automation service that feeds newly created PF2e attack messages into the adapter, then delegates trigger evaluation and selection to their own services. The manual diagnostic workbench remains available.
+Adapter version `1.2.0` supports weapon attacks, spell attacks, and saving throws. The adapter itself does not register hooks, choose cards, render HTML, or apply effects. The separate automation service supplies newly created PF2e messages to it.
 
 ## API
 
@@ -33,26 +33,44 @@ const report = api.cards.createContext(input, { system: "pf2e" });
 {
   valid: true,
   context: {
-    category: "criticalHit",
-    damageTypes: ["slashing"],
-    weaponGroups: ["sword"],
-    attackTraits: ["agile", "finesse"],
+    category: "savingThrowCriticalFailure",
+    damageTypes: [],
+    weaponGroups: [],
+    attackTraits: [],
+    saveTypes: ["reflex"],
+    spellTraditions: ["arcane"],
+    spellTraits: ["fire"],
     sourceTraits: ["human", "humanoid"],
-    targetTraits: ["undead"],
+    targetTraits: [],
     requiredTags: [],
     excludedTags: []
   },
   metadata: {
     adapter: "pf2e",
-    adapterVersion: "1.1.0",
+    adapterVersion: "1.2.0",
     degreeOfSuccess: {
-      index: 3,
-      key: "criticalSuccess",
-      slug: "critical-success"
+      index: 0,
+      key: "criticalFailure",
+      slug: "critical-failure"
+    },
+    roll: {
+      family: "savingThrow",
+      dieResult: 1,
+      isNatural20: false,
+      isNatural1: true
     },
     source: {},
     target: {},
     attack: {},
+    save: {
+      type: "reflex"
+    },
+    spell: {
+      isSpell: true,
+      rank: 3,
+      traditions: ["arcane"],
+      traits: ["fire"]
+    },
     rollOptions: [],
     provenance: {}
   },
@@ -63,50 +81,52 @@ const report = api.cards.createContext(input, { system: "pf2e" });
 }
 ```
 
-Only `context` is consumed by the card selector. `metadata` and diagnostics are for inspection, logs, future chat presentation, and debugging.
+Only `context` is consumed by the card selector. `metadata` and diagnostics are for inspection, logs, chat presentation, and debugging.
+
+## Category mapping
+
+```text
+attack + critical success       → criticalHit
+attack + critical failure       → criticalFumble
+spell attack + critical success → spellCriticalHit
+spell attack + critical failure → spellCriticalFumble
+save + critical success         → savingThrowCriticalSuccess
+save + critical failure         → savingThrowCriticalFailure
+```
+
+Ordinary success and failure intentionally produce no card category.
 
 ## Input precedence
 
 Explicit fields supplied by the caller are combined with discovered PF2e data. The adapter can read:
 
-- degree of success from explicit values, a CheckRoll, or PF2e chat flags;
-- damage types from weapon data, selected versatile/modular damage, NPC melee damage rolls, damage-message flags, or roll options;
-- weapon groups and attack traits from the item, strike, or roll options;
-- synthetic `melee`, `ranged`, and `spell` attack traits when the resolved attack mode supports them;
-- source and target traits from Actors or `self:trait:*` and `target:trait:*` roll options;
-- actor identity, level, size, and token references;
-- item identity, weapon category, base item, range mode, and alternative usage.
+- degree of success and natural d20 value from explicit values, a CheckRoll, or PF2e chat flags;
+- roll family from message context, roll identifiers, actions, and roll options;
+- damage types from weapon data, spell data, selected versatile/modular damage, NPC melee damage rolls, damage-message flags, or roll options;
+- weapon groups and native attack traits from the item, strike, or roll options;
+- synthetic `melee`, `ranged`, and `spell` attack traits;
+- saving-throw type (`fortitude`, `reflex`, or `will`);
+- spell traditions, spell traits, and spell rank when a spell item/context is available;
+- source and target traits from Actors or roll options;
+- actor identity, level, size, token references, item identity, range mode, and alternative usage.
 
 A selected versatile or modular damage type replaces the weapon's base damage type for the primary attack context.
 
-## Synthetic attack-mode traits
+## Source and target semantics
 
-Adapter version `1.1.0` appends stable mode traits to `context.attackTraits`:
-
-- `melee` when the attack is resolved as melee;
-- `ranged` when the attack is resolved as ranged;
-- `spell` when the attack is resolved as a spell attack.
-
-These values do not replace native item traits. They give card packs a stable filter surface without enumerating weapon groups or depending on private PF2e strike objects. If the attack mode cannot be resolved, no synthetic mode trait is invented.
-
-## Degree of success mapping
-
-```text
-3 / criticalSuccess → criticalHit
-0 / criticalFailure → criticalFumble
-```
-
-Ordinary success and failure intentionally produce no card category. The report is therefore invalid for selection and includes `PF2E_CONTEXT_OUTCOME_NOT_CRITICAL` plus `PF2E_CONTEXT_CATEGORY_UNRESOLVED`.
+For weapon and spell attacks, the attack origin is the source and the attacked creature is the target. For saving throws, the rolling creature is the source; the originating Actor/effect is the target when PF2e records it. This lets a save-success card benefit the roller while a save-failure card can affect either side.
 
 ## Diagnostic codes
 
-- `PF2E_CONTEXT_INPUT_INVALID`: the adapter input is not an object.
-- `PF2E_CONTEXT_CATEGORY_UNRESOLVED`: no explicit or critical roll category could be determined.
-- `PF2E_CONTEXT_OUTCOME_NOT_CRITICAL`: the detected roll was a normal success or failure.
-- `PF2E_CONTEXT_ITEM_UNRESOLVED`: no attack item was supplied or exposed by the message/strike.
-- `PF2E_CONTEXT_SOURCE_UNRESOLVED`: no source Actor or source UUID was available.
-- `PF2E_CONTEXT_TARGET_UNRESOLVED`: no target Actor or target UUID was available.
-- `PF2E_CONTEXT_DAMAGE_TYPES_EMPTY`: no damage type could be determined; generic cards remain usable.
+- `PF2E_CONTEXT_INPUT_INVALID`
+- `PF2E_CONTEXT_CATEGORY_UNRESOLVED`
+- `PF2E_CONTEXT_OUTCOME_NOT_CRITICAL`
+- `PF2E_CONTEXT_ITEM_UNRESOLVED`
+- `PF2E_CONTEXT_SOURCE_UNRESOLVED`
+- `PF2E_CONTEXT_TARGET_UNRESOLVED`
+- `PF2E_CONTEXT_DAMAGE_TYPES_EMPTY`
+- `PF2E_CONTEXT_SAVE_TYPE_UNRESOLVED`
+- `PF2E_CONTEXT_SPELL_UNRESOLVED`
 
 Missing optional data is informational. Only errors make `report.valid` false.
 
@@ -127,28 +147,7 @@ if (adapted.valid) {
 }
 ```
 
-The adapter and selector remain separate so callers can inspect, amend, cache, or reject a context before card selection.
-
-
-## Manual chat-message diagnostics
-
-The diagnostic workbench resolves convenient live-world inputs before calling the adapter:
-
-- the selected ChatMessage and its primary roll;
-- an exposed message Item or an Item UUID from PF2e context flags;
-- the speaker Actor and source Token when available;
-- a PF2e target actor/token reference stored on the message when available;
-- otherwise, exactly one currently targeted Token as the target.
-
-Multiple selected targets are not guessed. They produce `CRITICAL_DIAGNOSTIC_MULTIPLE_TARGETS`, and target context remains empty. No selected target produces `CRITICAL_DIAGNOSTIC_TARGET_NOT_SELECTED`.
-
-```js
-const resolved = await api.cards.diagnostics.resolveMessageInput(message);
-const report = api.cards.diagnose(resolved.input);
-```
-
-See [`CRITICAL_DIAGNOSTICS.md`](CRITICAL_DIAGNOSTICS.md) for the UI and combined report.
-
+The adapter and selector remain separate so callers can inspect, amend, cache, or reject a context before selection.
 
 ## Natural d20 metadata
 
@@ -162,4 +161,4 @@ report.metadata.roll = {
 };
 ```
 
-Trigger policies use both values. A natural 20/1 qualifies only when the final PF2e result is also a critical success/failure respectively.
+Trigger policies use both values. Natural scope never treats a natural 20/1 as sufficient unless the final degree is also the matching critical result.

@@ -1,5 +1,6 @@
 import { CARD_CATEGORIES } from "../../constants.js";
-import { firstDefined, getPath, normalizeSlug } from "./context-utils.js";
+import { firstDefined, getPath, normalizeSlug, uniqueSlugs } from "./context-utils.js";
+import { normalizeSaveType } from "./save-context-reader.js";
 
 const DEGREE_KEYS = Object.freeze([
   "criticalFailure",
@@ -25,11 +26,7 @@ export function readRollResult(input = {}) {
   const contextFlag = getPath(message, "flags.pf2e.context") ?? null;
   const damageRollFlag = getPath(message, "flags.pf2e.damageRoll") ?? null;
 
-  const explicitCategory = normalizeSlug(input.category);
-  const category = CARD_CATEGORIES.includes(input.category)
-    ? input.category
-    : CARD_CATEGORIES.find((candidate) => candidate.toLowerCase() === explicitCategory) ?? null;
-
+  const explicitCategory = normalizeExplicitCategory(input.category);
   const degreeCandidate = firstDefined(
     input.degreeOfSuccess,
     input.outcome,
@@ -39,13 +36,25 @@ export function readRollResult(input = {}) {
     damageRollFlag?.outcome
   );
   const degree = normalizeDegreeOfSuccess(degreeCandidate);
-  const inferredCategory = degree?.index === 3
-    ? "criticalHit"
-    : degree?.index === 0
-      ? "criticalFumble"
-      : null;
-
   const dieResult = readDieResult(input, roll);
+  const rollType = normalizeSlug(firstDefined(input.rollType, roll?.type, roll?.options?.type, contextFlag?.type)) || null;
+  const identifier = String(firstDefined(input.identifier, roll?.options?.identifier, contextFlag?.identifier, contextFlag?.statistic) ?? "").trim() || null;
+  const action = String(firstDefined(input.action, roll?.options?.action, contextFlag?.action) ?? "").trim() || null;
+  const rawOptions = uniqueSlugs(
+    input.rollOptions,
+    contextFlag?.options,
+    contextFlag?.contextualOptions?.postRoll,
+    roll?.options?.options,
+    roll?.options?.rollOptions
+  );
+  const rollFamily = readRollFamily({
+    explicit: input.rollFamily,
+    rollType,
+    identifier,
+    action,
+    options: rawOptions,
+    explicitCategory
+  });
 
   return {
     roll,
@@ -55,11 +64,38 @@ export function readRollResult(input = {}) {
     contextFlag,
     damageRollFlag,
     degree,
-    category: category ?? inferredCategory,
-    categorySource: category ? "explicit" : inferredCategory ? "degreeOfSuccess" : null,
-    rollType: normalizeSlug(firstDefined(input.rollType, roll?.type, roll?.options?.type, contextFlag?.type)) || null,
-    identifier: String(firstDefined(input.identifier, roll?.options?.identifier, contextFlag?.identifier) ?? "").trim() || null,
-    action: String(firstDefined(input.action, roll?.options?.action, contextFlag?.action) ?? "").trim() || null
+    explicitCategory,
+    category: explicitCategory,
+    categorySource: explicitCategory ? "explicit" : null,
+    rollFamily,
+    rollType,
+    identifier,
+    action
+  };
+}
+
+export function resolveCriticalCategory(rollResult, { isSpell = false } = {}) {
+  if (rollResult.explicitCategory) {
+    return { category: rollResult.explicitCategory, source: "explicit" };
+  }
+  const degree = rollResult.degree?.index;
+  if (![0, 3].includes(degree)) return { category: null, source: null };
+
+  if (rollResult.rollFamily === "savingThrow") {
+    return {
+      category: degree === 3 ? "savingThrowCriticalSuccess" : "savingThrowCriticalFailure",
+      source: "savingThrowDegreeOfSuccess"
+    };
+  }
+  if (isSpell) {
+    return {
+      category: degree === 3 ? "spellCriticalHit" : "spellCriticalFumble",
+      source: "spellAttackDegreeOfSuccess"
+    };
+  }
+  return {
+    category: degree === 3 ? "criticalHit" : "criticalFumble",
+    source: "attackDegreeOfSuccess"
   };
 }
 
@@ -78,6 +114,36 @@ export function normalizeDegreeOfSuccess(value) {
   });
 }
 
+function readRollFamily({ explicit, rollType, identifier, action, options, explicitCategory }) {
+  const normalizedExplicit = normalizeSlug(explicit);
+  if (["savingthrow", "saving-throw", "save"].includes(normalizedExplicit)) return "savingThrow";
+  if (["spellattack", "spell-attack"].includes(normalizedExplicit)) return "spellAttack";
+  if (["attack", "attack-roll"].includes(normalizedExplicit)) return "attack";
+
+  if (explicitCategory?.startsWith("savingThrow")) return "savingThrow";
+  if (explicitCategory?.startsWith("spellCritical")) return "spellAttack";
+  if (["criticalHit", "criticalFumble"].includes(explicitCategory)) return "attack";
+
+  const values = [rollType, identifier, action].map(normalizeSlug).filter(Boolean);
+  if (values.some((value) => value.includes("saving-throw") || value.includes("savingthrow") || normalizeSaveType(value))) {
+    return "savingThrow";
+  }
+  if (options.some((option) => option.includes("saving-throw")
+    || option.startsWith("check:statistic:fortitude")
+    || option.startsWith("check:statistic:reflex")
+    || option.startsWith("check:statistic:will"))) {
+    return "savingThrow";
+  }
+  if (values.some((value) => value.includes("spell-attack"))) return "spellAttack";
+  if (values.some((value) => value.includes("attack") || value === "strike")) return "attack";
+  return "unknown";
+}
+
+function normalizeExplicitCategory(value) {
+  const normalized = normalizeSlug(value);
+  return CARD_CATEGORIES.find((candidate) => candidate.toLowerCase() === normalized) ?? null;
+}
+
 function resolveRoll(explicitRoll, message) {
   if (explicitRoll) return explicitRoll;
   const rolls = Array.isArray(message?.rolls) ? message.rolls : [];
@@ -85,7 +151,6 @@ function resolveRoll(explicitRoll, message) {
     ?? rolls[0]
     ?? null;
 }
-
 
 function readDieResult(input, roll) {
   const explicit = firstDefined(input.dieResult, input.naturalRoll, input.d20Result);

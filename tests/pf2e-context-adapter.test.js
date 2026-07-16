@@ -62,6 +62,9 @@ test("adapter creates a frozen neutral context from explicit data", () => {
     damageTypes: ["fire"],
     weaponGroups: ["bomb"],
     attackTraits: ["splash"],
+    saveTypes: [],
+    spellTraditions: [],
+    spellTraits: [],
     sourceTraits: ["human"],
     targetTraits: ["undead"],
     requiredTags: ["elemental"]
@@ -73,6 +76,9 @@ test("adapter creates a frozen neutral context from explicit data", () => {
     damageTypes: ["fire"],
     weaponGroups: ["bomb"],
     attackTraits: ["splash"],
+    saveTypes: [],
+    spellTraditions: [],
+    spellTraits: [],
     sourceTraits: ["human"],
     targetTraits: ["undead"],
     requiredTags: ["elemental"],
@@ -238,4 +244,86 @@ test("adapter adds stable melee, ranged, and spell attack-mode traits", () => {
   assert.equal(ranged.context.attackTraits.includes("ranged"), true);
   assert.equal(spell.context.attackTraits.includes("ranged"), true);
   assert.equal(spell.context.attackTraits.includes("spell"), true);
+});
+
+
+test("spell attack rolls receive dedicated categories and spell metadata", () => {
+  const source = actor({ id: "caster", type: "character", traits: ["human", "humanoid"] });
+  const target = actor({ id: "target", traits: ["fiend"] });
+  const spell = {
+    id: "spell-1",
+    uuid: "Actor.caster.Item.spell-1",
+    name: "Ignition",
+    type: "spell",
+    actor: source,
+    system: {
+      level: { value: 1 },
+      traits: { value: ["attack", "fire"], traditions: ["arcane", "primal"] },
+      damage: { first: { formula: "2d4", type: "fire" } },
+      range: { value: 30 }
+    }
+  };
+
+  const report = createPf2eSelectionContext({
+    roll: { options: { degreeOfSuccess: 3, type: "attack-roll", identifier: "spell-attack" } },
+    item: spell,
+    sourceActor: source,
+    targetActor: target
+  });
+
+  assert.equal(report.valid, true);
+  assert.equal(report.context.category, "spellCriticalHit");
+  assert.deepEqual(report.context.damageTypes, ["fire"]);
+  assert.deepEqual(report.context.spellTraditions, ["arcane", "primal"]);
+  assert.deepEqual(report.context.spellTraits, ["attack", "fire"]);
+  assert.equal(report.context.attackTraits.includes("spell"), true);
+  assert.equal(report.metadata.roll.family, "spellAttack");
+  assert.equal(report.metadata.spell.rank, 1);
+});
+
+test("critical saving throws receive dedicated categories and save types", () => {
+  const roller = actor({ id: "roller", type: "character", traits: ["elf", "humanoid"] });
+  const origin = actor({ id: "origin", traits: ["dragon"] });
+  const message = {
+    actor: roller,
+    flags: {
+      pf2e: {
+        context: {
+          type: "saving-throw",
+          outcome: "criticalFailure",
+          statistic: "reflex",
+          actor: roller.uuid,
+          origin: { actor: origin.uuid },
+          options: ["check:statistic:reflex", "self:trait:elf", "target:trait:dragon"]
+        }
+      }
+    },
+    rolls: []
+  };
+
+  const report = createPf2eSelectionContext({
+    message,
+    sourceActor: roller,
+    targetActor: origin
+  });
+
+  assert.equal(report.valid, true);
+  assert.equal(report.context.category, "savingThrowCriticalFailure");
+  assert.deepEqual(report.context.saveTypes, ["reflex"]);
+  assert.equal(report.metadata.roll.family, "savingThrow");
+  assert.equal(report.metadata.save.type, "reflex");
+  assert.deepEqual(report.context.sourceTraits, ["elf", "humanoid"]);
+  assert.deepEqual(report.context.targetTraits, ["dragon"]);
+});
+
+test("natural saving throw results remain separate from the final degree", () => {
+  const report = createPf2eSelectionContext({
+    rollFamily: "savingThrow",
+    saveType: "will",
+    degreeOfSuccess: 3,
+    dieResult: 20
+  });
+  assert.equal(report.context.category, "savingThrowCriticalSuccess");
+  assert.equal(report.metadata.roll.isNatural20, true);
+  assert.deepEqual(report.context.saveTypes, ["will"]);
 });

@@ -61,7 +61,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 174 tests covering:
+The suite contains 181 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -79,13 +79,14 @@ The suite contains 174 tests covering:
 - preserving unsupported Rule Elements during an Item update;
 - updating only Forge-managed Item fields;
 - synchronized release metadata, manifest paths, localization parity, and archive hygiene;
-- headless PF2e context translation from rolls, chat flags, weapons, NPC attacks, actors, tokens, and roll options;
+- headless PF2e context translation from weapon attacks, spell attacks, saving throws, chat flags, items, actors, tokens, and roll options;
 - manual diagnostic candidate evaluation, chat-message discovery, Item UUID resolution, target handling, and drop validation;
 - localized critical-card effect summaries, preview presentation data, ChatMessage payloads, structured preview flags, and public preview APIs;
 - the complete card-editor roundtrip from protected template through Effect Forge, JSON transfer, persistence, selection, preview, and compilation;
-- deterministic collision-free IDs for new cards, duplicated cards, duplicated packs, and imported protected packs.
+- deterministic collision-free IDs for new cards, duplicated cards, duplicated packs, and imported protected packs;
+- dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation.
 
-Coverage is a diagnostic rather than a release gate. Version `0.6.2-dev` measures 92.16% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, card-pack editor services, the 48-card core test library, diagnostics, automatic roll pipeline, result-card visibility, and manual application services.
+Coverage is a diagnostic rather than a release gate. Version `0.7.0-dev` measures 92.46% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 72-card core test library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, and manual application services.
 
 ## Foundry mock
 

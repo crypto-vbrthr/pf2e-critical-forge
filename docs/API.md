@@ -616,7 +616,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack-roll processing, redraws, and GM-confirmed effect application are available through `api.cards`. Version 0.6.0-dev adds the visual Card Pack Editor, world-persistent custom packs, Effect Forge handoff, and portable pack transfer while preserving the live roll hook and all headless services for tests and integrations.
+Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, and GM-confirmed effect application are available through `api.cards`. Version 0.7.0-dev adds spell-attack and saving-throw categories, filters, triggers, automation, and core cards while retaining the visual Card Pack Editor, world-persistent custom packs, Effect Forge handoff, and portable pack transfer while preserving the live roll hook and all headless services for tests and integrations.
 
 
 ### Profiles and trigger policies
@@ -635,15 +635,17 @@ const trigger = api.cards.triggers.evaluate(contextReport, policy);
 
 `scope: "natural"` requires a natural 20 plus final critical success for hits, or a natural 1 plus final critical failure for fumbles.
 
-### Automatic attack-roll processing
+### Automatic supported-roll processing
 
 ```js
 const result = await api.cards.automation.processMessage(message);
 const audit = api.cards.automation.inspectMessage(message);
 const isAttack = api.cards.automation.isAttackReport(report, input);
+const isSave = api.cards.automation.isSavingThrowReport(report, input);
+const isSupported = api.cards.automation.isSupportedReport(report, input);
 ```
 
-`processMessage()` performs the same primary-GM, attack-message, trigger-policy, profile, recent-history, prompt, and publication pipeline used by the Foundry hook. It never applies a mechanical effect. See [`CRITICAL_AUTOMATION.md`](CRITICAL_AUTOMATION.md).
+`processMessage()` performs the same primary-GM, supported-message, trigger-policy, profile, recent-history, prompt, and publication pipeline used by the Foundry hook. It never applies a mechanical effect. See [`CRITICAL_AUTOMATION.md`](CRITICAL_AUTOMATION.md).
 
 ### Registration and lookup
 
@@ -740,6 +742,9 @@ const context = {
   damageTypes: ["slashing"],
   weaponGroups: ["sword"],
   attackTraits: ["agile"],
+  saveTypes: [],
+  spellTraditions: [],
+  spellTraits: [],
   sourceTraits: ["humanoid"],
   targetTraits: ["undead"]
 };

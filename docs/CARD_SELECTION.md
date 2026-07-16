@@ -10,6 +10,9 @@ The selection service is headless and deterministic when supplied with a determi
   damageTypes: ["slashing"],
   weaponGroups: ["sword"],
   attackTraits: ["agile"],
+  saveTypes: [],
+  spellTraditions: [],
+  spellTraits: [],
   sourceTraits: ["humanoid"],
   targetTraits: ["undead"],
   requiredTags: [],
@@ -87,4 +90,4 @@ const policy = api.cards.triggers.configured(report.context.category);
 const trigger = api.cards.triggers.evaluate(report, policy);
 ```
 
-For `scope: "natural"`, a hit requires both a natural 20 and a final critical success; a fumble requires both a natural 1 and a final critical failure. A natural die result that only upgrades the roll to a normal success or failure does not trigger a card.
+For `scope: "natural"`, a success-category card requires both a natural 20 and a final critical success; a failure-category card requires both a natural 1 and a final critical failure. A natural die result that only upgrades the roll to a normal success or failure does not trigger a card.

@@ -94,6 +94,74 @@
       "CriticalCardHistorySize": {
         "Name": "Größe der Ziehhistorie",
         "Hint": "Anzahl zuletzt gezogener Karten, die beim Neuziehen nach Möglichkeit vermieden werden."
+      },
+      "SpellCriticalHitBehavior": {
+        "Name": "Kritische Zaubertreffer",
+        "Hint": "Wie Critical Forge auf kritische Erfolge bei Zauberangriffswürfen reagiert.",
+        "Choices": {
+          "Disabled": "Deaktiviert",
+          "Prompt": "Nachfragen",
+          "Automatic": "Automatisch Karte ziehen"
+        }
+      },
+      "SpellCriticalFumbleBehavior": {
+        "Name": "Kritische Zauberpatzer",
+        "Hint": "Wie Critical Forge auf kritische Fehlschläge bei Zauberangriffswürfen reagiert.",
+        "Choices": {
+          "Disabled": "Deaktiviert",
+          "Prompt": "Nachfragen",
+          "Automatic": "Automatisch Karte ziehen"
+        }
+      },
+      "SpellCriticalHitTrigger": {
+        "Name": "Auslöser für Zaubertreffer",
+        "Hint": "Ob jeder kritische Zaubertreffer oder nur eine natürliche 20 mit endgültigem kritischem Erfolg auslöst.",
+        "Choices": {
+          "All": "Alle kritischen Ergebnisse",
+          "Natural": "Nur natürliche 20/1 mit kritischem Endergebnis"
+        }
+      },
+      "SpellCriticalFumbleTrigger": {
+        "Name": "Auslöser für Zauberpatzer",
+        "Hint": "Ob jeder kritische Zauberpatzer oder nur eine natürliche 1 mit endgültigem kritischem Fehlschlag auslöst.",
+        "Choices": {
+          "All": "Alle kritischen Ergebnisse",
+          "Natural": "Nur natürliche 20/1 mit kritischem Endergebnis"
+        }
+      },
+      "SavingThrowCriticalSuccessBehavior": {
+        "Name": "Kritisch gelungene Rettungswürfe",
+        "Hint": "Wie Critical Forge auf kritisch gelungene Rettungswürfe reagiert.",
+        "Choices": {
+          "Disabled": "Deaktiviert",
+          "Prompt": "Nachfragen",
+          "Automatic": "Automatisch Karte ziehen"
+        }
+      },
+      "SavingThrowCriticalFailureBehavior": {
+        "Name": "Kritisch misslungene Rettungswürfe",
+        "Hint": "Wie Critical Forge auf kritisch misslungene Rettungswürfe reagiert.",
+        "Choices": {
+          "Disabled": "Deaktiviert",
+          "Prompt": "Nachfragen",
+          "Automatic": "Automatisch Karte ziehen"
+        }
+      },
+      "SavingThrowCriticalSuccessTrigger": {
+        "Name": "Auslöser für gelungene Rettungswürfe",
+        "Hint": "Ob jeder kritische Erfolg oder nur eine natürliche 20 mit endgültigem kritischem Erfolg auslöst.",
+        "Choices": {
+          "All": "Alle kritischen Ergebnisse",
+          "Natural": "Nur natürliche 20/1 mit kritischem Endergebnis"
+        }
+      },
+      "SavingThrowCriticalFailureTrigger": {
+        "Name": "Auslöser für misslungene Rettungswürfe",
+        "Hint": "Ob jeder kritische Fehlschlag oder nur eine natürliche 1 mit endgültigem kritischem Fehlschlag auslöst.",
+        "Choices": {
+          "All": "Alle kritischen Ergebnisse",
+          "Natural": "Nur natürliche 20/1 mit kritischem Endergebnis"
+        }
       }
     },
     "EffectForge": {
@@ -580,7 +648,7 @@
       "Packs": {
         "Core": {
           "Title": "Critical Forge Kernpaket",
-          "Description": "Ausgewogene Testbibliothek für kritische Treffer und Patzer."
+          "Description": "Ausgewogene Testbibliothek für kritische Angriffe, Zauberangriffe und Rettungswürfe."
         }
       },
       "Cards": {
@@ -789,6 +857,110 @@
             "Title": "Sicher absichtlich",
             "Description": "Der Angriff verfehlt so gründlich, dass alle Beteiligten kurz prüfen, ob das Absicht war."
           }
+        },
+        "SpellHit": {
+          "LingeringFlame": {
+            "Title": "Nachglühende Flamme",
+            "Description": "Der Zauber lässt hungrige Flammen am Ziel haften."
+          },
+          "ArcanePrecision": {
+            "Title": "Arkane Präzision",
+            "Description": "Die makellose Formel richtet den nächsten Angriff des Zauberwirkers aus."
+          },
+          "DivineRadiance": {
+            "Title": "Göttliche Strahlkraft",
+            "Description": "Ein Rest heiliger Macht bleibt als schützender Schein um den Zauberwirker zurück."
+          },
+          "OccultIntrusion": {
+            "Title": "Okkultes Eindringen",
+            "Description": "Der Zauber gleitet hinter die Gedanken und lässt den Verstand des Ziels taumeln."
+          },
+          "PrimalSurge": {
+            "Title": "Urgewaltiger Schub",
+            "Description": "Wilde Macht schlägt gegen das Ziel und zerrt an jeder Bewegung."
+          },
+          "ExcessiveSparkles": {
+            "Title": "Übertriebener Funkenregen",
+            "Description": "Der Zauber gelingt mit so viel optischem Aufwand, dass eigentlich eine eigene Bühnencrew nötig wäre."
+          }
+        },
+        "SpellFumble": {
+          "ArcaneFeedback": {
+            "Title": "Arkane Rückkopplung",
+            "Description": "Der misslungene Zauber schnappt durch die Gedanken des Zauberwirkers zurück."
+          },
+          "StaticFormula": {
+            "Title": "Rauschen in der Formel",
+            "Description": "Das arkane Muster bleibt für einen Moment verrauscht und unzuverlässig."
+          },
+          "FalteringFaith": {
+            "Title": "Wankender Glaube",
+            "Description": "Für einen Atemzug weicht Gewissheit dem Zweifel."
+          },
+          "WhisperingBacklash": {
+            "Title": "Flüsternder Rückschlag",
+            "Description": "Etwas auf der anderen Seite des Zaubers flüstert zurück."
+          },
+          "PrimalRecoil": {
+            "Title": "Urgewaltiger Rückstoß",
+            "Description": "Ungebändigte Magie schlägt mit dem Elan eines beleidigten Auerochsen zurück."
+          },
+          "SpectacularFizzle": {
+            "Title": "Spektakuläres Verpuffen",
+            "Description": "Der Zauber erzeugt einen winzigen Funken und eine völlig unangemessene Menge Rauch."
+          }
+        },
+        "SaveSuccess": {
+          "ThroughTheGap": {
+            "Title": "Durch die Lücke",
+            "Description": "Die Kreatur gleitet durch den Effekt und trägt den Schwung weiter."
+          },
+          "UnshakenBody": {
+            "Title": "Unerschütterlicher Körper",
+            "Description": "Der Körper fängt den Angriff ab und geht widerstandsfähiger daraus hervor."
+          },
+          "UnbrokenMind": {
+            "Title": "Ungebrochener Geist",
+            "Description": "Der Wille widersteht nicht nur, sondern schlägt die Tür zu und verriegelt sie."
+          },
+          "TurnTheForce": {
+            "Title": "Kraft umlenken",
+            "Description": "Der Widerstand wird zum Schwung für die nächste entschlossene Handlung."
+          },
+          "DefensiveMomentum": {
+            "Title": "Defensiver Schwung",
+            "Description": "Die perfekte Abwehr lässt die Kreatur bereit für die nächste Gefahr zurück."
+          },
+          "Unimpressed": {
+            "Title": "Völlig unbeeindruckt",
+            "Description": "Der Effekt erscheint dramatisch und erhält die emotionale Reaktion einer geschlossenen Tür."
+          }
+        },
+        "SaveFailure": {
+          "ThrownOffBalance": {
+            "Title": "Aus dem Gleichgewicht",
+            "Description": "Der Effekt erwischt jede falsche Bewegung und schleudert die Kreatur zu Boden."
+          },
+          "SystemShock": {
+            "Title": "Körperschock",
+            "Description": "Der Körper kann den Effekt nicht auffangen und wendet sich heftig gegen sich selbst."
+          },
+          "MindReels": {
+            "Title": "Taumelnder Geist",
+            "Description": "Der Gedanke zerbricht unter dem vollen Gewicht des Effekts."
+          },
+          "FullImpact": {
+            "Title": "Volle Wirkung",
+            "Description": "Die Kreatur fängt den Effekt im denkbar ungünstigsten Winkel ab."
+          },
+          "Staggered": {
+            "Title": "Ins Taumeln geraten",
+            "Description": "Die volle Wucht des Effekts raubt einen kostbaren Moment der Handlung."
+          },
+          "PainfullyObvious": {
+            "Title": "Schmerzhaft offensichtlich",
+            "Description": "Es braucht keinen Experten, um festzustellen, dass dies schlecht gelaufen ist."
+          }
         }
       },
       "Effects": {
@@ -925,6 +1097,74 @@
           "MomentOfDoubt": {
             "Name": "Moment des Zweifels"
           }
+        },
+        "SpellHit": {
+          "LingeringFlame": {
+            "Name": "Nachglühende Flamme"
+          },
+          "ArcanePrecision": {
+            "Name": "Arkane Präzision"
+          },
+          "DivineRadiance": {
+            "Name": "Göttliche Strahlkraft"
+          },
+          "OccultIntrusion": {
+            "Name": "Okkultes Eindringen"
+          },
+          "PrimalSurge": {
+            "Name": "Urgewaltiger Schub"
+          }
+        },
+        "SpellFumble": {
+          "ArcaneFeedback": {
+            "Name": "Arkane Rückkopplung"
+          },
+          "StaticFormula": {
+            "Name": "Rauschen in der Formel"
+          },
+          "FalteringFaith": {
+            "Name": "Wankender Glaube"
+          },
+          "WhisperingBacklash": {
+            "Name": "Flüsternder Rückschlag"
+          },
+          "PrimalRecoil": {
+            "Name": "Urgewaltiger Rückstoß"
+          }
+        },
+        "SaveSuccess": {
+          "ThroughTheGap": {
+            "Name": "Durch die Lücke"
+          },
+          "UnshakenBody": {
+            "Name": "Unerschütterlicher Körper"
+          },
+          "UnbrokenMind": {
+            "Name": "Ungebrochener Geist"
+          },
+          "TurnTheForce": {
+            "Name": "Kraft umlenken"
+          },
+          "DefensiveMomentum": {
+            "Name": "Defensiver Schwung"
+          }
+        },
+        "SaveFailure": {
+          "ThrownOffBalance": {
+            "Name": "Aus dem Gleichgewicht"
+          },
+          "SystemShock": {
+            "Name": "Körperschock"
+          },
+          "MindReels": {
+            "Name": "Taumelnder Geist"
+          },
+          "FullImpact": {
+            "Name": "Volle Wirkung"
+          },
+          "Staggered": {
+            "Name": "Ins Taumeln geraten"
+          }
         }
       }
     },
@@ -965,7 +1205,7 @@
       "BaseWeight": "Grundgewicht",
       "Diagnostics": {
         "PF2E_CONTEXT_INPUT_INVALID": "Die Eingabedaten sind kein gültiges Objekt.",
-        "PF2E_CONTEXT_CATEGORY_UNRESOLVED": "Aus der Nachricht konnte weder ein kritischer Treffer noch ein kritischer Fehlschlag bestimmt werden.",
+        "PF2E_CONTEXT_CATEGORY_UNRESOLVED": "Aus der Nachricht konnte keine unterstützte kritische Ergebnisart bestimmt werden.",
         "PF2E_CONTEXT_OUTCOME_NOT_CRITICAL": "Der erkannte Ergebnisgrad ist nicht kritisch: {outcome}.",
         "PF2E_CONTEXT_ITEM_UNRESOLVED": "Die verwendete Waffe oder der Angriff konnte nicht ermittelt werden.",
         "PF2E_CONTEXT_SOURCE_UNRESOLVED": "Der Angreifer konnte nicht vollständig ermittelt werden.",
@@ -973,7 +1213,9 @@
         "PF2E_CONTEXT_DAMAGE_TYPES_EMPTY": "Es wurde keine Schadensart erkannt.",
         "CRITICAL_DIAGNOSTIC_MULTIPLE_TARGETS": "Es sind {count} Ziele ausgewählt. Die Diagnose verwendet daher keines davon automatisch.",
         "CRITICAL_DIAGNOSTIC_ITEM_RESOLUTION_FAILED": "Das Angriffs-Item {uuid} konnte nicht über seine UUID geladen werden: {message}",
-        "CRITICAL_DIAGNOSTIC_TARGET_NOT_SELECTED": "Es ist kein einzelnes Ziel ausgewählt; Zielmerkmale und Zielmetadaten bleiben leer."
+        "CRITICAL_DIAGNOSTIC_TARGET_NOT_SELECTED": "Es ist kein einzelnes Ziel ausgewählt; Zielmerkmale und Zielmetadaten bleiben leer.",
+        "PF2E_CONTEXT_SAVE_TYPE_UNRESOLVED": "Die Art des Rettungswurfs konnte nicht ermittelt werden.",
+        "PF2E_CONTEXT_SPELL_UNRESOLVED": "Die Nachricht wurde als Zauberangriff eingeordnet, der Zauber selbst konnte aber nicht vollständig ermittelt werden."
       },
       "NoDiagnostics": "Keine Diagnosehinweise.",
       "SelectionContext": "Selection Context",
@@ -996,7 +1238,10 @@
         "excludedTargetTraits": "ausgeschlossenes Zielmerkmal",
         "requiredTags": "erforderlicher Karten-Tag",
         "excludedTags": "ausgeschlossener Karten-Tag",
-        "excludedCardIds": "kürzlich verwendete oder ausgeschlossene Karte"
+        "excludedCardIds": "kürzlich verwendete oder ausgeschlossene Karte",
+        "saveTypes": "Rettungswurfart",
+        "spellTraditions": "magische Tradition",
+        "spellTraits": "Zaubermerkmal"
       },
       "OpenFailed": "Die Krit-Diagnose konnte nicht geöffnet werden. Details stehen in der Konsole.",
       "CardProfile": "Kartenprofil",
@@ -1007,7 +1252,10 @@
       "TriggerScope": "Auslöser",
       "TriggerResult": "Trigger-Prüfung",
       "TriggerMatched": "Würde auslösen",
-      "TriggerNotMatched": "Würde nicht auslösen"
+      "TriggerNotMatched": "Würde nicht auslösen",
+      "SaveTypes": "Rettungswurfarten",
+      "SpellTraditions": "Magische Traditionen",
+      "SpellTraits": "Zaubermerkmale"
     },
     "CriticalPreview": {
       "ShowInChat": "Karte im Chat anzeigen",
@@ -1113,11 +1361,27 @@
           "Title": "Kritischer Patzer",
           "Question": "Soll für diesen kritischen Patzer eine Critical-Forge-Karte gezogen werden?"
         },
-        "Source": "Angreifer",
-        "Target": "Ziel",
-        "Attack": "Angriff",
+        "Source": "Quelle / würfelnde Kreatur",
+        "Target": "Gegenüber / Ursprung",
+        "Attack": "Angriff, Zauber oder Rettungswurf",
         "Draw": "Karte ziehen",
-        "Ignore": "Ignorieren"
+        "Ignore": "Ignorieren",
+        "spellCriticalHit": {
+          "Title": "Kritischer Zaubertreffer",
+          "Question": "Soll für diesen kritischen Zaubertreffer eine Critical-Forge-Karte gezogen werden?"
+        },
+        "spellCriticalFumble": {
+          "Title": "Kritischer Zauberpatzer",
+          "Question": "Soll für diesen kritischen Zauberpatzer eine Critical-Forge-Karte gezogen werden?"
+        },
+        "savingThrowCriticalSuccess": {
+          "Title": "Kritisch gelungener Rettungswurf",
+          "Question": "Soll für diesen kritisch gelungenen Rettungswurf eine Critical-Forge-Karte gezogen werden?"
+        },
+        "savingThrowCriticalFailure": {
+          "Title": "Kritisch misslungener Rettungswurf",
+          "Question": "Soll für diesen kritisch misslungenen Rettungswurf eine Critical-Forge-Karte gezogen werden?"
+        }
       },
       "Errors": {
         "NoEligibleCard": "Für diesen Wurf wurde keine passende Critical-Forge-Karte gefunden.",
@@ -1197,7 +1461,11 @@
       "DiscardPrompt": "Es gibt ungespeicherte Änderungen. Sollen sie verworfen werden?",
       "Categories": {
         "CriticalHit": "Kritischer Treffer",
-        "CriticalFumble": "Kritischer Patzer"
+        "CriticalFumble": "Kritischer Patzer",
+        "SpellCriticalHit": "Kritischer Zaubertreffer",
+        "SpellCriticalFumble": "Kritischer Zauberpatzer",
+        "SavingThrowCriticalSuccess": "Rettungswurf: Kritischer Erfolg",
+        "SavingThrowCriticalFailure": "Rettungswurf: Kritischer Fehlschlag"
       },
       "Tones": {
         "Neutral": "Neutral",
@@ -1213,7 +1481,7 @@
       },
       "EffectTargets": {
         "Target": "Ziel",
-        "Source": "Angreifer"
+        "Source": "Quelle / würfelnde Kreatur"
       },
       "ImportErrors": {
         "Empty": "Die Zwischenablage oder Datei ist leer.",
@@ -1247,7 +1515,10 @@
         "CARD_EFFECT_TARGET_INVALID": "Das Effektziel ist ungültig.",
         "CARD_EFFECT_NAME_KEY_MISSING": "Der Lokalisierungsschlüssel des Effektnamens fehlt.",
         "CARD_EFFECT_DEFINITION_INVALID": "Die Effect Definition ist ungültig."
-      }
+      },
+      "FilterSaveTypes": "Rettungswurfarten",
+      "FilterSpellTraditions": "Magische Traditionen",
+      "FilterSpellTraits": "Zaubermerkmale"
     }
   }
 }

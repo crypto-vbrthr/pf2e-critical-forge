@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.7.0-dev
+
+- Added four Critical Card categories: `spellCriticalHit`, `spellCriticalFumble`, `savingThrowCriticalSuccess`, and `savingThrowCriticalFailure`.
+- Increased PF2e Context Adapter version to `1.2.0`; it now distinguishes weapon attacks, spell attacks, and saving throws while retaining the final degree of success and natural d20 result separately.
+- Added normalized saving-throw type, spell-tradition, spell-trait, spell-rank, and roll-family metadata.
+- Added independent behavior and trigger-scope settings for critical spell hits, critical spell fumbles, critically successful saves, and critically failed saves.
+- Natural trigger scope still requires both a natural 20/1 and the matching final critical result.
+- Extended the automatic primary-GM roll pipeline to supported spell attacks and saving throws while continuing to reject ordinary skill checks, damage rolls, and noncritical outcomes.
+- Extended the Card Pack Editor and card schema with save-type, spell-tradition, and spell-trait filters.
+- Extended diagnostics to display roll family, save type, spell traditions, spell traits, and the configured trigger result.
+- Added 24 localized playtest cards: six for each new category, increasing the bundled core library from 48 to 72 cards.
+- Added regression tests for spell/save context adaptation, matching, trigger semantics, automation, localization, materialization, and compilation.
+- The complete suite now contains 181 passing tests with 92.46% measured line coverage.
+- Module and public API versions increased to `0.7.0-dev` and `0.7.0`; Effect, Critical Card, and Card Pack schema versions remain unchanged.
+
 ## 0.6.2-dev
 
 - Added deterministic collision handling for newly created and duplicated card IDs, including the deliberately hostile case where Foundry returns the same random suffix repeatedly.

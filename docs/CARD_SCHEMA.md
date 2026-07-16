@@ -7,40 +7,41 @@ Critical Forge cards are immutable, versioned data objects. They contain localiz
 ```js
 {
   schemaVersion: 1,
-  id: "core.slashing.deep-cut",
+  id: "core.spell-hit.arcane-resonance",
   packId: "core",
-  category: "criticalHit",
+  category: "spellCriticalHit",
   tone: "dramatic",
   impact: "moderate",
 
-  titleKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.Slashing.DeepCut.Title",
-  descriptionKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.Slashing.DeepCut.Description",
-  fallbackTitle: "Deep Cut",
-  fallbackDescription: "The blade opens a wound that refuses to close.",
+  titleKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.SpellHit.ArcaneResonance.Title",
+  descriptionKey: "PF2E_CRITICAL_FORGE.CriticalForge.Cards.SpellHit.ArcaneResonance.Description",
+  fallbackTitle: "Arcane Resonance",
+  fallbackDescription: "Residual magic continues to crackle through the target.",
 
   weight: 2,
-  tags: ["physical", "bleed"],
+  tags: ["spell", "energy"],
 
   filters: {
-    damageTypes: ["slashing"],
+    damageTypes: [],
     weaponGroups: [],
-    attackTraits: [],
+    attackTraits: ["spell"],
+    saveTypes: [],
+    spellTraditions: ["arcane"],
+    spellTraits: [],
     sourceTraits: [],
     targetTraits: [],
     excludedSourceTraits: [],
-    excludedTargetTraits: ["incorporeal"]
+    excludedTargetTraits: []
   },
 
   effect: {
     target: "target",
-    nameKey: "PF2E_CRITICAL_FORGE.CriticalForge.Effects.Slashing.DeepCut.Name",
-    fallbackName: "Deep Cut",
+    nameKey: "PF2E_CRITICAL_FORGE.CriticalForge.Effects.SpellHit.ArcaneResonance.Name",
+    fallbackName: "Arcane Resonance",
     definition: {
       schemaVersion: 1,
-      duration: { value: -1, unit: "unlimited", expiry: null },
-      components: [
-        { type: "persistentDamage", formula: "1d6", damageType: "bleed" }
-      ]
+      duration: { value: 1, unit: "rounds", expiry: "turn-end" },
+      components: []
     }
   },
 
@@ -50,12 +51,16 @@ Critical Forge cards are immutable, versioned data objects. They contain localiz
 
 ## Categories
 
-The first schema supports:
+Schema version 1 supports six categories:
 
 - `criticalHit`
 - `criticalFumble`
+- `spellCriticalHit`
+- `spellCriticalFumble`
+- `savingThrowCriticalSuccess`
+- `savingThrowCriticalFailure`
 
-Additional categories require a future card-schema migration rather than ad-hoc string parsing.
+The four newer categories are additive values within the existing schema. Existing packs remain compatible because unknown or omitted filter arrays normalize safely.
 
 ## Tone and impact
 
@@ -64,7 +69,7 @@ Every card carries two independent presentation and selection attributes:
 - `tone`: `neutral`, `serious`, `dramatic`, or `humorous`;
 - `impact`: `narrative`, `light`, `moderate`, or `strong`.
 
-They do not alter the Effect Definition. Selection profiles use them only as weight multipliers, so a non-preferred card remains eligible unless another filter rejects it. Cards that omit these additive fields normalize to `neutral` and either `moderate` for mechanical cards or `narrative` for effect-free cards.
+They do not alter the Effect Definition. Selection profiles use them only as weight multipliers, so a non-preferred card remains eligible unless another filter rejects it. Cards that omit these fields normalize to `neutral` and either `moderate` for mechanical cards or `narrative` for effect-free cards.
 
 ## Localization
 
@@ -73,12 +78,14 @@ They do not alter the Effect Definition. Selection profiles use them only as wei
 ## Filter semantics
 
 - `damageTypes` and `weaponGroups`: at least one listed value must match.
-- `attackTraits`, `sourceTraits`, and `targetTraits`: every listed value must be present.
+- `attackTraits`, `saveTypes`, `spellTraditions`, `spellTraits`, `sourceTraits`, and `targetTraits`: every listed value must be present.
 - `excludedSourceTraits` and `excludedTargetTraits`: no listed value may be present.
 - Empty arrays do not restrict a card.
 
+`saveTypes` normally contains `fortitude`, `reflex`, or `will`. `spellTraditions` normally contains `arcane`, `divine`, `occult`, or `primal`. `spellTraits` stores normalized PF2e spell trait slugs.
+
 ## Effect template
 
-The effect template deliberately omits `name`. `materializeEffect()` resolves `nameKey` in the active language and creates a complete immutable Effect Definition. `target` determines whether a future runtime applies the result to the attack source or target.
+The effect template deliberately omits `name`. `materializeEffect()` resolves `nameKey` in the active language and creates a complete immutable Effect Definition. `target` determines whether runtime application affects the rolling/source creature or the opposing/target creature.
 
-Narrative-only cards may set `effect: null`.
+For saving throws, the rolling creature is the source and the originating effect Actor is the target when PF2e provides both references. Narrative-only cards may set `effect: null`.

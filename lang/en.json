@@ -94,6 +94,74 @@
       "CriticalCardHistorySize": {
         "Name": "Draw history size",
         "Hint": "Number of recently drawn cards that redraws try to avoid."
+      },
+      "SpellCriticalHitBehavior": {
+        "Name": "Critical Spell Hits",
+        "Hint": "How Critical Forge reacts to critical successes on spell attack rolls.",
+        "Choices": {
+          "Disabled": "Disabled",
+          "Prompt": "Prompt",
+          "Automatic": "Draw automatically"
+        }
+      },
+      "SpellCriticalFumbleBehavior": {
+        "Name": "Critical Spell Fumbles",
+        "Hint": "How Critical Forge reacts to critical failures on spell attack rolls.",
+        "Choices": {
+          "Disabled": "Disabled",
+          "Prompt": "Prompt",
+          "Automatic": "Draw automatically"
+        }
+      },
+      "SpellCriticalHitTrigger": {
+        "Name": "Spell Hit Trigger",
+        "Hint": "Whether every critical spell hit triggers, or only a natural 20 that ends as a critical success.",
+        "Choices": {
+          "All": "All critical results",
+          "Natural": "Only natural 20/1 with a critical final result"
+        }
+      },
+      "SpellCriticalFumbleTrigger": {
+        "Name": "Spell Fumble Trigger",
+        "Hint": "Whether every critical spell fumble triggers, or only a natural 1 that ends as a critical failure.",
+        "Choices": {
+          "All": "All critical results",
+          "Natural": "Only natural 20/1 with a critical final result"
+        }
+      },
+      "SavingThrowCriticalSuccessBehavior": {
+        "Name": "Critical Saving Throw Successes",
+        "Hint": "How Critical Forge reacts to critically successful saving throws.",
+        "Choices": {
+          "Disabled": "Disabled",
+          "Prompt": "Prompt",
+          "Automatic": "Draw automatically"
+        }
+      },
+      "SavingThrowCriticalFailureBehavior": {
+        "Name": "Critical Saving Throw Failures",
+        "Hint": "How Critical Forge reacts to critically failed saving throws.",
+        "Choices": {
+          "Disabled": "Disabled",
+          "Prompt": "Prompt",
+          "Automatic": "Draw automatically"
+        }
+      },
+      "SavingThrowCriticalSuccessTrigger": {
+        "Name": "Saving Throw Success Trigger",
+        "Hint": "Whether every critical success triggers, or only a natural 20 that ends as a critical success.",
+        "Choices": {
+          "All": "All critical results",
+          "Natural": "Only natural 20/1 with a critical final result"
+        }
+      },
+      "SavingThrowCriticalFailureTrigger": {
+        "Name": "Saving Throw Failure Trigger",
+        "Hint": "Whether every critical failure triggers, or only a natural 1 that ends as a critical failure.",
+        "Choices": {
+          "All": "All critical results",
+          "Natural": "Only natural 20/1 with a critical final result"
+        }
       }
     },
     "EffectForge": {
@@ -580,7 +648,7 @@
       "Packs": {
         "Core": {
           "Title": "Critical Forge Core Pack",
-          "Description": "Balanced test library for critical hits and fumbles."
+          "Description": "Balanced test library for critical attacks, spell attacks, and saving throws."
         }
       },
       "Cards": {
@@ -789,6 +857,110 @@
             "Title": "Surely Intentional",
             "Description": "The attack misses so thoroughly that everyone briefly checks whether it was intentional."
           }
+        },
+        "SpellHit": {
+          "LingeringFlame": {
+            "Title": "Lingering Flame",
+            "Description": "The spell leaves hungry flames clinging to the target."
+          },
+          "ArcanePrecision": {
+            "Title": "Arcane Precision",
+            "Description": "The flawless formula aligns the caster's next attack."
+          },
+          "DivineRadiance": {
+            "Title": "Divine Radiance",
+            "Description": "A trace of sacred power lingers around the caster as a protective halo."
+          },
+          "OccultIntrusion": {
+            "Title": "Occult Intrusion",
+            "Description": "The spell slips behind thought and leaves the target's mind reeling."
+          },
+          "PrimalSurge": {
+            "Title": "Primal Surge",
+            "Description": "Wild power batters the target and drags at every movement."
+          },
+          "ExcessiveSparkles": {
+            "Title": "Excessive Sparkles",
+            "Description": "The spell succeeds with enough visual flourish to require its own stage crew."
+          }
+        },
+        "SpellFumble": {
+          "ArcaneFeedback": {
+            "Title": "Arcane Feedback",
+            "Description": "The failed spell snaps back through the caster's thoughts."
+          },
+          "StaticFormula": {
+            "Title": "Static in the Formula",
+            "Description": "The arcane pattern remains noisy and unreliable for a moment."
+          },
+          "FalteringFaith": {
+            "Title": "Faltering Faith",
+            "Description": "For one breath, certainty gives way to doubt."
+          },
+          "WhisperingBacklash": {
+            "Title": "Whispering Backlash",
+            "Description": "Something on the far side of the spell whispers back."
+          },
+          "PrimalRecoil": {
+            "Title": "Primal Recoil",
+            "Description": "Unruly magic kicks back with the enthusiasm of an offended aurochs."
+          },
+          "SpectacularFizzle": {
+            "Title": "Spectacular Fizzle",
+            "Description": "The spell produces one tiny spark and an entirely unreasonable amount of smoke."
+          }
+        },
+        "SaveSuccess": {
+          "ThroughTheGap": {
+            "Title": "Through the Gap",
+            "Description": "The creature slips through the effect and carries the momentum forward."
+          },
+          "UnshakenBody": {
+            "Title": "Unshaken Body",
+            "Description": "The body absorbs the assault and emerges harder to break."
+          },
+          "UnbrokenMind": {
+            "Title": "Unbroken Mind",
+            "Description": "The will does not merely resist; it shuts the door and bars it."
+          },
+          "TurnTheForce": {
+            "Title": "Turn the Force",
+            "Description": "Defiance becomes momentum for the next decisive action."
+          },
+          "DefensiveMomentum": {
+            "Title": "Defensive Momentum",
+            "Description": "The perfect defense leaves the creature poised for the next threat."
+          },
+          "Unimpressed": {
+            "Title": "Entirely Unimpressed",
+            "Description": "The effect arrives dramatically and receives the emotional response of a closed door."
+          }
+        },
+        "SaveFailure": {
+          "ThrownOffBalance": {
+            "Title": "Thrown Off Balance",
+            "Description": "The effect catches every wrong movement and sends the creature sprawling."
+          },
+          "SystemShock": {
+            "Title": "System Shock",
+            "Description": "The body fails to contain the effect and turns violently against itself."
+          },
+          "MindReels": {
+            "Title": "Mind Reels",
+            "Description": "Thought fractures under the full weight of the effect."
+          },
+          "FullImpact": {
+            "Title": "Full Impact",
+            "Description": "The creature catches the effect at precisely the worst possible angle."
+          },
+          "Staggered": {
+            "Title": "Staggered",
+            "Description": "The full force of the effect steals a precious moment of action."
+          },
+          "PainfullyObvious": {
+            "Title": "Painfully Obvious",
+            "Description": "No expert is required to determine that this went badly."
+          }
         }
       },
       "Effects": {
@@ -925,6 +1097,74 @@
           "MomentOfDoubt": {
             "Name": "Moment of Doubt"
           }
+        },
+        "SpellHit": {
+          "LingeringFlame": {
+            "Name": "Lingering Flame"
+          },
+          "ArcanePrecision": {
+            "Name": "Arcane Precision"
+          },
+          "DivineRadiance": {
+            "Name": "Divine Radiance"
+          },
+          "OccultIntrusion": {
+            "Name": "Occult Intrusion"
+          },
+          "PrimalSurge": {
+            "Name": "Primal Surge"
+          }
+        },
+        "SpellFumble": {
+          "ArcaneFeedback": {
+            "Name": "Arcane Feedback"
+          },
+          "StaticFormula": {
+            "Name": "Static in the Formula"
+          },
+          "FalteringFaith": {
+            "Name": "Faltering Faith"
+          },
+          "WhisperingBacklash": {
+            "Name": "Whispering Backlash"
+          },
+          "PrimalRecoil": {
+            "Name": "Primal Recoil"
+          }
+        },
+        "SaveSuccess": {
+          "ThroughTheGap": {
+            "Name": "Through the Gap"
+          },
+          "UnshakenBody": {
+            "Name": "Unshaken Body"
+          },
+          "UnbrokenMind": {
+            "Name": "Unbroken Mind"
+          },
+          "TurnTheForce": {
+            "Name": "Turn the Force"
+          },
+          "DefensiveMomentum": {
+            "Name": "Defensive Momentum"
+          }
+        },
+        "SaveFailure": {
+          "ThrownOffBalance": {
+            "Name": "Thrown Off Balance"
+          },
+          "SystemShock": {
+            "Name": "System Shock"
+          },
+          "MindReels": {
+            "Name": "Mind Reels"
+          },
+          "FullImpact": {
+            "Name": "Full Impact"
+          },
+          "Staggered": {
+            "Name": "Staggered"
+          }
         }
       }
     },
@@ -965,7 +1205,7 @@
       "BaseWeight": "Base weight",
       "Diagnostics": {
         "PF2E_CONTEXT_INPUT_INVALID": "The input data is not a valid object.",
-        "PF2E_CONTEXT_CATEGORY_UNRESOLVED": "The message did not resolve to either a critical hit or a critical fumble.",
+        "PF2E_CONTEXT_CATEGORY_UNRESOLVED": "The message did not resolve to a supported critical-result category.",
         "PF2E_CONTEXT_OUTCOME_NOT_CRITICAL": "The detected degree of success is not critical: {outcome}.",
         "PF2E_CONTEXT_ITEM_UNRESOLVED": "The weapon or attack item could not be resolved.",
         "PF2E_CONTEXT_SOURCE_UNRESOLVED": "The attacker could not be fully resolved.",
@@ -973,7 +1213,9 @@
         "PF2E_CONTEXT_DAMAGE_TYPES_EMPTY": "No damage type was detected.",
         "CRITICAL_DIAGNOSTIC_MULTIPLE_TARGETS": "There are {count} selected targets, so diagnostics will not choose one automatically.",
         "CRITICAL_DIAGNOSTIC_ITEM_RESOLUTION_FAILED": "Attack item {uuid} could not be loaded from its UUID: {message}",
-        "CRITICAL_DIAGNOSTIC_TARGET_NOT_SELECTED": "No single target is selected; target traits and metadata remain empty."
+        "CRITICAL_DIAGNOSTIC_TARGET_NOT_SELECTED": "No single target is selected; target traits and metadata remain empty.",
+        "PF2E_CONTEXT_SAVE_TYPE_UNRESOLVED": "The saving throw type could not be resolved.",
+        "PF2E_CONTEXT_SPELL_UNRESOLVED": "The message was classified as a spell attack, but the spell itself could not be fully resolved."
       },
       "NoDiagnostics": "No diagnostic notices.",
       "SelectionContext": "Selection context",
@@ -996,7 +1238,10 @@
         "excludedTargetTraits": "excluded target trait",
         "requiredTags": "required card tag",
         "excludedTags": "excluded card tag",
-        "excludedCardIds": "recently used or excluded card"
+        "excludedCardIds": "recently used or excluded card",
+        "saveTypes": "saving throw type",
+        "spellTraditions": "magic tradition",
+        "spellTraits": "spell trait"
       },
       "OpenFailed": "Critical diagnostics could not be opened. See the console for details.",
       "CardProfile": "Card profile",
@@ -1007,7 +1252,10 @@
       "TriggerScope": "Trigger scope",
       "TriggerResult": "Trigger check",
       "TriggerMatched": "Would trigger",
-      "TriggerNotMatched": "Would not trigger"
+      "TriggerNotMatched": "Would not trigger",
+      "SaveTypes": "Saving throw types",
+      "SpellTraditions": "Magic traditions",
+      "SpellTraits": "Spell traits"
     },
     "CriticalPreview": {
       "ShowInChat": "Show card in chat",
@@ -1113,11 +1361,27 @@
           "Title": "Critical Fumble",
           "Question": "Draw a Critical Forge card for this critical fumble?"
         },
-        "Source": "Attacker",
-        "Target": "Target",
-        "Attack": "Attack",
+        "Source": "Source / rolling creature",
+        "Target": "Counterpart / origin",
+        "Attack": "Attack, spell, or saving throw",
         "Draw": "Draw Card",
-        "Ignore": "Ignore"
+        "Ignore": "Ignore",
+        "spellCriticalHit": {
+          "Title": "Critical Spell Hit",
+          "Question": "Draw a Critical Forge card for this critical spell hit?"
+        },
+        "spellCriticalFumble": {
+          "Title": "Critical Spell Fumble",
+          "Question": "Draw a Critical Forge card for this critical spell fumble?"
+        },
+        "savingThrowCriticalSuccess": {
+          "Title": "Critical Saving Throw Success",
+          "Question": "Draw a Critical Forge card for this critically successful saving throw?"
+        },
+        "savingThrowCriticalFailure": {
+          "Title": "Critical Saving Throw Failure",
+          "Question": "Draw a Critical Forge card for this critically failed saving throw?"
+        }
       },
       "Errors": {
         "NoEligibleCard": "Critical Forge found no eligible card for this roll.",
@@ -1197,7 +1461,11 @@
       "DiscardPrompt": "There are unsaved changes. Discard them?",
       "Categories": {
         "CriticalHit": "Critical Hit",
-        "CriticalFumble": "Critical Fumble"
+        "CriticalFumble": "Critical Fumble",
+        "SpellCriticalHit": "Critical Spell Hit",
+        "SpellCriticalFumble": "Critical Spell Fumble",
+        "SavingThrowCriticalSuccess": "Saving Throw: Critical Success",
+        "SavingThrowCriticalFailure": "Saving Throw: Critical Failure"
       },
       "Tones": {
         "Neutral": "Neutral",
@@ -1213,7 +1481,7 @@
       },
       "EffectTargets": {
         "Target": "Target",
-        "Source": "Attacker"
+        "Source": "Source / rolling creature"
       },
       "ImportErrors": {
         "Empty": "The clipboard or file is empty.",
@@ -1247,7 +1515,10 @@
         "CARD_EFFECT_TARGET_INVALID": "The effect target is invalid.",
         "CARD_EFFECT_NAME_KEY_MISSING": "The effect-name localization key is missing.",
         "CARD_EFFECT_DEFINITION_INVALID": "The Effect Definition is invalid."
-      }
+      },
+      "FilterSaveTypes": "Saving throw types",
+      "FilterSpellTraditions": "Magic traditions",
+      "FilterSpellTraits": "Spell traits"
     }
   }
 }

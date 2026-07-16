@@ -49,6 +49,30 @@ export function registerSettings() {
   registerChoiceSetting(SETTINGS.CRITICAL_FUMBLE_TRIGGER, "CriticalFumbleTrigger", {
     all: "All", natural: "Natural"
   }, "all");
+  registerChoiceSetting(SETTINGS.SPELL_CRITICAL_HIT_BEHAVIOR, "SpellCriticalHitBehavior", {
+    disabled: "Disabled", prompt: "Prompt", automatic: "Automatic"
+  }, "prompt");
+  registerChoiceSetting(SETTINGS.SPELL_CRITICAL_FUMBLE_BEHAVIOR, "SpellCriticalFumbleBehavior", {
+    disabled: "Disabled", prompt: "Prompt", automatic: "Automatic"
+  }, "prompt");
+  registerChoiceSetting(SETTINGS.SPELL_CRITICAL_HIT_TRIGGER, "SpellCriticalHitTrigger", {
+    all: "All", natural: "Natural"
+  }, "all");
+  registerChoiceSetting(SETTINGS.SPELL_CRITICAL_FUMBLE_TRIGGER, "SpellCriticalFumbleTrigger", {
+    all: "All", natural: "Natural"
+  }, "all");
+  registerChoiceSetting(SETTINGS.SAVING_THROW_CRITICAL_SUCCESS_BEHAVIOR, "SavingThrowCriticalSuccessBehavior", {
+    disabled: "Disabled", prompt: "Prompt", automatic: "Automatic"
+  }, "disabled");
+  registerChoiceSetting(SETTINGS.SAVING_THROW_CRITICAL_FAILURE_BEHAVIOR, "SavingThrowCriticalFailureBehavior", {
+    disabled: "Disabled", prompt: "Prompt", automatic: "Automatic"
+  }, "prompt");
+  registerChoiceSetting(SETTINGS.SAVING_THROW_CRITICAL_SUCCESS_TRIGGER, "SavingThrowCriticalSuccessTrigger", {
+    all: "All", natural: "Natural"
+  }, "all");
+  registerChoiceSetting(SETTINGS.SAVING_THROW_CRITICAL_FAILURE_TRIGGER, "SavingThrowCriticalFailureTrigger", {
+    all: "All", natural: "Natural"
+  }, "all");
   registerChoiceSetting(SETTINGS.CRITICAL_CARD_PROFILE, "CriticalCardProfile", {
     relaxed: "Relaxed", balanced: "Balanced", dramatic: "Dramatic", brutal: "Brutal", custom: "Custom"
   }, "balanced");

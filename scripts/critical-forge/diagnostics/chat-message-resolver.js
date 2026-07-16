@@ -38,10 +38,14 @@ export async function resolveDiagnosticMessageInput(message, {
 
   const diagnostics = [];
   const speaker = message.speaker ?? {};
-  const targetReference = getPath(message, "flags.pf2e.context.target") ?? null;
-  const sourceReference = getPath(message, "flags.pf2e.context.origin")
-    ?? getPath(message, "flags.pf2e.context")
-    ?? null;
+  const messageContext = getPath(message, "flags.pf2e.context") ?? {};
+  const savingThrow = isSavingThrowContext(messageContext, message);
+  const targetReference = savingThrow
+    ? (messageContext.origin ?? messageContext.target ?? null)
+    : (messageContext.target ?? null);
+  const sourceReference = savingThrow
+    ? messageContext
+    : (messageContext.origin ?? messageContext ?? null);
 
   const flaggedTarget = await resolveDocumentReference(targetReference, { fromUuidFn, actors, canvas });
   const selectedTargets = normalizeTokens(targetTokens ?? user?.targets ?? []);
@@ -255,6 +259,20 @@ function collectionGet(collection, id) {
 
 function messageTimestamp(message) {
   return Number(message.timestamp ?? message.time ?? message._source?.timestamp ?? 0) || 0;
+}
+
+function isSavingThrowContext(context, message) {
+  const values = [
+    context?.type,
+    context?.identifier,
+    context?.statistic,
+    message?.rolls?.[0]?.type,
+    message?.rolls?.[0]?.options?.type,
+    message?.rolls?.[0]?.options?.identifier
+  ].map((value) => String(value ?? "").toLowerCase());
+  return values.some((value) => value.includes("saving-throw")
+    || value.includes("savingthrow")
+    || ["fortitude", "reflex", "will"].includes(value));
 }
 
 function firstString(...values) {

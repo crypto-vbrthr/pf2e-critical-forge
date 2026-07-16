@@ -88,3 +88,53 @@ test("weighted selection is deterministic with an injected random source", () =>
   assert.equal(selector.select(context, { random: () => 0.99 }).selected.id, "test.specific");
   assert.equal(selector.select(context, { excludeCardIds: ["test.specific"], random: () => 0.99 }).selected.id, "test.generic");
 });
+
+test("saving throw and spell filters participate in card matching", () => {
+  const saveCard = normalizeCardDefinition({
+    schemaVersion: 1,
+    id: "test.reflex-failure",
+    packId: "test",
+    category: "savingThrowCriticalFailure",
+    titleKey: "TEST.Save.Title",
+    descriptionKey: "TEST.Save.Description",
+    tone: "serious",
+    impact: "light",
+    weight: 1,
+    tags: [],
+    filters: { saveTypes: ["reflex"] },
+    effect: null
+  });
+  const spellCard = normalizeCardDefinition({
+    schemaVersion: 1,
+    id: "test.arcane-fire",
+    packId: "test",
+    category: "spellCriticalHit",
+    titleKey: "TEST.Spell.Title",
+    descriptionKey: "TEST.Spell.Description",
+    tone: "dramatic",
+    impact: "moderate",
+    weight: 1,
+    tags: [],
+    filters: { spellTraditions: ["arcane"], spellTraits: ["fire"] },
+    effect: null
+  });
+
+  assert.equal(matchCard(saveCard, {
+    category: "savingThrowCriticalFailure",
+    saveTypes: ["reflex"]
+  }).eligible, true);
+  assert.equal(matchCard(saveCard, {
+    category: "savingThrowCriticalFailure",
+    saveTypes: ["will"]
+  }).eligible, false);
+  assert.equal(matchCard(spellCard, {
+    category: "spellCriticalHit",
+    spellTraditions: ["arcane"],
+    spellTraits: ["attack", "fire"]
+  }).eligible, true);
+  assert.equal(matchCard(spellCard, {
+    category: "spellCriticalHit",
+    spellTraditions: ["divine"],
+    spellTraits: ["fire"]
+  }).eligible, false);
+});

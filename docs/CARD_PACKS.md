@@ -23,4 +23,4 @@ Registration is transactional. Every card is normalized and validated before the
 
 Card IDs are globally unique. Pack IDs and card IDs use lowercase letters, digits, dots, underscores, and hyphens.
 
-The bundled `core` pack contains a 48-card localized test library. It is deliberately broad enough to exercise profiles, filters, redraw history, and effect application, but its prose and weighting are still playtest content rather than the final critical-results library. See [CORE_CARD_LIBRARY.md](CORE_CARD_LIBRARY.md).
+The bundled `core` pack contains a 72-card localized test library. It is deliberately broad enough to exercise attack, spell, and save filters, profiles, redraw history, and effect application, but its prose and weighting are still playtest content rather than the final critical-results library. See [CORE_CARD_LIBRARY.md](CORE_CARD_LIBRARY.md).

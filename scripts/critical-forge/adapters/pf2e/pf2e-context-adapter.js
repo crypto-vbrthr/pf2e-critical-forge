@@ -4,9 +4,10 @@ import { readActorContext, resolveSourceActor, resolveTargetActor } from "./acto
 import { collectRollOptions, readAttackContext, resolveAttackItem } from "./attack-context-reader.js";
 import { createAdapterReport, diagnostic } from "./context-diagnostics.js";
 import { getPath, uniqueSlugs } from "./context-utils.js";
-import { readRollResult } from "./roll-result-reader.js";
+import { readRollResult, resolveCriticalCategory } from "./roll-result-reader.js";
+import { readSaveContext } from "./save-context-reader.js";
 
-export const PF2E_CONTEXT_ADAPTER_VERSION = "1.1.0";
+export const PF2E_CONTEXT_ADAPTER_VERSION = "1.2.0";
 
 export function createPf2eSelectionContext(input = {}) {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
@@ -19,31 +20,37 @@ export function createPf2eSelectionContext(input = {}) {
   }
 
   const diagnostics = [];
+  const item = resolveAttackItem(input);
   const rollResult = readRollResult(input);
   const rollOptions = collectRollOptions(input, rollResult);
-  const item = resolveAttackItem(input);
   const attack = readAttackContext(item, {
     input,
     rollOptions,
-    damageRollFlag: rollResult.damageRollFlag
+    damageRollFlag: rollResult.damageRollFlag,
+    rollResult
   });
+  const save = readSaveContext(input, rollResult, rollOptions);
+  const resolvedCategory = resolveCriticalCategory(rollResult, { isSpell: attack.metadata.isSpell });
+  rollResult.category = resolvedCategory.category;
+  rollResult.categorySource = resolvedCategory.source;
+  if (attack.metadata.isSpell && rollResult.rollFamily === "attack") rollResult.rollFamily = "spellAttack";
+
   const sourceActor = resolveSourceActor(input, item);
   const targetActor = resolveTargetActor(input);
-  const sourceReference = actorReference(rollResult.contextFlag) ?? rollResult.contextFlag?.origin ?? null;
-  const targetReference = rollResult.contextFlag?.target ?? null;
+  const references = actorReferences(rollResult.contextFlag, rollResult.rollFamily);
   const source = readActorContext(sourceActor, {
     role: "source",
     explicitTraits: input.sourceTraits,
     rollOptions,
     token: input.sourceToken ?? input.message?.token,
-    flaggedReference: sourceReference
+    flaggedReference: references.source
   });
   const target = readActorContext(targetActor, {
     role: "target",
     explicitTraits: input.targetTraits,
     rollOptions,
     token: input.targetToken ?? input.message?.target?.token,
-    flaggedReference: targetReference
+    flaggedReference: references.target
   });
 
   const context = normalizeSelectionContext({
@@ -51,6 +58,9 @@ export function createPf2eSelectionContext(input = {}) {
     damageTypes: attack.damageTypes,
     weaponGroups: attack.weaponGroups,
     attackTraits: attack.attackTraits,
+    saveTypes: save.saveTypes,
+    spellTraditions: attack.spellTraditions,
+    spellTraits: attack.spellTraits,
     sourceTraits: source.traits,
     targetTraits: target.traits,
     requiredTags: uniqueSlugs(input.requiredTags),
@@ -61,7 +71,7 @@ export function createPf2eSelectionContext(input = {}) {
     diagnostics.push(diagnostic("PF2E_CONTEXT_CATEGORY_UNRESOLVED", {
       severity: "error",
       path: "category",
-      data: { degreeOfSuccess: rollResult.degree?.index ?? null }
+      data: { degreeOfSuccess: rollResult.degree?.index ?? null, rollFamily: rollResult.rollFamily }
     }));
   }
   if (rollResult.degree && ![0, 3].includes(rollResult.degree.index)) {
@@ -71,10 +81,23 @@ export function createPf2eSelectionContext(input = {}) {
       data: { outcome: rollResult.degree.key }
     }));
   }
-  if (!item) {
+  const attackCategory = ["criticalHit", "criticalFumble", "spellCriticalHit", "spellCriticalFumble"].includes(context.category);
+  if (attackCategory && !item) {
     diagnostics.push(diagnostic("PF2E_CONTEXT_ITEM_UNRESOLVED", {
       severity: "info",
       path: "item"
+    }));
+  }
+  if (context.category.startsWith("savingThrow") && !context.saveTypes.length) {
+    diagnostics.push(diagnostic("PF2E_CONTEXT_SAVE_TYPE_UNRESOLVED", {
+      severity: "info",
+      path: "saveTypes"
+    }));
+  }
+  if (context.category.startsWith("spellCritical") && !attack.metadata.isSpell) {
+    diagnostics.push(diagnostic("PF2E_CONTEXT_SPELL_UNRESOLVED", {
+      severity: "warning",
+      path: "spell"
     }));
   }
   if (!sourceActor && !source.metadata.uuid) {
@@ -89,7 +112,7 @@ export function createPf2eSelectionContext(input = {}) {
       path: "targetActor"
     }));
   }
-  if (!context.damageTypes.length) {
+  if (attackCategory && !context.damageTypes.length) {
     diagnostics.push(diagnostic("PF2E_CONTEXT_DAMAGE_TYPES_EMPTY", {
       severity: "info",
       path: "damageTypes"
@@ -103,6 +126,7 @@ export function createPf2eSelectionContext(input = {}) {
     outcome: rollResult.degree?.key ?? null,
     roll: {
       type: rollResult.rollType,
+      family: rollResult.rollFamily,
       identifier: rollResult.identifier,
       action: rollResult.action,
       dieResult: rollResult.dieResult,
@@ -112,18 +136,45 @@ export function createPf2eSelectionContext(input = {}) {
     source: source.metadata,
     target: target.metadata,
     attack: attack.metadata,
+    save: save.metadata,
+    spell: {
+      isSpell: attack.metadata.isSpell,
+      rank: attack.metadata.spellRank,
+      traditions: attack.spellTraditions,
+      traits: attack.spellTraits
+    },
     rollOptions,
     provenance: {
       category: rollResult.categorySource,
-      damageTypes: attack.damageTypes.length ? "attack" : null,
+      damageTypes: attack.damageTypes.length ? "attack-or-spell" : null,
       weaponGroups: attack.weaponGroups.length ? "attack" : null,
       attackTraits: attack.attackTraits.length ? "attack" : null,
+      saveTypes: save.saveTypes.length ? "saving-throw" : null,
+      spellTraditions: attack.spellTraditions.length ? "spell" : null,
+      spellTraits: attack.spellTraits.length ? "spell" : null,
       sourceTraits: source.traits.length ? "actor-or-roll-options" : null,
       targetTraits: target.traits.length ? "actor-or-roll-options" : null
     }
   });
 
   return createAdapterReport({ context, metadata, diagnostics });
+}
+
+function actorReferences(contextFlag, rollFamily) {
+  if (!contextFlag) return { source: null, target: null };
+  const roller = actorReference(contextFlag);
+  const origin = contextFlag.origin ?? null;
+  const target = contextFlag.target ?? null;
+  if (rollFamily === "savingThrow") {
+    return {
+      source: roller ?? null,
+      target: origin ?? target ?? null
+    };
+  }
+  return {
+    source: origin ?? roller ?? null,
+    target: target ?? null
+  };
 }
 
 function actorReference(contextFlag) {
@@ -139,10 +190,12 @@ function emptyMetadata() {
     adapterVersion: PF2E_CONTEXT_ADAPTER_VERSION,
     degreeOfSuccess: null,
     outcome: null,
-    roll: { type: null, identifier: null, action: null, dieResult: null, isNatural20: false, isNatural1: false },
+    roll: { type: null, family: null, identifier: null, action: null, dieResult: null, isNatural20: false, isNatural1: false },
     source: null,
     target: null,
     attack: null,
+    save: null,
+    spell: null,
     rollOptions: [],
     provenance: {}
   });

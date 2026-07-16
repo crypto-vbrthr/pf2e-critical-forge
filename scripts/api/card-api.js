@@ -66,6 +66,8 @@ import {
   CRITICAL_ROLL_AUTOMATION_VERSION,
   getCriticalRollAutomationData,
   isAttackCriticalReport,
+  isSavingThrowReport,
+  isSupportedCriticalReport,
   processCriticalChatMessage
 } from "../critical-forge/automation/critical-roll-automation.js";
 
@@ -102,7 +104,9 @@ export function createCardApi() {
       version: CRITICAL_ROLL_AUTOMATION_VERSION,
       processMessage: (message, options = {}) => processCriticalChatMessage(message, options),
       inspectMessage: (message) => getCriticalRollAutomationData(message),
-      isAttackReport: (report, input = {}) => isAttackCriticalReport(report, input)
+      isAttackReport: (report, input = {}) => isAttackCriticalReport(report, input),
+      isSavingThrowReport: (report, input = {}) => isSavingThrowReport(report, input),
+      isSupportedReport: (report, input = {}) => isSupportedCriticalReport(report, input)
     }),
 
     registerPack: (pack, options = {}) => registerCriticalPack(pack, options),

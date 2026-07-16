@@ -9,6 +9,9 @@ export function normalizeSelectionContext(context = {}) {
     damageTypes: normalizeStringArray(context.damageTypes ?? []),
     weaponGroups: normalizeStringArray(context.weaponGroups ?? []),
     attackTraits: normalizeStringArray(context.attackTraits ?? []),
+    saveTypes: normalizeStringArray(context.saveTypes ?? []),
+    spellTraditions: normalizeStringArray(context.spellTraditions ?? []),
+    spellTraits: normalizeStringArray(context.spellTraits ?? []),
     sourceTraits: normalizeStringArray(context.sourceTraits ?? []),
     targetTraits: normalizeStringArray(context.targetTraits ?? []),
     requiredTags: normalizeStringArray(context.requiredTags ?? []),
@@ -26,6 +29,9 @@ export function matchCard(card, rawContext = {}) {
   matchAny("damageTypes", card.filters.damageTypes, context.damageTypes);
   matchAny("weaponGroups", card.filters.weaponGroups, context.weaponGroups);
   matchAll("attackTraits", card.filters.attackTraits, context.attackTraits);
+  matchAny("saveTypes", card.filters.saveTypes, context.saveTypes);
+  matchAny("spellTraditions", card.filters.spellTraditions, context.spellTraditions);
+  matchAll("spellTraits", card.filters.spellTraits, context.spellTraits);
   matchAll("sourceTraits", card.filters.sourceTraits, context.sourceTraits);
   matchAll("targetTraits", card.filters.targetTraits, context.targetTraits);
   excludeAny("excludedSourceTraits", card.filters.excludedSourceTraits, context.sourceTraits);
