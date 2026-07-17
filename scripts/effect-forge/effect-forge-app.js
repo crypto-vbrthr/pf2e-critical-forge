@@ -368,6 +368,24 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     unlimited?.addEventListener("change", updateDurationState);
     updateDurationState();
 
+    for (const card of root.querySelectorAll("[data-component-duration]")) {
+      const override = card.querySelector("[data-component-duration-override]");
+      const unlimitedComponent = card.querySelector("[data-component-duration-unlimited]");
+      const controls = card.querySelectorAll("[data-component-duration-control]");
+
+      const updateComponentDurationState = () => {
+        const enabled = Boolean(override?.checked);
+        const infinite = Boolean(unlimitedComponent?.checked);
+        if (unlimitedComponent) unlimitedComponent.disabled = !enabled;
+        for (const control of controls) control.disabled = !enabled || infinite;
+        card.classList.toggle("duration-override-enabled", enabled);
+      };
+
+      override?.addEventListener("change", updateComponentDurationState);
+      unlimitedComponent?.addEventListener("change", updateComponentDurationState);
+      updateComponentDurationState();
+    }
+
     const customValue = this.constructor.#api().selectors.customValue;
     for (const conditionChoice of root.querySelectorAll("[data-condition-choice]")) {
       const card = conditionChoice.closest(".effect-forge-component-card");
@@ -696,7 +714,14 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       isRegeneration: component.type === "regeneration",
       isTemporaryHitPoints: component.type === "temporaryHitPoints",
       isMovement: component.type === "movement",
-      isBaseSpeed: component.type === "baseSpeed"
+      isBaseSpeed: component.type === "baseSpeed",
+      hasDurationOverride: Boolean(component.duration),
+      componentDurationValue: component.duration?.unit === "unlimited"
+        ? 1
+        : (component.duration?.value ?? 1),
+      componentDurationUnit: component.duration?.unit ?? "rounds",
+      componentDurationExpiry: component.duration?.expiry ?? "turn-end",
+      componentUnlimitedDuration: component.duration?.unit === "unlimited"
     };
 
     if (base.isCondition) {
@@ -782,32 +807,55 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   #componentSummary(component) {
     const localize = (key) => game.i18n.localize(key);
+    let summary;
     switch (component.type) {
       case "condition":
-        return `${component.slug}${component.value == null ? "" : ` ${component.value}`}`;
+        summary = `${component.slug}${component.value == null ? "" : ` ${component.value}`}`;
+        break;
       case "modifier":
-        return `${component.value > 0 ? "+" : ""}${component.value} ${component.modifierType} · ${component.selector}`;
+        summary = `${component.value > 0 ? "+" : ""}${component.value} ${component.modifierType} · ${component.selector}`;
+        break;
       case "persistentDamage":
-        return `${component.formula} ${component.damageType}${component.dc ? ` · DC ${component.dc}` : ""}`;
+        summary = `${component.formula} ${component.damageType}${component.dc ? ` · DC ${component.dc}` : ""}`;
+        break;
       case "resistance":
-        return `${component.resistanceType} ${component.value}`;
+        summary = `${component.resistanceType} ${component.value}`;
+        break;
       case "weakness":
-        return `${component.weaknessType} ${component.value}`;
+        summary = `${component.weaknessType} ${component.value}`;
+        break;
       case "immunity":
-        return String(component.immunityType ?? "");
+        summary = String(component.immunityType ?? "");
+        break;
       case "fastHealing":
-        return `${localize("PF2E_CRITICAL_FORGE.EffectForge.FastHealing")} ${component.value}`;
+        summary = `${localize("PF2E_CRITICAL_FORGE.EffectForge.FastHealing")} ${component.value}`;
+        break;
       case "regeneration":
-        return `${component.value} · ${(component.deactivatedBy ?? []).join(", ")}`;
+        summary = `${component.value} · ${(component.deactivatedBy ?? []).join(", ")}`;
+        break;
       case "temporaryHitPoints":
-        return String(component.value ?? "");
+        summary = String(component.value ?? "");
+        break;
       case "movement":
-        return `${component.value > 0 ? "+" : ""}${component.value} · ${component.movementType} · ${component.modifierType}`;
+        summary = `${component.value > 0 ? "+" : ""}${component.value} · ${component.movementType} · ${component.modifierType}`;
+        break;
       case "baseSpeed":
-        return `${component.movementType} ${component.value}`;
+        summary = `${component.movementType} ${component.value}`;
+        break;
       default:
-        return String(component.type ?? "");
+        summary = String(component.type ?? "");
     }
+
+    if (!component.duration) return summary;
+    const duration = component.duration.unit === "unlimited"
+      ? localize("PF2E_CRITICAL_FORGE.Duration.Unlimited")
+      : `${component.duration.value} ${localize(`PF2E_CRITICAL_FORGE.Duration.${{
+          rounds: "Rounds",
+          minutes: "Minutes",
+          hours: "Hours",
+          days: "Days"
+        }[component.duration.unit] ?? "Rounds"}`)}`;
+    return `${summary} · ${localize("PF2E_CRITICAL_FORGE.EffectForge.ComponentDurationShort")}: ${duration}`;
   }
 
   #conditionOptions(selected) {
@@ -866,10 +914,23 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         _collapsed: Boolean(component._collapsed)
       };
       if (component._collapsed) return component;
+
+      const hasDurationOverride = data.get(`${prefix}.durationOverride`) === "on";
+      const componentUnlimited = data.get(`${prefix}.unlimitedDuration`) === "on";
+      const commonState = { ...uiState };
+      if (hasDurationOverride) {
+        commonState.duration = componentUnlimited
+          ? { value: -1, unit: "unlimited", expiry: null }
+          : {
+              value: Number(data.get(`${prefix}.durationValue`) ?? 0),
+              unit: String(data.get(`${prefix}.durationUnit`) ?? "rounds"),
+              expiry: String(data.get(`${prefix}.durationExpiry`) ?? "turn-end")
+            };
+      }
       if (component.type === "condition") {
         const raw = String(data.get(`${prefix}.value`) ?? "").trim();
         return {
-          ...uiState,
+          ...commonState,
           type: "condition",
           slug: String(data.get(`${prefix}.slug`) ?? "").trim(),
           value: raw === "" ? undefined : Number.parseInt(raw, 10)
@@ -879,7 +940,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       if (component.type === "persistentDamage") {
         const rawDc = String(data.get(`${prefix}.dc`) ?? "").trim();
         return {
-          ...uiState,
+          ...commonState,
           type: "persistentDamage",
           formula: String(data.get(`${prefix}.formula`) ?? "").trim(),
           damageType: String(data.get(`${prefix}.damageType`) ?? "").trim(),
@@ -889,7 +950,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "resistance") {
         return {
-          ...uiState,
+          ...commonState,
           type: "resistance",
           resistanceType: String(data.get(`${prefix}.resistanceType`) ?? "").trim(),
           value: Number(data.get(`${prefix}.value`) ?? 0)
@@ -898,7 +959,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "weakness") {
         return {
-          ...uiState,
+          ...commonState,
           type: "weakness",
           weaknessType: String(data.get(`${prefix}.weaknessType`) ?? "").trim(),
           value: Number(data.get(`${prefix}.value`) ?? 0)
@@ -907,7 +968,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "immunity") {
         return {
-          ...uiState,
+          ...commonState,
           type: "immunity",
           immunityType: String(data.get(`${prefix}.immunityType`) ?? "").trim()
         };
@@ -915,7 +976,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "fastHealing") {
         return {
-          ...uiState,
+          ...commonState,
           type: "fastHealing",
           value: Number(data.get(`${prefix}.value`) ?? 0)
         };
@@ -923,7 +984,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "regeneration") {
         return {
-          ...uiState,
+          ...commonState,
           type: "regeneration",
           value: Number(data.get(`${prefix}.value`) ?? 0),
           deactivatedBy: data.getAll(`${prefix}.deactivatedBy`)
@@ -934,7 +995,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "temporaryHitPoints") {
         return {
-          ...uiState,
+          ...commonState,
           type: "temporaryHitPoints",
           value: Number(data.get(`${prefix}.value`) ?? 0)
         };
@@ -942,7 +1003,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "movement") {
         return {
-          ...uiState,
+          ...commonState,
           type: "movement",
           movementType: String(data.get(`${prefix}.movementType`) ?? "land").trim(),
           value: Number(data.get(`${prefix}.value`) ?? 0),
@@ -952,7 +1013,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       if (component.type === "baseSpeed") {
         return {
-          ...uiState,
+          ...commonState,
           type: "baseSpeed",
           movementType: String(data.get(`${prefix}.movementType`) ?? "fly").trim(),
           value: Number(data.get(`${prefix}.value`) ?? 0)
@@ -967,7 +1028,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         : selectorChoice;
 
       return {
-        ...uiState,
+        ...commonState,
         type: "modifier",
         selector,
         value: Number(data.get(`${prefix}.value`) ?? 0),
@@ -1008,7 +1069,7 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     for (const stateComponent of this.state.components) {
       const component = stripComponentUiState(stateComponent);
       if (component.type === "condition") {
-        builder.addCondition(component.slug, component.value);
+        builder.addCondition(component.slug, component.value, { duration: component.duration });
       } else if (component.type === "modifier") {
         builder.addModifier(component);
       } else if (component.type === "persistentDamage") {
@@ -1093,8 +1154,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this.definitionPreview = JSON.stringify(definition, null, 2);
 
       if (this.compiledPreview === null && validation.valid) {
-        const compiled = await this.constructor.#api().effects.toItemSource(definition);
-        this.compiledPreview = JSON.stringify(compiled, null, 2);
+        const compiled = await this.constructor.#api().effects.toItemSources(definition);
+        this.compiledPreview = JSON.stringify(compiled.length === 1 ? compiled[0] : compiled, null, 2);
       }
     } catch (error) {
       console.warn(`${MODULE_ID} | Initial preview could not be prepared`, error);
@@ -1541,7 +1602,8 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     try {
       const definition = this.#buildDefinition();
       const validation = this.constructor.#api().effects.analyze(definition);
-      const result = await this.constructor.#api().effects.toItemSource(definition);
+      const sources = await this.constructor.#api().effects.toItemSources(definition);
+      const result = sources.length === 1 ? sources[0] : sources;
       this.#setValidationReport(validation);
       this.definitionPreview = JSON.stringify(definition, null, 2);
       this.compiledPreview = JSON.stringify(result, null, 2);
@@ -1558,17 +1620,21 @@ export class EffectForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static async #createItem() {
     try {
       const definition = this.#buildDefinition();
-      const item = await this.constructor.#api().effects.createItem(definition, {
+      const items = await this.constructor.#api().effects.createItems(definition, {
         renderSheet: true,
         unmanagedRules: this.unmanagedRules
       });
+      const item = items[0] ?? null;
       if (item) {
         await this.loadItem(item, { render: false });
         await this.#renderPreservingScroll();
-        ui.notifications.info(game.i18n.format(
-          "PF2E_CRITICAL_FORGE.EffectForge.ItemCreated",
-          { name: item.name }
-        ));
+        const key = items.length > 1
+          ? "PF2E_CRITICAL_FORGE.EffectForge.ItemsCreated"
+          : "PF2E_CRITICAL_FORGE.EffectForge.ItemCreated";
+        ui.notifications.info(game.i18n.format(key, {
+          name: definition.name,
+          count: items.length
+        }));
       }
     } catch (error) {
       console.error(`${MODULE_ID} | Item creation failed`, error);

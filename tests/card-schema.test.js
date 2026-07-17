@@ -31,7 +31,7 @@ function card(overrides = {}) {
       nameKey: "TEST.DeepCut.Effect",
       fallbackName: "Deep Cut",
       definition: {
-        schemaVersion: 1,
+        schemaVersion: 2,
         duration: { value: -1, unit: "unlimited", expiry: null },
         components: [{ type: "persistentDamage", formula: "1d6", damageType: "bleed" }]
       }
@@ -65,7 +65,7 @@ test("card validation rejects malformed effect templates", () => {
       target: "somewhere",
       nameKey: "",
       definition: {
-        schemaVersion: 1,
+        schemaVersion: 2,
         duration: { value: 1, unit: "rounds", expiry: "turn-end" },
         components: [{ type: "persistentDamage", formula: "", damageType: "fire" }]
       }

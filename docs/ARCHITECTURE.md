@@ -12,7 +12,7 @@
 3. Disabling either GUI feature never disables the public API.
 4. User interfaces use the same public API exposed to other modules.
 5. Critical cards produce Effect Definitions, never raw PF2e Rule Elements.
-6. Effects contain any number of components under one global duration.
+6. Effects contain any number of components; each component may inherit the global duration or override it.
 7. Narrative card data and reusable mechanical effect profiles remain separate.
 8. Public API behavior and schemas are versioned and documented.
 9. Invalid external content fails locally and must not disable the module.
@@ -40,7 +40,10 @@ External module ─┘       │
           Validation Engine    Compiler
                                   │
                                   ▼
-                         PF2e Item Source
+                    Duration Grouping
+                                  │
+                                  ▼
+                    PF2e Item Source Bundle
                                   │
                                   ▼
                          Application Service
@@ -101,6 +104,7 @@ effect-engine/compiler/
 ├─ effect-compiler.js
 ├─ pf2e-item-builder.js
 ├─ duration-builder.js
+├─ duration-grouper.js
 ├─ rule-builder.js
 └─ flag-builder.js
 ```
@@ -108,9 +112,10 @@ effect-engine/compiler/
 - `effect-compiler.js` validates and compiles registered components.
 - component handlers produce abstract compiled components and Rule Elements.
 - `rule-builder.js` collects Rule Elements.
-- `duration-builder.js` translates global duration data.
+- `duration-builder.js` translates PF2e Item duration data.
+- `duration-grouper.js` resolves inherited or overridden component durations and groups compiled components by effective duration.
 - `flag-builder.js` creates origin and schema metadata.
-- `pf2e-item-builder.js` assembles PF2e Effect Item source data.
+- `pf2e-item-builder.js` assembles one PF2e Effect Item source per duration group and links the sources as one logical bundle.
 
 Compilation may be asynchronous because catalogs can resolve compendium content.
 
@@ -121,11 +126,11 @@ Compilation may be asynchronous because catalogs can resolve compendium content.
 
 Rules that cannot be represented safely are classified as unmanaged. The application service appends them unchanged when the Item is updated. This prevents an editor round trip from destroying third-party or advanced PF2e automation.
 
-Newly compiled Items store the complete source definition in module flags, while legacy Items remain readable through the Rule Element parser.
+Every generated duration segment stores the complete source definition in module flags, so opening any segment restores the logical effect. Legacy Items remain readable through the Rule Element parser.
 
 ### Application Service
 
-The application layer is the only engine layer that creates, updates, or deletes Foundry documents. It accepts compiled definitions through the public API and isolates document ownership and target normalization from the compiler.
+The application layer is the only engine layer that creates, updates, or deletes Foundry documents. It accepts compiled definitions through the public API, creates all required duration segments, replaces stale siblings during updates, and isolates document ownership and target normalization from the compiler.
 
 ### GUI
 

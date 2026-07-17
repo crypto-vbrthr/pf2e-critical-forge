@@ -1,6 +1,6 @@
 # Critical Roll Automation
 
-Version `0.8.0-rc.2` freezes the connection between the PF2e Context Adapter, trigger policy, profile weighting, card selector, and chat-card publisher for supported PF2e critical rolls.
+Version `0.9.0-dev` freezes the connection between the PF2e Context Adapter, trigger policy, profile weighting, card selector, and chat-card publisher for supported PF2e critical rolls.
 
 ## Supported roll families
 

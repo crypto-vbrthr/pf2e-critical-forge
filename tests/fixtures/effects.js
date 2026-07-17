@@ -1,6 +1,6 @@
 export function shakenNerves({ modifierType = "circumstance" } = {}) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: "example.shaken-nerves",
     name: "Erschütterte Nerven",
     description: "<p>Das Ziel ist erschüttert.</p>",
@@ -26,7 +26,7 @@ export function proneEffect({ includeLegacyValue = false } = {}) {
   if (includeLegacyValue) condition.value = 1;
 
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: "example.prone",
     name: "Zu Boden",
     duration: { value: 1, unit: "rounds", expiry: "turn-end" },
@@ -45,7 +45,7 @@ export function persistentBleed({ dc = undefined, formula = "1d6", damageType = 
   if (dc !== undefined) component.dc = dc;
 
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: "example.persistent-bleed",
     name: "Blutende Wunde",
     duration: { value: -1, unit: "unlimited", expiry: null },
@@ -57,7 +57,7 @@ export function persistentBleed({ dc = undefined, formula = "1d6", damageType = 
 
 export function fireWeakness({ value = 5, weaknessType = "fire" } = {}) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: "example.fire-weakness",
     name: "Feuerempfindlich",
     duration: { value: 10, unit: "minutes", expiry: "turn-end" },
@@ -73,7 +73,7 @@ export function fireWeakness({ value = 5, weaknessType = "fire" } = {}) {
 
 export function fireResistance({ value = 5, resistanceType = "fire" } = {}) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: "example.fire-resistance",
     name: "Feuerschutz",
     duration: { value: 10, unit: "minutes", expiry: "turn-end" },
@@ -89,7 +89,7 @@ export function fireResistance({ value = 5, resistanceType = "fire" } = {}) {
 
 export function fireImmunity({ immunityType = "fire" } = {}) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: "example.fire-immunity",
     name: "Feuerimmunität",
     duration: { value: 10, unit: "minutes", expiry: "turn-end" },
@@ -104,7 +104,7 @@ export function fireImmunity({ immunityType = "fire" } = {}) {
 
 export function fastHealing({ value = 2 } = {}) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: "example.fast-healing",
     name: "Schnelle Heilung",
     duration: { value: 1, unit: "minutes", expiry: "turn-end" },
@@ -119,7 +119,7 @@ export function fastHealing({ value = 2 } = {}) {
 
 export function temporaryHitPoints({ value = 5 } = {}) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: "example.temporary-hit-points",
     name: "Temporäre Trefferpunkte",
     duration: { value: 1, unit: "minutes", expiry: "turn-end" },
@@ -134,7 +134,7 @@ export function temporaryHitPoints({ value = 5 } = {}) {
 
 export function regeneration({ value = 5, deactivatedBy = ["acid", "fire"] } = {}) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: "example.regeneration",
     name: "Regeneration",
     duration: { value: 1, unit: "minutes", expiry: "turn-end" },
@@ -150,7 +150,7 @@ export function regeneration({ value = 5, deactivatedBy = ["acid", "fire"] } = {
 
 export function movement({ movementType = "land", value = 10, modifierType = "status" } = {}) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: "example.movement",
     name: "Bewegungsänderung",
     duration: { value: 1, unit: "minutes", expiry: "turn-end" },
@@ -168,7 +168,7 @@ export function movement({ movementType = "land", value = 10, modifierType = "st
 
 export function baseSpeed({ movementType = "fly", value = 30 } = {}) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: "example.base-speed",
     name: "Verliehene Bewegungsrate",
     duration: { value: 1, unit: "minutes", expiry: "turn-end" },

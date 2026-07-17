@@ -317,10 +317,10 @@ export async function extractEffectDefinitionFromItem(item) {
   const definition = {
     schemaVersion: EFFECT_SCHEMA_VERSION,
     id: stored?.id ?? moduleFlags.definitionId ?? `item.${source._id ?? source.id ?? "effect"}`,
-    name: String(source.name ?? stored?.name ?? ""),
-    description: stripHtml(source.system?.description?.value ?? stored?.description ?? ""),
-    img: String(source.img ?? stored?.img ?? "icons/svg/aura.svg"),
-    duration: normalizeDuration(source.system?.duration ?? stored?.duration),
+    name: String(stored?.name ?? source.name ?? ""),
+    description: stripHtml(stored?.description ?? source.system?.description?.value ?? ""),
+    img: String(stored?.img ?? source.img ?? "icons/svg/aura.svg"),
+    duration: normalizeDuration(stored?.duration ?? source.system?.duration),
     components,
     application: clone(stored?.application ?? {}),
     metadata

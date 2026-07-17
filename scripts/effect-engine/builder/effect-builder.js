@@ -104,8 +104,8 @@ export class EffectBuilder {
     return this;
   }
 
-  addCondition(slug, value) {
-    this.#definition.components.push(buildCondition(slug, value));
+  addCondition(slug, value, options = {}) {
+    this.#definition.components.push(buildCondition(slug, value, options));
     return this;
   }
 
@@ -156,6 +156,27 @@ export class EffectBuilder {
 
   addBaseSpeed(options) {
     this.#definition.components.push(buildBaseSpeed(options));
+    return this;
+  }
+
+
+  setComponentDuration(index, value, unit = "rounds", expiry = "turn-end") {
+    if (!Number.isInteger(index) || index < 0 || index >= this.#definition.components.length) {
+      throw new RangeError(`Invalid component index: ${index}`);
+    }
+    const component = foundry.utils.deepClone(this.#definition.components[index]);
+    component.duration = buildDuration(value, unit, expiry);
+    this.#definition.components[index] = component;
+    return this;
+  }
+
+  clearComponentDuration(index) {
+    if (!Number.isInteger(index) || index < 0 || index >= this.#definition.components.length) {
+      throw new RangeError(`Invalid component index: ${index}`);
+    }
+    const component = foundry.utils.deepClone(this.#definition.components[index]);
+    delete component.duration;
+    this.#definition.components[index] = component;
     return this;
   }
 

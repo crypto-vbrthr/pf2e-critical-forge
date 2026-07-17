@@ -16,13 +16,13 @@ test("current Effect Definitions pass through migration unchanged", () => {
   const result = migrateEffectDefinition(source);
 
   assert.equal(result.migrated, false);
-  assert.equal(result.fromVersion, 1);
-  assert.equal(result.toVersion, 1);
+  assert.equal(result.fromVersion, 2);
+  assert.equal(result.toVersion, 2);
   assert.deepEqual(result.definition, source);
   assert.notEqual(result.definition, source);
 });
 
-test("legacy schema 0 aliases migrate to schema 1", () => {
+test("legacy schema 0 aliases migrate through schema 2", () => {
   const legacy = {
     id: "legacy.effect",
     name: "Legacy Effect",
@@ -48,8 +48,8 @@ test("legacy schema 0 aliases migrate to schema 1", () => {
 
   assert.equal(result.migrated, true);
   assert.equal(result.fromVersion, 0);
-  assert.equal(result.toVersion, 1);
-  assert.equal(result.definition.schemaVersion, 1);
+  assert.equal(result.toVersion, 2);
+  assert.equal(result.definition.schemaVersion, 2);
   assert.equal(result.definition.img, "icons/svg/fire.svg");
   assert.deepEqual(result.definition.duration, {
     value: 3,
@@ -77,7 +77,7 @@ test("imports automatically migrate legacy raw definitions", () => {
   }));
 
   assert.equal(imported.migration.migrated, true);
-  assert.equal(imported.definition.schemaVersion, 1);
+  assert.equal(imported.definition.schemaVersion, 2);
   assert.deepEqual(imported.definition.components, [
     { type: "condition", slug: "prone" }
   ]);

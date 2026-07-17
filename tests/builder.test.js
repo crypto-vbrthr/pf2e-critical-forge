@@ -44,7 +44,7 @@ test("EffectBuilder creates an immutable normalized definition", () => {
     .setMetadata({ originModule: "tests", nested: { enabled: true } })
     .build();
 
-  assert.equal(definition.schemaVersion, 1);
+  assert.equal(definition.schemaVersion, 2);
   assert.equal(definition.id, "example.effect");
   assert.equal(definition.name, "Test Effect");
   assert.equal(definition.img, "icons/svg/aura.svg");
@@ -118,7 +118,7 @@ test("EffectBuilder.from clones the source and never mutates it", () => {
 
   assert.equal(source.name, "Source");
   assert.deepEqual(source.metadata, { nested: { value: 1 } });
-  assert.equal(result.schemaVersion, 1);
+  assert.equal(result.schemaVersion, 2);
   assert.equal(result.name, "Changed");
   assert.deepEqual(result.metadata, { nested: { value: 1, extra: 2 } });
 });

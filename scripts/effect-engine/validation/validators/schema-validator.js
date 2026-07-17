@@ -7,26 +7,26 @@ function issue(severity, code, messageKey, data = {}, componentIndex = null) {
   return { severity, code, messageKey, data, componentIndex };
 }
 
-function validateDuration(duration) {
+function validateDuration(duration, componentIndex = null) {
   const issues = [];
   if (duration == null) return issues;
 
   if (typeof duration !== "object" || Array.isArray(duration)) {
-    issues.push(issue("error", "SCHEMA_DURATION_OBJECT", "Validation.Schema.DurationObject"));
+    issues.push(issue("error", "SCHEMA_DURATION_OBJECT", "Validation.Schema.DurationObject", {}, componentIndex));
     return issues;
   }
 
   if (!DURATION_UNITS.has(duration.unit)) {
     issues.push(issue("error", "SCHEMA_DURATION_UNIT", "Validation.Schema.DurationUnit", {
       unit: String(duration.unit)
-    }));
+    }, componentIndex));
   }
 
   if (
     duration.unit !== "unlimited" &&
     (typeof duration.value !== "number" || !Number.isFinite(duration.value) || duration.value < 0)
   ) {
-    issues.push(issue("error", "SCHEMA_DURATION_VALUE", "Validation.Schema.DurationValue"));
+    issues.push(issue("error", "SCHEMA_DURATION_VALUE", "Validation.Schema.DurationValue", {}, componentIndex));
   }
 
   return issues;
@@ -61,6 +61,10 @@ export function validateSchema(definition) {
     if (!component || typeof component !== "object" || Array.isArray(component)) {
       issues.push(issue("error", "SCHEMA_COMPONENT_OBJECT", "Validation.Schema.ComponentObject", {}, index));
       return;
+    }
+
+    if (Object.hasOwn(component, "duration") && component.duration != null) {
+      issues.push(...validateDuration(component.duration, index));
     }
 
     const handler = componentRegistry.get(component.type);

@@ -8,13 +8,14 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.8.0-rc.2` freezes the current feature set for release-candidate testing. It combines the Effect Forge, six Critical Forge result categories, the 96-card core library, automatic PF2e roll handling, and the visual Card Pack Editor in one stabilization line.
+Version `0.9.0-dev` extends the Effect Engine schema with optional component-level duration overrides while preserving global-duration inheritance. The Effect Forge, Critical Forge, 96-card core library, automation, card editor, and external pack API remain available together.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
 The current module includes:
 
 - the complete Effect Engine and polished Effect Forge from the `0.4.0` release-candidate line;
+- optional duration overrides on every Effect component, compiled into linked native PF2e Effect Item bundles when durations differ;
 - versioned Critical Card and Card Pack schemas;
 - transactional Pack Registry, globally indexed Card Registry, and rollback-safe world-pack persistence;
 - localized title, description, and effect-name resolution with fallbacks;
@@ -79,7 +80,7 @@ npm run test:coverage
 npm run quality:check
 ```
 
-The suite covers the Effect Engine and Forge as well as card normalization, Card Pack Editor round-trips, pack activation, rollback-safe world persistence, external extension-pack lifecycles, spell/save filters, PF2e context adaptation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
+The suite covers the Effect Engine and Forge, component-duration inheritance and native Item splitting, Item-bundle updates, card normalization, Card Pack Editor round-trips, pack activation, rollback-safe world persistence, external extension-pack lifecycles, spell/save filters, PF2e context adaptation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 
@@ -100,6 +101,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/EDITING_ITEMS.md`](docs/EDITING_ITEMS.md): loading, updating, and preserving existing Effect Items
 - [`docs/IMPORT_EXPORT.md`](docs/IMPORT_EXPORT.md): portable JSON files, clipboard transfer, and API helpers
 - [`docs/EFFECT_SCHEMA.md`](docs/EFFECT_SCHEMA.md): Effect Definition schema
+- [`docs/COMPONENT_DURATIONS.md`](docs/COMPONENT_DURATIONS.md): component inheritance, native Item bundles, and API behavior
 - [`docs/VALIDATION.md`](docs/VALIDATION.md): report format, phases, and issue codes
 - [`docs/SELECTORS.md`](docs/SELECTORS.md): selector catalog and custom selectors
 - [`docs/BASE_SPEED.md`](docs/BASE_SPEED.md): granting climb, burrow, fly, and swim Speeds

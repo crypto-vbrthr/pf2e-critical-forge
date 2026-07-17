@@ -10,12 +10,14 @@ import { initializeCriticalCardRedrawUi } from "./critical-forge/presentation/cr
 import { initializeCriticalRollAutomation } from "./critical-forge/automation/critical-roll-automation.js";
 import { initializeConditionCatalog } from "./effect-engine/catalogs/condition-catalog.js";
 import { initializeCustomCardPacks } from "./critical-forge/editor/card-pack-store.js";
+import { initializeDurationBundleHooks } from "./effect-engine/duration-bundle-hooks.js";
 
 Hooks.once("init", () => {
   registerSettings();
   initializeEffectEngine();
   initializeCriticalForge();
   initializePublicApi();
+  initializeDurationBundleHooks();
 });
 
 Hooks.once("ready", async () => {

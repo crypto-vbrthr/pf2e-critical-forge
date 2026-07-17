@@ -541,7 +541,12 @@
       "ExternalCommitted": "The mechanical effect was returned to the Critical Card.",
       "ExternalInvalid": "The Effect Definition contains errors and cannot be returned yet.",
       "ExternalModeTitle": "Mechanical Card Effect",
-      "ExternalModeHint": "Edit the Critical Card’s mechanical effect. “Use for Card” returns the validated Effect Definition to the card editor."
+      "ExternalModeHint": "Edit the Critical Card’s mechanical effect. “Use for Card” returns the validated Effect Definition to the card editor.",
+      "ComponentDurationOverride": "Use individual duration",
+      "ComponentDurationInheritanceHint": "Without an individual duration, the global effect duration is inherited.",
+      "ComponentDurationShort": "Duration",
+      "ItemsCreated": "Created {count} Effect Items for “{name}”.",
+      "MultiDurationHint": "Components with different durations are created as a linked set of PF2e Effect Items."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialized.",
@@ -551,7 +556,8 @@
     "Errors": {
       "InvalidDefinition": "The effect definition is invalid.",
       "UnknownComponent": "Unknown component type: {type}",
-      "DuplicateComponent": "The component type is already registered: {type}"
+      "DuplicateComponent": "The component type is already registered: {type}",
+      "DurationSplit": "The Effect Definition requires {count} PF2e Effect Items because its components have different durations."
     },
     "Examples": {
       "ShakenNerves": {
@@ -569,7 +575,11 @@
       "TurnStart": "Start of turn",
       "TurnEnd": "End of turn",
       "RoundStart": "Start of round",
-      "RoundEnd": "End of round"
+      "RoundEnd": "End of round",
+      "Round": "Round",
+      "Minute": "Minute",
+      "Hour": "Hour",
+      "Day": "Day"
     },
     "Validation": {
       "Schema": {

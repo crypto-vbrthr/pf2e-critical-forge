@@ -541,7 +541,12 @@
       "ExternalCommitted": "Die mechanische Folge wurde in die Critical Card übernommen.",
       "ExternalInvalid": "Die Effect Definition enthält Fehler und kann noch nicht übernommen werden.",
       "ExternalModeTitle": "Mechanische Kartenfolge",
-      "ExternalModeHint": "Bearbeite die mechanische Folge der Critical Card. Mit „Zur Karte übernehmen“ wird die validierte Effect Definition an den Karteneditor zurückgegeben."
+      "ExternalModeHint": "Bearbeite die mechanische Folge der Critical Card. Mit „Zur Karte übernehmen“ wird die validierte Effect Definition an den Karteneditor zurückgegeben.",
+      "ComponentDurationOverride": "Eigene Dauer verwenden",
+      "ComponentDurationInheritanceHint": "Ohne eigene Dauer gilt die globale Effektdauer.",
+      "ComponentDurationShort": "Dauer",
+      "ItemsCreated": "{count} Effekt-Items für „{name}“ erstellt.",
+      "MultiDurationHint": "Komponenten mit abweichender Dauer werden als zusammengehörige PF2e-Effekt-Items erzeugt."
     },
     "Notifications": {
       "Initialized": "PF2E Critical Forge initialisiert.",
@@ -551,7 +556,8 @@
     "Errors": {
       "InvalidDefinition": "Die Effektdefinition ist ungültig.",
       "UnknownComponent": "Unbekannter Komponententyp: {type}",
-      "DuplicateComponent": "Der Komponententyp ist bereits registriert: {type}"
+      "DuplicateComponent": "Der Komponententyp ist bereits registriert: {type}",
+      "DurationSplit": "Die Effektdefinition benötigt {count} PF2e-Effekt-Items, weil ihre Komponenten unterschiedliche Dauern haben."
     },
     "Examples": {
       "ShakenNerves": {
@@ -569,7 +575,11 @@
       "TurnStart": "Beginn des Zuges",
       "TurnEnd": "Ende des Zuges",
       "RoundStart": "Beginn der Runde",
-      "RoundEnd": "Ende der Runde"
+      "RoundEnd": "Ende der Runde",
+      "Round": "Runde",
+      "Minute": "Minute",
+      "Hour": "Stunde",
+      "Day": "Tag"
     },
     "Validation": {
       "Schema": {

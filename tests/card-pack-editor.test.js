@@ -44,7 +44,7 @@ test("copying a card into another pack replaces ownership and localization keys"
     nameKey: "SOURCE.Effect",
     fallbackName: "Deep Cut",
     definition: {
-      schemaVersion: 1,
+      schemaVersion: 2,
       duration: { value: 1, unit: "rounds", expiry: "turn-end" },
       components: [{ type: "condition", slug: "frightened", value: 1 }]
     }
@@ -83,12 +83,21 @@ test("effect bridge preserves card metadata while round-tripping Effect Forge de
   const card = createEditableCard({ packId: "bridge", id: "bridge.card", title: "Bridge Card" });
   const definition = cardEffectToForgeDefinition(card);
   assert.equal(definition.name, "Bridge Card");
-  definition.components.push({ type: "modifier", selector: "ac", value: -1, modifierType: "circumstance" });
+  definition.components.push({
+    type: "modifier",
+    selector: "ac",
+    value: -1,
+    modifierType: "circumstance",
+    duration: { value: 1, unit: "rounds", expiry: "turn-end" }
+  });
 
   const effect = forgeDefinitionToCardEffect(card, definition, { target: "source" });
   assert.equal(effect.target, "source");
   assert.equal("name" in effect.definition, false);
   assert.equal(effect.definition.components.length, 1);
+  assert.deepEqual(effect.definition.components[0].duration, {
+    value: 1, unit: "rounds", expiry: "turn-end"
+  });
 });
 
 test("editor parsing normalizes identifiers and comma-separated fields", () => {

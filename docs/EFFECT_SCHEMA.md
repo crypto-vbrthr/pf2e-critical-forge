@@ -1,10 +1,10 @@
 # Effect Definition Schema
 
-Current schema version: `1`.
+Current schema version: `2`.
 
 ```js
 {
-  schemaVersion: 1,
+  schemaVersion: 2,
   id: "example.shaken-nerves",
   name: "Erschütterte Nerven",
   description: "<p>Das Ziel ist erschüttert und mental verwundbar.</p>",
@@ -71,7 +71,7 @@ weather-forge.extreme-heat.exhaustion
 
 ## Duration
 
-The global duration is inherited by all components.
+The global duration is inherited by every component that does not define an override.
 
 Supported units:
 
@@ -101,7 +101,24 @@ Unlimited duration:
 }
 ```
 
-Component-specific duration overrides are reserved for a later schema revision and must not be assumed by integrations yet.
+Every component may optionally define the same `duration` object:
+
+```js
+{
+  type: "condition",
+  slug: "frightened",
+  value: 2,
+  duration: {
+    value: 1,
+    unit: "rounds",
+    expiry: "turn-end"
+  }
+}
+```
+
+Omitting `component.duration` means **inherit the global duration**. An explicit component duration may also be `unlimited`. An override equal to the global duration is legal and compiles into the same native Item segment.
+
+PF2e Effect Items have one Item-level duration. When effective component durations differ, Critical Forge therefore compiles the logical definition into a linked bundle of native Effect Items. Each segment contains only the Rule Elements for its duration, while every segment stores the complete schema-2 definition in module flags. See [`COMPONENT_DURATIONS.md`](COMPONENT_DURATIONS.md).
 
 ## Condition component
 
@@ -295,7 +312,7 @@ The same component supports condition immunities, such as `frightened`, when the
 }
 ```
 
-The component inherits the Effect Definition's global duration. Multiple fast-healing components remain valid but produce `FAST_HEALING_MULTIPLE_SOURCES` so the author can verify the intended interaction.
+The component inherits the Effect Definition's global duration unless it defines `duration`. Multiple fast-healing components remain valid but produce `FAST_HEALING_MULTIPLE_SOURCES` so the author can verify the intended interaction.
 
 
 ## Regeneration component

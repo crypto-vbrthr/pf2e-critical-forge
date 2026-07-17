@@ -27,7 +27,7 @@ const card = normalizeCardDefinition({
     nameKey: "TEST.EffectName",
     fallbackName: "Fallback Effect",
     definition: {
-      schemaVersion: 1,
+      schemaVersion: 2,
       duration: { value: -1, unit: "unlimited", expiry: null },
       components: [{ type: "persistentDamage", formula: "1d6", damageType: "bleed" }]
     }

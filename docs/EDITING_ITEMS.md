@@ -6,7 +6,7 @@ Effect Forge can open existing world-level PF2e Effect Items, translate supporte
 
 1. Open Effect Forge from the Items Directory.
 2. Either choose an effect under **Existing effects** and select **Load effect**, or drag an Effect Item onto the drop zone.
-3. Edit basic data, duration, or components.
+3. Edit basic data, global duration, component duration overrides, or mechanics.
 4. Use **Update Item** to overwrite the loaded Item, or **Create as new Item** to make a copy.
 5. Use **New effect** to leave edit mode and start with an empty definition.
 
@@ -40,6 +40,30 @@ The Item adapter currently recognizes the Rule Elements produced by all built-in
 - `FastHealing` and regeneration;
 - `TempHP`;
 - `BaseSpeed`.
+
+
+## Multi-duration Item bundles
+
+A schema-2 Effect Definition remains one logical effect even when its components use different durations. PF2e stores duration on the Effect Item itself, so Critical Forge creates one linked Item segment per effective duration.
+
+Each segment stores:
+
+```js
+item.flags["pf2e-critical-forge"].durationSegment
+```
+
+with a shared `bundleId`, segment index, component indexes, and effective duration. The complete logical definition remains available under `flags["pf2e-critical-forge"].definition` on every segment.
+
+Consequences:
+
+- opening any segment restores every component and the global duration;
+- updating one segment removes stale siblings and rebuilds the bundle;
+- applying a definition to an Actor creates all segments together;
+- removing by definition ID removes every segment;
+- unmanaged Rule Elements are attached to the primary segment only, avoiding duplicates;
+- dragging a generated multi-duration world Effect Item onto an Actor expands it into the complete bundle.
+
+World-level creation can produce several visible Items whose names include their effective duration. They are linked copies of one definition, not independent Forge definitions.
 
 ## Unsupported Rule Elements
 
@@ -90,7 +114,7 @@ await api.effects.updateItem(item, definition, {
 });
 ```
 
-The update service changes the Item name, image, description, duration, managed rules, and Critical Forge flags. Other PF2e Item fields remain untouched.
+The update service changes the primary Item and rebuilds any linked duration siblings. Item names, images, descriptions, durations, managed rules, and Critical Forge flags are refreshed. Other PF2e Item fields remain untouched.
 
 ### Open the GUI with an Item
 

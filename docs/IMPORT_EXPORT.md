@@ -19,16 +19,16 @@ Exports are allowed only for Effect Definitions that pass the Validation Engine.
   "exportedAt": "2026-07-15T08:00:00.000Z",
   "generator": {
     "moduleId": "pf2e-critical-forge",
-    "moduleVersion": "0.5.6-dev",
-    "apiVersion": "0.4.0",
-    "schemaVersion": 1
+    "moduleVersion": "0.9.0-dev",
+    "apiVersion": "0.9.0",
+    "schemaVersion": 2
   },
   "definition": {},
   "unmanagedRules": []
 }
 ```
 
-`definition` is the complete Effect Definition. `unmanagedRules` contains advanced or third-party PF2e Rule Elements that were preserved while editing an existing Item.
+`definition` is the complete Effect Definition, including optional component duration overrides. `unmanagedRules` contains advanced or third-party PF2e Rule Elements that were preserved while editing an existing Item.
 
 ## Import
 
@@ -48,7 +48,7 @@ Raw Effect Definitions remain accepted for developer workflows:
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "example.fire-shield",
   "name": "Fire Shield",
   "description": "<p>Protects against fire.</p>",
@@ -62,7 +62,12 @@ Raw Effect Definitions remain accepted for developer workflows:
     {
       "type": "resistance",
       "resistanceType": "fire",
-      "value": 5
+      "value": 5,
+      "duration": {
+        "value": 1,
+        "unit": "rounds",
+        "expiry": "turn-end"
+      }
     }
   ],
   "application": {},

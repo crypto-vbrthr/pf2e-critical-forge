@@ -194,6 +194,10 @@
           <input type="checkbox" name="unlimitedDuration" {{#if unlimitedDuration}}checked{{/if}}>
           <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.UnlimitedDuration"}}</span>
         </label>
+        <p class="effect-forge-field-hint">
+          <i class="fa-solid fa-layer-group"></i>
+          {{localize "PF2E_CRITICAL_FORGE.EffectForge.MultiDurationHint"}}
+        </p>
       </section>
 
       <section class="effect-forge-section effect-forge-components-section">
@@ -664,6 +668,78 @@
                   </label>
                 </div>
               {{/if}}
+
+              <section class="effect-forge-component-duration" data-component-duration>
+                <header>
+                  <label class="effect-forge-checkbox">
+                    <input
+                      type="checkbox"
+                      name="components.{{component.index}}.durationOverride"
+                      data-component-duration-override
+                      {{#if component.hasDurationOverride}}checked{{/if}}
+                    >
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ComponentDurationOverride"}}</span>
+                  </label>
+                  <small>{{localize "PF2E_CRITICAL_FORGE.EffectForge.ComponentDurationInheritanceHint"}}</small>
+                </header>
+
+                <div class="effect-forge-grid three-columns">
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Value"}}</span>
+                    <input
+                      type="number"
+                      name="components.{{component.index}}.durationValue"
+                      value="{{component.componentDurationValue}}"
+                      min="0"
+                      step="1"
+                      data-component-duration-control
+                      {{#unless component.hasDurationOverride}}disabled{{/unless}}
+                      {{#if component.componentUnlimitedDuration}}disabled{{/if}}
+                    >
+                  </label>
+
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Unit"}}</span>
+                    <select
+                      name="components.{{component.index}}.durationUnit"
+                      data-component-duration-control
+                      {{#unless component.hasDurationOverride}}disabled{{/unless}}
+                      {{#if component.componentUnlimitedDuration}}disabled{{/if}}
+                    >
+                      <option value="rounds" {{#if (eq component.componentDurationUnit "rounds")}}selected{{/if}}>{{localize "PF2E_CRITICAL_FORGE.Duration.Rounds"}}</option>
+                      <option value="minutes" {{#if (eq component.componentDurationUnit "minutes")}}selected{{/if}}>{{localize "PF2E_CRITICAL_FORGE.Duration.Minutes"}}</option>
+                      <option value="hours" {{#if (eq component.componentDurationUnit "hours")}}selected{{/if}}>{{localize "PF2E_CRITICAL_FORGE.Duration.Hours"}}</option>
+                      <option value="days" {{#if (eq component.componentDurationUnit "days")}}selected{{/if}}>{{localize "PF2E_CRITICAL_FORGE.Duration.Days"}}</option>
+                    </select>
+                  </label>
+
+                  <label class="effect-forge-field">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.Expiry"}}</span>
+                    <select
+                      name="components.{{component.index}}.durationExpiry"
+                      data-component-duration-control
+                      {{#unless component.hasDurationOverride}}disabled{{/unless}}
+                      {{#if component.componentUnlimitedDuration}}disabled{{/if}}
+                    >
+                      <option value="turn-start" {{#if (eq component.componentDurationExpiry "turn-start")}}selected{{/if}}>{{localize "PF2E_CRITICAL_FORGE.Duration.TurnStart"}}</option>
+                      <option value="turn-end" {{#if (eq component.componentDurationExpiry "turn-end")}}selected{{/if}}>{{localize "PF2E_CRITICAL_FORGE.Duration.TurnEnd"}}</option>
+                      <option value="round-start" {{#if (eq component.componentDurationExpiry "round-start")}}selected{{/if}}>{{localize "PF2E_CRITICAL_FORGE.Duration.RoundStart"}}</option>
+                      <option value="round-end" {{#if (eq component.componentDurationExpiry "round-end")}}selected{{/if}}>{{localize "PF2E_CRITICAL_FORGE.Duration.RoundEnd"}}</option>
+                    </select>
+                  </label>
+                </div>
+
+                <label class="effect-forge-checkbox effect-forge-component-unlimited">
+                  <input
+                    type="checkbox"
+                    name="components.{{component.index}}.unlimitedDuration"
+                    data-component-duration-unlimited
+                    {{#if component.componentUnlimitedDuration}}checked{{/if}}
+                    {{#unless component.hasDurationOverride}}disabled{{/unless}}
+                  >
+                  <span>{{localize "PF2E_CRITICAL_FORGE.EffectForge.UnlimitedDuration"}}</span>
+                </label>
+              </section>
               {{/if}}
             </article>
           {{else}}

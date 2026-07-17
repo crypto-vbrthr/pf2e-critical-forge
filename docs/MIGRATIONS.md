@@ -16,9 +16,11 @@ The migration service:
 
 ## Current migration path
 
-The current schema remains version `1`. Definitions without `schemaVersion` are treated as legacy schema `0` and normalized to version `1`.
+The current schema is version `2`.
 
-Supported legacy aliases include:
+### Schema `0 → 1`
+
+Definitions without `schemaVersion` are treated as legacy schema `0`. Supported prototype aliases include:
 
 - `image` → `img`;
 - `effects` → `components`;
@@ -29,21 +31,35 @@ Supported legacy aliases include:
 - `condition` → `slug` on condition components;
 - `bonusType` → `modifierType` on modifier components.
 
+### Schema `1 → 2`
+
+Schema `2` permits optional component-level duration overrides. Existing schema-1 definitions already express the correct inheritance behavior because their components have no duration field. Migration therefore:
+
+- advances `schemaVersion` to `2`;
+- removes a legacy `duration: null` marker from components;
+- preserves any explicit duration object found in long-lived prototype data;
+- leaves the global duration and all component mechanics unchanged.
+
 Loaded legacy data is migrated only in memory. The original Foundry Item is not changed until the user chooses **Update Item**.
 
 ## Result shape
 
 ```js
 {
-  definition: { schemaVersion: 1, ... },
+  definition: { schemaVersion: 2, ... },
   fromVersion: 0,
-  toVersion: 1,
+  toVersion: 2,
   migrated: true,
   steps: [
     {
       fromVersion: 0,
       toVersion: 1,
       changes: ["image-alias", "components-alias"]
+    },
+    {
+      fromVersion: 1,
+      toVersion: 2,
+      changes: []
     }
   ],
   warnings: []

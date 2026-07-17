@@ -17,3 +17,11 @@ export class NotImplementedError extends CriticalForgeError {
     super(game.i18n.localize("PF2E_CRITICAL_FORGE.Notifications.NotImplemented"));
   }
 }
+
+export class EffectDurationSplitError extends CriticalForgeError {
+  constructor(count) {
+    super(game.i18n.format("PF2E_CRITICAL_FORGE.Errors.DurationSplit", { count }));
+    this.code = "EFFECT_DURATION_SPLIT_REQUIRED";
+    this.count = count;
+  }
+}

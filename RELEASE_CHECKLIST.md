@@ -14,6 +14,7 @@
 - [ ] Disable and re-enable that custom pack through **Paket aktivieren** and verify selection changes immediately while the pack remains editable.
 - [ ] Register two external test packs through `api.cards.extensions.forModule(moduleId).registerPacks()`, replace one, call `unregisterAll()`, and confirm core and unrelated packs remain untouched.
 - [ ] Verify world Item update, copy, Actor application, and unmanaged-rule preservation.
+- [ ] Build an effect with inherited and overridden component durations; verify world creation, Actor application, opening either segment, updating the bundle, expiration, and definition-based removal.
 - [ ] Create the ZIP with a single top-level `pf2e-critical-forge/` directory.
 - [ ] Test the ZIP with `unzip -t` or an equivalent archive test.
 - [ ] Install the exact ZIP in a clean user-data directory and repeat the startup smoke test.

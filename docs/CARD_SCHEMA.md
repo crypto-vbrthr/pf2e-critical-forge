@@ -39,7 +39,7 @@ Critical Forge cards are immutable, versioned data objects. They contain localiz
     nameKey: "PF2E_CRITICAL_FORGE.CriticalForge.Effects.SpellHit.ArcaneResonance.Name",
     fallbackName: "Arcane Resonance",
     definition: {
-      schemaVersion: 1,
+      schemaVersion: 2,
       duration: { value: 1, unit: "rounds", expiry: "turn-end" },
       components: []
     }

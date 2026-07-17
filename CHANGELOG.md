@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.0-dev
+
+- Increased the Effect Definition schema from `1` to `2` and added optional `duration` overrides to every component type.
+- Preserved existing behavior by inheriting the global Effect Definition duration whenever a component omits its own duration.
+- Added duration normalization, validation with component-index reporting, compiler duration resolution, and deterministic grouping by effective duration.
+- Added `api.effects.toItemSources()` and `api.effects.createItems()` for logical effects that require several native PF2e Effect Items.
+- Kept `toItemSource()` strict: it now throws `EffectDurationSplitError` when a definition needs more than one native Item, preventing silent loss of components.
+- Compiled differing durations into linked Item bundles with a shared bundle id, segment metadata, the complete source definition, and one Rule Element subset per duration.
+- Updated Actor application, world Item creation, Item updates, definition-based removal, unmanaged-rule preservation, and manual Actor drops to treat duration segments as one logical effect.
+- Updated Effect Forge with an optional per-component duration panel, inherited-duration summaries, multi-source compilation previews, and plural Item-creation feedback.
+- Added schema migration `1 → 2`; older definitions inherit their former global duration automatically, while explicit component overrides are preserved.
+- Added documentation and regression coverage for Builder operations, validation, compilation, native source splitting, world and embedded Item creation, bundle updates, Item round trips, migrations, and JSON transfer.
+- The complete suite now contains **207** passing tests with **93.29%** measured line coverage. Module version increased to `0.9.0-dev`; public API version increased to `0.9.0`; Effect schema version increased to `2`; Critical Card and Card Pack schema versions remain `1`.
+
 ## 0.8.0-rc.2
 
 - Added a dedicated module-bound extension API at `api.cards.extensions.forModule(moduleId)` for optional Critical Forge card-library modules.

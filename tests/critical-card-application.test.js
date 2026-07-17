@@ -35,7 +35,7 @@ function createMessage(actor, { status = "pending" } = {}) {
           effect: {
             target: "target",
             definition: {
-              schemaVersion: 1,
+              schemaVersion: 2,
               id: "test.effect",
               name: "Test Effect",
               duration: { value: 1, unit: "rounds", expiry: "turn-end" },
@@ -87,7 +87,10 @@ test("manual application validates, applies once, and stores an audit status", a
       applications += 1;
       assert.equal(definition.id, "test.effect");
       assert.equal(target, actor);
-      return [{ id: "effect-1", uuid: "Actor.actor-1.Item.effect-1" }];
+      return [
+        { id: "effect-1", uuid: "Actor.actor-1.Item.effect-1" },
+        { id: "effect-2", uuid: "Actor.actor-1.Item.effect-2" }
+      ];
     },
     updateMessageFn: async (_message, application) => {
       update = application;
@@ -102,7 +105,10 @@ test("manual application validates, applies once, and stores an audit status", a
   assert.equal(update.appliedAt, 123456);
   assert.deepEqual(update.appliedBy, { id: "gm-1", name: "Game Master" });
   assert.equal(update.targetActorUuid, "Actor.actor-1");
-  assert.deepEqual(update.createdEffectIds, ["Actor.actor-1.Item.effect-1"]);
+  assert.deepEqual(update.createdEffectIds, [
+    "Actor.actor-1.Item.effect-1",
+    "Actor.actor-1.Item.effect-2"
+  ]);
 
   const duplicate = await applyCriticalCardEffect(message, {
     user: game.user,

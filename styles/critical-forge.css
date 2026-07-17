@@ -2164,3 +2164,49 @@
     grid-template-columns: 1fr;
   }
 }
+
+.effect-forge-component-duration {
+  margin-top: 0.85rem;
+  padding: 0.75rem;
+  border: 1px dashed color-mix(in srgb, var(--color-border-light-primary) 70%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-bg-option) 72%, transparent);
+  opacity: 0.8;
+  transition: opacity 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.effect-forge-component-duration.duration-override-enabled,
+.effect-forge-component-duration:has([data-component-duration-override]:checked) {
+  opacity: 1;
+  border-style: solid;
+  border-color: var(--color-border-highlight);
+  background: color-mix(in srgb, var(--color-bg-option) 88%, transparent);
+}
+
+.effect-forge-component-duration > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.effect-forge-component-duration > header small {
+  text-align: right;
+  opacity: 0.75;
+}
+
+.effect-forge-component-unlimited {
+  margin-top: 0.55rem;
+}
+
+@media (max-width: 760px) {
+  .effect-forge-component-duration > header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .effect-forge-component-duration > header small {
+    text-align: left;
+  }
+}

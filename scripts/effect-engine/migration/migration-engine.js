@@ -1,8 +1,10 @@
 import { EFFECT_SCHEMA_VERSION } from "../../constants.js";
 import { migrateV0ToV1 } from "./migrations/v0-to-v1.js";
+import { migrateV1ToV2 } from "./migrations/v1-to-v2.js";
 
 const MIGRATIONS = new Map([
-  [0, migrateV0ToV1]
+  [0, migrateV0ToV1],
+  [1, migrateV1ToV2]
 ]);
 
 function clone(value) {

@@ -5,10 +5,14 @@ import { checkEffectCompatibility } from "../effect-engine/effect-compatibility.
 import {
   applyEffectToTargets,
   createWorldEffectItem,
+  createWorldEffectItems,
   updateEffectItem,
   removeEffectsByDefinitionId
 } from "../effect-engine/effect-application.js";
-import { buildPf2eEffectSource } from "../effect-engine/compiler/pf2e-item-builder.js";
+import {
+  buildPf2eEffectSource,
+  buildPf2eEffectSources
+} from "../effect-engine/compiler/pf2e-item-builder.js";
 import { NotImplementedError } from "../core/errors.js";
 import { extractEffectDefinitionFromItem } from "../effect-engine/item-definition-adapter.js";
 import { migrateEffectDefinition } from "../effect-engine/migration/migration-engine.js";
@@ -30,7 +34,13 @@ export function createEffectApi() {
       return buildPf2eEffectSource(compiled);
     },
 
+    async toItemSources(definition, context = {}) {
+      const compiled = await compileEffectDefinition(definition, context);
+      return buildPf2eEffectSources(compiled);
+    },
+
     createItem: (definition, options = {}) => createWorldEffectItem(definition, options),
+    createItems: (definition, options = {}) => createWorldEffectItems(definition, options),
     readItem: (item) => extractEffectDefinitionFromItem(item),
     createExport: (definition, options = {}) => createEffectExportPackage(definition, options),
     serializeExport: (definition, options = {}) => serializeEffectExport(definition, options),

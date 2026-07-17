@@ -56,7 +56,7 @@ Return shape:
 {
   definition: EffectDefinition,
   fromVersion: 0,
-  toVersion: 1,
+  toVersion: 2,
   migrated: true,
   steps: [],
   warnings: []
@@ -119,7 +119,7 @@ The supplied definition is never mutated.
 
 ### `api.effects.compile(definition, context?)`
 
-Validates and compiles the definition into an abstract representation.
+Validates and compiles the definition into an abstract representation. Component durations are resolved before native Item sources are built.
 
 ```js
 const compiled = await api.effects.compile(definition);
@@ -129,20 +129,34 @@ Important fields:
 
 ```js
 {
-  definition: { /* immutable source Effect Definition */ },
-  schemaVersion: 1,
+  definition: { /* immutable schema-2 Effect Definition */ },
+  schemaVersion: 2,
   id: "example.effect",
   name: "Example Effect",
   duration: { value: 2, unit: "rounds", expiry: "turn-end" },
   components: [
     {
       kind: "condition",
-      rules: [{ key: "GrantItem", uuid: "..." }]
+      rules: [{ key: "GrantItem", uuid: "..." }],
+      componentIndex: 0,
+      duration: { value: 1, unit: "rounds", expiry: "turn-end" },
+      durationSource: "component"
     }
   ],
+  durationGroups: [
+    {
+      index: 0,
+      duration: { value: 1, unit: "rounds", expiry: "turn-end" },
+      componentIndexes: [0],
+      components: []
+    }
+  ],
+  requiresDurationSplit: false,
   validation: { valid: true, ... }
 }
 ```
+
+`durationSource` is `"global"` when the component inherits the Effect Definition duration and `"component"` when it declares an override. Components with the same effective duration share a group.
 
 Compilation is asynchronous because condition UUIDs and metadata may need to be resolved from the PF2e condition compendium.
 
@@ -158,29 +172,56 @@ try {
 
 ### `api.effects.toItemSource(definition, context?)`
 
-Compiles an Effect Definition into PF2e Effect Item source data without creating a Foundry document.
+Compiles a guaranteed single-duration Effect Definition into one PF2e Effect Item source without creating a Foundry document.
 
 ```js
 const source = await api.effects.toItemSource(definition);
 ```
 
-The returned source contains:
+When the definition contains different effective component durations, this method throws `EffectDurationSplitError` with code `EFFECT_DURATION_SPLIT_REQUIRED`. It never drops a duration group silently.
 
-- `type: "effect"`;
-- PF2e duration data;
-- collected Rule Elements in `system.rules`;
-- origin and definition metadata in `flags.pf2e-critical-forge`.
+### `api.effects.toItemSources(definition, context?)`
+
+Returns every PF2e Effect Item source required for one logical definition.
+
+```js
+const sources = await api.effects.toItemSources(definition);
+```
+
+The returned array always contains at least one source. Distinct effective durations produce linked sources with:
+
+- a matching Item-level duration;
+- only the Rule Elements belonging to that duration;
+- the complete source definition in `flags.pf2e-critical-forge.definition`;
+- `durationSegment` metadata identifying the bundle and component indexes.
+
+See [`COMPONENT_DURATIONS.md`](COMPONENT_DURATIONS.md).
 
 ### `api.effects.createItem(definition, options?)`
 
-Creates a world-level PF2e Effect Item.
+Creates the complete logical effect as world-level PF2e Effect Items and returns the primary Item for backward compatibility.
 
 ```js
-const item = await api.effects.createItem(definition, {
+const primary = await api.effects.createItem(definition, {
   renderSheet: true,
   unmanagedRules: loaded?.unmanagedRules ?? []
 });
 ```
+
+When component durations differ, sibling Items are created as well.
+
+### `api.effects.createItems(definition, options?)`
+
+Creates the same world-level bundle and returns every created Item.
+
+```js
+const items = await api.effects.createItems(definition, {
+  renderSheet: true,
+  unmanagedRules: loaded?.unmanagedRules ?? []
+});
+```
+
+Only the primary sheet is opened. Unmanaged Rule Elements are attached to the primary segment only.
 
 ### `api.effects.readItem(item)`
 
@@ -234,7 +275,7 @@ Return shape:
   envelope: object | null,
   migration: {
     fromVersion: 0,
-    toVersion: 1,
+    toVersion: 2,
     migrated: true,
     steps: [],
     warnings: []
@@ -255,19 +296,19 @@ await api.effects.updateItem(item, loaded.definition, {
 });
 ```
 
-The update changes the Item name, image, description, duration, managed rules, and Critical Forge flags. Other Item data is left intact.
+For a multi-duration definition, the selected Item becomes the primary segment. Existing siblings with the same bundle ID are removed and the current duration groups are recreated. The complete definition remains readable from every new segment.
 
 ### `api.effects.apply(definition, targets, options?)`
 
-Creates the compiled Effect Item as an embedded Item on one or more Actor or Token targets.
+Creates the logical effect as embedded PF2e Effect Items on one or more Actor or Token targets.
 
 ```js
-await api.effects.apply(definition, [actorA, tokenB], {
+const created = await api.effects.apply(definition, [actorA, tokenB], {
   unmanagedRules: loaded?.unmanagedRules ?? []
 });
 ```
 
-Targets may be supplied as Actors, Tokens, TokenDocuments, or arrays supported by the application service.
+The returned array contains every created duration segment across all targets. Targets may be supplied as Actors, Tokens, TokenDocuments, or arrays supported by the application service.
 
 ### `api.effects.remove(definitionId, targets)`
 
@@ -295,7 +336,9 @@ const definition = api.builders
   .setDescription("<p>Das Ziel ist verängstigt und mental verwundbar.</p>")
   .setImage("icons/svg/terror.svg")
   .setDuration(2, "rounds", "turn-end")
-  .addCondition("frightened", 2)
+  .addCondition("frightened", 2, {
+    duration: { value: 1, unit: "rounds", expiry: "turn-end" }
+  })
   .addModifier({
     selector: "will",
     value: -1,
@@ -336,8 +379,8 @@ The original object is not mutated.
 | `setMetadata(data)` | Replaces metadata with a clone. |
 | `mergeMetadata(data)` | Deep-merges metadata without mutating the source. |
 | `addComponent(component)` | Adds an arbitrary registered component. |
-| `addCondition(slug, value?)` | Adds a PF2e condition component. |
-| `addModifier(options)` | Adds a modifier component. |
+| `addCondition(slug, value?, options?)` | Adds a PF2e condition component; `options.duration` is an optional override. |
+| `addModifier(options)` | Adds a modifier component; all component option objects accept optional `duration`. |
 | `addPersistentDamage(options)` | Adds persistent damage with `formula`, `damageType`, and optional `dc`. |
 | `addResistance(options)` | Adds resistance with `resistanceType` and positive integer `value`. |
 | `addWeakness(options)` | Adds weakness with `weaknessType` and positive integer `value`. |
@@ -347,9 +390,13 @@ The original object is not mutated.
 | `addTemporaryHitPoints(options)` | Adds a one-time grant of temporary Hit Points with a positive integer `value`. |
 | `addMovement(options)` | Adds a Speed modifier with `movementType`, non-zero integer `value`, and `modifierType`. |
 | `addBaseSpeed(options)` | Grants climb, burrow, fly, or swim Speed with `movementType` and positive integer `value`. |
+| `setComponentDuration(index, value, unit, expiry)` | Adds or replaces a duration override on one component. |
+| `clearComponentDuration(index)` | Removes a component override so it inherits the global duration. |
 | `clearComponents()` | Removes all components. |
 | `removeComponent(index)` | Removes one component or throws `RangeError`. |
 | `build()` | Returns the immutable Effect Definition. |
+
+Every built-in component object accepts optional `duration: { value, unit, expiry }`. Omit it to inherit the global duration. See [`COMPONENT_DURATIONS.md`](COMPONENT_DURATIONS.md).
 
 Persistent-damage example:
 
@@ -616,7 +663,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.8.0-rc.2` freezes these APIs for release-candidate testing.
+Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.0-dev` retains the Critical Forge card APIs while extending the shared Effect Engine with component durations.
 
 
 ### Profiles and trigger policies

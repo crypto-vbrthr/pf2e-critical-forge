@@ -30,24 +30,31 @@ The test command forces single-file concurrency so shared Foundry-style globals 
 tests/
 ├─ builder.test.js
 ├─ card-api.test.js
-├─ card-localization.test.js
 ├─ card-editor-roundtrip.test.js
+├─ card-localization.test.js
 ├─ card-pack-editor.test.js
 ├─ card-pack-store.test.js
+├─ card-profile-trigger.test.js
 ├─ card-registry.test.js
 ├─ card-schema.test.js
 ├─ card-selection.test.js
 ├─ catalogs.test.js
 ├─ chat-message-resolver.test.js
 ├─ compiler.test.js
+├─ component-duration.test.js
+├─ core-card-library.test.js
 ├─ critical-architecture.test.js
+├─ critical-card-application.test.js
 ├─ critical-card-preview.test.js
 ├─ critical-card-redraw.test.js
-├─ critical-roll-automation.test.js
 ├─ critical-diagnostic-button.test.js
 ├─ critical-diagnostic.test.js
+├─ critical-roll-automation.test.js
+├─ duration-bundle-hooks.test.js
+├─ effect-forge-card-handoff.test.js
 ├─ effect-item-drop.test.js
 ├─ effect-transfer.test.js
+├─ extension-pack-api.test.js
 ├─ extension-pack-integration.test.js
 ├─ gui-state.test.js
 ├─ item-editing.test.js
@@ -62,11 +69,13 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 193 tests covering:
+The suite contains 207 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
 - all eleven built-in component validators and compilers;
+- optional component-duration inheritance and overrides across every built-in component type;
+- duration grouping, native PF2e Item-bundle generation, manual Actor-drop expansion, bundle updates, and complete removal;
 - valued and non-valued condition behavior;
 - PF2e Effect Item duration, Rule Elements, complete definition flags, and origin metadata;
 - structured validation, cross-component stacking diagnostics, and compatibility context;
@@ -88,7 +97,7 @@ The suite contains 193 tests covering:
 - dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation;
 - pack activation semantics, transactional world-setting rollback, protected-data startup guards, module-bound extension ownership, atomic multi-pack registration, change hooks, and optional extension-module lifecycles.
 
-Coverage is a diagnostic rather than a release gate. Version `0.8.0-rc.2` measures 92.88% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
+Coverage is a diagnostic rather than a release gate. Version `0.9.0-dev` measures 93.29% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
 
 ## Foundry mock
 
