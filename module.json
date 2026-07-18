@@ -42,5 +42,8 @@
     }
   ],
   "license": "LICENSE",
-  "readme": "README.md"
+  "readme": "README.md",
+  "url": "https://github.com/crypto-vbrthr/pf2e-critical-forge",
+  "manifest": "https://raw.githubusercontent.com/crypto-vbrthr/pf2e-critical-forge/main/module.json",
+  "download": "https://github.com/crypto-vbrthr/pf2e-critical-forge/releases/download/0.9.1/pf2e-critical-forge.zip"
 }
