@@ -62,6 +62,7 @@ test("core template survives Effect Forge, export/import, persistence, selection
   card.fallbackDescription = "A copied core card with a custom mechanical consequence.";
   card.weight = 100;
   card.filters.damageTypes = ["slashing"];
+  card.filters.excludedAttackTraits = ["spell"];
 
   const forgeDefinition = cardEffectToForgeDefinition(card);
   forgeDefinition.duration = { value: 1, unit: "rounds", expiry: "turn-end" };
@@ -84,6 +85,7 @@ test("core template survives Effect Forge, export/import, persistence, selection
 
   const imported = parseCardPackImport(serializeCardPackExport(normalized));
   assert.deepEqual(imported, normalized);
+  assert.deepEqual(imported.cards[0].filters.excludedAttackTraits, ["spell"]);
 
   await saveCustomCardPack(imported);
   const livePack = hydrateRegisteredPack(pack.id);

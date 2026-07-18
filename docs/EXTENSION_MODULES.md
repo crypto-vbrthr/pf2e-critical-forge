@@ -21,7 +21,7 @@ Declare Critical Forge as a required module dependency so the extension is never
         "id": "pf2e-critical-forge",
         "type": "module",
         "compatibility": {
-          "minimum": "0.9.0-dev"
+          "minimum": "0.9.1-dev"
         }
       }
     ],
@@ -103,6 +103,17 @@ export const DARK_FANTASY_PACK = {
 ```
 
 Card and pack ids are globally unique. Namespace both with the extension module id. Localized keys remain in the extension module’s own language files.
+
+Positive and negative attack filters can be combined. This keeps a martial ranged pack from leaking into spell attacks:
+
+```js
+filters: {
+  attackTraits: ["ranged"],
+  excludedAttackTraits: ["spell"]
+}
+```
+
+The negative filter rejects the card when any listed attack trait is present. Omitting it remains equivalent to an empty array.
 
 ## Controller contract
 

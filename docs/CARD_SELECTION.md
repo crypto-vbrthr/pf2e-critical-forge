@@ -61,6 +61,8 @@ console.log(result.eligible);
 console.log(result.rejected);
 ```
 
+A card may combine positive and negative attack filters. For example, `attackTraits: ["ranged"]` together with `excludedAttackTraits: ["spell"]` matches ranged weapon attacks but rejects ranged spell attacks.
+
 The returned report makes the choice auditable. Repetition prevention is supplied by the caller through `excludeCardIds`; the architecture stores no campaign history by itself.
 
 ## Building a context from PF2e data

@@ -663,7 +663,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.0-dev` retains the Critical Forge card APIs while extending the shared Effect Engine with component durations.
+Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.1-dev` adds `excludedAttackTraits` to Critical Card filters while retaining component-level Effect durations and the existing card APIs.
 
 
 ### Profiles and trigger policies
@@ -819,13 +819,16 @@ const context = {
   category: "criticalHit",
   damageTypes: ["slashing"],
   weaponGroups: ["sword"],
-  attackTraits: ["agile"],
+  attackTraits: ["ranged"],
   saveTypes: [],
   spellTraditions: [],
   spellTraits: [],
   sourceTraits: ["humanoid"],
   targetTraits: ["undead"]
 };
+
+// A card definition can exclude contexts through:
+// filters.excludedAttackTraits = ["spell"]
 
 const candidates = api.cards.candidates(context);
 const result = api.cards.select(context, {

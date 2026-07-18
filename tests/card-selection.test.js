@@ -47,6 +47,7 @@ test("matcher applies any, all, and exclusion filter semantics", () => {
   const card = makeCard("test.specific", {
     damageTypes: ["slashing"],
     attackTraits: ["agile"],
+    excludedAttackTraits: ["spell"],
     excludedTargetTraits: ["incorporeal"]
   });
   const match = matchCard(card, {
@@ -56,8 +57,8 @@ test("matcher applies any, all, and exclusion filter semantics", () => {
     targetTraits: ["humanoid"]
   });
   assert.equal(match.eligible, true);
-  assert.equal(match.specificity, 3);
-  assert.equal(match.effectiveWeight, 4);
+  assert.equal(match.specificity, 4);
+  assert.equal(match.effectiveWeight, 5);
 
   const rejected = matchCard(card, {
     category: "criticalHit",
@@ -67,6 +68,15 @@ test("matcher applies any, all, and exclusion filter semantics", () => {
   });
   assert.equal(rejected.eligible, false);
   assert.equal(rejected.rejectedBy.includes("excludedTargetTraits"), true);
+
+  const spellRejected = matchCard(card, {
+    category: "criticalHit",
+    damageTypes: ["slashing"],
+    attackTraits: ["agile", "spell"],
+    targetTraits: ["humanoid"]
+  });
+  assert.equal(spellRejected.eligible, false);
+  assert.equal(spellRejected.rejectedBy.includes("excludedAttackTraits"), true);
 });
 
 test("candidate service keeps generic fallback cards and reports rejected cards", () => {

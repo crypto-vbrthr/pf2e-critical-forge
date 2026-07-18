@@ -44,6 +44,7 @@ test("card definitions normalize and freeze nested values", () => {
   const normalized = normalizeCardDefinition(card());
   assert.deepEqual(normalized.tags, ["bleed"]);
   assert.deepEqual(normalized.filters.damageTypes, ["slashing"]);
+  assert.deepEqual(normalized.filters.excludedAttackTraits, []);
   assert.equal("name" in normalized.effect.definition, false);
   assertDeepFrozen(normalized);
   assert.equal(validateCardDefinition(normalized).valid, true);

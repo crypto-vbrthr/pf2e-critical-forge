@@ -120,6 +120,7 @@ function emptyFilters() {
     damageTypes: [],
     weaponGroups: [],
     attackTraits: [],
+    excludedAttackTraits: [],
     saveTypes: [],
     spellTraditions: [],
     spellTraits: [],

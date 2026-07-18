@@ -1410,7 +1410,8 @@
         "excludedCardIds": "recently used or excluded card",
         "saveTypes": "saving throw type",
         "spellTraditions": "magic tradition",
-        "spellTraits": "spell trait"
+        "spellTraits": "spell trait",
+        "excludedAttackTraits": "excluded attack trait"
       },
       "OpenFailed": "Critical diagnostics could not be opened. See the console for details.",
       "CardProfile": "Card profile",
@@ -1687,7 +1688,8 @@
       },
       "FilterSaveTypes": "Saving throw types",
       "FilterSpellTraditions": "Magic traditions",
-      "FilterSpellTraits": "Spell traits"
+      "FilterSpellTraits": "Spell traits",
+      "FilterExcludedAttackTraits": "Excluded attack traits"
     }
   }
 }

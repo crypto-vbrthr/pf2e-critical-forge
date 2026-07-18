@@ -1410,7 +1410,8 @@
         "excludedCardIds": "kürzlich verwendete oder ausgeschlossene Karte",
         "saveTypes": "Rettungswurfart",
         "spellTraditions": "magische Tradition",
-        "spellTraits": "Zaubermerkmal"
+        "spellTraits": "Zaubermerkmal",
+        "excludedAttackTraits": "ausgeschlossenes Angriffsmerkmal"
       },
       "OpenFailed": "Die Krit-Diagnose konnte nicht geöffnet werden. Details stehen in der Konsole.",
       "CardProfile": "Kartenprofil",
@@ -1687,7 +1688,8 @@
       },
       "FilterSaveTypes": "Rettungswurfarten",
       "FilterSpellTraditions": "Magische Traditionen",
-      "FilterSpellTraits": "Zaubermerkmale"
+      "FilterSpellTraits": "Zaubermerkmale",
+      "FilterExcludedAttackTraits": "Ausgeschlossene Angriffsmerkmale"
     }
   }
 }

@@ -25,6 +25,7 @@ Critical Forge cards are immutable, versioned data objects. They contain localiz
     damageTypes: [],
     weaponGroups: [],
     attackTraits: ["spell"],
+    excludedAttackTraits: [],
     saveTypes: [],
     spellTraditions: ["arcane"],
     spellTraits: [],
@@ -79,10 +80,10 @@ They do not alter the Effect Definition. Selection profiles use them only as wei
 
 - `damageTypes` and `weaponGroups`: at least one listed value must match.
 - `attackTraits`, `saveTypes`, `spellTraditions`, `spellTraits`, `sourceTraits`, and `targetTraits`: every listed value must be present.
-- `excludedSourceTraits` and `excludedTargetTraits`: no listed value may be present.
+- `excludedAttackTraits`, `excludedSourceTraits`, and `excludedTargetTraits`: no listed value may be present.
 - Empty arrays do not restrict a card.
 
-`saveTypes` normally contains `fortitude`, `reflex`, or `will`. `spellTraditions` normally contains `arcane`, `divine`, `occult`, or `primal`. `spellTraits` stores normalized PF2e spell trait slugs.
+`excludedAttackTraits: ["spell"]` is useful for ranged or otherwise generic attack cards that must never match spell attacks. `saveTypes` normally contains `fortitude`, `reflex`, or `will`. `spellTraditions` normally contains `arcane`, `divine`, `occult`, or `primal`. `spellTraits` stores normalized PF2e spell trait slugs.
 
 ## Effect template
 

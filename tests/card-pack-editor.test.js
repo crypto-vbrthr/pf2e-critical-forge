@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { installFoundryMock } from "./helpers/foundry-mock.js";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 installFoundryMock();
 const { initializeEffectEngine } = await import("../scripts/effect-engine/effect-engine.js");
@@ -126,4 +129,11 @@ test("editor-generated card ids remain unique even when the random source repeat
   });
 
   assert.deepEqual([first.id, second.id, copy.id], ["stable.card", "stable.card-2", "stable.card-3"]);
+});
+
+test("Card Pack Editor exposes the excluded attack-trait field", () => {
+  const root = dirname(dirname(fileURLToPath(import.meta.url)));
+  const template = readFileSync(join(root, "templates/critical-forge/card-pack-editor.hbs"), "utf8");
+  assert.match(template, /name="card\.filters\.excludedAttackTraits"/u);
+  assert.match(template, /FilterExcludedAttackTraits/u);
 });

@@ -29,6 +29,7 @@ export function matchCard(card, rawContext = {}) {
   matchAny("damageTypes", card.filters.damageTypes, context.damageTypes);
   matchAny("weaponGroups", card.filters.weaponGroups, context.weaponGroups);
   matchAll("attackTraits", card.filters.attackTraits, context.attackTraits);
+  excludeAny("excludedAttackTraits", card.filters.excludedAttackTraits, context.attackTraits);
   matchAny("saveTypes", card.filters.saveTypes, context.saveTypes);
   matchAny("spellTraditions", card.filters.spellTraditions, context.spellTraditions);
   matchAll("spellTraits", card.filters.spellTraits, context.spellTraits);

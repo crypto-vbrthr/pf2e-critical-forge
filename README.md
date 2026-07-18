@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.9.0-dev` extends the Effect Engine schema with optional component-level duration overrides while preserving global-duration inheritance. The Effect Forge, Critical Forge, 96-card core library, automation, card editor, and external pack API remain available together.
+Version `0.9.1-dev` adds negative attack-trait filters for Critical Cards while retaining component-level Effect durations and global-duration inheritance. The Effect Forge, Critical Forge, 96-card core library, automation, card editor, and external pack API remain available together.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -27,7 +27,7 @@ The current module includes:
   - 12 critically successful saving throws;
   - 12 critically failed saving throws;
 - a GM-only Card Pack Editor for world-managed packs, cards, filters, tone, impact, weights, fallback text, localization keys, and per-pack activation;
-- filters for damage types, weapon groups, attack traits, save types, spell traditions, spell traits, source traits, and target traits;
+- filters for damage types, weapon groups, required or excluded attack traits, save types, spell traditions, spell traits, source traits, and target traits;
 - direct mechanical-effect editing through a dedicated Effect Forge handoff;
 - portable card-pack JSON import and export through files or the clipboard;
 - headless filter matching, tone/impact profile weighting, and transparent candidate reports;

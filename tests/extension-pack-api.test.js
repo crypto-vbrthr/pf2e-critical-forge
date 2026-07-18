@@ -28,7 +28,7 @@ initializeCriticalForge();
 
 const SOURCE = "test-critical-extension";
 
-function card(packId, suffix, { category = "criticalHit" } = {}) {
+function card(packId, suffix, { category = "criticalHit", filters = {} } = {}) {
   const id = `${packId}.${suffix}`;
   return {
     schemaVersion: 1,
@@ -43,7 +43,7 @@ function card(packId, suffix, { category = "criticalHit" } = {}) {
     fallbackDescription: `Extension result ${suffix}.`,
     weight: 1,
     tags: ["extension-api-test"],
-    filters: {},
+    filters,
     effect: null,
     metadata: {}
   };
@@ -111,6 +111,23 @@ test("an extension module can register several protected packs transactionally",
     `${SOURCE}.martial`,
     `${SOURCE}.arcane`
   ]);
+  cleanup();
+});
+
+
+test("extension packs can exclude normalized attack traits", () => {
+  cleanup();
+  const extension = createExtensionPackApi(SOURCE);
+  const definition = pack("weapon-only", ["ranged-not-spell"]);
+  definition.cards[0].filters = {
+    attackTraits: ["ranged"],
+    excludedAttackTraits: ["spell"]
+  };
+  extension.registerPack(definition);
+
+  const card = criticalCardRegistry.get(`${SOURCE}.weapon-only.ranged-not-spell`);
+  assert.deepEqual(card.filters.attackTraits, ["ranged"]);
+  assert.deepEqual(card.filters.excludedAttackTraits, ["spell"]);
   cleanup();
 });
 

@@ -1,6 +1,6 @@
 # Core Test Card Library
 
-Version `0.9.0-dev` freezes the deliberately balanced 96-card playtest library. The four spell-attack and saving-throw categories contain generic fallbacks and focused results for repeated table use, while their prose and weighting remain playtest material.
+Version `0.9.1-dev` freezes the deliberately balanced 96-card playtest library. The four spell-attack and saving-throw categories contain generic fallbacks and focused results for repeated table use, while their prose and weighting remain playtest material.
 
 ## Composition
 

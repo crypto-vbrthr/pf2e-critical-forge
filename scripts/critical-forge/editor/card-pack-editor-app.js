@@ -37,6 +37,7 @@ const FILTER_FIELDS = Object.freeze([
   "damageTypes",
   "weaponGroups",
   "attackTraits",
+  "excludedAttackTraits",
   "saveTypes",
   "spellTraditions",
   "spellTraits",

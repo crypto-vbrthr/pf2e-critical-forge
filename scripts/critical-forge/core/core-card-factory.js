@@ -9,6 +9,7 @@ const EMPTY_FILTERS = Object.freeze({
   damageTypes: Object.freeze([]),
   weaponGroups: Object.freeze([]),
   attackTraits: Object.freeze([]),
+  excludedAttackTraits: Object.freeze([]),
   saveTypes: Object.freeze([]),
   spellTraditions: Object.freeze([]),
   spellTraits: Object.freeze([]),

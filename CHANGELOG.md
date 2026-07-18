@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.1-dev
+
+- Added the optional Critical Card filter `excludedAttackTraits`. A card is rejected when any listed slug is present in the normalized attack context.
+- Allowed positive and negative attack filters to be combined, such as `attackTraits: ["ranged"]` with `excludedAttackTraits: ["spell"]`, to target ranged weapon attacks while excluding spell attacks.
+- Extended card normalization, validation, immutable core defaults, the Card Pack Editor, JSON import/export roundtrips, diagnostics, and external extension-pack registration with the new filter.
+- Preserved Critical Card schema version `1`; older cards and packs normalize the omitted filter to an empty array and remain compatible.
+- Added German and English editor labels, rejection diagnostics, API documentation, and regression tests.
+- The complete suite now contains **209** passing tests with **93.31%** measured line coverage. Module version increased to `0.9.1-dev`; public API version increased to `0.9.1`; Effect Definition schema remains `2`; Critical Card and Card Pack schema versions remain `1`.
+
 ## 0.9.0-dev
 
 - Increased the Effect Definition schema from `1` to `2` and added optional `duration` overrides to every component type.

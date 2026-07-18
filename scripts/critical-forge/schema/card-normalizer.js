@@ -9,6 +9,7 @@ const FILTER_KEYS = Object.freeze([
   "damageTypes",
   "weaponGroups",
   "attackTraits",
+  "excludedAttackTraits",
   "saveTypes",
   "spellTraditions",
   "spellTraits",
