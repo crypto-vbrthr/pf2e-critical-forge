@@ -8,24 +8,22 @@ export class CardSelector {
     this.#cardRegistry = cardRegistry;
   }
 
-  candidates(context, { excludeCardIds = [], includeRejected = true, profile = null } = {}) {
+  candidates(context, { excludeCardIds = [], includeRejected = true, profile = null, snapshot = null } = {}) {
     const normalized = normalizeSelectionContext(context);
     const excluded = new Set(excludeCardIds.map(String));
     const resolvedProfile = profile ? resolveCardProfile(profile) : null;
     const evaluated = this.#cardRegistry
       .list({ category: normalized.category })
       .map((card) => {
+        const evaluatedCard = matchCard(card, normalized, { snapshot });
         const matched = excluded.has(card.id)
           ? Object.freeze({
-              card,
+              ...evaluatedCard,
               eligible: false,
-              rejectedBy: ["excludedCardIds"],
-              matchedFilters: [],
-              specificity: 0,
-              baseWeight: card.weight,
+              rejectedBy: [...evaluatedCard.rejectedBy, "excludedCardIds"],
               effectiveWeight: 0
             })
-          : matchCard(card, normalized);
+          : evaluatedCard;
         const profileMultiplier = matched.eligible && resolvedProfile
           ? cardProfileMultiplier(card, resolvedProfile)
           : matched.eligible ? 1 : 0;
@@ -47,9 +45,9 @@ export class CardSelector {
     });
   }
 
-  select(context, { excludeCardIds = [], random = Math.random, profile = null } = {}) {
+  select(context, { excludeCardIds = [], random = Math.random, profile = null, snapshot = null } = {}) {
     if (typeof random !== "function") throw new TypeError("random must be a function.");
-    const result = this.candidates(context, { excludeCardIds, includeRejected: true, profile });
+    const result = this.candidates(context, { excludeCardIds, includeRejected: true, profile, snapshot });
     if (!result.eligible.length || result.totalWeight <= 0) {
       return Object.freeze({ ...result, selected: null, roll: null });
     }

@@ -35,6 +35,19 @@ Critical Forge cards are immutable, versioned data objects. They contain localiz
     excludedTargetTraits: []
   },
 
+  conditions: {
+    type: "group",
+    mode: "all",
+    conditions: [
+      {
+        type: "condition",
+        field: "participants.source.hp.ratio",
+        operator: "lte",
+        value: 0.5
+      }
+    ]
+  },
+
   effect: {
     target: "target",
     nameKey: "PF2E_CRITICAL_FORGE.CriticalForge.Effects.SpellHit.ArcaneResonance.Name",
@@ -90,3 +103,51 @@ They do not alter the Effect Definition. Selection profiles use them only as wei
 The effect template deliberately omits `name`. `materializeEffect()` resolves `nameKey` in the active language and creates a complete immutable Effect Definition. `target` determines whether runtime application affects the rolling/source creature or the opposing/target creature.
 
 For saving throws, the rolling creature is the source and the originating effect Actor is the target when PF2e provides both references. Narrative-only cards may set `effect: null`.
+
+
+## Runtime conditions
+
+`conditions` is optional in Critical Card schema version `1`. Omitted or `null` conditions preserve the historical behavior and never require a runtime snapshot. A conditioned card is eligible only when its canonical condition tree matches the immutable snapshot supplied to the selector.
+
+A tree is either a leaf or a group:
+
+```js
+// Leaf
+{
+  type: "condition",
+  field: "roll.saveType",
+  operator: "eq",
+  value: "reflex"
+}
+
+// Nested group
+{
+  type: "group",
+  mode: "all",
+  conditions: [
+    { field: "participants.source.hp.ratio", operator: "lte", value: 0.5 },
+    {
+      mode: "any",
+      conditions: [
+        { field: "battlefield.hostileThreatCount", operator: "gte", value: 3 },
+        { field: "participants.target.level", operator: "gte", value: 13 }
+      ]
+    }
+  ]
+}
+```
+
+Normalization adds explicit `type` values and freezes the complete tree. Supported modes are `all` and `any`. Supported operators are `eq`, `neq`, `lt`, `lte`, `gt`, `gte`, `contains`, `notContains`, `exists`, and `notExists`.
+
+Field paths address serializable snapshot data, for example:
+
+- `roll.saveType`
+- `roll.dc`
+- `participants.source.level`
+- `participants.source.hp.ratio`
+- `participants.source.conditions.wounded`
+- `participants.target.level`
+- `participants.target.traits`
+- `battlefield.hostileThreatCount`
+
+A missing field fails every comparison except `notExists`. The evaluator records that field as unavailable rather than substituting a guessed value. Conditions affect eligibility only; they do not increase specificity or selection weight. See [`CONDITION_ENGINE.md`](CONDITION_ENGINE.md).

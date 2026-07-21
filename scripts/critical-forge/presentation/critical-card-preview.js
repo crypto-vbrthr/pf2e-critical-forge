@@ -10,7 +10,7 @@ import { getSelectorDefinition } from "../../effect-engine/catalogs/selector-cat
 import { getWeaknessTypeDefinition } from "../../effect-engine/catalogs/weakness-type-catalog.js";
 import { configuredCardProfile, resolveCardProfile } from "../profile/card-profile.js";
 
-export const CRITICAL_CARD_PREVIEW_VERSION = 3;
+export const CRITICAL_CARD_PREVIEW_VERSION = 4;
 
 export const CRITICAL_CARD_VISIBILITY_MODES = Object.freeze({
   BLIND: "blind",
@@ -26,6 +26,7 @@ const CHAT_TEMPLATE = `modules/${MODULE_ID}/templates/critical-forge/critical-ca
 export function prepareCriticalCardPreview(cardOrId, {
   context = {},
   metadata = {},
+  runtimeSnapshot = null,
   sourceMessage = null,
   localizeCardFn = localizeCard,
   materializeEffectFn = materializeCardEffect,
@@ -73,6 +74,7 @@ export function prepareCriticalCardPreview(cardOrId, {
     hasSourceMessage: Boolean(sourceMessageLabel),
     context: deepClone(context),
     metadata: deepClone(metadata),
+    runtimeSnapshot: deepClone(runtimeSnapshot),
     effect,
     hasEffect: Boolean(effect),
     allowRedraw: defaultAllowRedraw(),
@@ -87,6 +89,7 @@ export function prepareCriticalCardPreview(cardOrId, {
 export async function publishCriticalCardPreview(cardOrId, {
   context = {},
   metadata = {},
+  runtimeSnapshot = null,
   sourceMessage = null,
   speaker = null,
   renderTemplateFn = defaultRenderTemplate,
@@ -101,6 +104,7 @@ export async function publishCriticalCardPreview(cardOrId, {
   const preview = prepareCriticalCardPreview(cardOrId, {
     context,
     metadata,
+    runtimeSnapshot,
     sourceMessage,
     i18n
   });
@@ -127,6 +131,7 @@ export async function publishCriticalCardPreview(cardOrId, {
           visibilityMode: normalizeVisibilityMode(visibilityMode),
           context: deepClone(preview.context),
           metadata: deepClone(preview.metadata),
+          runtimeSnapshot: deepClone(preview.runtimeSnapshot),
           draw: {
             profileId: resolveCardProfile(profile).id,
             history: [...new Set([...drawHistory, preview.cardId])]

@@ -664,15 +664,15 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, runtime Context Engine, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev.1` adds immutable context snapshots and an additive provider API while retaining all existing card APIs and schema-version-1 pack compatibility.
+Critical Forge card architecture, the PF2e Context Adapter, runtime Context Engine, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev.2` adds optional snapshot conditions and diagnostic evidence on top of the immutable context/provider foundation while retaining all existing card APIs and schema-version-1 pack compatibility.
 
 Capability detection:
 
 ```js
 api.cards.capabilities.contextSnapshots; // true
 api.cards.capabilities.contextProviders; // true
-api.cards.capabilities.contextConditions; // false in phase 1
-api.cards.capabilities.multiDeckPacks; // false in phase 1
+api.cards.capabilities.contextConditions; // true in phase 2
+api.cards.capabilities.multiDeckPacks; // false in phase 2
 ```
 
 
@@ -787,7 +787,7 @@ The generic entry point is equivalent:
 const report = api.cards.createContext(input, { system: "pf2e" });
 ```
 
-`report.context` contains only the neutral fields used by card matching. `report.metadata` preserves diagnostic details such as degree of success, actor level and size, item identity, range mode, and roll options. `report.snapshot` contains the serializable runtime state used by diagnostics and future context conditions. Missing optional data produces structured information entries rather than exceptions. A missing critical category is an error because the resulting context cannot be selected.
+`report.context` contains only the neutral fields used by card matching. `report.metadata` preserves diagnostic details such as degree of success, actor level and size, item identity, range mode, and roll options. `report.snapshot` contains the serializable runtime state used by diagnostics and optional card conditions. Missing optional data produces structured information entries rather than exceptions. A missing critical category is an error because the resulting context cannot be selected.
 
 See [`PF2E_CONTEXT_ADAPTER.md`](PF2E_CONTEXT_ADAPTER.md).
 
@@ -847,6 +847,31 @@ api.cards.diagnostics.listMessages({ limit: 50 });
 
 The GM-only workbench can be opened with `api.ui.openCriticalDiagnostics(message?)`. It never performs a weighted selection or applies a card. A GM may explicitly publish one eligible candidate as a result chat card and, in a second deliberate step, apply its stored effect. See [`CRITICAL_DIAGNOSTICS.md`](CRITICAL_DIAGNOSTICS.md).
 
+
+### Runtime Condition Engine
+
+```js
+api.cards.conditions.modes;      // ["all", "any"]
+api.cards.conditions.operators;  // eq, neq, lt, lte, gt, gte, contains, notContains, exists, notExists
+
+const normalized = api.cards.conditions.normalize({
+  mode: "all",
+  conditions: [
+    { field: "participants.source.hp.ratio", operator: "lte", value: 0.5 }
+  ]
+});
+
+const validation = api.cards.conditions.validate(normalized);
+const evaluation = api.cards.conditions.evaluate(normalized, report.snapshot);
+const resolved = api.cards.conditions.resolveField(
+  report.snapshot,
+  "participants.source.hp.ratio"
+);
+const empty = api.cards.conditions.emptyGroup("all");
+```
+
+All returned trees and reports are immutable. Unsafe prototype-path segments, malformed field paths, unsupported operators, invalid numeric operands, excessive nesting, and excessive node counts are rejected. Missing snapshot fields are reported as unavailable and are never guessed. See [`CONDITION_ENGINE.md`](CONDITION_ENGINE.md).
+
 ### Matching and selection
 
 ```js
@@ -865,14 +890,15 @@ const context = {
 // A card definition can exclude contexts through:
 // filters.excludedAttackTraits = ["spell"]
 
-const candidates = api.cards.candidates(context);
+const candidates = api.cards.candidates(context, { snapshot: report.snapshot });
 const result = api.cards.select(context, {
+  snapshot: report.snapshot,
   excludeCardIds: ["core.generic.off-balance"],
   random: Math.random
 });
 ```
 
-The selection result contains the selected card plus eligible and rejected candidate reports. The selector reads only the supplied context and never reads Foundry documents directly.
+The selection result contains the selected card plus eligible and rejected candidate reports. Optional conditions read only `options.snapshot`; filters continue to read the supplied neutral context. The selector never reads Foundry documents directly.
 
 ### Localization
 

@@ -30,6 +30,7 @@ The test command forces single-file concurrency so shared Foundry-style globals 
 tests/
 ├─ builder.test.js
 ├─ card-api.test.js
+├─ card-condition-integration.test.js
 ├─ card-editor-roundtrip.test.js
 ├─ card-localization.test.js
 ├─ card-pack-editor.test.js
@@ -41,6 +42,7 @@ tests/
 ├─ catalogs.test.js
 ├─ chat-message-resolver.test.js
 ├─ compiler.test.js
+├─ condition-engine.test.js
 ├─ component-duration.test.js
 ├─ context-builder.test.js
 ├─ context-provider.test.js
@@ -52,6 +54,7 @@ tests/
 ├─ critical-diagnostic-button.test.js
 ├─ critical-diagnostic.test.js
 ├─ critical-roll-automation.test.js
+├─ diagnostic-condition-ui.test.js
 ├─ diagnostic-runtime-view.test.js
 ├─ duration-bundle-hooks.test.js
 ├─ effect-forge-card-handoff.test.js
@@ -73,7 +76,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 227 tests covering:
+The suite contains 247 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -95,6 +98,7 @@ The suite contains 227 tests covering:
 - synchronized release metadata, manifest paths, localization parity, and archive hygiene;
 - headless PF2e context translation from weapon attacks, spell attacks, saving throws, chat flags, items, actors, tokens, and roll options;
 - immutable runtime-snapshot normalization, participant health and conditions, reference-only fallbacks, battlefield placeholders, Context Provider priority/replacement/protection, and public Context Builder/Resolver capabilities;
+- optional immutable card conditions, nested `all`/`any` groups, all ten operators, safe field resolution, schema validation, eligibility gating, full diagnostic evidence, automation snapshot propagation, redraw snapshot reuse, and editor/import/export preservation;
 - manual diagnostic candidate evaluation, runtime-snapshot presentation data, chat-message discovery, Item UUID resolution, target handling, and drop validation;
 - localized critical-card effect summaries, preview presentation data, ChatMessage payloads, structured preview flags, and public preview APIs;
 - the complete card-editor roundtrip from protected template through Effect Forge, JSON transfer, persistence, selection, preview, and compilation;
@@ -102,7 +106,7 @@ The suite contains 227 tests covering:
 - dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation;
 - pack activation semantics, transactional world-setting rollback, protected-data startup guards, module-bound extension ownership, atomic multi-pack registration, change hooks, and optional extension-module lifecycles.
 
-Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.1` measures 93.72% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
+Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.2` measures 93.75% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
 
 ## Foundry mock
 
@@ -186,6 +190,9 @@ Those paths should be checked in a Foundry test world using a short release chec
 - `core-card-library.test.js`: bundled-card matrix, profile distribution, localization coverage, stable ids, and pack validity
 - `card-registry.test.js`: pack ownership, duplicate protection, and filtering
 - `card-selection.test.js`: matching semantics, candidate reports, and deterministic weighting
+- `condition-engine.test.js`: normalization, validation, safe field access, nested groups, operators, and evaluation evidence
+- `card-condition-integration.test.js`: schema, selector, legacy compatibility, and snapshot eligibility
+- `diagnostic-condition-ui.test.js`: diagnostic formatting and template coverage
 - `card-localization.test.js`: translation fallbacks and Effect Definition materialization
 - `critical-card-preview.test.js`: effect summaries, preview data, ChatMessage payloads, and no-application boundaries
 - `pf2e-context-adapter.test.js`: PF2e document readers, diagnostics, and neutral context output

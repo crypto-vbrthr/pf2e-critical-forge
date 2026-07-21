@@ -1,6 +1,6 @@
 # Critical Card Pack Editor
 
-Version `0.9.4-dev.1` extends the GM-only visual editor with excluded attack-trait filters while retaining the Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
+Version `0.9.4-dev.2` preserves optional condition trees through every editor and storage boundary while retaining the Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
 
 ## Opening the editor
 
@@ -85,3 +85,16 @@ protected core card
 ```
 
 This test does not replace a visual Foundry smoke test, but it protects the data boundaries where cards previously had the greatest risk of losing ownership, effect definitions, or portable metadata.
+
+
+## Phase-2 condition preservation
+
+The Phase-2 runtime understands optional card `conditions`, but the visual condition builder is intentionally reserved for Phase 3. Existing condition trees from extension packs, JSON imports, or developer-authored cards are nevertheless preserved by:
+
+- cloning a card or pack;
+- opening and saving a world-managed pack;
+- Effect Forge handoff and return;
+- portable JSON export/import;
+- world-setting persistence and registry hydration.
+
+New cards initialize `conditions: null`. Editing unrelated fields must never erase an existing condition tree. The automated full-roundtrip test covers this boundary. Until Phase 3, authors should create conditions through JSON or the public API described in [`CONDITION_ENGINE.md`](CONDITION_ENGINE.md).

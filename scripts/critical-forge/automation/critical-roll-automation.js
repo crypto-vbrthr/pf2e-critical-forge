@@ -83,10 +83,11 @@ export async function processCriticalChatMessage(message, {
     let selection = selector.select(report.context, {
       excludeCardIds: history,
       random,
-      profile
+      profile,
+      snapshot: report.snapshot ?? null
     });
     if (!selection.selected) {
-      selection = selector.select(report.context, { random, profile });
+      selection = selector.select(report.context, { random, profile, snapshot: report.snapshot ?? null });
     }
     if (!selection.selected) {
       processedMessages.add(messageId);
@@ -106,6 +107,7 @@ export async function processCriticalChatMessage(message, {
       sourceMessage: message,
       context: report.context,
       metadata: report.metadata,
+      runtimeSnapshot: report.snapshot ?? null,
       profile,
       drawHistory: history
     });

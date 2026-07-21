@@ -1411,7 +1411,8 @@
         "saveTypes": "saving throw type",
         "spellTraditions": "magic tradition",
         "spellTraits": "spell trait",
-        "excludedAttackTraits": "excluded attack trait"
+        "excludedAttackTraits": "excluded attack trait",
+        "conditions": "context conditions"
       },
       "OpenFailed": "Critical diagnostics could not be opened. See the console for details.",
       "CardProfile": "Card profile",
@@ -1438,7 +1439,22 @@
       "Opponent": "Opponent",
       "HostileThreats": "Hostile threats",
       "NoRuntimeContext": "No runtime snapshot is available for this analysis.",
-      "RuntimeSnapshot": "Runtime Snapshot"
+      "RuntimeSnapshot": "Runtime Snapshot",
+      "ConditionEngine": "Condition Engine",
+      "ContextConditions": "Context conditions",
+      "ActualValue": "actual",
+      "ConditionOperators": {
+        "eq": "=",
+        "neq": "≠",
+        "lt": "<",
+        "lte": "≤",
+        "gt": ">",
+        "gte": "≥",
+        "contains": "contains",
+        "notContains": "does not contain",
+        "exists": "exists",
+        "notExists": "does not exist"
+      }
     },
     "CriticalPreview": {
       "ShowInChat": "Show card in chat",
@@ -1697,7 +1713,8 @@
         "CARD_FILTER_INVALID": "Filter “{filter}” is invalid.",
         "CARD_EFFECT_TARGET_INVALID": "The effect target is invalid.",
         "CARD_EFFECT_NAME_KEY_MISSING": "The effect-name localization key is missing.",
-        "CARD_EFFECT_DEFINITION_INVALID": "The Effect Definition is invalid."
+        "CARD_EFFECT_DEFINITION_INVALID": "The Effect Definition is invalid.",
+        "CARD_CONDITIONS_INVALID": "The context conditions are invalid."
       },
       "FilterSaveTypes": "Saving throw types",
       "FilterSpellTraditions": "Magic traditions",

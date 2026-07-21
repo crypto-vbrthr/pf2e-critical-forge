@@ -4,6 +4,7 @@ import {
   EFFECT_SCHEMA_VERSION
 } from "../../constants.js";
 import { deepClone, deepFreeze, normalizeString, normalizeStringArray } from "../utils.js";
+import { normalizeConditionTree } from "../conditions/condition-normalizer.js";
 
 const FILTER_KEYS = Object.freeze([
   "damageTypes",
@@ -44,6 +45,7 @@ export function normalizeCardDefinition(card, { packId = null } = {}) {
     weight: Number(card.weight ?? 1),
     tags: normalizeStringArray(card.tags ?? []),
     filters: normalizedFilters,
+    conditions: normalizeConditionTree(card.conditions),
     effect: normalizedEffect,
     metadata: deepClone(card.metadata ?? {})
   };

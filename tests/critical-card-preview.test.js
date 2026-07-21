@@ -58,6 +58,7 @@ test("card preview materializes localized narrative and mechanical data", () => 
       source: { name: "Valeros" },
       target: { name: "Goblin" }
     },
+    runtimeSnapshot: { schemaVersion: 1, participants: { source: { level: 10 } } },
     sourceMessage: {
       id: "message-1",
       uuid: "ChatMessage.message-1",
@@ -74,6 +75,8 @@ test("card preview materializes localized narrative and mechanical data", () => 
   assert.match(preview.effect.components[0].summary, /1d6/);
   assert.match(preview.effect.components[0].summary, /Blutung/);
   assert.equal(preview.previewNotice, "Nur Vorschau");
+  assert.equal(preview.previewVersion, 4);
+  assert.equal(preview.runtimeSnapshot.participants.source.level, 10);
   assertDeepFrozen(preview);
 });
 
@@ -93,6 +96,7 @@ test("publishing a preview renders one chat card without applying an effect", as
   const result = await publishCriticalCardPreview("core.generic.off-balance", {
     context: { category: "criticalHit" },
     metadata: { source: { name: "Valeros" }, target: { name: "Goblin" } },
+    runtimeSnapshot: { schemaVersion: 1, battlefield: { hostileThreatCount: 2 } },
     sourceMessage: {
       id: "message-2",
       uuid: "ChatMessage.message-2",
@@ -126,6 +130,7 @@ test("publishing a preview renders one chat card without applying an effect", as
   assert.equal(calls.create.flags["pf2e-critical-forge"].criticalCardPreview.effect.target, "target");
   assert.equal(calls.create.flags["pf2e-critical-forge"].criticalCardPreview.effect.definition.name.length > 0, true);
   assert.equal(calls.create.flags["pf2e-critical-forge"].criticalCardPreview.visibilityMode, "blind");
+  assert.equal(calls.create.flags["pf2e-critical-forge"].criticalCardPreview.runtimeSnapshot.battlefield.hostileThreatCount, 2);
   assert.equal(calls.create.flags["pf2e-critical-forge"].criticalCardPreview.application.status, "pending");
   assert.equal(result.visibilityMode, "blind");
   assert.equal(result.message.id, "preview-message");

@@ -1,4 +1,5 @@
 import { normalizeStringArray, intersect } from "../utils.js";
+import { evaluateConditionTree } from "../conditions/condition-evaluator.js";
 
 export function normalizeSelectionContext(context = {}) {
   if (!context || typeof context !== "object" || Array.isArray(context)) {
@@ -19,10 +20,11 @@ export function normalizeSelectionContext(context = {}) {
   });
 }
 
-export function matchCard(card, rawContext = {}) {
+export function matchCard(card, rawContext = {}, { snapshot = null } = {}) {
   const context = normalizeSelectionContext(rawContext);
   const rejectedBy = [];
   const matchedFilters = [];
+  const conditionEvaluation = evaluateConditionTree(card.conditions ?? null, snapshot);
   let specificity = 0;
 
   if (card.category !== context.category) rejectedBy.push("category");
@@ -40,6 +42,7 @@ export function matchCard(card, rawContext = {}) {
 
   if (context.requiredTags.some((tag) => !card.tags.includes(tag))) rejectedBy.push("requiredTags");
   if (context.excludedTags.some((tag) => card.tags.includes(tag))) rejectedBy.push("excludedTags");
+  if (!conditionEvaluation.matched) rejectedBy.push("conditions");
 
   const eligible = rejectedBy.length === 0;
   const effectiveWeight = eligible ? card.weight * (1 + specificity) : 0;
@@ -48,6 +51,7 @@ export function matchCard(card, rawContext = {}) {
     eligible,
     rejectedBy,
     matchedFilters,
+    conditionEvaluation,
     specificity,
     baseWeight: card.weight,
     effectiveWeight

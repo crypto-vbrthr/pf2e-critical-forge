@@ -170,7 +170,7 @@ This keeps Builder, validation, catalogs, and compiler tests fast and reproducib
 
 ## Critical Context Engine boundary
 
-Phase 1 adds an immutable observation layer beneath Critical Forge diagnostics:
+Phase 1 added the immutable observation layer now consumed by Phase 2:
 
 ```text
 Context Provider Registry → Context Resolver → Adapter Report
@@ -179,4 +179,16 @@ Context Provider Registry → Context Resolver → Adapter Report
                                            └─ Runtime Snapshot
 ```
 
-The new layer is additive. Existing card and pack schemas do not reference snapshots, and current card selection remains driven by the pre-existing selection context. See [`CONTEXT_ENGINE.md`](CONTEXT_ENGINE.md).
+The layer remains additive. Existing filters continue to use the pre-existing selection context; optional card conditions use the runtime snapshot separately. Cards without conditions follow the original path. See [`CONTEXT_ENGINE.md`](CONTEXT_ENGINE.md).
+
+
+## Phase-2 Condition Engine boundary
+
+The Condition Engine lives between immutable runtime snapshots and card eligibility. It is split into normalization, validation, field resolution/evaluation, selector integration, and diagnostic presentation. It accepts plain serializable data only and never reads Foundry documents.
+
+```text
+Context Provider → Runtime Snapshot → Condition Engine → Card Matcher → Selector
+                                      └──────────────→ Diagnostic evidence
+```
+
+The neutral selection context and existing filters remain intact. A condition is an optional eligibility gate, not a weight source. Preview schema `4` stores the snapshot so redraws remain tied to the original roll context. The visual condition builder remains outside this phase and will consume the same canonical tree in Phase 3.

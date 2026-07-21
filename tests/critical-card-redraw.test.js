@@ -59,3 +59,23 @@ test("redraw is blocked after application", async () => {
   assert.equal(result.valid, false);
   assert.equal(result.code, "CRITICAL_CARD_ALREADY_APPLIED");
 });
+
+
+test("redraw reuses a stored runtime snapshot for condition matching", async () => {
+  const source = message();
+  const runtimeSnapshot = { schemaVersion: 1, battlefield: { hostileThreatCount: 3 } };
+  source.flags["pf2e-critical-forge"].criticalCardPreview.runtimeSnapshot = runtimeSnapshot;
+  let receivedSnapshot = null;
+  const result = await redrawCriticalCard(source, {
+    selector: {
+      select: (_context, options) => {
+        receivedSnapshot = options.snapshot;
+        return { selected: { id: "core.generic.opening", packId: "core", category: "criticalHit" } };
+      }
+    },
+    renderTemplateFn: async () => "<article>replacement</article>",
+    updateMessageFn: async () => null
+  });
+  assert.equal(result.valid, true);
+  assert.equal(receivedSnapshot, runtimeSnapshot);
+});

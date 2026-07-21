@@ -1,6 +1,6 @@
 # Critical Card Selection
 
-The selection service is headless and deterministic when supplied with a deterministic random function. It does not inspect Foundry chat messages, actors, strikes, or tokens. The PF2e Context Adapter converts explicitly supplied PF2e documents and roll data into this plain selection context. The selector itself remains document-agnostic.
+The selection service is headless and deterministic when supplied with a deterministic random function. It does not inspect Foundry chat messages, actors, strikes, or tokens. The PF2e Context Adapter converts explicitly supplied PF2e documents and roll data into a plain selection context plus an immutable runtime snapshot. The selector remains document-agnostic.
 
 ## Context
 
@@ -32,6 +32,7 @@ Each card receives:
 - `unprofiledWeight`
 - `profileMultiplier`
 - `effectiveWeight`
+- `conditionEvaluation`
 
 Without a profile, `effectiveWeight` is:
 
@@ -51,6 +52,7 @@ The built-in profiles are `relaxed`, `balanced`, `dramatic`, `brutal`, and `cust
 
 ```js
 const result = api.cards.select(context, {
+  snapshot: report.snapshot,
   excludeCardIds: recentlyUsed,
   profile: "dramatic",
   random: Math.random
@@ -76,7 +78,7 @@ const report = api.cards.adapters.pf2e.createContext({
 });
 
 if (report.valid) {
-  const selection = api.cards.select(report.context);
+  const selection = api.cards.select(report.context, { snapshot: report.snapshot });
 }
 ```
 
@@ -93,3 +95,22 @@ const trigger = api.cards.triggers.evaluate(report, policy);
 ```
 
 For `scope: "natural"`, a success-category card requires both a natural 20 and a final critical success; a failure-category card requires both a natural 1 and a final critical failure. A natural die result that only upgrades the roll to a normal success or failure does not trigger a card.
+
+
+## Condition evaluation
+
+Filters continue to match the neutral selection context. Optional card conditions are evaluated separately against `options.snapshot`:
+
+```js
+const match = api.cards.match(card, report.context, {
+  snapshot: report.snapshot
+});
+
+console.log(match.conditionEvaluation.configured);
+console.log(match.conditionEvaluation.matched);
+console.log(match.conditionEvaluation.root);
+```
+
+A conditioned card with no matching snapshot is rejected with `rejectedBy: ["conditions"]`. A legacy card with no conditions remains eligible and reports `configured: false, matched: true`. Every condition leaf records its field, operator, expected value, actual value, availability, result, and stable reason.
+
+Conditions do not add specificity and therefore do not alter weight. They are gates, not multipliers. The automatic pipeline and diagnostics pass the snapshot produced for the same roll. Redraws reuse the snapshot stored with the original preview, so a later HP or battlefield change does not rewrite history.

@@ -43,19 +43,23 @@ test("diagnostic service combines context adaptation and candidate evaluation", 
         diagnostics: []
       }),
       selector: {
-        candidates: () => ({
+        candidates: (_context, options) => {
+          assert.equal(options.snapshot.provider, "test");
+          return ({
           eligible: [{
             card,
             eligible: true,
             rejectedBy: [],
             matchedFilters: [{ filter: "damageTypes", values: ["slashing"] }],
+            conditionEvaluation: { configured: false, matched: true, available: true, counts: {}, root: null },
             specificity: 1,
             baseWeight: 2,
             effectiveWeight: 4
           }],
           rejected: [],
           totalWeight: 4
-        })
+        });
+        }
       },
       localize: () => ({
         id: card.id,

@@ -1411,7 +1411,8 @@
         "saveTypes": "Rettungswurfart",
         "spellTraditions": "magische Tradition",
         "spellTraits": "Zaubermerkmal",
-        "excludedAttackTraits": "ausgeschlossenes Angriffsmerkmal"
+        "excludedAttackTraits": "ausgeschlossenes Angriffsmerkmal",
+        "conditions": "Kontextbedingungen"
       },
       "OpenFailed": "Die Krit-Diagnose konnte nicht geöffnet werden. Details stehen in der Konsole.",
       "CardProfile": "Kartenprofil",
@@ -1438,7 +1439,22 @@
       "Opponent": "Gegenüber",
       "HostileThreats": "Bedrohende Gegner",
       "NoRuntimeContext": "Für diese Auswertung ist kein Laufzeit-Snapshot verfügbar.",
-      "RuntimeSnapshot": "Laufzeit-Snapshot"
+      "RuntimeSnapshot": "Laufzeit-Snapshot",
+      "ConditionEngine": "Bedingungs-Engine",
+      "ContextConditions": "Kontextbedingungen",
+      "ActualValue": "Istwert",
+      "ConditionOperators": {
+        "eq": "=",
+        "neq": "≠",
+        "lt": "<",
+        "lte": "≤",
+        "gt": ">",
+        "gte": "≥",
+        "contains": "enthält",
+        "notContains": "enthält nicht",
+        "exists": "ist vorhanden",
+        "notExists": "ist nicht vorhanden"
+      }
     },
     "CriticalPreview": {
       "ShowInChat": "Karte im Chat anzeigen",
@@ -1697,7 +1713,8 @@
         "CARD_FILTER_INVALID": "Der Filter „{filter}“ ist ungültig.",
         "CARD_EFFECT_TARGET_INVALID": "Das Effektziel ist ungültig.",
         "CARD_EFFECT_NAME_KEY_MISSING": "Der Lokalisierungsschlüssel des Effektnamens fehlt.",
-        "CARD_EFFECT_DEFINITION_INVALID": "Die Effect Definition ist ungültig."
+        "CARD_EFFECT_DEFINITION_INVALID": "Die Effect Definition ist ungültig.",
+        "CARD_CONDITIONS_INVALID": "Die Kontextbedingungen sind ungültig."
       },
       "FilterSaveTypes": "Rettungswurfarten",
       "FilterSpellTraditions": "Magische Traditionen",

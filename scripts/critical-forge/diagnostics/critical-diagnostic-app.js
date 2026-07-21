@@ -8,6 +8,7 @@ import {
   resolveDroppedChatMessage
 } from "./chat-message-resolver.js";
 import { prepareRuntimeContextView } from "./diagnostic-runtime-view.js";
+import { prepareDiagnosticConditionEvaluation } from "./diagnostic-condition-view.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -171,12 +172,14 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
           profileMultiplier: entry.profileMultiplier,
           tone: entry.card.tone,
           impact: entry.card.impact,
-          matchedFilters: entry.matchedFilters
+          matchedFilters: entry.matchedFilters,
+          conditionEvaluation: entry.conditionEvaluation
         })),
         rejected: diagnostic.rejected.map((entry) => ({
           id: entry.card.id,
           title: entry.localized.title,
-          rejectedBy: entry.rejectedBy
+          rejectedBy: entry.rejectedBy,
+          conditionEvaluation: entry.conditionEvaluation
         }))
       }, null, 2),
       diagnostics,
@@ -225,6 +228,8 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
       toneLabel: this.#localizeCardAttribute("Tones", entry.card.tone),
       impact: entry.card.impact,
       impactLabel: this.#localizeCardAttribute("Impacts", entry.card.impact),
+      conditionEvaluation: prepareDiagnosticConditionEvaluation(entry.conditionEvaluation),
+      hasConditions: Boolean(entry.conditionEvaluation?.configured),
       matchedFilters: entry.matchedFilters.map((match) => ({
         label: this.#localizeFilter(match.filter),
         values: match.values.join(", ")
@@ -343,6 +348,7 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
       await publishCriticalCardPreview(cardId, {
         context: this.report.context,
         metadata: this.report.metadata,
+        runtimeSnapshot: this.report.snapshot,
         sourceMessage: this.sourceMessage
       });
       ui.notifications.info(game.i18n.format(

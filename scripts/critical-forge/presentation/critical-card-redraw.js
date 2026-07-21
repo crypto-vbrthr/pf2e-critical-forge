@@ -36,15 +36,16 @@ export async function redrawCriticalCard(message, {
     const configured = profile ?? data.draw?.profileId ?? configuredCardProfile();
     const resolvedProfile = resolveCardProfile(configured);
     const history = Array.isArray(data.draw?.history) ? data.draw.history.map(String) : [data.cardId].filter(Boolean);
-    let selection = selector.select(data.context, { excludeCardIds: history, random, profile: resolvedProfile });
+    let selection = selector.select(data.context, { excludeCardIds: history, random, profile: resolvedProfile, snapshot: data.runtimeSnapshot ?? null });
     if (!selection.selected) {
-      selection = selector.select(data.context, { excludeCardIds: [data.cardId], random, profile: resolvedProfile });
+      selection = selector.select(data.context, { excludeCardIds: [data.cardId], random, profile: resolvedProfile, snapshot: data.runtimeSnapshot ?? null });
     }
     if (!selection.selected) return failure("CRITICAL_CARD_REDRAW_NO_ALTERNATIVE");
 
     const preview = prepareCriticalCardPreview(selection.selected, {
       context: data.context,
-      metadata: data.metadata
+      metadata: data.metadata,
+      runtimeSnapshot: data.runtimeSnapshot ?? null
     });
     const content = await renderTemplateFn(CHAT_TEMPLATE, {
       ...preview,

@@ -21,7 +21,7 @@ Declare Critical Forge as a required module dependency so the extension is never
         "id": "pf2e-critical-forge",
         "type": "module",
         "compatibility": {
-          "minimum": "0.9.4-dev.1"
+          "minimum": "0.9.4-dev.2"
         }
       }
     ],
@@ -114,6 +114,30 @@ filters: {
 ```
 
 The negative filter rejects the card when any listed attack trait is present. Omitting it remains equivalent to an empty array.
+
+
+## Optional context conditions
+
+Extensions targeting `0.9.4-dev.2` can add a schema-version-1 `conditions` tree to any card. Capability detection is preferred:
+
+```js
+if (!forge.cards.capabilities.contextConditions) {
+  ui.notifications.error("This pack requires Critical Forge context conditions.");
+  return;
+}
+```
+
+```js
+conditions: {
+  mode: "all",
+  conditions: [
+    { field: "participants.source.hp.ratio", operator: "lte", value: 0.5 },
+    { field: "roll.saveType", operator: "eq", value: "reflex" }
+  ]
+}
+```
+
+The extension must use fields that can be present in the selected Context Provider's snapshot. If a field is unavailable, the card is rejected with diagnostic evidence. Conditions do not affect card weight. Packs that omit them remain compatible with older behavior.
 
 ## Controller contract
 

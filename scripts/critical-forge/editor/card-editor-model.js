@@ -44,6 +44,7 @@ export function createEditableCard({ packId, id = null, title = "New Critical Ca
     weight: 1,
     tags: [],
     filters: emptyFilters(),
+    conditions: null,
     effect: null,
     metadata: { managedBy: MODULE_ID }
   };

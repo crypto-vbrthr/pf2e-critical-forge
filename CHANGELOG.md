@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.4-dev.2
+
+- Added Phase 2 of the Critical Context Engine without changing Critical Card or Card Pack schema version `1`.
+- Added optional card-level `conditions` with deeply nested `all`/`any` groups and the operators `eq`, `neq`, `lt`, `lte`, `gt`, `gte`, `contains`, `notContains`, `exists`, and `notExists`.
+- Added normalization, immutable canonical output, structural validation, depth/node safety limits, and protected field-path resolution for condition trees.
+- Integrated condition evaluation into matching and weighted selection using the immutable runtime snapshot from Phase 1. Conditions only determine eligibility and do not alter specificity or weight.
+- Preserved legacy behavior: cards without `conditions` remain eligible without a snapshot, existing pack data needs no migration, and the schema versions remain unchanged.
+- Extended Critical Diagnostics with per-card condition evidence showing field, operator, expected value, actual value, match state, and unavailable snapshot fields for both eligible and rejected cards.
+- Stored runtime snapshots in preview flags (preview schema `4`) and reused them during redraws so later HP, position, or combat changes cannot silently change the original draw context. Older preview flags remain readable.
+- Added the public `api.cards.conditions` API and set `api.cards.capabilities.contextConditions` to `true`; public API version is now `0.9.3`.
+- Ensured the Card Pack Editor, cloning, JSON import/export, world persistence, registry hydration, selection, preview, and compilation preserve condition trees even before the visual condition editor arrives in Phase 3.
+- Added Condition Engine, selector integration, diagnostics UI, automation snapshot propagation, redraw snapshot reuse, public API, and full editor-roundtrip regression tests.
+- Updated the user, API, schema, selection, diagnostics, automation, preview, editor, extension, architecture, import/export, and testing documentation.
+
 ## 0.9.4-dev.1
 
 - Added Phase 1 of the Critical Context Engine without changing Critical Card or Card Pack schema version `1`.

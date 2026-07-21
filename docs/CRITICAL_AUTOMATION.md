@@ -1,6 +1,6 @@
 # Critical Roll Automation
 
-Version `0.9.4-dev.1` freezes the connection between the PF2e Context Adapter, trigger policy, profile weighting, card selector, and chat-card publisher for supported PF2e critical rolls.
+Version `0.9.4-dev.2` extends the connection between the PF2e Context Adapter, trigger policy, profile weighting, card selector, and chat-card publisher for supported PF2e critical rolls.
 
 ## Supported roll families
 
@@ -40,6 +40,8 @@ Critical Trigger Policy
         ├─ prompt → GM confirmation dialog
         └─ automatic → continue
         ↓
+Snapshot condition evaluation
+        ↓
 Profile-weighted card selection
         ↓
 Critical result ChatMessage
@@ -60,13 +62,13 @@ A natural 20/1 that produces only an ordinary success or failure does not trigge
 
 ## Source and target resolution
 
-For attack and spell-attack messages, the attack origin is the source and the attacked creature is the target. For saving throws, the rolling creature is the source and the originating Actor/effect is the target when PF2e records it. Missing references do not invent a target; the resulting card can remain narrative or report that a mechanical target is unavailable.
+For attack and spell-attack messages, the attack origin is the source and the attacked creature is the target. For saving throws, the rolling creature is the source and the originating Actor/effect is the target when PF2e records it. Missing references do not invent a target; the resulting card can remain narrative or report that a mechanical target is unavailable. The same immutable snapshot is passed to card conditions and stored with the published preview.
 
 ## Recent-card history
 
 Automatic draws read a hidden world history bounded by the visible **Recent-card history size** setting. The selector first excludes those recent cards. If that removes every eligible candidate, it retries with the full eligible set rather than failing the critical result.
 
-Redrawing an existing result card continues to use the history stored on that card.
+Redrawing an existing result card continues to use the history and runtime snapshot stored on that card.
 
 ## Source-message audit flag
 

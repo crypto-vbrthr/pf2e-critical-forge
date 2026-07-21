@@ -43,7 +43,7 @@
       {{#if targetNames}}<strong>{{targetNames}}</strong>{{/if}}
       <span class="critical-diagnostic-build">
         <i class="fa-solid fa-cubes-stacked"></i>
-        {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ContextFoundation"}} · {{moduleVersion}}
+        {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ConditionEngine"}} · {{moduleVersion}}
       </span>
     </div>
   </section>
@@ -225,6 +225,18 @@
                       {{/each}}
                     </div>
                   {{/if}}
+                  {{#if hasConditions}}
+                    <div class="critical-diagnostic-condition-evaluation">
+                      <strong>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ContextConditions"}}</strong>
+                      {{#each conditionEvaluation.rows}}
+                        <span class="{{statusClass}}">
+                          <i class="fa-solid {{icon}}"></i>
+                          <code>{{field}}</code> {{operatorLabel}} <strong>{{expected}}</strong>
+                          <em>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ActualValue"}}: {{actual}}</em>
+                        </span>
+                      {{/each}}
+                    </div>
+                  {{/if}}
                   <div class="critical-diagnostic-card-actions">
                     <button type="button" class="primary" data-action="previewCard" data-card-id="{{id}}">
                       <i class="fa-solid fa-comment-medical"></i>
@@ -257,6 +269,18 @@
                   <div class="critical-diagnostic-reasons">
                     {{#each rejectedReasons}}<span>{{this}}</span>{{/each}}
                   </div>
+                  {{#if hasConditions}}
+                    <div class="critical-diagnostic-condition-evaluation">
+                      <strong>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ContextConditions"}}</strong>
+                      {{#each conditionEvaluation.rows}}
+                        <span class="{{statusClass}}">
+                          <i class="fa-solid {{icon}}"></i>
+                          <code>{{field}}</code> {{operatorLabel}} <strong>{{expected}}</strong>
+                          <em>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ActualValue"}}: {{actual}}</em>
+                        </span>
+                      {{/each}}
+                    </div>
+                  {{/if}}
                 </article>
               {{/each}}
             </div>

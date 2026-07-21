@@ -73,7 +73,7 @@ test("public card API exposes manual diagnostics", () => {
 });
 
 test("public card API exposes manual chat-card previews", async () => {
-  assert.equal(api.previewVersion, 3);
+  assert.equal(api.previewVersion, 4);
   const preview = api.preparePreview("core.generic.off-balance", {
     context: { category: "criticalHit" }
   });
@@ -104,7 +104,13 @@ test("public card API exposes manual chat-card previews", async () => {
 test("public card API exposes additive context-provider capabilities", () => {
   assert.equal(api.capabilities.contextSnapshots, true);
   assert.equal(api.capabilities.contextProviders, true);
-  assert.equal(api.capabilities.contextConditions, false);
+  assert.equal(api.capabilities.contextConditions, true);
+
+  assert.deepEqual(api.conditions.modes, ["all", "any"]);
+  assert.equal(api.conditions.operators.includes("lte"), true);
+  const condition = api.conditions.normalize({ field: "participants.source.hp.ratio", operator: "lte", value: 0.5 });
+  assert.equal(api.conditions.validate(condition).valid, true);
+  assert.equal(api.conditions.evaluate(condition, { participants: { source: { hp: { ratio: 0.4 } } } }).matched, true);
 
   const builder = api.contexts.createBuilder({ system: "test-system", provider: "test-provider" });
   assert.equal(builder.build().schemaVersion, 1);

@@ -1,6 +1,6 @@
 # Critical Card Chat Workflow
 
-Version `0.5.8-dev` uses the same result-card system for both manual diagnostic previews and cards drawn by the automatic PF2e supported-roll hook. Publication may be manual, prompted, or automatic; effect application remains explicitly GM-controlled.
+Version `0.9.4-dev.2` uses the same result-card system for both manual diagnostic previews and cards drawn by the automatic PF2e supported-roll hook. Publication may be manual, prompted, or automatic; effect application remains explicitly GM-controlled.
 
 ## Visibility setting
 
@@ -30,13 +30,14 @@ If the target no longer exists or validation returns an error, the Actor is not 
 
 ```js
 flags["pf2e-critical-forge"].criticalCardPreview = {
-  previewVersion: 3,
+  previewVersion: 4,
   cardId: "core.slashing.deep-cut",
   packId: "core",
   category: "criticalHit",
   sourceMessageUuid: "ChatMessage...",
   visibilityMode: "blind",
   context: {},
+  runtimeSnapshot: {},
   metadata: {},
   draw: {
     profileId: "balanced",
@@ -57,7 +58,7 @@ flags["pf2e-critical-forge"].criticalCardPreview = {
 };
 ```
 
-After success, `status` is `applied` and the audit fields are populated.
+After success, `status` is `applied` and the audit fields are populated. Preview schema `4` adds `runtimeSnapshot`; older preview schema `3` messages remain readable.
 
 ## Public API
 
@@ -83,7 +84,7 @@ Automatic mode may choose and publish a card after a qualifying supported roll. 
 
 ## Draw again
 
-If the world setting permits redraws, an unapplied card shows a GM-only **Draw again** control. The existing ChatMessage is updated in place. Critical Forge preserves its context, target metadata, visibility, and source-message reference while replacing the card and resetting application state.
+If the world setting permits redraws, an unapplied card shows a GM-only **Draw again** control. The existing ChatMessage is updated in place. Critical Forge preserves its neutral context, immutable runtime snapshot, target metadata, visibility, and source-message reference while replacing the card and resetting application state. This makes a redraw use the same HP, participant, and battlefield evidence as the original draw.
 
 The `draw.history` array is bounded by the configured history size. The selector first excludes every recent card and, if that exhausts the eligible pool, falls back to excluding only the currently displayed card. Applied cards cannot be redrawn.
 

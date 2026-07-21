@@ -22,7 +22,7 @@ export function diagnosePf2eCriticalInput(input = {}, {
   const triggerPolicy = configuredTriggerPolicy(contextReport.context.category);
   const trigger = evaluateCriticalTrigger(contextReport, triggerPolicy);
   const candidateReport = contextReport.valid
-    ? selector.candidates(contextReport.context, { includeRejected, excludeCardIds, profile })
+    ? selector.candidates(contextReport.context, { includeRejected, excludeCardIds, profile, snapshot: contextReport.snapshot ?? null })
     : emptyCandidateReport(contextReport.context);
 
   const eligible = candidateReport.eligible.map((entry) => prepareCandidate(entry, localize));
@@ -55,6 +55,7 @@ function prepareCandidate(entry, localize) {
     localized: localize(entry.card),
     eligible: entry.eligible,
     rejectedBy: [...entry.rejectedBy],
+    conditionEvaluation: entry.conditionEvaluation,
     matchedFilters: entry.matchedFilters.map((match) => ({
       filter: match.filter,
       values: [...match.values]

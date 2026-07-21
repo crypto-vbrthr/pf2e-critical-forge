@@ -1,8 +1,8 @@
 # Critical Context Engine
 
-Version `0.9.4-dev.1` introduces the first context-engine foundation for future context-sensitive card packs. It is additive: existing Critical Cards, Card Packs, selectors, preview flags, and effect targets continue to use their unchanged schema-version-1 data.
+Version `0.9.4-dev.2` retains the Phase-1 snapshot/provider foundation and connects it to the generic Phase-2 Condition Engine. It remains additive: existing Critical Cards, Card Packs, filters, and effect targets continue to use schema version `1`.
 
-This phase does **not** add card conditions, multi-deck packs, or Against All Odds. It creates the stable observation layer those features will consume later.
+This phase adds generic card conditions but does **not** add multi-deck packs, scene-based threat analysis, the visual condition editor, or Against All Odds.
 
 ## Pipeline
 
@@ -16,9 +16,13 @@ PF2e Context Provider
         ├── adapter Metadata
         ├── structured Diagnostics
         └── immutable Runtime Snapshot
+                    ↓
+             Condition Engine
+                    ↓
+       card eligibility + evidence
 ```
 
-The selector still consumes only the legacy neutral `report.context`. The new `report.snapshot` is diagnostic and extension data until a later condition-engine phase deliberately begins consuming it.
+The selector continues to use the legacy neutral `report.context` for filter matching and now receives `report.snapshot` separately for optional card conditions. Cards without conditions do not require a snapshot.
 
 ## Runtime snapshot
 
@@ -169,8 +173,8 @@ Providers must return a report compatible with the existing adapter contract:
 ```js
 api.cards.capabilities.contextSnapshots; // true
 api.cards.capabilities.contextProviders; // true
-api.cards.capabilities.contextConditions; // false in phase 1
-api.cards.capabilities.multiDeckPacks; // false in phase 1
+api.cards.capabilities.contextConditions; // true in phase 2
+api.cards.capabilities.multiDeckPacks; // false in phase 2
 ```
 
 Extensions should test capabilities rather than infer them from module-version strings.
@@ -181,6 +185,8 @@ Extensions should test capabilities rather than infer them from module-version s
 - Critical Card Pack schema remains `1`.
 - Existing context fields and source/target semantics remain unchanged.
 - Existing packs need no migration.
-- The selector continues to ignore runtime snapshots.
+- The selector uses runtime snapshots only for cards that explicitly declare `conditions`.
 - Reference-only chat contexts still produce a complete snapshot with unknown values represented by `null` rather than invented data.
-- The diagnostic report includes the snapshot without changing eligible-card calculation.
+- The diagnostic report includes the snapshot and the exact condition evidence that affected eligible-card calculation.
+- Redraws reuse the original stored snapshot rather than reading changed Actor or scene state.
+- Missing fields are represented as unavailable evidence and never guessed.

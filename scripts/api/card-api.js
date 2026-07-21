@@ -1,5 +1,9 @@
 import { CARD_PACK_SCHEMA_VERSION, CARD_SCHEMA_VERSION } from "../constants.js";
 import { CARD_CATEGORIES } from "../critical-forge/constants.js";
+import { CONDITION_GROUP_MODES, CONDITION_OPERATORS } from "../critical-forge/conditions/condition-constants.js";
+import { normalizeConditionTree, emptyConditionGroup } from "../critical-forge/conditions/condition-normalizer.js";
+import { validateConditionTree } from "../critical-forge/conditions/condition-validator.js";
+import { evaluateConditionTree, resolveConditionField } from "../critical-forge/conditions/condition-evaluator.js";
 import {
   criticalCardRegistry,
   criticalCardSelector,
@@ -102,7 +106,7 @@ export function createCardApi() {
     capabilities: Object.freeze({
       contextSnapshots: true,
       contextProviders: true,
-      contextConditions: false,
+      contextConditions: true,
       multiDeckPacks: false
     }),
     categories: [...CARD_CATEGORIES],
@@ -161,7 +165,7 @@ export function createCardApi() {
     list: (options = {}) => criticalCardRegistry.list(options),
     validate: (card) => safeValidate(card, normalizeCardDefinition, validateCardDefinition, "CARD_NORMALIZATION_FAILED"),
 
-    match: (cardOrId, context = {}) => matchCard(resolveCard(cardOrId), context),
+    match: (cardOrId, context = {}, options = {}) => matchCard(resolveCard(cardOrId), context, options),
     candidates: (context, options = {}) => criticalCardSelector.candidates(context, options),
     select: (context, options = {}) => criticalCardSelector.select(context, options),
     localize: (cardOrId, options = {}) => localizeCard(resolveCard(cardOrId), options),
@@ -176,6 +180,28 @@ export function createCardApi() {
     applyPreviewEffect: (message, options = {}) => applyCriticalCardEffect(message, options),
     redrawPreview: (message, options = {}) => redrawCriticalCard(message, options),
     summarizeEffect: (definition, options = {}) => summarizeCriticalEffectDefinition(definition, options),
+
+    conditions: Object.freeze({
+      modes: [...CONDITION_GROUP_MODES],
+      operators: [...CONDITION_OPERATORS],
+      emptyGroup: (mode = "all") => emptyConditionGroup(mode),
+      normalize: (tree) => normalizeConditionTree(tree),
+      validate: (tree) => {
+        try {
+          return validateConditionTree(normalizeConditionTree(tree));
+        } catch (error) {
+          const entry = Object.freeze({
+            severity: "error",
+            code: "CARD_CONDITION_NORMALIZATION_FAILED",
+            path: "conditions",
+            data: { message: error.message }
+          });
+          return Object.freeze({ valid: false, issues: [entry], errors: [entry], warnings: [] });
+        }
+      },
+      evaluate: (tree, snapshot) => evaluateConditionTree(normalizeConditionTree(tree), snapshot),
+      resolveField: (snapshot, field) => resolveConditionField(snapshot, field)
+    }),
 
     createContext: (input, options = {}) => resolveCriticalContext(input, options),
     contexts: Object.freeze({

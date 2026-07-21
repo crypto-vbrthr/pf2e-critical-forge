@@ -1,6 +1,6 @@
 # Critical Forge Diagnostics
 
-Version `0.9.4-dev.1` extends the manual GM workbench with the Phase-1 runtime context snapshot. It remains the primary instrument for testing PF2e participant resolution, context acquisition, candidate determination, and later card application. Eligible cards can be deliberately published as manual result chat cards.
+Version `0.9.4-dev.2` extends the manual GM workbench with Phase-2 condition evidence while retaining the complete runtime context snapshot. It remains the primary instrument for testing PF2e participant resolution, context acquisition, candidate determination, and later card application. Eligible cards can be deliberately published as manual result chat cards.
 
 The diagnostic itself applies no effect, creates no Item, and changes no Actor. The separate automation service may process supported rolls according to world settings.
 
@@ -47,8 +47,8 @@ The workbench shows:
 - damage types, weapon groups, attack traits, save types, spell traditions, spell traits, source traits, and target traits;
 - rejection reasons for positive and negative filters, including `excludedAttackTraits`;
 - structured adapter and resolver diagnostics;
-- every eligible card with matched filters, specificity, base weight, and effective weight;
-- every rejected card with stable rejection reasons;
+- every eligible card with matched filters, condition evidence, specificity, base weight, and effective weight;
+- every rejected card with stable rejection reasons and failed/unavailable condition evidence;
 - raw normalized selection context and adapter metadata;
 - runtime provider and snapshot-schema version;
 - rolling Actor and opponent identities, levels, HP totals and ratio, save type, combat references, and battlefield evaluation status;
@@ -82,6 +82,7 @@ Result shape:
   eligible: [],
   rejected: [],
   totalWeight: 0,
+  // every candidate can include conditionEvaluation
   counts: {
     eligible: 0,
     rejected: 0,
@@ -101,8 +102,8 @@ const diagnostic = api.cards.diagnose(resolved.input);
 Resolver diagnostics are separate from the immutable adapter report so API consumers can decide how to combine or present them.
 
 
-## Phase-1 visibility
+## Phase-2 visibility
 
-The toolbar displays `Context Foundation · <module version>`. In German this appears as `Kontext-Fundament · <Modulversion>`. Together with Foundry's module list, this makes a development build distinguishable from the preceding `0.9.4-dev` build.
+The toolbar displays `Condition Engine · <module version>`. In German this appears as `Bedingungs-Engine · <Modulversion>`. Together with Foundry's module list, this identifies the Phase-2 development build.
 
-A `hostileThreatCount` of `null` with `threatEvaluation: "not-evaluated"` is expected in Phase 1. The workbench exposes that absence explicitly instead of presenting a guessed enemy count.
+For each conditioned candidate, the workbench shows field path, localized operator, expected value, actual value, and one of three states: matched, failed, or unavailable. The same evidence is included in copied JSON reports. A `hostileThreatCount` of `null` with `threatEvaluation: "not-evaluated"` remains expected until a later phase adds scene-based threat detection.

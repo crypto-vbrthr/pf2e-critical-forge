@@ -173,3 +173,29 @@ test("critical saving throws are handled by the automatic pipeline", async () =>
   assert.equal(published.length, 1);
   assert.equal(published[0].options.context.category, "savingThrowCriticalFailure");
 });
+
+
+test("automatic selection and preview receive the diagnostic runtime snapshot", async () => {
+  const snapshot = { schemaVersion: 1, participants: { source: { hp: { ratio: 0.4 } } } };
+  let selectorOptions = null;
+  let previewOptions = null;
+  const result = await processCriticalChatMessage(
+    { id: "snapshot-critical", flags: {} },
+    baseOptions({
+      diagnose: () => ({ ...report(), snapshot }),
+      selector: {
+        select: (_context, options) => {
+          selectorOptions = options;
+          return { selected: { id: "core.slashing.deep-cut" } };
+        }
+      },
+      publishPreview: async (_card, options) => {
+        previewOptions = options;
+        return { message: { uuid: "ChatMessage.snapshot-preview" } };
+      }
+    })
+  );
+  assert.equal(result.valid, true);
+  assert.equal(selectorOptions.snapshot, snapshot);
+  assert.equal(previewOptions.runtimeSnapshot, snapshot);
+});

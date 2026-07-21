@@ -7,6 +7,7 @@ import { analyzeEffectDefinition } from "../../effect-engine/validation/validati
 import { CARD_CATEGORIES, CARD_ID_PATTERN, EFFECT_TARGETS } from "../constants.js";
 import { CARD_IMPACTS, CARD_TONES } from "../profile/card-profile.js";
 import { CARD_FILTER_KEYS } from "./card-normalizer.js";
+import { validateConditionTree } from "../conditions/condition-validator.js";
 
 function issue(code, data = {}, severity = "error") {
   return Object.freeze({ severity, code, data: structuredClone(data) });
@@ -72,6 +73,11 @@ export function validateCardDefinition(card) {
     if (!Array.isArray(values) || values.some((value) => typeof value !== "string" || !value)) {
       issues.push(issue("CARD_FILTER_INVALID", { filter: key }));
     }
+  }
+
+  const conditionReport = validateConditionTree(card.conditions);
+  if (!conditionReport.valid) {
+    issues.push(issue("CARD_CONDITIONS_INVALID", { issues: conditionReport.issues }));
   }
 
   if (card.effect != null) validateEffect(card, issues);

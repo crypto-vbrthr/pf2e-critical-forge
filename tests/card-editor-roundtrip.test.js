@@ -63,6 +63,13 @@ test("core template survives Effect Forge, export/import, persistence, selection
   card.weight = 100;
   card.filters.damageTypes = ["slashing"];
   card.filters.excludedAttackTraits = ["spell"];
+  card.conditions = {
+    type: "group",
+    mode: "all",
+    conditions: [
+      { type: "condition", field: "roller.hpRatio", operator: "lte", value: 0.5 }
+    ]
+  };
 
   const forgeDefinition = cardEffectToForgeDefinition(card);
   forgeDefinition.duration = { value: 1, unit: "rounds", expiry: "turn-end" };
@@ -86,6 +93,7 @@ test("core template survives Effect Forge, export/import, persistence, selection
   const imported = parseCardPackImport(serializeCardPackExport(normalized));
   assert.deepEqual(imported, normalized);
   assert.deepEqual(imported.cards[0].filters.excludedAttackTraits, ["spell"]);
+  assert.deepEqual(imported.cards[0].conditions, card.conditions);
 
   await saveCustomCardPack(imported);
   const livePack = hydrateRegisteredPack(pack.id);
@@ -106,7 +114,8 @@ test("core template survives Effect Forge, export/import, persistence, selection
     excludedTags: []
   }, {
     excludeCardIds: coreIds,
-    random: () => 0
+    random: () => 0,
+    snapshot: { roller: { hpRatio: 0.4 } }
   });
   assert.equal(selection.selected?.id, card.id);
 
@@ -126,6 +135,7 @@ test("core template survives Effect Forge, export/import, persistence, selection
 
   const reexported = parseCardPackImport(serializeCardPackExport(livePack));
   assert.deepEqual(reexported.cards[0].effect.definition.components, card.effect.definition.components);
+  assert.deepEqual(reexported.cards[0].conditions, card.conditions);
 
   await deleteCustomCardPack(pack.id);
   assert.equal(criticalCardRegistry.get(card.id), null);

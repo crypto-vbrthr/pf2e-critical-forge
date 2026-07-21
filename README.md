@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.9.4-dev.1` adds Phase 1 of the Critical Context Engine while preserving the existing card and pack schemas. Every PF2e context report now includes an immutable runtime snapshot with roll, participant, health, condition, position, combat, and provenance data. The diagnostic workbench displays this snapshot and its provider, and the public API exposes an additive Context Builder, resolver, provider registry, and capability flags. Existing packs continue to select and apply exactly as before.
+Version `0.9.4-dev.2` adds Phase 2 of the Critical Context Engine: an optional, generic Condition Engine evaluates immutable runtime snapshots during card matching. Conditions support nested AND/OR groups, ten safe operators, complete diagnostic evidence, and snapshot-stable redraws. Critical Card and Card Pack schemas remain at version `1`; cards without conditions behave exactly as before.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -30,7 +30,7 @@ The current module includes:
 - filters for damage types, weapon groups, required or excluded attack traits, save types, spell traditions, spell traits, source traits, and target traits;
 - direct mechanical-effect editing through a dedicated Effect Forge handoff;
 - portable card-pack JSON import and export through files or the clipboard;
-- headless filter matching, tone/impact profile weighting, and transparent candidate reports;
+- headless filter matching, optional snapshot conditions, tone/impact profile weighting, and transparent candidate reports;
 - a PF2e Context Adapter, immutable runtime snapshots, and a GM-only diagnostic workbench for real chat messages;
 - localized result cards with configurable `blind`, `gm`, `public`, or `self` visibility;
 - independent behavior and natural-roll trigger settings for all six supported critical categories;
@@ -39,7 +39,7 @@ The current module includes:
 - target re-resolution, target-aware validation, duplicate protection, and application audit flags;
 - a primary-GM-owned `createChatMessage` hook that detects supported PF2e critical rolls, asks or draws according to world settings, and never applies effects automatically.
 - a module-bound extension API that lets optional Foundry modules atomically register, replace, list, and remove their own protected card packs without touching the core or another module’s packs;
-- an additive Context Provider API with capability detection for future context-sensitive extensions.
+- an additive Context Provider API and public Condition Engine API with capability detection for context-sensitive extensions.
 
 ## API access
 
@@ -81,7 +81,7 @@ npm run test:coverage
 npm run quality:check
 ```
 
-The suite covers the Effect Engine and Forge, component-duration inheritance and native Item splitting, Item-bundle updates, card normalization, Card Pack Editor round-trips, pack activation, rollback-safe world persistence, external extension-pack lifecycles, spell/save filters, PF2e context adaptation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
+The suite covers the Effect Engine and Forge, component-duration inheritance and native Item splitting, Item-bundle updates, card normalization, Card Pack Editor round-trips, pack activation, rollback-safe world persistence, external extension-pack lifecycles, spell/save filters, PF2e context adaptation, nested condition normalization/evaluation/validation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 
@@ -96,6 +96,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/CARD_SELECTION.md`](docs/CARD_SELECTION.md): candidate evaluation and weighted selection
 - [`docs/CORE_CARD_LIBRARY.md`](docs/CORE_CARD_LIBRARY.md): bundled 96-card test-library matrix and content boundaries
 - [`docs/CONTEXT_ENGINE.md`](docs/CONTEXT_ENGINE.md): runtime snapshots, Context Builder, provider registry, resolver, and compatibility guarantees
+- [`docs/CONDITION_ENGINE.md`](docs/CONDITION_ENGINE.md): card conditions, operators, evaluation evidence, API, and compatibility rules
 - [`docs/PF2E_CONTEXT_ADAPTER.md`](docs/PF2E_CONTEXT_ADAPTER.md): PF2e document-to-context translation and diagnostics
 - [`docs/CRITICAL_DIAGNOSTICS.md`](docs/CRITICAL_DIAGNOSTICS.md): manual chat-message diagnostic workbench and report format
 - [`docs/CRITICAL_CARD_PREVIEW.md`](docs/CRITICAL_CARD_PREVIEW.md): result chat cards, visibility, stored flags, redraws, and effect application
