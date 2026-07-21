@@ -1,6 +1,6 @@
 # Critical Card Pack Editor
 
-Version `0.9.1-dev` extends the GM-only visual editor with excluded attack-trait filters while retaining the Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
+Version `0.9.4-dev` extends the GM-only visual editor with excluded attack-trait filters while retaining the Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
 
 ## Opening the editor
 

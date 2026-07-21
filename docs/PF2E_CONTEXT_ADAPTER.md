@@ -2,7 +2,7 @@
 
 The PF2e Context Adapter is a headless translation boundary. It accepts PF2e/Foundry objects explicitly supplied by a caller and returns the neutral context consumed by Critical Forge card matching.
 
-Adapter version `1.2.0` supports weapon attacks, spell attacks, and saving throws. The adapter itself does not register hooks, choose cards, render HTML, or apply effects. The separate automation service supplies newly created PF2e messages to it.
+Adapter version `1.2.2` supports weapon attacks, spell attacks, and saving throws. The adapter itself does not register hooks, choose cards, render HTML, or apply effects. The separate automation service supplies newly created PF2e messages to it.
 
 ## API
 
@@ -47,7 +47,7 @@ const report = api.cards.createContext(input, { system: "pf2e" });
   },
   metadata: {
     adapter: "pf2e",
-    adapterVersion: "1.2.0",
+    adapterVersion: "1.2.2",
     degreeOfSuccess: {
       index: 0,
       key: "criticalFailure",

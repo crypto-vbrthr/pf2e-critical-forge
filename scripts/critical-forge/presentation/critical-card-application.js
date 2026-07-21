@@ -1,6 +1,7 @@
 import { MODULE_ID } from "../../constants.js";
 import { applyEffectToTargets } from "../../effect-engine/effect-application.js";
 import { analyzeEffectDefinition } from "../../effect-engine/validation/validation-engine.js";
+import { resolveDiagnosticMessageInput } from "../diagnostics/chat-message-resolver.js";
 
 export const CRITICAL_CARD_APPLICATION_STATUSES = Object.freeze({
   PENDING: "pending",
@@ -27,39 +28,79 @@ export function getCriticalCardPreviewData(message) {
 
 export async function resolveCriticalCardEffectTarget(previewData, {
   fromUuidFn = defaultFromUuid,
-  actors = globalThis.game?.actors
+  actors = globalThis.game?.actors,
+  resolveMessageInputFn = resolveDiagnosticMessageInput
 } = {}) {
   const role = previewData?.effect?.target;
   if (!role || !["source", "target"].includes(role)) {
     return Object.freeze({ actor: null, role, reference: null, code: "CRITICAL_CARD_TARGET_ROLE_INVALID" });
   }
 
-  const metadata = previewData?.metadata?.[role] ?? {};
-  const references = [metadata.token, metadata.uuid].filter(Boolean);
+  const storedTarget = await resolveStoredActor(previewData?.metadata?.[role], {
+    role,
+    fromUuidFn,
+    actors
+  });
+
+  if (role === "source" && String(previewData?.category ?? "").startsWith("savingThrow")) {
+    // A save card targeting "source" must affect the creature that rolled the
+    // save. The stored participant snapshot is authoritative unless it
+    // collapses onto the recorded origin as well, which signals stale or
+    // ambiguous PF2e chat metadata. Only then re-read the source message.
+    const storedOrigin = await resolveStoredActor(previewData?.metadata?.target, {
+      role: "target",
+      fromUuidFn,
+      actors
+    });
+    if (storedTarget.actor && !sameActor(storedTarget.actor, storedOrigin.actor)) return storedTarget;
+
+    const liveRoller = await resolveSavingThrowRoller(previewData, {
+      fromUuidFn,
+      actors,
+      resolveMessageInputFn
+    });
+    if (liveRoller?.actor && !sameActor(liveRoller.actor, storedOrigin.actor)) return liveRoller;
+    if (storedTarget.actor) return storedTarget;
+    if (liveRoller?.actor) return liveRoller;
+  } else if (storedTarget.actor) {
+    return storedTarget;
+  }
+
+  return Object.freeze({
+    actor: null,
+    role,
+    reference: storedTarget.reference,
+    code: "CRITICAL_CARD_TARGET_UNRESOLVED"
+  });
+}
+
+async function resolveStoredActor(metadata = {}, { role, fromUuidFn, actors }) {
+  const references = [metadata?.token, metadata?.uuid].filter(Boolean);
   for (const reference of references) {
     try {
       const document = await fromUuidFn(reference);
       const actor = resolveActor(document);
-      if (actor) return Object.freeze({ actor, role, reference, code: null });
+      if (actor) return Object.freeze({ actor, role, reference, code: null, resolvedBy: "preview-metadata" });
     } catch (error) {
       console.warn(`${MODULE_ID} | Could not resolve Critical Forge target reference ${reference}`, error);
     }
   }
 
-  const actor = metadata.id ? actors?.get?.(metadata.id) ?? null : null;
+  const actor = metadata?.id ? actors?.get?.(metadata.id) ?? null : null;
   if (actor) {
     return Object.freeze({
       actor,
       role,
       reference: actor.uuid ?? metadata.uuid ?? metadata.id,
-      code: null
+      code: null,
+      resolvedBy: "preview-metadata"
     });
   }
 
   return Object.freeze({
     actor: null,
     role,
-    reference: references[0] ?? metadata.id ?? null,
+    reference: references[0] ?? metadata?.id ?? null,
     code: "CRITICAL_CARD_TARGET_UNRESOLVED"
   });
 }
@@ -246,12 +287,52 @@ function updateApplicationPresentation({ container, button, statusElement, statu
   ));
 }
 
+async function resolveSavingThrowRoller(previewData, { fromUuidFn, actors, resolveMessageInputFn }) {
+  const sourceMessageUuid = previewData?.sourceMessageUuid;
+  if (!sourceMessageUuid || typeof fromUuidFn !== "function" || typeof resolveMessageInputFn !== "function") return null;
+
+  try {
+    const sourceMessage = await fromUuidFn(sourceMessageUuid);
+    if (!sourceMessage) return null;
+    const resolved = await resolveMessageInputFn(sourceMessage, {
+      fromUuidFn,
+      actors,
+      targetTokens: [],
+      user: null
+    });
+    const actor = resolved?.input?.sourceActor ?? resolved?.input?.sourceToken?.actor ?? null;
+    if (!actor) return null;
+    const token = resolved?.input?.sourceToken ?? null;
+    return Object.freeze({
+      actor,
+      role: "source",
+      reference: token?.uuid ?? actor.uuid ?? actor.id ?? null,
+      code: null,
+      resolvedBy: "source-message-roller"
+    });
+  } catch (error) {
+    console.warn(`${MODULE_ID} | Could not re-resolve the saving-throw roller from ${sourceMessageUuid}`, error);
+    return null;
+  }
+}
+
 function resolveActor(document) {
   if (!document) return null;
   if (document.documentName === "Actor") return document;
   if (document.actor?.documentName === "Actor") return document.actor;
   if (document.document?.actor?.documentName === "Actor") return document.document.actor;
   return null;
+}
+
+function sameActor(left, right) {
+  if (!left || !right) return false;
+  if (left === right) return true;
+  const leftUuid = left.uuid ?? null;
+  const rightUuid = right.uuid ?? null;
+  if (leftUuid && rightUuid) return String(leftUuid) === String(rightUuid);
+  const leftId = left.id ?? left._id ?? null;
+  const rightId = right.id ?? right._id ?? null;
+  return Boolean(leftId && rightId && String(leftId) === String(rightId));
 }
 
 function applicationFailure(code, extra = {}) {

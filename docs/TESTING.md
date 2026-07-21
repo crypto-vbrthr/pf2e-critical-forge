@@ -97,7 +97,7 @@ The suite contains 209 tests covering:
 - dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation;
 - pack activation semantics, transactional world-setting rollback, protected-data startup guards, module-bound extension ownership, atomic multi-pack registration, change hooks, and optional extension-module lifecycles.
 
-Coverage is a diagnostic rather than a release gate. Version `0.9.1-dev` measures 93.31% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
+Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev` measures 93.41% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
 
 ## Foundry mock
 

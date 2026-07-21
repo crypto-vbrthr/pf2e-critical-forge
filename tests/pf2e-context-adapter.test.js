@@ -327,3 +327,41 @@ test("natural saving throw results remain separate from the final degree", () =>
   assert.equal(report.metadata.roll.isNatural20, true);
   assert.deepEqual(report.context.saveTypes, ["will"]);
 });
+
+test("resolved saving-throw participants outrank contradictory PF2e flag references", () => {
+  const caster = actor({ id: "caster-authoritative", traits: ["human", "humanoid"] });
+  const defender = actor({ id: "defender-authoritative", traits: ["elf", "humanoid"] });
+  const casterToken = { id: "caster-token-authoritative", uuid: "Scene.scene.Token.caster-token-authoritative", actor: caster };
+  const defenderToken = { id: "defender-token-authoritative", uuid: "Scene.scene.Token.defender-token-authoritative", actor: defender };
+  const message = {
+    actor: caster,
+    token: casterToken,
+    flags: {
+      pf2e: {
+        context: {
+          type: "saving-throw",
+          outcome: "criticalSuccess",
+          statistic: "will",
+          actor: caster.uuid,
+          token: casterToken.uuid,
+          origin: { actor: caster.uuid, token: casterToken.uuid }
+        }
+      }
+    },
+    rolls: [{ degreeOfSuccess: 3 }]
+  };
+
+  const report = createPf2eSelectionContext({
+    message,
+    sourceActor: defender,
+    sourceToken: defenderToken,
+    targetActor: caster,
+    targetToken: casterToken
+  });
+
+  assert.equal(report.context.category, "savingThrowCriticalSuccess");
+  assert.equal(report.metadata.source.uuid, defender.uuid);
+  assert.equal(report.metadata.source.token, defenderToken.uuid);
+  assert.equal(report.metadata.target.uuid, caster.uuid);
+  assert.equal(report.metadata.target.token, casterToken.uuid);
+});

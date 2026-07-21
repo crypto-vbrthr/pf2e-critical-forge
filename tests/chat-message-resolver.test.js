@@ -106,6 +106,68 @@ test("resolver prefers target references stored in PF2e message context", async 
   assert.equal(result.diagnostics.length, 0);
 });
 
+
+test("saving throw resolver keeps the rolling creature as source when the message still points at the caster", async () => {
+  const caster = {
+    id: "caster",
+    uuid: "Actor.caster",
+    name: "Caster",
+    documentName: "Actor"
+  };
+  const defender = {
+    id: "defender",
+    uuid: "Actor.defender",
+    name: "Defender",
+    documentName: "Actor"
+  };
+  const casterToken = { id: "caster-token", actor: caster };
+  const defenderToken = { id: "defender-token", actor: defender };
+  const defenderTokenDocument = {
+    id: "defender-token",
+    uuid: "Scene.scene.Token.defender-token",
+    actor: defender,
+    object: defenderToken
+  };
+  const message = {
+    id: "spell-save",
+    speaker: { actor: caster.id, token: casterToken.id },
+    speakerActor: caster,
+    actor: caster,
+    token: casterToken,
+    flags: {
+      pf2e: {
+        context: {
+          type: "saving-throw",
+          statistic: "will",
+          outcome: "criticalSuccess",
+          actor: defender.uuid,
+          token: defenderTokenDocument.uuid,
+          origin: { actor: caster.uuid }
+        }
+      }
+    },
+    rolls: [{ degreeOfSuccess: 3 }]
+  };
+  const documents = new Map([
+    [caster.uuid, caster],
+    [defender.uuid, defender],
+    [defenderTokenDocument.uuid, defenderTokenDocument]
+  ]);
+
+  const result = await resolveDiagnosticMessageInput(message, {
+    targetTokens: [],
+    actors: { get: (id) => id === caster.id ? caster : id === defender.id ? defender : null },
+    fromUuidFn: async (uuid) => documents.get(uuid) ?? null,
+    canvas: null,
+    user: null
+  });
+
+  assert.equal(result.input.sourceActor, defender);
+  assert.equal(result.input.sourceToken, defenderToken);
+  assert.equal(result.input.targetActor, caster);
+  assert.equal(result.diagnostics.length, 0);
+});
+
 test("dropped ChatMessage resolves by UUID or collection id", async () => {
   const byUuid = { id: "uuid-message" };
   assert.equal(
@@ -137,4 +199,64 @@ test("diagnostic labels include speaker, action, and outcome", () => {
     flags: { pf2e: { context: { action: "Longsword", outcome: "criticalSuccess" } } }
   });
   assert.equal(label, "Valeros · Longsword · criticalSuccess");
+});
+
+test("saving throw resolver treats PF2e context.target as the roller when the root context still belongs to the caster", async () => {
+  const caster = {
+    id: "caster-live",
+    uuid: "Actor.caster-live",
+    name: "Caster",
+    documentName: "Actor"
+  };
+  const defender = {
+    id: "defender-live",
+    uuid: "Actor.defender-live",
+    name: "Defender",
+    documentName: "Actor"
+  };
+  const casterToken = { id: "caster-token-live", uuid: "Scene.scene.Token.caster-token-live", actor: caster };
+  const defenderToken = { id: "defender-token-live", uuid: "Scene.scene.Token.defender-token-live", actor: defender };
+  const casterTokenDocument = { ...casterToken, object: casterToken };
+  const defenderTokenDocument = { ...defenderToken, object: defenderToken };
+  const message = {
+    id: "spell-save-live-shape",
+    speaker: { actor: caster.id, token: casterToken.id },
+    speakerActor: caster,
+    actor: caster,
+    token: casterToken,
+    flags: {
+      pf2e: {
+        context: {
+          type: "saving-throw",
+          statistic: "reflex",
+          outcome: "criticalSuccess",
+          actor: caster.uuid,
+          token: casterToken.uuid,
+          origin: { actor: caster.uuid, token: casterToken.uuid },
+          target: { actor: defender.uuid, token: defenderToken.uuid }
+        }
+      }
+    },
+    rolls: [{ degreeOfSuccess: 3 }]
+  };
+  const documents = new Map([
+    [caster.uuid, caster],
+    [defender.uuid, defender],
+    [casterToken.uuid, casterTokenDocument],
+    [defenderToken.uuid, defenderTokenDocument]
+  ]);
+
+  const result = await resolveDiagnosticMessageInput(message, {
+    targetTokens: [],
+    actors: { get: (id) => id === caster.id ? caster : id === defender.id ? defender : null },
+    fromUuidFn: async (uuid) => documents.get(uuid) ?? null,
+    canvas: null,
+    user: null
+  });
+
+  assert.equal(result.input.sourceActor, defender);
+  assert.equal(result.input.sourceToken, defenderToken);
+  assert.equal(result.input.targetActor, caster);
+  assert.equal(result.input.targetToken, casterToken);
+  assert.equal(result.diagnostics.length, 0);
 });

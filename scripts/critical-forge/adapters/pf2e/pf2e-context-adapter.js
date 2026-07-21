@@ -7,7 +7,7 @@ import { getPath, uniqueSlugs } from "./context-utils.js";
 import { readRollResult, resolveCriticalCategory } from "./roll-result-reader.js";
 import { readSaveContext } from "./save-context-reader.js";
 
-export const PF2E_CONTEXT_ADAPTER_VERSION = "1.2.0";
+export const PF2E_CONTEXT_ADAPTER_VERSION = "1.2.2";
 
 export function createPf2eSelectionContext(input = {}) {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
@@ -162,19 +162,39 @@ export function createPf2eSelectionContext(input = {}) {
 
 function actorReferences(contextFlag, rollFamily) {
   if (!contextFlag) return { source: null, target: null };
-  const roller = actorReference(contextFlag);
+  const root = actorReference(contextFlag);
   const origin = contextFlag.origin ?? null;
   const target = contextFlag.target ?? null;
   if (rollFamily === "savingThrow") {
+    const roller = target && !sameActorReference(target, origin) ? target : root;
+    const cause = origin ?? (root && !sameActorReference(root, roller) ? root : null);
     return {
-      source: roller ?? null,
-      target: origin ?? target ?? null
+      source: roller ?? root ?? null,
+      target: cause ?? null
     };
   }
   return {
-    source: origin ?? roller ?? null,
+    source: origin ?? root ?? null,
     target: target ?? null
   };
+}
+
+function sameActorReference(left, right) {
+  if (!left || !right) return false;
+  const leftActor = referenceValue(left, "actor");
+  const rightActor = referenceValue(right, "actor");
+  if (leftActor && rightActor) return leftActor === rightActor;
+  const leftToken = referenceValue(left, "token");
+  const rightToken = referenceValue(right, "token");
+  return Boolean(leftToken && rightToken && leftToken === rightToken);
+}
+
+function referenceValue(reference, key) {
+  if (!reference) return null;
+  if (typeof reference === "string") return key === "actor" ? reference : null;
+  const value = reference[key];
+  if (typeof value === "string") return value;
+  return value?.uuid ?? value?.id ?? value?._id ?? null;
 }
 
 function actorReference(contextFlag) {

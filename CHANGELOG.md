@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.9.4-dev
+
+- Fixed the remaining saving-throw target leak: a correctly resolved rolling Actor is now authoritative over contradictory `flags.pf2e.context` actor or token references.
+- Prevented application-time source-message re-resolution from replacing a correct stored saving-throw recipient with the originating caster.
+- Save-card application now detects collapsed source/origin metadata and only uses the live-message fallback when the stored participant snapshot is ambiguous.
+- Increased the PF2e Context Adapter version to `1.2.2`; public API version remains `0.9.1`, Effect Definition schema remains `2`, and Critical Card/Card Pack schemas remain `1`.
+- Added regression tests for contradictory PF2e save references and for preserving a correct stored defender during application.
+- The complete suite contains **214** passing tests.
+
+## 0.9.3-dev
+
+- Fixed the live PF2e spell-save layout in which the root chat context and speaker still identify the caster while `flags.pf2e.context.target` identifies the creature that rolled the saving throw.
+- Saving-throw participant resolution now distinguishes the rolling creature from the effect origin across root-context, origin, target, selected-token, and speaker fallbacks.
+- Added an application-level regression path from a real-shaped PF2e save message through context adaptation to the actor receiving the Critical Forge effect.
+- Increased the PF2e Context Adapter version to `1.2.1`; public API version remains `0.9.1`, Effect Definition schema remains `2`, and Critical Card/Card Pack schemas remain `1`.
+- The complete suite contains **212** passing tests with **93.41%** measured line coverage.
+
+## 0.9.2-dev
+
+- Fixed PF2e saving-throw actor resolution when a spell-origin message still exposes the caster as its generic speaker, message actor, or message token.
+- Saving throws now prefer the actor and token recorded in `flags.pf2e.context` as Critical Forge's `source`, which is the creature that actually rolled the save.
+- Positive effects from critically successful saving-throw cards therefore apply to the successful defender rather than the originating caster; critically failed save effects continue to affect the rolling creature as intended.
+- Preserved the caster or other originating creature as the saving throw's `target` context for card filtering, preview display, and effects that deliberately reference that role.
+- Added a regression test using a spell save whose generic message references point at the caster while the PF2e save context points at the defender.
+- The complete suite now contains **210** passing tests with **93.34%** measured line coverage. Module version increased to `0.9.2-dev`; public API remains `0.9.1`; Effect Definition schema remains `2`; Critical Card and Card Pack schema versions remain `1`.
+
 ## 0.9.1-dev
 
 - Added the optional Critical Card filter `excludedAttackTraits`. A card is rejected when any listed slug is present in the normalized attack context.

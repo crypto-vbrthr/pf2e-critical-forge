@@ -41,7 +41,7 @@ test("public card API selects, localizes, and materializes cards", () => {
 });
 
 test("public card API exposes the headless PF2e context adapter", () => {
-  assert.equal(api.adapters.pf2e.version, "1.2.0");
+  assert.equal(api.adapters.pf2e.version, "1.2.2");
   const direct = api.adapters.pf2e.createContext({
     category: "criticalHit",
     damageTypes: ["slashing"]

@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.9.1-dev` adds negative attack-trait filters for Critical Cards while retaining component-level Effect durations and global-duration inheritance. The Effect Forge, Critical Forge, 96-card core library, automation, card editor, and external pack API remain available together.
+Version `0.9.4-dev` makes the resolved saving-throw participant authoritative: a stale PF2e flag or later chat-message re-read can no longer replace the creature that actually rolled the save with the originating caster. Positive effects from critically successful saving throws therefore remain attached to the successful target. Negative attack-trait filters, component-level Effect durations, the 96-card core library, automation, card editor, and external pack API remain available together.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 

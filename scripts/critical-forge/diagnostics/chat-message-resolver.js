@@ -40,34 +40,7 @@ export async function resolveDiagnosticMessageInput(message, {
   const speaker = message.speaker ?? {};
   const messageContext = getPath(message, "flags.pf2e.context") ?? {};
   const savingThrow = isSavingThrowContext(messageContext, message);
-  const targetReference = savingThrow
-    ? (messageContext.origin ?? messageContext.target ?? null)
-    : (messageContext.target ?? null);
-  const sourceReference = savingThrow
-    ? messageContext
-    : (messageContext.origin ?? messageContext ?? null);
-
-  const flaggedTarget = await resolveDocumentReference(targetReference, { fromUuidFn, actors, canvas });
   const selectedTargets = normalizeTokens(targetTokens ?? user?.targets ?? []);
-  let resolvedTargetToken = targetToken ?? flaggedTarget.token ?? null;
-  let resolvedTargetActor = flaggedTarget.actor ?? resolvedTargetToken?.actor ?? null;
-  if (!resolvedTargetToken && !resolvedTargetActor && selectedTargets.length === 1) {
-    [resolvedTargetToken] = selectedTargets;
-    resolvedTargetActor = resolvedTargetToken?.actor ?? null;
-  } else if (!resolvedTargetToken && !resolvedTargetActor && selectedTargets.length > 1) {
-    diagnostics.push({
-      severity: "warning",
-      code: "CRITICAL_DIAGNOSTIC_MULTIPLE_TARGETS",
-      data: { count: selectedTargets.length }
-    });
-  }
-
-  const flaggedSource = await resolveDocumentReference(sourceReference, { fromUuidFn, actors, canvas });
-  const resolvedSourceToken = sourceToken
-    ?? message.token
-    ?? flaggedSource.token
-    ?? resolveCanvasToken(speaker.token, canvas)
-    ?? null;
 
   let item = message.item ?? message._strike?.item ?? message._attack?.item ?? null;
   const itemUuid = firstString(
@@ -87,6 +60,69 @@ export async function resolveDiagnosticMessageInput(message, {
     }
   }
 
+  if (savingThrow) {
+    const participants = await resolveSavingThrowParticipants(message, {
+      messageContext,
+      sourceToken,
+      targetToken,
+      selectedTargets,
+      item,
+      fromUuidFn,
+      actors,
+      canvas
+    });
+
+    if (participants.multipleTargetsAmbiguous) {
+      diagnostics.push({
+        severity: "warning",
+        code: "CRITICAL_DIAGNOSTIC_MULTIPLE_TARGETS",
+        data: { count: selectedTargets.length }
+      });
+    }
+    if (!participants.originToken && !participants.originActor) {
+      diagnostics.push({
+        severity: "info",
+        code: "CRITICAL_DIAGNOSTIC_TARGET_NOT_SELECTED",
+        data: {}
+      });
+    }
+
+    return {
+      input: {
+        message,
+        roll: resolvePrimaryRoll(message),
+        item,
+        sourceActor: participants.rollerActor,
+        targetActor: participants.originActor,
+        sourceToken: participants.rollerToken,
+        targetToken: participants.originToken
+      },
+      diagnostics
+    };
+  }
+
+  const targetReference = messageContext.target ?? null;
+  const sourceReference = messageContext.origin ?? messageContext ?? null;
+  const flaggedTarget = await resolveDocumentReference(targetReference, { fromUuidFn, actors, canvas });
+  let resolvedTargetToken = targetToken ?? flaggedTarget.token ?? null;
+  let resolvedTargetActor = flaggedTarget.actor ?? resolvedTargetToken?.actor ?? null;
+  if (!resolvedTargetToken && !resolvedTargetActor && selectedTargets.length === 1) {
+    [resolvedTargetToken] = selectedTargets;
+    resolvedTargetActor = resolvedTargetToken?.actor ?? null;
+  } else if (!resolvedTargetToken && !resolvedTargetActor && selectedTargets.length > 1) {
+    diagnostics.push({
+      severity: "warning",
+      code: "CRITICAL_DIAGNOSTIC_MULTIPLE_TARGETS",
+      data: { count: selectedTargets.length }
+    });
+  }
+
+  const flaggedSource = await resolveDocumentReference(sourceReference, { fromUuidFn, actors, canvas });
+  const resolvedSourceToken = sourceToken
+    ?? message.token
+    ?? flaggedSource.token
+    ?? resolveCanvasToken(speaker.token, canvas)
+    ?? null;
   const sourceActor = message.speakerActor
     ?? message.actor
     ?? resolvedSourceToken?.actor
@@ -116,6 +152,103 @@ export async function resolveDiagnosticMessageInput(message, {
     },
     diagnostics
   };
+}
+
+async function resolveSavingThrowParticipants(message, {
+  messageContext,
+  sourceToken,
+  targetToken,
+  selectedTargets,
+  item,
+  fromUuidFn,
+  actors,
+  canvas
+}) {
+  const speaker = message.speaker ?? {};
+  const [rootReference, originReference, targetReference] = await Promise.all([
+    resolveDocumentReference(
+      { actor: messageContext.actor ?? null, token: messageContext.token ?? null },
+      { fromUuidFn, actors, canvas }
+    ),
+    resolveDocumentReference(messageContext.origin ?? null, { fromUuidFn, actors, canvas }),
+    resolveDocumentReference(messageContext.target ?? null, { fromUuidFn, actors, canvas })
+  ]);
+
+  const explicitRoller = participant(sourceToken?.actor ?? null, sourceToken);
+  const explicitOrigin = participant(targetToken?.actor ?? null, targetToken);
+  const root = participant(rootReference.actor, rootReference.token);
+  const origin = participant(originReference.actor, originReference.token);
+  const flaggedTarget = participant(targetReference.actor, targetReference.token);
+  const messageParticipant = participant(
+    message.speakerActor
+      ?? message.actor
+      ?? message.token?.actor
+      ?? resolveActor(speaker.actor, actors)
+      ?? null,
+    message.token ?? resolveCanvasToken(speaker.token, canvas) ?? null
+  );
+  const itemParticipant = participant(item?.actor ?? null, item?.actor?.token ?? null);
+  const selected = selectedTargets.map((token) => participant(token?.actor ?? null, token));
+
+  const roller = explicitRoller.actor || explicitRoller.token
+    ? explicitRoller
+    : chooseSavingThrowRoller({ root, origin, flaggedTarget, messageParticipant, selected });
+
+  const cause = explicitOrigin.actor || explicitOrigin.token
+    ? explicitOrigin
+    : chooseSavingThrowOrigin({ roller, root, origin, flaggedTarget, messageParticipant, itemParticipant });
+
+  return {
+    rollerActor: roller.actor ?? roller.token?.actor ?? null,
+    rollerToken: roller.token ?? null,
+    originActor: cause.actor ?? cause.token?.actor ?? null,
+    originToken: cause.token ?? null,
+    multipleTargetsAmbiguous: !roller.actor && !roller.token && selectedTargets.length > 1
+  };
+}
+
+function chooseSavingThrowRoller({ root, origin, flaggedTarget, messageParticipant, selected }) {
+  const originKnown = Boolean(origin.actor || origin.token);
+  const candidates = originKnown
+    ? [flaggedTarget, root, messageParticipant, ...selected]
+    : [root, messageParticipant, ...selected, flaggedTarget];
+  const distinct = candidates.find((candidate) => hasParticipant(candidate) && !sameParticipant(candidate, origin));
+  return distinct ?? candidates.find(hasParticipant) ?? participant(null, null);
+}
+
+function chooseSavingThrowOrigin({ roller, root, origin, flaggedTarget, messageParticipant, itemParticipant }) {
+  const candidates = [origin, root, messageParticipant, itemParticipant, flaggedTarget];
+  const distinct = candidates.find((candidate) => hasParticipant(candidate) && !sameParticipant(candidate, roller));
+  return distinct ?? participant(null, null);
+}
+
+function participant(actor, token) {
+  return {
+    actor: actor ?? token?.actor ?? null,
+    token: token ?? null
+  };
+}
+
+function hasParticipant(candidate) {
+  return Boolean(candidate?.actor || candidate?.token);
+}
+
+function sameParticipant(left, right) {
+  if (!hasParticipant(left) || !hasParticipant(right)) return false;
+  const leftActor = left.actor ?? left.token?.actor ?? null;
+  const rightActor = right.actor ?? right.token?.actor ?? null;
+  if (leftActor && rightActor) {
+    const leftUuid = leftActor.uuid ?? null;
+    const rightUuid = rightActor.uuid ?? null;
+    if (leftUuid && rightUuid) return leftUuid === rightUuid;
+    const leftId = leftActor.id ?? leftActor._id ?? null;
+    const rightId = rightActor.id ?? rightActor._id ?? null;
+    if (leftId && rightId) return leftId === rightId;
+    if (leftActor === rightActor) return true;
+  }
+  const leftTokenId = left.token?.uuid ?? left.token?.id ?? left.token?._id ?? null;
+  const rightTokenId = right.token?.uuid ?? right.token?.id ?? right.token?._id ?? null;
+  return Boolean(leftTokenId && rightTokenId && leftTokenId === rightTokenId);
 }
 
 export function getChatMessageDragData(event, { textEditor = null } = {}) {

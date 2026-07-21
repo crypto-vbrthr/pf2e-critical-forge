@@ -50,15 +50,22 @@ export function readActorContext(actor, {
   const level = finiteNumber(firstDefined(actor?.level, getPath(actor, "system.details.level.value")));
   const size = normalizeSlug(firstDefined(actor?.size, getPath(actor, "system.traits.size.value"))) || null;
 
+  // A concrete Actor or Token resolved for this roll is authoritative. PF2e
+  // context references are useful fallbacks, but they may still describe the
+  // spell origin on saving-throw messages. Never let such a flag replace the
+  // identity of the Actor that was actually resolved as the participant.
+  const preferredActorUuid = identity?.uuid ?? normalizeReference(referenceActor) ?? null;
+  const preferredTokenUuid = tokenIdentity?.uuid ?? normalizeReference(referenceToken) ?? null;
+
   return {
     actor,
     traits,
     metadata: {
       ...(identity ?? { id: null, uuid: null, name: null, type: null }),
-      uuid: identity?.uuid ?? referenceActor ?? null,
+      uuid: preferredActorUuid,
       level,
       size,
-      token: tokenIdentity?.uuid ?? referenceToken ?? null
+      token: preferredTokenUuid
     }
   };
 }
@@ -66,4 +73,10 @@ export function readActorContext(actor, {
 function finiteNumber(value) {
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
+}
+
+function normalizeReference(value) {
+  if (!value) return null;
+  if (typeof value === "string") return value.trim() || null;
+  return documentIdentity(value)?.uuid ?? null;
 }
