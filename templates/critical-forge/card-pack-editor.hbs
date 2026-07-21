@@ -23,7 +23,7 @@
         <h3>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Packs"}}</h3>
         <span>{{packs.length}}</span>
       </div>
-      <div class="card-editor-scroll-list">
+      <div class="card-editor-scroll-list" data-preserve-scroll data-scroll-key="card-editor-packs">
         {{#each packs as |entry|}}
           <button type="button" class="card-editor-list-entry {{#if entry.selected}}selected{{/if}}" data-action="selectPack" data-pack-id="{{entry.id}}">
             <span class="entry-icon"><i class="fa-solid {{#if entry.editable}}fa-pen-to-square{{else}}fa-lock{{/if}}"></i></span>
@@ -42,7 +42,7 @@
         <h3>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Cards"}}</h3>
         <button type="button" class="icon" data-action="newCard" title="{{localize 'PF2E_CRITICAL_FORGE.CardEditor.NewCard'}}" {{#unless packEditable}}disabled{{/unless}}><i class="fa-solid fa-plus"></i></button>
       </div>
-      <div class="card-editor-scroll-list">
+      <div class="card-editor-scroll-list" data-preserve-scroll data-scroll-key="card-editor-cards">
         {{#each cards as |entry|}}
           <button type="button" class="card-editor-list-entry card-entry {{#if entry.selected}}selected{{/if}}" data-action="selectCard" data-card-id="{{entry.id}}">
             <span class="entry-icon"><i class="fa-solid {{#if entry.hasEffect}}fa-bolt{{else}}fa-feather{{/if}}"></i></span>
@@ -57,7 +57,7 @@
       </div>
     </aside>
 
-    <section class="card-editor-workspace">
+    <section class="card-editor-workspace" data-preserve-scroll data-scroll-key="card-editor-workspace">
       {{#if hasPack}}
         <section class="card-editor-section pack-fields">
           <div class="card-editor-section-heading">

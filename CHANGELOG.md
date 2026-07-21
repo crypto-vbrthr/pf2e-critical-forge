@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.4-dev.3.1
+
+- Fixed Card Pack Editor context-condition actions jumping the main workspace back to the top after a rerender.
+- Preserved independent scroll positions for the pack list, card list, and card-editing workspace when conditions are enabled, added, grouped, removed, retested, cleared, or changed through a rerendering field.
+- Reused the tested scroll-state mechanism already employed by the Effect Forge, including safe clamping when rendered content becomes shorter.
+- Added an application-level regression test that replaces the rendered editor DOM and verifies exact scroll restoration across enabling conditions and adding a condition.
+- Kept all Critical Card, Card Pack, Effect Definition, public API, and extension compatibility versions unchanged.
+- The complete suite contains **261** passing tests.
+
 ## 0.9.4-dev.3
 
 - Added Phase 3 of the Critical Context Engine: a visual condition editor inside the Card Pack Editor without changing Critical Card or Card Pack schema version `1`.

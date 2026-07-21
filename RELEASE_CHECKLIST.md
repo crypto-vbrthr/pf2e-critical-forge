@@ -13,7 +13,7 @@
 - [ ] Copy a protected core card into a custom pack, edit its effect in Effect Forge, save it, export/import the pack, and confirm the card can still be drawn and applied.
 - [ ] Disable and re-enable that custom pack through **Paket aktivieren** and verify selection changes immediately while the pack remains editable.
 - [ ] Register two external test packs through `api.cards.extensions.forModule(moduleId).registerPacks()`, replace one, call `unregisterAll()`, and confirm core and unrelated packs remain untouched.
-- [ ] Open Critical Diagnostics and confirm the toolbar shows `Karteneditor · 0.9.4-dev.3`, the runtime-context summary, and the raw snapshot.
+- [ ] Open Critical Diagnostics and confirm the toolbar shows `Karteneditor · 0.9.4-dev.3.1`, the runtime-context summary, and the raw snapshot.
 - [ ] Diagnose one attack and one saving throw; confirm the rolling Actor is `source`, the hostile opponent/origin is `target`, and HP/level data matches the current Actors.
 - [ ] Open an editable card, enable conditions, create a nested `all`/`any` tree, change field types and operators, save, reopen, and confirm the tree is identical.
 - [ ] Test a provider-defined custom path once as a number and once as text; confirm the configured type and value survive rerendering and JSON export/import.

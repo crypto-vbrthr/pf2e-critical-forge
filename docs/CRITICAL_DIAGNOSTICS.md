@@ -1,6 +1,6 @@
 # Critical Forge Diagnostics
 
-Version `0.9.4-dev.3` retains the manual GM workbench with Phase-2 condition evidence and identifies the Phase-3 editor build in its toolbar while retaining the complete runtime context snapshot. It remains the primary instrument for testing PF2e participant resolution, context acquisition, candidate determination, and later card application. Eligible cards can be deliberately published as manual result chat cards.
+Version `0.9.4-dev.3.1` retains the manual GM workbench with Phase-2 condition evidence and identifies the Phase-3 editor build in its toolbar while retaining the complete runtime context snapshot. It remains the primary instrument for testing PF2e participant resolution, context acquisition, candidate determination, and later card application. Eligible cards can be deliberately published as manual result chat cards.
 
 The diagnostic itself applies no effect, creates no Item, and changes no Actor. The separate automation service may process supported rolls according to world settings.
 

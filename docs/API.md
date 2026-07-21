@@ -664,7 +664,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, runtime Context Engine, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev.3` adds the visual condition-editor catalog, contradiction analysis, and synthetic simulator on top of the immutable context/provider and Condition Engine foundation while retaining all existing card APIs and schema-version-1 pack compatibility.
+Critical Forge card architecture, the PF2e Context Adapter, runtime Context Engine, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev.3.1` adds the visual condition-editor catalog, contradiction analysis, and synthetic simulator on top of the immutable context/provider and Condition Engine foundation while retaining all existing card APIs and schema-version-1 pack compatibility.
 
 Capability detection:
 

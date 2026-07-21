@@ -22,6 +22,37 @@ class MockElement {
     for (const listener of this.listeners.get(type) ?? []) listener(event);
   }
 }
+
+class MockScrollElement {
+  constructor(key, { top = 0, left = 0, scrollHeight = 1600, clientHeight = 700 } = {}) {
+    this.dataset = { scrollKey: key };
+    this.scrollTop = top;
+    this.scrollLeft = left;
+    this.scrollHeight = scrollHeight;
+    this.clientHeight = clientHeight;
+    this.scrollWidth = 1000;
+    this.clientWidth = 1000;
+  }
+}
+
+class MockEditorRoot extends MockElement {
+  constructor(scrollPositions = {}) {
+    super();
+    this.scrollElements = Object.entries(scrollPositions).map(([key, top]) =>
+      new MockScrollElement(key, { top })
+    );
+  }
+
+  querySelectorAll(selector) {
+    if (selector === "[data-preserve-scroll]") return this.scrollElements;
+    return [];
+  }
+
+  scroll(key) {
+    return this.scrollElements.find((element) => element.dataset.scrollKey === key);
+  }
+}
+
 class MockFormElement extends MockElement {
   constructor(entries = {}) {
     super();
@@ -177,3 +208,54 @@ test("Card Pack Editor synchronizes custom provider field types before testing",
   assert.equal(app.conditionTestResult.evaluation.available, false);
   assert.equal(app.conditionTestResult.evaluation.counts.unavailable, 1);
 });
+
+test("condition editor rerenders preserve all Card Pack Editor scroll positions", async () => {
+  const { app, card } = createAppWithConditionCard();
+  card.conditions = null;
+  const actions = CardPackEditorApp.DEFAULT_OPTIONS.actions;
+  const before = new MockEditorRoot({
+    "card-editor-packs": 120,
+    "card-editor-cards": 260,
+    "card-editor-workspace": 640
+  });
+  const afterEnable = new MockEditorRoot({
+    "card-editor-packs": 0,
+    "card-editor-cards": 0,
+    "card-editor-workspace": 0
+  });
+  const afterAdd = new MockEditorRoot({
+    "card-editor-packs": 0,
+    "card-editor-cards": 0,
+    "card-editor-workspace": 0
+  });
+  const renderedRoots = [afterEnable, afterAdd];
+  app.element = before;
+  app.render = async function renderWithReplacement() {
+    this.renderCount += 1;
+    this.element = renderedRoots.shift();
+    this._onRender({}, {});
+    return this;
+  };
+
+  const previousAnimationFrame = globalThis.requestAnimationFrame;
+  globalThis.requestAnimationFrame = (callback) => {
+    callback();
+    return 1;
+  };
+  try {
+    await actions.enableConditions.call(app);
+    assert.equal(afterEnable.scroll("card-editor-packs").scrollTop, 120);
+    assert.equal(afterEnable.scroll("card-editor-cards").scrollTop, 260);
+    assert.equal(afterEnable.scroll("card-editor-workspace").scrollTop, 640);
+
+    afterEnable.scroll("card-editor-workspace").scrollTop = 710;
+    await actions.addCondition.call(app, null, { dataset: { conditionPath: "" } });
+    assert.equal(afterAdd.scroll("card-editor-packs").scrollTop, 120);
+    assert.equal(afterAdd.scroll("card-editor-cards").scrollTop, 260);
+    assert.equal(afterAdd.scroll("card-editor-workspace").scrollTop, 710);
+  } finally {
+    if (previousAnimationFrame === undefined) delete globalThis.requestAnimationFrame;
+    else globalThis.requestAnimationFrame = previousAnimationFrame;
+  }
+});
+

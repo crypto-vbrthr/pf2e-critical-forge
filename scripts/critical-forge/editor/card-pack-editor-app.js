@@ -29,6 +29,7 @@ import {
   saveCustomCardPack
 } from "./card-pack-store.js";
 import { cardEffectToForgeDefinition, forgeDefinitionToCardEffect } from "./card-effect-bridge.js";
+import { captureScrollState, restoreScrollState } from "../../effect-forge/view-state.js";
 import {
   addConditionEditorNode,
   analyzeConditionContradictions,
@@ -79,6 +80,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
   allowCloseWithoutPrompt = false;
   conditionTestInput = defaultConditionTestInput();
   conditionTestResult = null;
+  preservedScrollState = new Map();
 
   static DEFAULT_OPTIONS = {
     id: "pf2e-critical-forge-card-pack-editor",
@@ -206,9 +208,39 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
       control.addEventListener("change", async () => {
         this.#syncFromForm();
         this.conditionTestResult = null;
-        await this.render({ force: true });
+        await this.#renderPreservingScroll();
       });
     }
+    this.#restoreScrollPositions();
+  }
+
+  #captureScrollPositions() {
+    const root = this.element;
+    this.preservedScrollState = root instanceof HTMLElement
+      ? captureScrollState(root)
+      : new Map();
+  }
+
+  #restoreScrollPositions() {
+    if (!(this.preservedScrollState instanceof Map) || this.preservedScrollState.size === 0) return;
+
+    const state = this.preservedScrollState;
+    this.preservedScrollState = new Map();
+    const restore = () => {
+      const root = this.element;
+      if (root instanceof HTMLElement) restoreScrollState(root, state);
+    };
+
+    if (typeof globalThis.requestAnimationFrame === "function") {
+      globalThis.requestAnimationFrame(restore);
+    } else {
+      globalThis.setTimeout(restore, 0);
+    }
+  }
+
+  #renderPreservingScroll() {
+    this.#captureScrollPositions();
+    return this.render({ force: true });
   }
 
   async close(options = {}) {
@@ -629,7 +661,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     card.conditions ??= createConditionRoot("all");
     this.conditionTestResult = null;
     this.isDirty = true;
-    await this.render({ force: true });
+    await this.#renderPreservingScroll();
   }
 
   static async #clearConditions() {
@@ -640,7 +672,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     card.conditions = null;
     this.conditionTestResult = null;
     this.isDirty = true;
-    await this.render({ force: true });
+    await this.#renderPreservingScroll();
   }
 
   static async #addCondition(_event, target) {
@@ -660,7 +692,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     card.conditions = addConditionEditorNode(card.conditions, String(target?.dataset?.conditionPath ?? ""), { type });
     this.conditionTestResult = null;
     this.isDirty = true;
-    await this.render({ force: true });
+    await this.#renderPreservingScroll();
   }
 
   static async #removeConditionNode(_event, target) {
@@ -671,7 +703,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     card.conditions = removeConditionEditorNode(card.conditions, String(target?.dataset?.conditionPath ?? ""));
     this.conditionTestResult = null;
     this.isDirty = true;
-    await this.render({ force: true });
+    await this.#renderPreservingScroll();
   }
 
   static async #testConditions() {
@@ -679,7 +711,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     const card = this.#currentCard();
     if (!card?.conditions) return;
     this.conditionTestResult = evaluateConditionEditorTest(card.conditions, this.conditionTestInput);
-    await this.render({ force: true });
+    await this.#renderPreservingScroll();
   }
 
   static async #clearConditionTest() {
@@ -688,7 +720,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
       this.conditionTestInput = syncConditionTestInput(this.conditionTestInput, new FormData(form));
     }
     this.conditionTestResult = null;
-    await this.render({ force: true });
+    await this.#renderPreservingScroll();
   }
 
   static #closeWindow() {

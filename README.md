@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.9.4-dev.3` adds Phase 3 of the Critical Context Engine: the Card Pack Editor can now build, validate, and simulate nested card conditions visually. The editor exposes typed snapshot fields, provider-defined custom paths, context-safe test data, contradiction warnings, and explicit source/target role guidance. Critical Card and Card Pack schemas remain at version `1`; existing packs require no migration.
+Version `0.9.4-dev.3.1` adds Phase 3 of the Critical Context Engine and preserves the Card Pack Editor scroll position while context conditions are enabled or edited: the Card Pack Editor can build, validate, and simulate nested card conditions visually. The editor exposes typed snapshot fields, provider-defined custom paths, context-safe test data, contradiction warnings, and explicit source/target role guidance. Critical Card and Card Pack schemas remain at version `1`; existing packs require no migration.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 

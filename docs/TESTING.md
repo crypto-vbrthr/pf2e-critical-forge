@@ -78,7 +78,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 260 tests covering:
+The suite contains 261 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -109,7 +109,7 @@ The suite contains 260 tests covering:
 - dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation;
 - pack activation semantics, transactional world-setting rollback, protected-data startup guards, module-bound extension ownership, atomic multi-pack registration, change hooks, and optional extension-module lifecycles.
 
-Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.3` measures 92.57% line coverage across all files loaded by the Node coverage run, including the Effect Engine, Critical Forge domain, Card Pack Editor application services and condition model, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
+Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.3.1` measures 92.60% line coverage across all files loaded by the Node coverage run, including the Effect Engine, Critical Forge domain, Card Pack Editor application services and condition model, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
 
 ## Foundry mock
 

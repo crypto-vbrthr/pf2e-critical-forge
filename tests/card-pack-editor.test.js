@@ -147,4 +147,6 @@ test("Card Pack Editor exposes the visual condition builder and test workbench",
   assert.match(template, /name="conditionTest\.hostileThreatCount"/u);
   assert.match(template, /name="condition\.\{\{node\.key\}\}\.customType"/u);
   assert.match(template, /EffectTargetSourceHint/u);
+  assert.match(template, /data-scroll-key="card-editor-workspace"/u);
+  assert.equal((template.match(/data-preserve-scroll/gu) ?? []).length, 3);
 });
