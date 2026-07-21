@@ -1,6 +1,6 @@
 {
   "name": "pf2e-critical-forge",
-  "version": "0.9.4-dev",
+  "version": "0.9.4-dev.1",
   "private": true,
   "type": "module",
   "scripts": {

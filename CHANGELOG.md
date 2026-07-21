@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.4-dev.1
+
+- Added Phase 1 of the Critical Context Engine without changing Critical Card or Card Pack schema version `1`.
+- Added immutable, JSON-serializable runtime snapshots containing roll, item, participant, Hit Point, condition, position, combat, battlefield-placeholder, provenance, and diagnostic data.
+- Added the public Context Builder, Context Resolver, prioritized Context Provider Registry, provider replacement/removal operations, and explicit capability flags.
+- Registered the built-in `pf2e/core-pf2e` provider and preserved the existing neutral selection context as the only input consumed by current card matching.
+- Extended the PF2e adapter with reference-only fallbacks and explicit roller/opponent aliases while preserving the established save convention: the saving Actor is `source`, the hostile origin is `target`.
+- Extended the Critical Diagnostic workbench and copied JSON report with provider/version information, roller and opponent summaries, health ratio, save type, battlefield state, and the complete runtime snapshot.
+- Added a visible `Kontext-Fundament · 0.9.4-dev.1` build marker to the diagnostic toolbar so the development version is recognizable inside Foundry.
+- Added documentation for snapshot schema `1`, provider contracts, capability detection, compatibility guarantees, and the intentionally deferred threat-analysis and condition-engine work.
+- Increased the PF2e Context Adapter version to `1.3.0` and the public API version to `0.9.2`; Effect Definition schema remains `2`, and Critical Card/Card Pack schemas remain `1`.
+- Added regression coverage for Context Builder normalization, provider priority and replacement, API registration, actor health and conditions, saving-throw participant roles, reference-only contexts, battlefield placeholders, and diagnostic presentation data.
+- The complete suite contains **227** passing tests.
+
 ## 0.9.4-dev
 
 - Fixed the remaining saving-throw target leak: a correctly resolved rolling Actor is now authoritative over contradictory `flags.pf2e.context` actor or token references.

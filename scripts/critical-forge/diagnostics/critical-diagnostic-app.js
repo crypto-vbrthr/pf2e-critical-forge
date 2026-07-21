@@ -1,4 +1,4 @@
-import { MODULE_ID } from "../../constants.js";
+import { MODULE_ID, MODULE_VERSION } from "../../constants.js";
 import { diagnosePf2eCriticalInput } from "./critical-diagnostic-service.js";
 import { publishCriticalCardPreview } from "../presentation/critical-card-preview.js";
 import {
@@ -7,6 +7,7 @@ import {
   resolveDiagnosticMessageInput,
   resolveDroppedChatMessage
 } from "./chat-message-resolver.js";
+import { prepareRuntimeContextView } from "./diagnostic-runtime-view.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -81,7 +82,8 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
         ? "PF2E_CRITICAL_FORGE.CriticalDiagnostic.OneTargetSelected"
         : targets.length > 1
           ? "PF2E_CRITICAL_FORGE.CriticalDiagnostic.MultipleTargetsSelected"
-          : "PF2E_CRITICAL_FORGE.CriticalDiagnostic.NoTargetSelected"
+          : "PF2E_CRITICAL_FORGE.CriticalDiagnostic.NoTargetSelected",
+      moduleVersion: MODULE_VERSION
     };
   }
 
@@ -124,6 +126,8 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
   }
 
   #prepareReport(diagnostic, resolverDiagnostics) {
+    const snapshot = diagnostic.snapshot ?? null;
+    const runtimeView = prepareRuntimeContextView(snapshot);
     const diagnostics = [
       ...resolverDiagnostics,
       ...diagnostic.diagnostics
@@ -146,12 +150,15 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
       ),
       context: diagnostic.context,
       metadata: diagnostic.metadata,
+      snapshot,
       contextJson: JSON.stringify(diagnostic.context, null, 2),
       metadataJson: JSON.stringify(diagnostic.metadata, null, 2),
+      snapshotJson: JSON.stringify(snapshot, null, 2),
       reportJson: JSON.stringify({
         valid: diagnostic.valid,
         context: diagnostic.context,
         metadata: diagnostic.metadata,
+        snapshot,
         diagnostics: [...resolverDiagnostics, ...diagnostic.diagnostics],
         eligible: diagnostic.eligible.map((entry) => ({
           id: entry.card.id,
@@ -197,7 +204,8 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
       spellTraditions: diagnostic.context.spellTraditions,
       spellTraits: diagnostic.context.spellTraits,
       sourceTraits: diagnostic.context.sourceTraits,
-      targetTraits: diagnostic.context.targetTraits
+      targetTraits: diagnostic.context.targetTraits,
+      ...runtimeView
     };
   }
 

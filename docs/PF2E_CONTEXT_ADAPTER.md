@@ -2,7 +2,7 @@
 
 The PF2e Context Adapter is a headless translation boundary. It accepts PF2e/Foundry objects explicitly supplied by a caller and returns the neutral context consumed by Critical Forge card matching.
 
-Adapter version `1.2.2` supports weapon attacks, spell attacks, and saving throws. The adapter itself does not register hooks, choose cards, render HTML, or apply effects. The separate automation service supplies newly created PF2e messages to it.
+Adapter version `1.3.0` supports weapon attacks, spell attacks, and saving throws. The adapter itself does not register hooks, choose cards, render HTML, or apply effects. The separate automation service supplies newly created PF2e messages to it.
 
 ## API
 
@@ -47,7 +47,7 @@ const report = api.cards.createContext(input, { system: "pf2e" });
   },
   metadata: {
     adapter: "pf2e",
-    adapterVersion: "1.2.2",
+    adapterVersion: "1.3.0",
     degreeOfSuccess: {
       index: 0,
       key: "criticalFailure",
@@ -74,6 +74,17 @@ const report = api.cards.createContext(input, { system: "pf2e" });
     rollOptions: [],
     provenance: {}
   },
+  snapshot: {
+    schemaVersion: 1,
+    system: "pf2e",
+    provider: "core-pf2e",
+    providerVersion: "1.0.0",
+    roll: {},
+    participants: {},
+    roles: {},
+    battlefield: {},
+    selection: {}
+  },
   diagnostics: [],
   errors: [],
   warnings: [],
@@ -81,7 +92,7 @@ const report = api.cards.createContext(input, { system: "pf2e" });
 }
 ```
 
-Only `context` is consumed by the card selector. `metadata` and diagnostics are for inspection, logs, chat presentation, and debugging.
+Only `context` is consumed by the current card selector. `metadata`, `snapshot`, and diagnostics are for inspection, logs, chat presentation, future condition evaluation, and debugging. The snapshot is deeply frozen and contains no Foundry documents.
 
 ## Category mapping
 
@@ -108,7 +119,8 @@ Explicit fields supplied by the caller are combined with discovered PF2e data. T
 - saving-throw type (`fortitude`, `reflex`, or `will`);
 - spell traditions, spell traits, and spell rank when a spell item/context is available;
 - source and target traits from Actors or roll options;
-- actor identity, level, size, token references, item identity, range mode, and alternative usage.
+- actor identity, level, size, token references, item identity, range mode, and alternative usage;
+- current/max/temporary Hit Points, HP ratio, selected common conditions, token position and disposition, scene/combat references, and provenance for the runtime snapshot.
 
 A selected versatile or modular damage type replaces the weapon's base damage type for the primary attack context.
 
@@ -147,7 +159,7 @@ if (adapted.valid) {
 }
 ```
 
-The adapter and selector remain separate so callers can inspect, amend, cache, or reject a context before selection.
+The adapter and selector remain separate so callers can inspect, cache, or reject a context before selection. Runtime snapshots and provider registration are documented in [`CONTEXT_ENGINE.md`](CONTEXT_ENGINE.md).
 
 ## Natural d20 metadata
 

@@ -41,7 +41,7 @@ test("public card API selects, localizes, and materializes cards", () => {
 });
 
 test("public card API exposes the headless PF2e context adapter", () => {
-  assert.equal(api.adapters.pf2e.version, "1.2.2");
+  assert.equal(api.adapters.pf2e.version, "1.3.0");
   const direct = api.adapters.pf2e.createContext({
     category: "criticalHit",
     damageTypes: ["slashing"]
@@ -52,6 +52,9 @@ test("public card API exposes the headless PF2e context adapter", () => {
   });
   assert.equal(direct.valid, true);
   assert.deepEqual(generic.context, direct.context);
+  assert.equal(api.contexts.snapshotVersion, 1);
+  assert.equal(api.contexts.listProviders({ system: "pf2e" })[0].id, "core-pf2e");
+  assert.equal(api.adapters.pf2e.createSnapshot({ category: "criticalHit" }).schemaVersion, 1);
   assert.throws(() => api.createContext({}, { system: "other" }), /Unsupported/);
 });
 
@@ -96,4 +99,23 @@ test("public card API exposes manual chat-card previews", async () => {
   assert.equal(typeof api.automation.processMessage, "function");
   assert.equal(typeof api.automation.inspectMessage, "function");
   assert.equal(typeof api.automation.isAttackReport, "function");
+});
+
+test("public card API exposes additive context-provider capabilities", () => {
+  assert.equal(api.capabilities.contextSnapshots, true);
+  assert.equal(api.capabilities.contextProviders, true);
+  assert.equal(api.capabilities.contextConditions, false);
+
+  const builder = api.contexts.createBuilder({ system: "test-system", provider: "test-provider" });
+  assert.equal(builder.build().schemaVersion, 1);
+
+  api.contexts.registerProvider({
+    id: "test-provider",
+    system: "test-system",
+    version: "1.0.0",
+    createContext: (input) => Object.freeze({ valid: true, context: input, metadata: {}, diagnostics: [] })
+  });
+  const resolved = api.contexts.resolve({ marker: true }, { system: "test-system" });
+  assert.equal(resolved.context.marker, true);
+  assert.equal(api.contexts.unregisterProvider("test-system", "test-provider"), true);
 });

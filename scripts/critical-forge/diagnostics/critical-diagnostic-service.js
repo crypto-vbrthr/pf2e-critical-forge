@@ -1,6 +1,6 @@
 import { criticalCardSelector } from "../critical-forge.js";
 import { localizeCard } from "../localization/card-localizer.js";
-import { createPf2eSelectionContext } from "../adapters/pf2e/pf2e-context-adapter.js";
+import { resolveCriticalContext } from "../context/context-resolver.js";
 import { deepFreeze } from "../utils.js";
 import { configuredCardProfile } from "../profile/card-profile.js";
 import { configuredTriggerPolicy, evaluateCriticalTrigger } from "../trigger/critical-trigger-policy.js";
@@ -13,7 +13,7 @@ import { configuredTriggerPolicy, evaluateCriticalTrigger } from "../trigger/cri
 export function diagnosePf2eCriticalInput(input = {}, {
   includeRejected = true,
   excludeCardIds = [],
-  createContext = createPf2eSelectionContext,
+  createContext = (value) => resolveCriticalContext(value, { system: "pf2e" }),
   selector = criticalCardSelector,
   localize = localizeCard,
   profile = configuredCardProfile()
@@ -33,6 +33,7 @@ export function diagnosePf2eCriticalInput(input = {}, {
     contextReport,
     context: contextReport.context,
     metadata: contextReport.metadata,
+    snapshot: contextReport.snapshot ?? null,
     diagnostics: contextReport.diagnostics,
     eligible,
     rejected,

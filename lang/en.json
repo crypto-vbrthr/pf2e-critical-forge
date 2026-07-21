@@ -1425,7 +1425,20 @@
       "TriggerNotMatched": "Would not trigger",
       "SaveTypes": "Saving throw types",
       "SpellTraditions": "Magic traditions",
-      "SpellTraits": "Spell traits"
+      "SpellTraits": "Spell traits",
+      "ContextFoundation": "Context Foundation",
+      "RuntimeContext": "Runtime Context",
+      "SnapshotSchema": "Snapshot schema",
+      "ContextProvider": "Context provider",
+      "RollFamily": "Roll family",
+      "SaveType": "Save type",
+      "Roller": "Rolling actor",
+      "ActorLevel": "Level",
+      "HitPoints": "Hit points",
+      "Opponent": "Opponent",
+      "HostileThreats": "Hostile threats",
+      "NoRuntimeContext": "No runtime snapshot is available for this analysis.",
+      "RuntimeSnapshot": "Runtime Snapshot"
     },
     "CriticalPreview": {
       "ShowInChat": "Show card in chat",

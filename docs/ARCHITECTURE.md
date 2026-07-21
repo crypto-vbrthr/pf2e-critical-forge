@@ -166,3 +166,17 @@ The automated suite runs outside Foundry with a small deterministic mock of:
 - the PF2e condition compendium.
 
 This keeps Builder, validation, catalogs, and compiler tests fast and reproducible. Document creation and full Foundry UI behavior remain integration-test territory inside Foundry.
+
+
+## Critical Context Engine boundary
+
+Phase 1 adds an immutable observation layer beneath Critical Forge diagnostics:
+
+```text
+Context Provider Registry → Context Resolver → Adapter Report
+                                           ├─ Selection Context
+                                           ├─ Metadata / Diagnostics
+                                           └─ Runtime Snapshot
+```
+
+The new layer is additive. Existing card and pack schemas do not reference snapshots, and current card selection remains driven by the pre-existing selection context. See [`CONTEXT_ENGINE.md`](CONTEXT_ENGINE.md).

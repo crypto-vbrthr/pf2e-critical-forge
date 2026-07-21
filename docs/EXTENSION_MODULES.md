@@ -21,7 +21,7 @@ Declare Critical Forge as a required module dependency so the extension is never
         "id": "pf2e-critical-forge",
         "type": "module",
         "compatibility": {
-          "minimum": "0.9.4-dev"
+          "minimum": "0.9.4-dev.1"
         }
       }
     ],

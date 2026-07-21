@@ -48,6 +48,7 @@ Hooks.once("ready", async () => {
 
   Hooks.callAll("pf2eCriticalForgeReady", api);
   console.info(`${MODULE_ID} | Ready`, {
+    moduleVersion: api?.moduleVersion,
     apiVersion: api?.version,
     schemaVersion: api?.schemaVersion,
     components: api?.components.list(),

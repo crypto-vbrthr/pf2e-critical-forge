@@ -39,6 +39,7 @@ test("diagnostic service combines context adaptation and candidate evaluation", 
           excludedTags: []
         },
         metadata: { outcome: "criticalSuccess" },
+        snapshot: { schemaVersion: 1, provider: "test" },
         diagnostics: []
       }),
       selector: {
@@ -71,6 +72,7 @@ test("diagnostic service combines context adaptation and candidate evaluation", 
   assert.equal(report.counts.eligible, 1);
   assert.equal(report.eligible[0].localized.title, "Testkarte");
   assert.equal(report.eligible[0].effectiveWeight, 4);
+  assert.equal(report.snapshot.schemaVersion, 1);
   assertDeepFrozen(report);
 });
 

@@ -16,7 +16,7 @@ export function diagnostic(code, {
   });
 }
 
-export function createAdapterReport({ context, metadata, diagnostics = [] }) {
+export function createAdapterReport({ context, metadata, diagnostics = [], snapshot = null }) {
   const issues = diagnostics.map((entry) => diagnostic(entry.code, entry));
   const errors = issues.filter((entry) => entry.severity === "error");
   const warnings = issues.filter((entry) => entry.severity === "warning");
@@ -25,6 +25,7 @@ export function createAdapterReport({ context, metadata, diagnostics = [] }) {
     valid: errors.length === 0,
     context,
     metadata,
+    snapshot,
     diagnostics: issues,
     errors,
     warnings,

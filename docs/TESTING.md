@@ -42,6 +42,8 @@ tests/
 ├─ chat-message-resolver.test.js
 ├─ compiler.test.js
 ├─ component-duration.test.js
+├─ context-builder.test.js
+├─ context-provider.test.js
 ├─ core-card-library.test.js
 ├─ critical-architecture.test.js
 ├─ critical-card-application.test.js
@@ -50,6 +52,7 @@ tests/
 ├─ critical-diagnostic-button.test.js
 ├─ critical-diagnostic.test.js
 ├─ critical-roll-automation.test.js
+├─ diagnostic-runtime-view.test.js
 ├─ duration-bundle-hooks.test.js
 ├─ effect-forge-card-handoff.test.js
 ├─ effect-item-drop.test.js
@@ -60,6 +63,7 @@ tests/
 ├─ item-editing.test.js
 ├─ migration.test.js
 ├─ pf2e-context-adapter.test.js
+├─ pf2e-context-snapshot.test.js
 ├─ release-metadata.test.js
 ├─ validation.test.js
 ├─ view-state.test.js
@@ -69,7 +73,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 209 tests covering:
+The suite contains 227 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -90,14 +94,15 @@ The suite contains 209 tests covering:
 - updating only Forge-managed Item fields;
 - synchronized release metadata, manifest paths, localization parity, and archive hygiene;
 - headless PF2e context translation from weapon attacks, spell attacks, saving throws, chat flags, items, actors, tokens, and roll options;
-- manual diagnostic candidate evaluation, chat-message discovery, Item UUID resolution, target handling, and drop validation;
+- immutable runtime-snapshot normalization, participant health and conditions, reference-only fallbacks, battlefield placeholders, Context Provider priority/replacement/protection, and public Context Builder/Resolver capabilities;
+- manual diagnostic candidate evaluation, runtime-snapshot presentation data, chat-message discovery, Item UUID resolution, target handling, and drop validation;
 - localized critical-card effect summaries, preview presentation data, ChatMessage payloads, structured preview flags, and public preview APIs;
 - the complete card-editor roundtrip from protected template through Effect Forge, JSON transfer, persistence, selection, preview, and compilation;
 - deterministic collision-free IDs for new cards, duplicated cards, duplicated packs, and imported protected packs;
 - dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation;
 - pack activation semantics, transactional world-setting rollback, protected-data startup guards, module-bound extension ownership, atomic multi-pack registration, change hooks, and optional extension-module lifecycles.
 
-Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev` measures 93.41% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
+Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.1` measures 93.72% line coverage across the loaded Effect Engine, Effect Forge, Critical Forge domain, Card Pack Editor services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
 
 ## Foundry mock
 

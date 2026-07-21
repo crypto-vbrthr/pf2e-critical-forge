@@ -33,9 +33,10 @@ api.moduleVersion  // installed module version
 api.schemaVersion          // supported Effect Definition schema version
 api.cardSchemaVersion      // supported Critical Card schema version
 api.cardPackSchemaVersion  // supported Critical Card Pack schema version
+api.cards.contexts.snapshotVersion // Critical runtime snapshot schema
 ```
 
-Consumers should branch on `api.version` for API capabilities and on `api.schemaVersion` when importing stored Effect Definitions.
+Consumers should branch on `api.version` and `api.cards.capabilities` for API capabilities, on `api.schemaVersion` when importing stored Effect Definitions, and on `api.cards.contexts.snapshotVersion` when persisting runtime snapshots.
 
 ## Effects
 
@@ -663,7 +664,16 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev` adds `excludedAttackTraits` to Critical Card filters while retaining component-level Effect durations and the existing card APIs.
+Critical Forge card architecture, the PF2e Context Adapter, runtime Context Engine, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev.1` adds immutable context snapshots and an additive provider API while retaining all existing card APIs and schema-version-1 pack compatibility.
+
+Capability detection:
+
+```js
+api.cards.capabilities.contextSnapshots; // true
+api.cards.capabilities.contextProviders; // true
+api.cards.capabilities.contextConditions; // false in phase 1
+api.cards.capabilities.multiDeckPacks; // false in phase 1
+```
 
 
 ### Profiles and trigger policies
@@ -766,7 +776,8 @@ const report = api.cards.adapters.pf2e.createContext({
 });
 
 console.log(report.valid);
-console.log(report.context);
+console.log(report.context);  // unchanged selector input
+console.log(report.snapshot); // new immutable runtime snapshot
 console.log(report.diagnostics);
 ```
 
@@ -776,9 +787,33 @@ The generic entry point is equivalent:
 const report = api.cards.createContext(input, { system: "pf2e" });
 ```
 
-`report.context` contains only the neutral fields used by card matching. `report.metadata` preserves diagnostic details such as degree of success, actor level and size, item identity, range mode, and roll options. Missing optional data produces structured information entries rather than exceptions. A missing critical category is an error because the resulting context cannot be selected.
+`report.context` contains only the neutral fields used by card matching. `report.metadata` preserves diagnostic details such as degree of success, actor level and size, item identity, range mode, and roll options. `report.snapshot` contains the serializable runtime state used by diagnostics and future context conditions. Missing optional data produces structured information entries rather than exceptions. A missing critical category is an error because the resulting context cannot be selected.
 
 See [`PF2E_CONTEXT_ADAPTER.md`](PF2E_CONTEXT_ADAPTER.md).
+
+### Context Builder and providers
+
+```js
+const snapshot = api.cards.contexts
+  .createBuilder({ system: "pf2e", provider: "my-provider", providerVersion: "1.0.0" })
+  .setRoll({ category: "criticalHit", family: "attack" })
+  .setParticipant("source", { uuid: actor.uuid, name: actor.name, level: actor.level })
+  .setRoles({ roller: "source", opponent: "target" })
+  .setSelection({ category: "criticalHit" })
+  .build();
+```
+
+Provider operations:
+
+```js
+api.cards.contexts.listProviders({ system: "pf2e" });
+api.cards.contexts.getProvider("pf2e", "core-pf2e");
+api.cards.contexts.resolve(input, { system: "pf2e", providerId: "core-pf2e" });
+api.cards.contexts.registerProvider(provider, { replace: false });
+api.cards.contexts.unregisterProvider("pf2e", "my-provider");
+```
+
+The highest-priority provider is used by default. Providers return the existing context-report contract plus an optional snapshot. The built-in `core-pf2e` provider is protected against replacement and removal. See [`CONTEXT_ENGINE.md`](CONTEXT_ENGINE.md).
 
 ### Manual diagnostics
 

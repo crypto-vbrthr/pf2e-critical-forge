@@ -16,6 +16,12 @@ import {
   createPf2eSelectionContext,
   PF2E_CONTEXT_ADAPTER_VERSION
 } from "../critical-forge/adapters/pf2e/pf2e-context-adapter.js";
+import {
+  CRITICAL_CONTEXT_SNAPSHOT_VERSION,
+  createCriticalContextBuilder
+} from "../critical-forge/context/context-builder.js";
+import { criticalContextProviderRegistry } from "../critical-forge/context/context-provider-registry.js";
+import { resolveCriticalContext } from "../critical-forge/context/context-resolver.js";
 import { diagnosePf2eCriticalInput } from "../critical-forge/diagnostics/critical-diagnostic-service.js";
 import {
   listDiagnosticMessages,
@@ -93,6 +99,12 @@ export function createCardApi() {
   return Object.freeze({
     schemaVersion: CARD_SCHEMA_VERSION,
     packSchemaVersion: CARD_PACK_SCHEMA_VERSION,
+    capabilities: Object.freeze({
+      contextSnapshots: true,
+      contextProviders: true,
+      contextConditions: false,
+      multiDeckPacks: false
+    }),
     categories: [...CARD_CATEGORIES],
     tones: [...CARD_TONES],
     impacts: [...CARD_IMPACTS],
@@ -165,10 +177,16 @@ export function createCardApi() {
     redrawPreview: (message, options = {}) => redrawCriticalCard(message, options),
     summarizeEffect: (definition, options = {}) => summarizeCriticalEffectDefinition(definition, options),
 
-    createContext: (input, { system = "pf2e" } = {}) => {
-      if (system !== "pf2e") throw new Error(`Unsupported Critical Forge context adapter: ${system}`);
-      return createPf2eSelectionContext(input);
-    },
+    createContext: (input, options = {}) => resolveCriticalContext(input, options),
+    contexts: Object.freeze({
+      snapshotVersion: CRITICAL_CONTEXT_SNAPSHOT_VERSION,
+      createBuilder: (options = {}) => createCriticalContextBuilder(options),
+      resolve: (input, options = {}) => resolveCriticalContext(input, options),
+      registerProvider: (provider, options = {}) => criticalContextProviderRegistry.register(provider, options),
+      unregisterProvider: (system, providerId) => criticalContextProviderRegistry.unregister(system, providerId),
+      getProvider: (system, providerId = null) => criticalContextProviderRegistry.get(system, providerId),
+      listProviders: (options = {}) => criticalContextProviderRegistry.list(options)
+    }),
     diagnose: (input, { system = "pf2e", ...options } = {}) => {
       if (system !== "pf2e") throw new Error(`Unsupported Critical Forge diagnostic adapter: ${system}`);
       return diagnosePf2eCriticalInput(input, options);
@@ -180,7 +198,9 @@ export function createCardApi() {
     adapters: Object.freeze({
       pf2e: Object.freeze({
         version: PF2E_CONTEXT_ADAPTER_VERSION,
-        createContext: (input) => createPf2eSelectionContext(input)
+        snapshotVersion: CRITICAL_CONTEXT_SNAPSHOT_VERSION,
+        createContext: (input) => createPf2eSelectionContext(input),
+        createSnapshot: (input) => createPf2eSelectionContext(input).snapshot
       })
     })
   });

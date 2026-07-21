@@ -13,6 +13,9 @@
 - [ ] Copy a protected core card into a custom pack, edit its effect in Effect Forge, save it, export/import the pack, and confirm the card can still be drawn and applied.
 - [ ] Disable and re-enable that custom pack through **Paket aktivieren** and verify selection changes immediately while the pack remains editable.
 - [ ] Register two external test packs through `api.cards.extensions.forModule(moduleId).registerPacks()`, replace one, call `unregisterAll()`, and confirm core and unrelated packs remain untouched.
+- [ ] Open Critical Diagnostics and confirm the toolbar shows `Kontext-Fundament · 0.9.4-dev.1`, the runtime-context summary, and the raw snapshot.
+- [ ] Diagnose one attack and one saving throw; confirm the rolling Actor is `source`, the hostile opponent/origin is `target`, and HP/level data matches the current Actors.
+- [ ] Register a temporary higher-priority Context Provider under a unique id, resolve it explicitly, remove it, and confirm the protected `core-pf2e` provider remains available.
 - [ ] Verify world Item update, copy, Actor application, and unmanaged-rule preservation.
 - [ ] Build an effect with inherited and overridden component durations; verify world creation, Actor application, opening either segment, updating the bundle, expiration, and definition-based removal.
 - [ ] Create the ZIP with a single top-level `pf2e-critical-forge/` directory.

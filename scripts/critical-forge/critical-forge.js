@@ -5,6 +5,8 @@ import { PackRegistry } from "./registry/pack-registry.js";
 import { CardSelector } from "./selection/card-selector.js";
 import { normalizeCardDefinition, normalizePackDefinition } from "./schema/card-normalizer.js";
 import { validateCardDefinition, validatePackDefinition } from "./schema/card-validator.js";
+import { criticalContextProviderRegistry } from "./context/context-provider-registry.js";
+import { createPf2eContextProvider } from "./adapters/pf2e/pf2e-context-provider.js";
 
 export const criticalPackRegistry = new PackRegistry();
 export const criticalCardRegistry = new CardRegistry({ packRegistry: criticalPackRegistry });
@@ -15,10 +17,14 @@ let initialized = false;
 export function initializeCriticalForge() {
   if (initialized) return;
   registerCriticalPack(CORE_CRITICAL_CARD_PACK);
+  if (!criticalContextProviderRegistry.get("pf2e", "core-pf2e")) {
+    criticalContextProviderRegistry.register(createPf2eContextProvider());
+  }
   initialized = true;
   console.info(`${MODULE_ID} | Critical Forge architecture initialized`, {
     packs: criticalPackRegistry.list().length,
-    cards: criticalCardRegistry.list().length
+    cards: criticalCardRegistry.list().length,
+    contextProviders: criticalContextProviderRegistry.list().length
   });
 }
 

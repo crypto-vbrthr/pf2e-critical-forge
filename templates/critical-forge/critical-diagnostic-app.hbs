@@ -41,6 +41,10 @@
       <i class="fa-solid fa-crosshairs"></i>
       <span>{{localize targetStatusKey}}</span>
       {{#if targetNames}}<strong>{{targetNames}}</strong>{{/if}}
+      <span class="critical-diagnostic-build">
+        <i class="fa-solid fa-cubes-stacked"></i>
+        {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ContextFoundation"}} · {{moduleVersion}}
+      </span>
     </div>
   </section>
 
@@ -137,6 +141,54 @@
               </div>
             </div>
           </div>
+        </section>
+
+        <section class="effect-forge-panel critical-diagnostic-runtime">
+          <header class="critical-diagnostic-section-header">
+            <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.RuntimeContext"}}</h2>
+            <span class="critical-diagnostic-context-schema">
+              {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.SnapshotSchema"}} {{report.snapshotVersion}}
+            </span>
+          </header>
+
+          {{#if report.hasSnapshot}}
+            <div class="critical-diagnostic-facts">
+              <div>
+                <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ContextProvider"}}</span>
+                <strong>{{report.snapshotProvider}}</strong>
+              </div>
+              <div>
+                <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.RollFamily"}}</span>
+                <strong>{{report.rollFamily}}</strong>
+              </div>
+              <div>
+                <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.SaveType"}}</span>
+                <strong>{{report.saveType}}</strong>
+              </div>
+              <div>
+                <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Roller"}}</span>
+                <strong>{{report.rollerName}}</strong>
+              </div>
+              <div>
+                <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ActorLevel"}}</span>
+                <strong>{{report.rollerLevel}}</strong>
+              </div>
+              <div>
+                <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.HitPoints"}}</span>
+                <strong>{{report.rollerHp}} · {{report.rollerHpRatio}}</strong>
+              </div>
+              <div>
+                <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Opponent"}}</span>
+                <strong>{{report.opponentName}} · {{report.opponentLevel}}</strong>
+              </div>
+              <div>
+                <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.HostileThreats"}}</span>
+                <strong>{{report.hostileThreatCount}} · {{report.threatEvaluation}}</strong>
+              </div>
+            </div>
+          {{else}}
+            <p class="critical-diagnostic-empty">{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.NoRuntimeContext"}}</p>
+          {{/if}}
         </section>
 
         <section class="effect-forge-panel critical-diagnostic-candidates">
@@ -241,6 +293,13 @@
             <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.SelectionContext"}}</h2>
           </header>
           <pre>{{report.contextJson}}</pre>
+        </section>
+
+        <section class="effect-forge-panel critical-diagnostic-json">
+          <header class="critical-diagnostic-section-header">
+            <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.RuntimeSnapshot"}}</h2>
+          </header>
+          <pre>{{report.snapshotJson}}</pre>
         </section>
 
         <section class="effect-forge-panel critical-diagnostic-json">

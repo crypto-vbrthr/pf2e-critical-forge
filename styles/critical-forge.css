@@ -1137,6 +1137,30 @@
   color: var(--ef-orange);
 }
 
+
+.critical-diagnostic-build {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid var(--ef-border-soft);
+  border-radius: 999px;
+  color: #d9c5ee;
+  background: rgba(145, 91, 208, 0.12);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.critical-diagnostic-context-schema {
+  padding: 0.25rem 0.45rem;
+  border-radius: 999px;
+  color: #bdeac3;
+  background: rgba(103, 191, 114, 0.14);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
 .critical-diagnostic-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1.22fr) minmax(360px, 0.78fr);
@@ -1156,6 +1180,7 @@
 }
 
 .critical-diagnostic-summary,
+.critical-diagnostic-runtime,
 .critical-diagnostic-candidates,
 .critical-diagnostic-diagnostics,
 .critical-diagnostic-json {

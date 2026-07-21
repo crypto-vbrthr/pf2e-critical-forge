@@ -10,7 +10,11 @@ Foundry createChatMessage Hook ── new supported PF2e roll messages
 Manual Chat Diagnostic UI ── explicit message input
         │
         ▼
+Context Provider Registry
+        │
+        ▼
 PF2e Context Adapter
+        ├── Runtime Snapshot → Diagnostics
         │
         ▼
 Selection Context
@@ -35,7 +39,8 @@ Effect Engine
 
 ```text
 critical-forge/
-├─ adapters/pf2e/       PF2e data readers and diagnostic context adapter
+├─ adapters/pf2e/       PF2e data readers, provider, adapter, and snapshot reduction
+├─ context/              snapshot builder, provider registry, and resolver
 ├─ automation/           primary-GM supported-roll pipeline
 ├─ diagnostics/          manual message resolution, diagnostic service, and workbench UI
 ├─ editor/               world-managed pack store, transfer, UI, and Effect Forge bridge
@@ -57,6 +62,9 @@ critical-forge/
 
 - Cards contain no rendered HTML.
 - The selector consumes plain JavaScript data only.
+- Existing selection contexts remain the selector's sole input during Phase 1.
+- Runtime snapshots are immutable, JSON-serializable observations and never contain Foundry documents.
+- Context providers are additive and selected by system, explicit id, and priority.
 - The selector never reads Foundry documents directly.
 - Card registration is independent from the Critical Forge world setting.
 - Optional-module registration is bound to a source module and cannot replace or remove foreign packs.
@@ -70,7 +78,7 @@ critical-forge/
 
 ## Adapter boundary
 
-The PF2e adapter may inspect only documents explicitly supplied by its caller. It normalizes PF2e roll outcomes, weapon and spell data, saving-throw context, NPC melee damage, traits, actor metadata, and roll options into neutral data. It never selects a card, registers a hook, renders HTML, or applies an effect. Further roll-family-specific readers can extend this adapter without adding PF2e document knowledge to the card domain.
+The PF2e adapter may inspect only documents explicitly supplied by its caller, plus current scene/combat references when reducing a diagnostic snapshot. It normalizes PF2e roll outcomes, weapon and spell data, saving-throw context, NPC melee damage, traits, actor metadata, and roll options into neutral data. It also reduces documents to a plain runtime snapshot. It never selects a card, renders HTML, or applies an effect. The provider registry is the only registration boundary.
 
 ## Presentation boundary
 

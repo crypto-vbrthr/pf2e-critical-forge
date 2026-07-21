@@ -1,6 +1,6 @@
 # Critical Forge Diagnostics
 
-Version `0.9.4-dev` includes a manual GM workbench for testing the PF2e Context Adapter and card-selection pipeline against real chat messages. Eligible cards can be deliberately published as manual result chat cards.
+Version `0.9.4-dev.1` extends the manual GM workbench with the Phase-1 runtime context snapshot. It remains the primary instrument for testing PF2e participant resolution, context acquisition, candidate determination, and later card application. Eligible cards can be deliberately published as manual result chat cards.
 
 The diagnostic itself applies no effect, creates no Item, and changes no Actor. The separate automation service may process supported rolls according to world settings.
 
@@ -50,7 +50,10 @@ The workbench shows:
 - every eligible card with matched filters, specificity, base weight, and effective weight;
 - every rejected card with stable rejection reasons;
 - raw normalized selection context and adapter metadata;
-- a copyable JSON report.
+- runtime provider and snapshot-schema version;
+- rolling Actor and opponent identities, levels, HP totals and ratio, save type, combat references, and battlefield evaluation status;
+- the complete raw runtime snapshot;
+- a copyable JSON report containing context, metadata, snapshot, diagnostics, and candidate decisions.
 
 Candidate evaluation is deterministic. No weighted random selection occurs.
 
@@ -74,6 +77,7 @@ Result shape:
   contextReport: {},
   context: {},
   metadata: {},
+  snapshot: {},
   diagnostics: [],
   eligible: [],
   rejected: [],
@@ -95,3 +99,10 @@ const diagnostic = api.cards.diagnose(resolved.input);
 ```
 
 Resolver diagnostics are separate from the immutable adapter report so API consumers can decide how to combine or present them.
+
+
+## Phase-1 visibility
+
+The toolbar displays `Context Foundation · <module version>`. In German this appears as `Kontext-Fundament · <Modulversion>`. Together with Foundry's module list, this makes a development build distinguishable from the preceding `0.9.4-dev` build.
+
+A `hostileThreatCount` of `null` with `threatEvaluation: "not-evaluated"` is expected in Phase 1. The workbench exposes that absence explicitly instead of presenting a guessed enemy count.

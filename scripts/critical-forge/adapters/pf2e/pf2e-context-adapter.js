@@ -6,17 +6,17 @@ import { createAdapterReport, diagnostic } from "./context-diagnostics.js";
 import { getPath, uniqueSlugs } from "./context-utils.js";
 import { readRollResult, resolveCriticalCategory } from "./roll-result-reader.js";
 import { readSaveContext } from "./save-context-reader.js";
+import { createPf2eContextSnapshot } from "./pf2e-context-snapshot.js";
 
-export const PF2E_CONTEXT_ADAPTER_VERSION = "1.2.2";
+export const PF2E_CONTEXT_ADAPTER_VERSION = "1.3.0";
 
 export function createPf2eSelectionContext(input = {}) {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     const context = normalizeSelectionContext({});
-    return createAdapterReport({
-      context,
-      metadata: emptyMetadata(),
-      diagnostics: [diagnostic("PF2E_CONTEXT_INPUT_INVALID", { severity: "error", path: "input" })]
-    });
+    const metadata = emptyMetadata();
+    const diagnostics = [diagnostic("PF2E_CONTEXT_INPUT_INVALID", { severity: "error", path: "input" })];
+    const snapshot = createPf2eContextSnapshot({ context, metadata, diagnostics });
+    return createAdapterReport({ context, metadata, diagnostics, snapshot });
   }
 
   const diagnostics = [];
@@ -157,7 +157,18 @@ export function createPf2eSelectionContext(input = {}) {
     }
   });
 
-  return createAdapterReport({ context, metadata, diagnostics });
+  const snapshot = createPf2eContextSnapshot({
+    input,
+    context,
+    metadata,
+    diagnostics,
+    sourceActor,
+    targetActor,
+    sourceToken: input.sourceToken ?? input.message?.token ?? null,
+    targetToken: input.targetToken ?? input.message?.target?.token ?? null
+  });
+
+  return createAdapterReport({ context, metadata, diagnostics, snapshot });
 }
 
 function actorReferences(contextFlag, rollFamily) {

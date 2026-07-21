@@ -1425,7 +1425,20 @@
       "TriggerNotMatched": "Würde nicht auslösen",
       "SaveTypes": "Rettungswurfarten",
       "SpellTraditions": "Magische Traditionen",
-      "SpellTraits": "Zaubermerkmale"
+      "SpellTraits": "Zaubermerkmale",
+      "ContextFoundation": "Kontext-Fundament",
+      "RuntimeContext": "Laufzeitkontext",
+      "SnapshotSchema": "Snapshot-Schema",
+      "ContextProvider": "Kontext-Provider",
+      "RollFamily": "Wurffamilie",
+      "SaveType": "Rettungswurfart",
+      "Roller": "Würfelnder Actor",
+      "ActorLevel": "Stufe",
+      "HitPoints": "Trefferpunkte",
+      "Opponent": "Gegenüber",
+      "HostileThreats": "Bedrohende Gegner",
+      "NoRuntimeContext": "Für diese Auswertung ist kein Laufzeit-Snapshot verfügbar.",
+      "RuntimeSnapshot": "Laufzeit-Snapshot"
     },
     "CriticalPreview": {
       "ShowInChat": "Karte im Chat anzeigen",
