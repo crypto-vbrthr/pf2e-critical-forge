@@ -137,3 +137,14 @@ test("Card Pack Editor exposes the excluded attack-trait field", () => {
   assert.match(template, /name="card\.filters\.excludedAttackTraits"/u);
   assert.match(template, /FilterExcludedAttackTraits/u);
 });
+
+test("Card Pack Editor exposes the visual condition builder and test workbench", () => {
+  const root = dirname(dirname(fileURLToPath(import.meta.url)));
+  const template = readFileSync(join(root, "templates/critical-forge/card-pack-editor.hbs"), "utf8");
+  assert.match(template, /data-action="enableConditions"/u);
+  assert.match(template, /data-action="addConditionGroup"/u);
+  assert.match(template, /data-action="testConditions"/u);
+  assert.match(template, /name="conditionTest\.hostileThreatCount"/u);
+  assert.match(template, /name="condition\.\{\{node\.key\}\}\.customType"/u);
+  assert.match(template, /EffectTargetSourceHint/u);
+});

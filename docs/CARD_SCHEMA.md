@@ -120,6 +120,14 @@ A tree is either a leaf or a group:
   value: "reflex"
 }
 
+// Provider-defined field with persistent editor operand type
+{
+  type: "condition",
+  field: "provider.danger.score",
+  operator: "exists",
+  valueType: "number"
+}
+
 // Nested group
 {
   type: "group",
@@ -150,4 +158,4 @@ Field paths address serializable snapshot data, for example:
 - `participants.target.traits`
 - `battlefield.hostileThreatCount`
 
-A missing field fails every comparison except `notExists`. The evaluator records that field as unavailable rather than substituting a guessed value. Conditions affect eligibility only; they do not increase specificity or selection weight. See [`CONDITION_ENGINE.md`](CONDITION_ENGINE.md).
+A missing field fails every comparison except `notExists`. The evaluator records that field as unavailable rather than substituting a guessed value. Conditions affect eligibility only; they do not increase specificity or selection weight. See [`CONDITION_ENGINE.md`](CONDITION_ENGINE.md). Phase 3 exposes this same canonical tree in the Card Pack Editor; visual editing and synthetic testing do not create a second schema or change legacy cards. See [`CARD_EDITOR.md`](CARD_EDITOR.md).

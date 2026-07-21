@@ -2284,3 +2284,265 @@
   color: var(--ef-muted);
   font-style: normal;
 }
+
+/* Critical Card Condition Editor */
+.card-editor-condition-panel {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.card-editor-condition-toolbar,
+.card-editor-condition-node,
+.card-editor-condition-test-result > strong,
+.card-editor-target-map {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-editor-condition-toolbar {
+  justify-content: space-between;
+}
+
+.card-editor-condition-toolbar button,
+.card-editor-condition-node button,
+.card-editor-condition-test button,
+.card-editor-condition-empty button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: auto;
+  min-height: 2rem;
+  margin: 0;
+  padding: 0.32rem 0.55rem;
+}
+
+.card-editor-condition-tree {
+  display: grid;
+  gap: 0.42rem;
+}
+
+.card-editor-condition-node {
+  position: relative;
+  margin-left: var(--condition-indent, 0);
+  padding: 0.5rem;
+  border: 1px solid var(--ef-border-soft);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ef-field) 86%, transparent);
+}
+
+.card-editor-condition-node::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: -0.45rem;
+  bottom: 50%;
+  width: 8px;
+  border-left: 1px solid color-mix(in srgb, var(--ef-purple-bright) 45%, var(--ef-border));
+  border-bottom: 1px solid color-mix(in srgb, var(--ef-purple-bright) 45%, var(--ef-border));
+  pointer-events: none;
+}
+
+.card-editor-condition-node:first-child::before {
+  display: none;
+}
+
+.card-editor-condition-node.group {
+  justify-content: space-between;
+  border-color: color-mix(in srgb, var(--ef-purple-bright) 40%, var(--ef-border));
+  background: rgba(117, 66, 178, 0.07);
+}
+
+.card-editor-condition-node-main,
+.card-editor-condition-node-actions {
+  display: flex;
+  align-items: end;
+  gap: 0.45rem;
+}
+
+.card-editor-condition-node-main > i {
+  align-self: center;
+  color: var(--ef-purple-bright);
+}
+
+.card-editor-condition-node label,
+.card-editor-condition-leaf-grid label {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  color: var(--ef-text);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.card-editor-condition-node select,
+.card-editor-condition-node input,
+.card-editor-condition-test select,
+.card-editor-condition-test input {
+  width: 100%;
+  min-height: 2.1rem;
+  margin: 0;
+  padding: 0.4rem 0.48rem;
+  border: 1px solid var(--ef-border);
+  border-radius: 5px;
+  background: var(--ef-field);
+  color: var(--ef-text);
+}
+
+.card-editor-condition-node.leaf {
+  align-items: end;
+}
+
+.card-editor-condition-leaf-grid {
+  display: grid;
+  grid-template-columns: minmax(170px, 1.35fr) minmax(135px, 0.85fr) minmax(130px, 0.8fr);
+  gap: 0.48rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-editor-condition-remove {
+  align-self: end;
+}
+
+.card-editor-condition-unary {
+  display: flex;
+  align-items: center;
+  min-height: 2.1rem;
+  padding: 0 0.5rem;
+  border: 1px dashed var(--ef-border-soft);
+  border-radius: 5px;
+  color: var(--ef-muted);
+  font-size: 0.72rem;
+}
+
+.card-editor-condition-warnings {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid color-mix(in srgb, #d9a441 58%, var(--ef-border));
+  border-radius: 6px;
+  background: rgba(217, 164, 65, 0.08);
+  color: #ebc37b;
+  font-size: 0.74rem;
+}
+
+.card-editor-condition-warnings ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.card-editor-condition-test {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.65rem;
+  border: 1px solid var(--ef-border-soft);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.09);
+}
+
+.condition-test-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.card-editor-condition-test-result {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.6rem;
+  border: 1px solid var(--ef-border);
+  border-radius: 6px;
+  background: var(--ef-panel);
+}
+
+.card-editor-condition-test-result.matched {
+  border-color: color-mix(in srgb, var(--ef-green) 58%, var(--ef-border));
+}
+
+.card-editor-condition-test-result.failed {
+  border-color: color-mix(in srgb, var(--ef-red) 58%, var(--ef-border));
+}
+
+.card-editor-condition-test-result > span {
+  color: var(--ef-muted);
+  font-size: 0.74rem;
+}
+
+.card-editor-condition-test-rows {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.condition-test-row {
+  display: grid;
+  grid-template-columns: minmax(155px, 1.2fr) minmax(100px, 0.8fr) minmax(120px, 1fr) auto;
+  align-items: center;
+  gap: 0.42rem;
+  margin-left: var(--condition-indent, 0);
+  padding: 0.38rem 0.45rem;
+  border-left: 3px solid var(--ef-border);
+  background: rgba(255, 255, 255, 0.018);
+  font-size: 0.7rem;
+}
+
+.condition-test-row.matched { border-left-color: var(--ef-green); }
+.condition-test-row.failed { border-left-color: var(--ef-red); }
+.condition-test-row.unavailable { border-left-color: #d9a441; }
+
+.condition-test-row code {
+  overflow-wrap: anywhere;
+  color: var(--ef-orange);
+}
+
+.card-editor-condition-test-result pre {
+  max-height: 240px;
+  overflow: auto;
+  padding: 0.55rem;
+  border: 1px solid var(--ef-border-soft);
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.22);
+  color: var(--ef-text);
+  font-size: 0.68rem;
+  white-space: pre-wrap;
+}
+
+.card-editor-condition-empty {
+  display: grid;
+  place-items: center;
+  gap: 0.45rem;
+  min-height: 8rem;
+  padding: 0.8rem;
+  border: 1px dashed var(--ef-border);
+  border-radius: 6px;
+  color: var(--ef-muted);
+  text-align: center;
+}
+
+.card-editor-condition-empty i {
+  color: var(--ef-purple-bright);
+  font-size: 1.4rem;
+}
+
+.card-editor-target-map {
+  align-items: stretch;
+  flex-wrap: wrap;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--ef-border-soft);
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--ef-muted);
+  font-size: 0.72rem;
+}
+
+.card-editor-target-map span {
+  flex: 1 1 260px;
+}
+
+@media (max-width: 1180px) {
+  .card-editor-condition-leaf-grid,
+  .condition-test-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .condition-test-row {
+    grid-template-columns: minmax(140px, 1fr) minmax(100px, 0.8fr);
+  }
+}

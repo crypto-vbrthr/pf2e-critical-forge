@@ -13,6 +13,14 @@ export const CONDITION_OPERATORS = Object.freeze([
   "notExists"
 ]);
 
+
+export const CONDITION_VALUE_TYPES = Object.freeze([
+  "string",
+  "number",
+  "boolean",
+  "stringArray"
+]);
+
 export const CONDITION_FIELD_PATTERN = /^[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*$/u;
 
 export const BLOCKED_CONDITION_PATH_SEGMENTS = Object.freeze([

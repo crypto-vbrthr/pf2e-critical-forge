@@ -53,4 +53,5 @@ test("diagnostic template renders condition evidence for eligible and rejected c
   assert.match(template, /critical-diagnostic-condition-evaluation/g);
   assert.match(template, /conditionEvaluation\.rows/g);
   assert.match(template, /CriticalDiagnostic\.ActualValue/g);
+  assert.match(template, /CriticalDiagnostic\.CardEditorPhase/g);
 });

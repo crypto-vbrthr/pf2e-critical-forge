@@ -191,4 +191,4 @@ Context Provider → Runtime Snapshot → Condition Engine → Card Matcher → 
                                       └──────────────→ Diagnostic evidence
 ```
 
-The neutral selection context and existing filters remain intact. A condition is an optional eligibility gate, not a weight source. Preview schema `4` stores the snapshot so redraws remain tied to the original roll context. The visual condition builder remains outside this phase and will consume the same canonical tree in Phase 3.
+The neutral selection context and existing filters remain intact. A condition is an optional eligibility gate, not a weight source. Preview schema `4` stores the snapshot so redraws remain tied to the original roll context. Phase 3 adds a presentation-only Card Editor layer that edits and simulates the same canonical tree; runtime matching remains inside the Condition Engine.

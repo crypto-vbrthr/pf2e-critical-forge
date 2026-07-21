@@ -117,6 +117,157 @@
               </div>
             </details>
 
+            <details class="card-editor-details card-editor-condition-panel" open>
+              <summary>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Conditions"}}</summary>
+              <p class="hint">{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionsHint"}}</p>
+
+              {{#if card.conditionEditor.enabled}}
+                <div class="card-editor-condition-toolbar">
+                  <span class="card-editor-badge editable">{{card.conditionEditor.nodeCount}} {{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionNodes"}}</span>
+                  <button type="button" class="danger" data-action="clearConditions" {{#unless packEditable}}disabled{{/unless}}><i class="fa-solid fa-trash"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.ClearConditions"}}</button>
+                </div>
+
+                <div class="card-editor-condition-tree">
+                  {{#each card.conditionEditor.nodes as |node|}}
+                    {{#if node.isGroup}}
+                      <div class="card-editor-condition-node group" style="--condition-indent: {{node.indent}}px;">
+                        <div class="card-editor-condition-node-main">
+                          <i class="fa-solid fa-code-branch"></i>
+                          <label>
+                            <span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionGroupMode"}}</span>
+                            <select name="condition.{{node.key}}.mode" data-condition-rerender {{#unless @root.packEditable}}disabled{{/unless}}>
+                              {{#each node.modeOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}
+                            </select>
+                          </label>
+                        </div>
+                        <div class="card-editor-condition-node-actions">
+                          <button type="button" data-action="addCondition" data-condition-path="{{node.path}}" title="{{localize 'PF2E_CRITICAL_FORGE.CardEditor.AddCondition'}}" {{#unless @root.packEditable}}disabled{{/unless}}><i class="fa-solid fa-plus"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionLeaf"}}</button>
+                          <button type="button" data-action="addConditionGroup" data-condition-path="{{node.path}}" title="{{localize 'PF2E_CRITICAL_FORGE.CardEditor.AddConditionGroup'}}" {{#unless @root.packEditable}}disabled{{/unless}}><i class="fa-solid fa-folder-plus"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionGroup"}}</button>
+                          <button type="button" class="danger icon" data-action="removeConditionNode" data-condition-path="{{node.path}}" title="{{localize 'PF2E_CRITICAL_FORGE.CardEditor.RemoveConditionNode'}}" {{#unless @root.packEditable}}disabled{{/unless}}><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                      </div>
+                    {{else}}
+                      <div class="card-editor-condition-node leaf" style="--condition-indent: {{node.indent}}px;">
+                        <div class="card-editor-condition-leaf-grid">
+                          <label>
+                            <span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionField"}}</span>
+                            <select name="condition.{{node.key}}.fieldSelection" data-condition-rerender {{#unless @root.packEditable}}disabled{{/unless}}>
+                              {{#each node.fieldOptions as |group|}}
+                                <optgroup label="{{group.label}}">
+                                  {{#each group.options as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}
+                                </optgroup>
+                              {{/each}}
+                            </select>
+                          </label>
+                          {{#if node.isCustomField}}
+                            <label>
+                              <span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionCustomField"}}</span>
+                              <input name="condition.{{node.key}}.customField" value="{{node.customField}}" placeholder="provider.custom.value" {{#unless @root.packEditable}}disabled{{/unless}}>
+                            </label>
+                            <label>
+                              <span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionCustomType"}}</span>
+                              <select name="condition.{{node.key}}.customType" data-condition-rerender {{#unless @root.packEditable}}disabled{{/unless}}>
+                                {{#each node.customTypeOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}
+                              </select>
+                            </label>
+                          {{else}}
+                            <input type="hidden" name="condition.{{node.key}}.customField" value="">
+                            <input type="hidden" name="condition.{{node.key}}.customType" value="{{node.type}}">
+                          {{/if}}
+                          <label>
+                            <span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionOperator"}}</span>
+                            <select name="condition.{{node.key}}.operator" data-condition-rerender {{#unless @root.packEditable}}disabled{{/unless}}>
+                              {{#each node.operatorOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}
+                            </select>
+                          </label>
+                          {{#if node.requiresValue}}
+                            <label>
+                              <span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionValue"}}</span>
+                              {{#if node.isEnum}}
+                                <select name="condition.{{node.key}}.value" {{#unless @root.packEditable}}disabled{{/unless}}>{{#each node.valueOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select>
+                              {{else}}
+                                {{#if node.isBoolean}}
+                                  <select name="condition.{{node.key}}.value" {{#unless @root.packEditable}}disabled{{/unless}}>{{#each node.booleanOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select>
+                                {{else}}
+                                  {{#if node.isNumber}}
+                                    <input type="number" name="condition.{{node.key}}.value" value="{{node.value}}" step="any" {{#unless @root.packEditable}}disabled{{/unless}}>
+                                  {{else}}
+                                    <input name="condition.{{node.key}}.value" value="{{node.value}}" {{#if node.isArray}}placeholder="trait-a, trait-b"{{/if}} {{#unless @root.packEditable}}disabled{{/unless}}>
+                                  {{/if}}
+                                {{/if}}
+                              {{/if}}
+                            </label>
+                          {{else}}
+                            <div class="card-editor-condition-unary">{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionNoValue"}}</div>
+                          {{/if}}
+                        </div>
+                        <button type="button" class="danger icon card-editor-condition-remove" data-action="removeConditionNode" data-condition-path="{{node.path}}" title="{{localize 'PF2E_CRITICAL_FORGE.CardEditor.RemoveConditionNode'}}" {{#unless @root.packEditable}}disabled{{/unless}}><i class="fa-solid fa-xmark"></i></button>
+                      </div>
+                    {{/if}}
+                  {{/each}}
+                </div>
+
+                {{#if card.conditionWarnings.length}}
+                  <div class="card-editor-condition-warnings">
+                    <strong><i class="fa-solid fa-triangle-exclamation"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionWarningsTitle"}}</strong>
+                    <ul>{{#each card.conditionWarnings as |warning|}}<li>{{warning.text}}</li>{{/each}}</ul>
+                  </div>
+                {{/if}}
+
+                <section class="card-editor-condition-test" data-condition-test-panel>
+                  <div class="card-editor-section-heading">
+                    <div>
+                      <h4><i class="fa-solid fa-flask"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTest"}}</h4>
+                      <p>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestHint"}}</p>
+                    </div>
+                    <div class="card-editor-inline-actions">
+                      <button type="button" class="primary" data-action="testConditions"><i class="fa-solid fa-play"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.RunConditionTest"}}</button>
+                      <button type="button" data-action="clearConditionTest" {{#unless card.conditionTest.hasResult}}disabled{{/unless}}><i class="fa-solid fa-eraser"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.ClearConditionTest"}}</button>
+                    </div>
+                  </div>
+                  <div class="card-editor-grid condition-test-grid">
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Category"}}</span><select name="conditionTest.category" data-condition-test-input>{{#each card.conditionTest.categoryOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select></label>
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestSaveType"}}</span><select name="conditionTest.saveType" data-condition-test-input>{{#each card.conditionTest.saveTypeOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select></label>
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestSourceLevel"}}</span><input type="number" name="conditionTest.sourceLevel" value="{{card.conditionTest.input.sourceLevel}}" step="1" data-condition-test-input></label>
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestTargetLevel"}}</span><input type="number" name="conditionTest.targetLevel" value="{{card.conditionTest.input.targetLevel}}" step="1" data-condition-test-input></label>
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestSourceHpRatio"}}</span><input type="number" name="conditionTest.sourceHpRatio" value="{{card.conditionTest.input.sourceHpRatio}}" min="0" max="1" step="0.01" data-condition-test-input></label>
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestTargetHpRatio"}}</span><input type="number" name="conditionTest.targetHpRatio" value="{{card.conditionTest.input.targetHpRatio}}" min="0" max="1" step="0.01" data-condition-test-input></label>
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestThreats"}}</span><input type="number" name="conditionTest.hostileThreatCount" value="{{card.conditionTest.input.hostileThreatCount}}" min="0" step="1" data-condition-test-input></label>
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestDc"}}</span><input type="number" name="conditionTest.dc" value="{{card.conditionTest.input.dc}}" step="1" data-condition-test-input></label>
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestSourceTraits"}}</span><input name="conditionTest.sourceTraits" value="{{card.conditionTest.input.sourceTraits}}" placeholder="undead, fire" data-condition-test-input></label>
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestTargetTraits"}}</span><input name="conditionTest.targetTraits" value="{{card.conditionTest.input.targetTraits}}" placeholder="dragon, huge" data-condition-test-input></label>
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestRound"}}</span><input type="number" name="conditionTest.round" value="{{card.conditionTest.input.round}}" min="0" step="1" data-condition-test-input></label>
+                    <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestTurn"}}</span><input type="number" name="conditionTest.turn" value="{{card.conditionTest.input.turn}}" min="0" step="1" data-condition-test-input></label>
+                  </div>
+
+                  {{#if card.conditionTest.hasResult}}
+                    <div class="card-editor-condition-test-result {{#if card.conditionTest.matched}}matched{{else}}failed{{/if}}">
+                      <strong><i class="fa-solid {{#if card.conditionTest.matched}}fa-circle-check{{else}}fa-circle-xmark{{/if}}"></i> {{#if card.conditionTest.matched}}{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestCardAvailable"}}{{else}}{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestCardUnavailable"}}{{/if}}</strong>
+                      <span>{{card.conditionTest.summary}}</span>
+                      <div class="card-editor-condition-test-rows">
+                        {{#each card.conditionTest.rows as |row|}}
+                          <div class="condition-test-row {{row.statusClass}}" style="--condition-indent: {{row.indent}}px;">
+                            {{#if row.isGroup}}
+                              <code>{{row.mode}}</code><span>{{row.statusLabel}}</span>
+                            {{else}}
+                              <code>{{row.field}}</code><span>{{row.operatorLabel}} {{row.expectedText}}</span><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionActual"}}: {{row.actualText}}</span><strong>{{row.statusLabel}}</strong>
+                            {{/if}}
+                          </div>
+                        {{/each}}
+                      </div>
+                      <details><summary>{{localize "PF2E_CRITICAL_FORGE.CardEditor.ConditionTestSnapshot"}}</summary><pre>{{card.conditionTest.snapshotJson}}</pre></details>
+                    </div>
+                  {{/if}}
+                </section>
+              {{else}}
+                <div class="card-editor-condition-empty">
+                  <i class="fa-solid fa-filter-circle-xmark"></i>
+                  <p>{{localize "PF2E_CRITICAL_FORGE.CardEditor.NoConditions"}}</p>
+                  <button type="button" class="primary" data-action="enableConditions" {{#unless packEditable}}disabled{{/unless}}><i class="fa-solid fa-plus"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.EnableConditions"}}</button>
+                </div>
+              {{/if}}
+            </details>
+
             <section class="card-editor-effect-panel {{#if card.effect}}has-effect{{/if}}">
               <div class="card-editor-section-heading">
                 <div>
@@ -127,6 +278,10 @@
                   <button type="button" class="primary" data-action="editEffect" {{#unless packEditable}}disabled{{/unless}}><i class="fa-solid fa-hammer"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.EditInEffectForge"}}</button>
                   <button type="button" data-action="clearEffect" {{#unless card.effect}}disabled{{/unless}} {{#unless packEditable}}disabled{{/unless}}><i class="fa-solid fa-eraser"></i> {{localize "PF2E_CRITICAL_FORGE.CardEditor.RemoveEffect"}}</button>
                 </div>
+              </div>
+              <div class="card-editor-target-map">
+                <span><strong>{{localize "PF2E_CRITICAL_FORGE.CardEditor.EffectTargets.Source"}}:</strong> {{localize "PF2E_CRITICAL_FORGE.CardEditor.EffectTargetSourceHint"}}</span>
+                <span><strong>{{localize "PF2E_CRITICAL_FORGE.CardEditor.EffectTargets.Target"}}:</strong> {{localize "PF2E_CRITICAL_FORGE.CardEditor.EffectTargetTargetHint"}}</span>
               </div>
               {{#if card.effect}}
                 <div class="card-editor-grid effect-meta-grid">

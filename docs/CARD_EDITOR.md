@@ -1,6 +1,6 @@
 # Critical Card Pack Editor
 
-Version `0.9.4-dev.2` preserves optional condition trees through every editor and storage boundary while retaining the Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
+Version `0.9.4-dev.3` adds the visual condition builder and synthetic test workbench while retaining the Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
 
 ## Opening the editor
 
@@ -29,7 +29,8 @@ The editor exposes:
 - draw weight and tags;
 - damage-type, weapon-group, attack-trait, save-type, spell-tradition, spell-trait, source-trait, target-trait, and exclusion filters;
 - fallback title and description;
-- optional localization keys for distributed multilingual packs.
+- optional localization keys for distributed multilingual packs;
+- optional nested context conditions with typed fields, operators, and test data.
 
 Fallback text is what world-authored cards normally display. Localization keys remain available for packs intended to ship with a module and language files.
 
@@ -37,7 +38,12 @@ Fallback text is what world-authored cards normally display. Localization keys r
 
 The **Edit in Effect Forge** action opens a dedicated Effect Forge session. The normal world-item and effect-import controls are hidden in that mode. The footer contains a prominent **Use for Card** / **Zur Karte übernehmen** button. Pressing it validates the Effect Definition, returns it to the card editor, and closes the dedicated Effect Forge session. Normal world-Item and Token actions are hidden in this mode.
 
-The card editor stores effect target, localized effect-name key, fallback name, and the complete Effect Definition.
+The card editor stores effect target, localized effect-name key, fallback name, and the complete Effect Definition. The UI now explains the stable role convention used by the runtime:
+
+- `source`: the acting Actor for attacks and the saving Actor for saving throws;
+- `target`: the hostile opponent for attacks and the hostile origin or caster for saving throws.
+
+These labels describe existing schema-version-1 behavior; Phase 3 does not introduce a new targeting schema.
 
 ## Import and export
 
@@ -87,9 +93,40 @@ protected core card
 This test does not replace a visual Foundry smoke test, but it protects the data boundaries where cards previously had the greatest risk of losing ownership, effect definitions, or portable metadata.
 
 
-## Phase-2 condition preservation
+## Visual condition builder
 
-The Phase-2 runtime understands optional card `conditions`, but the visual condition builder is intentionally reserved for Phase 3. Existing condition trees from extension packs, JSON imports, or developer-authored cards are nevertheless preserved by:
+A card still starts with `conditions: null`. Press **Enable Conditions** to create a root `all` group. The tree editor can then add or remove comparison leaves and nested `all`/`any` groups. Removing the root clears the optional condition tree and restores legacy behavior.
+
+The curated field catalog covers roll, item, acting/saving Actor (`participants.source`), hostile opponent/origin (`participants.target`), and battlefield snapshot values. Field choices determine the available operators and value control:
+
+- numbers: equality and range comparisons;
+- booleans and enums: equality comparisons;
+- text and text lists: equality and containment;
+- every type: `exists` and `notExists`.
+
+Provider-defined paths remain possible through **Custom field**. Authors explicitly choose whether the operand is text, number, boolean, or a text list, preventing ambiguous conversion during rerenders and JSON roundtrips. Custom paths must still satisfy the Condition Engine's safe dot-path validation.
+
+## Contradiction warnings
+
+The editor performs a non-blocking review of direct constraints inside each `all` group. It warns about combinations such as:
+
+- `exists` together with `notExists`;
+- incompatible equality values;
+- equality together with the same inequality;
+- `contains` together with `notContains`;
+- empty numeric ranges.
+
+Warnings do not rewrite or reject the card. Canonical schema validation remains the authority when saving. Nested alternatives in `any` groups are not treated as contradictions.
+
+## Synthetic condition test
+
+The test workbench builds a plain serializable snapshot and runs the production Condition Engine against it. Authors can vary roll category, save type, DC, source/target levels, Hit Point ratios, traits, hostile threat count, round, and turn. The result lists every group and leaf with expected value, actual value, availability, and match status.
+
+The synthetic snapshot has provider id `card-editor-test`. It does not read or modify Actors, Tokens, Items, Combats, chat messages, or world settings. Test values and results are editor-session state and do not mark the pack dirty.
+
+## Condition roundtrip and compatibility
+
+Condition trees are preserved by:
 
 - cloning a card or pack;
 - opening and saving a world-managed pack;
@@ -97,4 +134,19 @@ The Phase-2 runtime understands optional card `conditions`, but the visual condi
 - portable JSON export/import;
 - world-setting persistence and registry hydration.
 
-New cards initialize `conditions: null`. Editing unrelated fields must never erase an existing condition tree. The automated full-roundtrip test covers this boundary. Until Phase 3, authors should create conditions through JSON or the public API described in [`CONDITION_ENGINE.md`](CONDITION_ENGINE.md).
+Existing cards with `conditions: null` remain unchanged, and imported Phase-2 condition trees open directly in the visual builder. Critical Card and Card Pack schemas remain at version `1`; no migration runs merely because a pack is opened or saved.
+
+## Public condition-editor API
+
+```js
+const editor = api.cards.conditions.editor;
+
+editor.fields;
+editor.getField("participants.source.hp.ratio");
+editor.operatorsForField("participants.source.level");
+editor.analyzeContradictions(tree);
+editor.createTestSnapshot({ sourceHpRatio: 0.4 });
+editor.evaluateTest(tree, { sourceHpRatio: 0.4 });
+```
+
+Use `api.cards.capabilities.conditionEditor` before depending on these helpers from an extension module.

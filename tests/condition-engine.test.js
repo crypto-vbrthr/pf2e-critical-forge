@@ -47,6 +47,38 @@ test("condition normalization creates immutable canonical group and leaf nodes",
   assert.equal(validateConditionTree(normalized).valid, true);
 });
 
+
+test("custom condition value types survive normalization, including unary operators", () => {
+  const numeric = normalizeConditionTree({
+    field: "provider.danger.score",
+    operator: "gte",
+    valueType: "number",
+    value: 3
+  });
+  assert.equal(numeric.valueType, "number");
+  assert.equal(validateConditionTree(numeric).valid, true);
+
+  const unary = normalizeConditionTree({
+    field: "provider.danger.score",
+    operator: "exists",
+    valueType: "number"
+  });
+  assert.equal(unary.valueType, "number");
+  assert.equal(Object.hasOwn(unary, "value"), false);
+
+  assert.throws(
+    () => normalizeConditionTree({ field: "provider.value", operator: "eq", valueType: "object", value: {} }),
+    /Unsupported Critical condition value type/
+  );
+  assert.equal(validateConditionTree({
+    type: "condition",
+    field: "provider.value",
+    operator: "eq",
+    valueType: "object",
+    value: {}
+  }).issues.some((entry) => entry.code === "CARD_CONDITION_VALUE_TYPE_INVALID"), true);
+});
+
 test("all and any groups evaluate recursively", () => {
   const tree = normalizeConditionTree({
     mode: "all",

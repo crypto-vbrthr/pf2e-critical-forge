@@ -1,9 +1,18 @@
 import { CARD_PACK_SCHEMA_VERSION, CARD_SCHEMA_VERSION } from "../constants.js";
 import { CARD_CATEGORIES } from "../critical-forge/constants.js";
-import { CONDITION_GROUP_MODES, CONDITION_OPERATORS } from "../critical-forge/conditions/condition-constants.js";
+import { CONDITION_GROUP_MODES, CONDITION_OPERATORS, CONDITION_VALUE_TYPES } from "../critical-forge/conditions/condition-constants.js";
 import { normalizeConditionTree, emptyConditionGroup } from "../critical-forge/conditions/condition-normalizer.js";
 import { validateConditionTree } from "../critical-forge/conditions/condition-validator.js";
 import { evaluateConditionTree, resolveConditionField } from "../critical-forge/conditions/condition-evaluator.js";
+import {
+  CONDITION_FIELD_CATALOG,
+  CONDITION_FIELD_TYPES,
+  analyzeConditionContradictions,
+  conditionFieldDefinition,
+  conditionOperatorsForField,
+  createConditionTestSnapshot,
+  evaluateConditionEditorTest
+} from "../critical-forge/editor/condition-editor-model.js";
 import {
   criticalCardRegistry,
   criticalCardSelector,
@@ -107,6 +116,7 @@ export function createCardApi() {
       contextSnapshots: true,
       contextProviders: true,
       contextConditions: true,
+      conditionEditor: true,
       multiDeckPacks: false
     }),
     categories: [...CARD_CATEGORIES],
@@ -184,6 +194,7 @@ export function createCardApi() {
     conditions: Object.freeze({
       modes: [...CONDITION_GROUP_MODES],
       operators: [...CONDITION_OPERATORS],
+      valueTypes: [...CONDITION_VALUE_TYPES],
       emptyGroup: (mode = "all") => emptyConditionGroup(mode),
       normalize: (tree) => normalizeConditionTree(tree),
       validate: (tree) => {
@@ -200,7 +211,16 @@ export function createCardApi() {
         }
       },
       evaluate: (tree, snapshot) => evaluateConditionTree(normalizeConditionTree(tree), snapshot),
-      resolveField: (snapshot, field) => resolveConditionField(snapshot, field)
+      resolveField: (snapshot, field) => resolveConditionField(snapshot, field),
+      editor: Object.freeze({
+        fieldTypes: Object.freeze({ ...CONDITION_FIELD_TYPES }),
+        fields: Object.freeze(CONDITION_FIELD_CATALOG.map((entry) => Object.freeze({ ...entry }))),
+        getField: (path) => conditionFieldDefinition(path),
+        operatorsForField: (path, type = null) => conditionOperatorsForField(path, type),
+        analyzeContradictions: (tree) => analyzeConditionContradictions(normalizeConditionTree(tree)),
+        createTestSnapshot: (input = {}) => createConditionTestSnapshot(input),
+        evaluateTest: (tree, input = {}) => evaluateConditionEditorTest(normalizeConditionTree(tree), input)
+      })
     }),
 
     createContext: (input, options = {}) => resolveCriticalContext(input, options),

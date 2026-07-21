@@ -1,5 +1,5 @@
 import { deepFreeze } from "../utils.js";
-import { CONDITION_GROUP_MODES, CONDITION_OPERATORS } from "./condition-constants.js";
+import { CONDITION_GROUP_MODES, CONDITION_OPERATORS, CONDITION_VALUE_TYPES } from "./condition-constants.js";
 
 export function normalizeConditionTree(value) {
   if (value == null) return null;
@@ -44,6 +44,13 @@ function normalizeNode(node, path) {
     field,
     operator
   };
+  if (node.valueType != null && String(node.valueType).trim() !== "") {
+    const valueType = String(node.valueType).trim();
+    if (!CONDITION_VALUE_TYPES.includes(valueType)) {
+      throw new TypeError(`Unsupported Critical condition value type at ${path}: ${valueType}`);
+    }
+    result.valueType = valueType;
+  }
   if (!["exists", "notExists"].includes(operator)) result.value = structuredClone(node.value);
   return result;
 }

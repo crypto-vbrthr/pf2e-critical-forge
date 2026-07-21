@@ -1,6 +1,6 @@
 # Critical Condition Engine
 
-Version `0.9.4-dev.2` introduces a generic, document-agnostic eligibility engine for context-sensitive Critical Cards. It evaluates optional card conditions against the immutable runtime snapshot produced by the Context Engine. Against All Odds, multi-deck packs, scene-based threat analysis, and the visual condition editor are deliberately outside this phase.
+Version `0.9.4-dev.3` retains the generic, document-agnostic eligibility engine from Phase 2 and adds a visual authoring and simulation layer in the Card Pack Editor. Against All Odds, multi-deck packs, and scene-based threat analysis remain deliberately outside this phase.
 
 ## Design guarantees
 
@@ -24,6 +24,19 @@ A leaf compares one snapshot field:
   value: 0.5
 }
 ```
+
+Provider-defined custom paths may additionally retain an editor operand type:
+
+```js
+{
+  type: "condition",
+  field: "provider.danger.score",
+  operator: "exists",
+  valueType: "number"
+}
+```
+
+`valueType` is optional and may be `string`, `number`, `boolean`, or `stringArray`. It guides visual authoring and survives unary operators that do not carry a `value`; runtime evaluation still compares the actual serialized value and does not coerce snapshot fields from this metadata.
 
 A group combines leaves or other groups:
 
@@ -143,7 +156,7 @@ Validation rejects:
 
 - malformed or empty field paths;
 - prototype-related path segments (`__proto__`, `prototype`, `constructor`);
-- unsupported group modes or operators;
+- unsupported group modes, operators, or custom-field value types;
 - missing comparison values;
 - non-numeric operands for numeric operators;
 - null operands for contains operators;
@@ -187,6 +200,8 @@ The diagnostic workbench displays every condition leaf for eligible and rejected
 
 Preview flag version `4` stores `runtimeSnapshot`. A redraw passes that stored snapshot back into selection. Older preview version `3` flags without a snapshot continue to redraw legacy cards; conditioned cards are unavailable when their required data cannot be proven.
 
-## Card Editor status
+## Card Editor authoring layer
 
-Phase 2 preserves condition trees through cloning, Effect Forge handoff, JSON transfer, world persistence, and registry hydration. It does not yet expose a visual condition builder. That UI, field catalog, operator controls, and interactive validation belong to Phase 3.
+Phase 3 exposes the canonical condition tree through a visual builder. It provides nested `all`/`any` groups, a typed snapshot-field catalog, operator filtering, provider-defined custom paths with explicit operand types, contradiction warnings, and a synthetic test workbench. The UI calls the same normalizer and evaluator used during live selection; it does not maintain a second condition language.
+
+Imported or extension-authored trees remain canonical data. Opening them in the editor does not migrate the schema, and cards with `conditions: null` remain on the legacy unconditional path. See [`CARD_EDITOR.md`](CARD_EDITOR.md).

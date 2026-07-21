@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.9.4-dev.2` adds Phase 2 of the Critical Context Engine: an optional, generic Condition Engine evaluates immutable runtime snapshots during card matching. Conditions support nested AND/OR groups, ten safe operators, complete diagnostic evidence, and snapshot-stable redraws. Critical Card and Card Pack schemas remain at version `1`; cards without conditions behave exactly as before.
+Version `0.9.4-dev.3` adds Phase 3 of the Critical Context Engine: the Card Pack Editor can now build, validate, and simulate nested card conditions visually. The editor exposes typed snapshot fields, provider-defined custom paths, context-safe test data, contradiction warnings, and explicit source/target role guidance. Critical Card and Card Pack schemas remain at version `1`; existing packs require no migration.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -26,7 +26,7 @@ The current module includes:
   - 12 critical spell fumbles;
   - 12 critically successful saving throws;
   - 12 critically failed saving throws;
-- a GM-only Card Pack Editor for world-managed packs, cards, filters, tone, impact, weights, fallback text, localization keys, and per-pack activation;
+- a GM-only Card Pack Editor for world-managed packs, cards, filters, tone, impact, weights, fallback text, localization keys, per-pack activation, and visual nested context conditions;
 - filters for damage types, weapon groups, required or excluded attack traits, save types, spell traditions, spell traits, source traits, and target traits;
 - direct mechanical-effect editing through a dedicated Effect Forge handoff;
 - portable card-pack JSON import and export through files or the clipboard;
@@ -81,7 +81,7 @@ npm run test:coverage
 npm run quality:check
 ```
 
-The suite covers the Effect Engine and Forge, component-duration inheritance and native Item splitting, Item-bundle updates, card normalization, Card Pack Editor round-trips, pack activation, rollback-safe world persistence, external extension-pack lifecycles, spell/save filters, PF2e context adaptation, nested condition normalization/evaluation/validation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
+The suite covers the Effect Engine and Forge, component-duration inheritance and native Item splitting, Item-bundle updates, card normalization, Card Pack Editor actions and round-trips, the visual condition model and simulator, pack activation, rollback-safe world persistence, external extension-pack lifecycles, spell/save filters, PF2e context adaptation, nested condition normalization/evaluation/validation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 

@@ -664,17 +664,36 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, runtime Context Engine, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev.2` adds optional snapshot conditions and diagnostic evidence on top of the immutable context/provider foundation while retaining all existing card APIs and schema-version-1 pack compatibility.
+Critical Forge card architecture, the PF2e Context Adapter, runtime Context Engine, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev.3` adds the visual condition-editor catalog, contradiction analysis, and synthetic simulator on top of the immutable context/provider and Condition Engine foundation while retaining all existing card APIs and schema-version-1 pack compatibility.
 
 Capability detection:
 
 ```js
 api.cards.capabilities.contextSnapshots; // true
 api.cards.capabilities.contextProviders; // true
-api.cards.capabilities.contextConditions; // true in phase 2
-api.cards.capabilities.multiDeckPacks; // false in phase 2
+api.cards.capabilities.contextConditions; // true
+api.cards.capabilities.conditionEditor; // true in phase 3
+api.cards.capabilities.multiDeckPacks; // false in phase 3
 ```
 
+
+### Condition editor helpers
+
+```js
+api.cards.conditions.valueTypes; // string, number, boolean, stringArray
+
+const editor = api.cards.conditions.editor;
+
+editor.fieldTypes;
+editor.fields;
+editor.getField("participants.source.hp.ratio");
+editor.operatorsForField("participants.source.level");
+editor.analyzeContradictions(tree);
+editor.createTestSnapshot({ sourceHpRatio: 0.4, saveType: "reflex" });
+editor.evaluateTest(tree, { sourceHpRatio: 0.4, saveType: "reflex" });
+```
+
+The catalog is descriptive and frozen. `evaluateTest()` uses the production Condition Engine against a synthetic serializable snapshot and never accesses Foundry documents. Provider-defined field paths remain supported even when they are not present in the built-in catalog. The editor stores optional `valueType` metadata (`string`, `number`, `boolean`, or `stringArray`) so custom operands remain stable even for unary conditions.
 
 ### Profiles and trigger policies
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.4-dev.3
+
+- Added Phase 3 of the Critical Context Engine: a visual condition editor inside the Card Pack Editor without changing Critical Card or Card Pack schema version `1`.
+- Added an editable nested condition tree with `all`/`any` groups, add/remove controls, a curated runtime-snapshot field catalog, and operator choices constrained by field type.
+- Added explicit, optional `valueType` metadata for provider-defined custom field paths so text, numeric, boolean, and text-list operands round-trip without ambiguous coercion, including unary `exists`/`notExists` conditions.
+- Added a synthetic condition test workbench for roll category, save type, participant levels, Hit Point ratios, traits, battlefield threat count, DC, round, and turn. Tests evaluate the real Condition Engine without reading or mutating Foundry documents.
+- Added non-blocking contradiction warnings for impossible direct constraints in `all` groups, including incompatible equality, existence, containment, and numeric-range combinations.
+- Clarified Effect Forge target roles directly in the editor: `source` is the acting or saving Actor, while `target` is the hostile opponent or origin.
+- Added the public `api.cards.conditions.editor` catalog, simulator, contradiction analysis, and the `conditionEditor` capability flag; public API version is now `0.9.4`.
+- Added Application-level Card Pack Editor tests in addition to pure model, template, API, persistence, import/export, registry, and selection regression coverage.
+- Preserved legacy cards and extension packs unchanged: `conditions: null` remains the default, existing condition trees round-trip, no migration runs, and all schema versions remain unchanged.
+- Updated the Card Editor, Condition Engine, Context Engine, diagnostics, API, architecture, import/export, migration, extension, testing, README, changelog, and release-checklist documentation.
+- The complete suite contains **260** passing tests.
+
 ## 0.9.4-dev.2
 
 - Added Phase 2 of the Critical Context Engine without changing Critical Card or Card Pack schema version `1`.

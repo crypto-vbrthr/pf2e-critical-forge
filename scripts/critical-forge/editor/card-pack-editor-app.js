@@ -1,5 +1,4 @@
 import { MODULE_ID } from "../../constants.js";
-import { openEffectForgeDefinition } from "../../effect-forge/effect-forge.js";
 import { localizeCard } from "../localization/card-localizer.js";
 import { normalizePackDefinition } from "../schema/card-normalizer.js";
 import { validatePackDefinition } from "../schema/card-validator.js";
@@ -30,6 +29,17 @@ import {
   saveCustomCardPack
 } from "./card-pack-store.js";
 import { cardEffectToForgeDefinition, forgeDefinitionToCardEffect } from "./card-effect-bridge.js";
+import {
+  addConditionEditorNode,
+  analyzeConditionContradictions,
+  createConditionRoot,
+  defaultConditionTestInput,
+  evaluateConditionEditorTest,
+  prepareConditionEditor,
+  removeConditionEditorNode,
+  syncConditionTestInput,
+  syncConditionTreeFromForm
+} from "./condition-editor-model.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -67,6 +77,8 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
   isDirty = false;
   cleanSnapshot = "";
   allowCloseWithoutPrompt = false;
+  conditionTestInput = defaultConditionTestInput();
+  conditionTestResult = null;
 
   static DEFAULT_OPTIONS = {
     id: "pf2e-critical-forge-card-pack-editor",
@@ -94,6 +106,13 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
       deleteCard: CardPackEditorApp.#deleteCard,
       editEffect: CardPackEditorApp.#editEffect,
       clearEffect: CardPackEditorApp.#clearEffect,
+      enableConditions: CardPackEditorApp.#enableConditions,
+      clearConditions: CardPackEditorApp.#clearConditions,
+      addCondition: CardPackEditorApp.#addCondition,
+      addConditionGroup: CardPackEditorApp.#addConditionGroup,
+      removeConditionNode: CardPackEditorApp.#removeConditionNode,
+      testConditions: CardPackEditorApp.#testConditions,
+      clearConditionTest: CardPackEditorApp.#clearConditionTest,
       closeWindow: CardPackEditorApp.#closeWindow
     }
   };
@@ -171,7 +190,8 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     super._onRender(context, options);
     const root = this.element;
     if (!(root instanceof HTMLElement)) return;
-    const markDirty = () => {
+    const markDirty = (event) => {
+      if (event?.target?.closest?.("[data-condition-test-panel]")) return;
       if (!this.#currentPack() || !isEditorManagedPack(this.#currentPack())) return;
       this.isDirty = true;
       const indicator = root.querySelector("[data-dirty-indicator]");
@@ -182,6 +202,13 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     };
     root.addEventListener("input", markDirty);
     root.addEventListener("change", markDirty);
+    for (const control of root.querySelectorAll("[data-condition-rerender]")) {
+      control.addEventListener("change", async () => {
+        this.#syncFromForm();
+        this.conditionTestResult = null;
+        await this.render({ force: true });
+      });
+    }
   }
 
   async close(options = {}) {
@@ -200,8 +227,19 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
   }
 
   #prepareCard(card, localized) {
+    const conditionEditor = prepareConditionEditor(card.conditions, {
+      localize: (key) => game.i18n.localize(key)
+    });
+    const conditionWarnings = analyzeConditionContradictions(card.conditions).map((issue) => ({
+      ...issue,
+      text: localizeConditionWarning(issue)
+    }));
+    const conditionTest = prepareConditionTestView(this.conditionTestInput, this.conditionTestResult, card.category);
     return {
       ...card,
+      conditionEditor,
+      conditionWarnings,
+      conditionTest,
       localizedTitle: localized?.title ?? card.fallbackTitle ?? card.id,
       tagsText: formatDelimitedList(card.tags),
       filters: Object.fromEntries(FILTER_FIELDS.map((field) => [field, formatDelimitedList(card.filters?.[field])])),
@@ -256,6 +294,8 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     card.tags = parseDelimitedList(data.get("card.tags"));
     card.filters ??= {};
     for (const field of FILTER_FIELDS) card.filters[field] = parseDelimitedList(data.get(`card.filters.${field}`));
+    card.conditions = syncConditionTreeFromForm(card.conditions, data);
+    this.conditionTestInput = syncConditionTestInput(this.conditionTestInput, data);
 
     if (card.effect) {
       card.effect.target = String(data.get("card.effect.target") ?? "target");
@@ -298,6 +338,8 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     const pack = hydrateRegisteredPack(packId);
     this.selectedPackId = packId;
     this.selectedCardId = pack?.cards?.[0]?.id ?? "";
+    this.conditionTestInput = defaultConditionTestInput(pack?.cards?.[0]?.category ?? "criticalHit");
+    this.conditionTestResult = null;
     this.draftPack = pack && isEditorManagedPack(pack) ? deepClone(pack) : null;
     this.originalPackId = this.draftPack?.id ?? null;
     this.#markClean();
@@ -491,6 +533,8 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
   static async #selectCard(_event, target) {
     this.#syncFromForm();
     this.selectedCardId = String(target.dataset.cardId ?? "");
+    this.conditionTestInput = defaultConditionTestInput(this.#currentCard()?.category ?? "criticalHit");
+    this.conditionTestResult = null;
     await this.render({ force: true });
   }
 
@@ -504,6 +548,8 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     });
     pack.cards.push(card);
     this.selectedCardId = card.id;
+    this.conditionTestInput = defaultConditionTestInput(card.category);
+    this.conditionTestResult = null;
     this.isDirty = true;
     await this.render({ force: true });
   }
@@ -525,6 +571,8 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     });
     pack.cards.push(card);
     this.selectedCardId = card.id;
+    this.conditionTestInput = defaultConditionTestInput(card.category);
+    this.conditionTestResult = null;
     this.isDirty = true;
     await this.render({ force: true });
   }
@@ -549,6 +597,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     const target = card.effect?.target ?? "target";
     const nameKey = card.effect?.nameKey ?? userLocalizationKey(card.id, "EffectName");
     const fallbackName = card.effect?.fallbackName ?? card.fallbackTitle ?? "Critical Card Effect";
+    const { openEffectForgeDefinition } = await import("../../effect-forge/effect-forge.js");
     await openEffectForgeDefinition(cardEffectToForgeDefinition(card), {
       fallbackName,
       onCommit: async (definition) => {
@@ -569,6 +618,76 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     card.effect = null;
     card.impact = "narrative";
     this.isDirty = true;
+    await this.render({ force: true });
+  }
+
+  static async #enableConditions() {
+    this.#syncFromForm();
+    const card = this.#currentCard();
+    const pack = this.#currentPack();
+    if (!card || !pack || !isEditorManagedPack(pack)) return;
+    card.conditions ??= createConditionRoot("all");
+    this.conditionTestResult = null;
+    this.isDirty = true;
+    await this.render({ force: true });
+  }
+
+  static async #clearConditions() {
+    this.#syncFromForm();
+    const card = this.#currentCard();
+    const pack = this.#currentPack();
+    if (!card || !pack || !isEditorManagedPack(pack)) return;
+    card.conditions = null;
+    this.conditionTestResult = null;
+    this.isDirty = true;
+    await this.render({ force: true });
+  }
+
+  static async #addCondition(_event, target) {
+    await this.#addConditionNode(target, "condition");
+  }
+
+  static async #addConditionGroup(_event, target) {
+    await this.#addConditionNode(target, "group");
+  }
+
+  async #addConditionNode(target, type) {
+    this.#syncFromForm();
+    const card = this.#currentCard();
+    const pack = this.#currentPack();
+    if (!card || !pack || !isEditorManagedPack(pack)) return;
+    card.conditions ??= createConditionRoot("all");
+    card.conditions = addConditionEditorNode(card.conditions, String(target?.dataset?.conditionPath ?? ""), { type });
+    this.conditionTestResult = null;
+    this.isDirty = true;
+    await this.render({ force: true });
+  }
+
+  static async #removeConditionNode(_event, target) {
+    this.#syncFromForm();
+    const card = this.#currentCard();
+    const pack = this.#currentPack();
+    if (!card || !pack || !isEditorManagedPack(pack)) return;
+    card.conditions = removeConditionEditorNode(card.conditions, String(target?.dataset?.conditionPath ?? ""));
+    this.conditionTestResult = null;
+    this.isDirty = true;
+    await this.render({ force: true });
+  }
+
+  static async #testConditions() {
+    this.#syncFromForm();
+    const card = this.#currentCard();
+    if (!card?.conditions) return;
+    this.conditionTestResult = evaluateConditionEditorTest(card.conditions, this.conditionTestInput);
+    await this.render({ force: true });
+  }
+
+  static async #clearConditionTest() {
+    const form = this.element;
+    if (form instanceof HTMLFormElement) {
+      this.conditionTestInput = syncConditionTestInput(this.conditionTestInput, new FormData(form));
+    }
+    this.conditionTestResult = null;
     await this.render({ force: true });
   }
 
@@ -603,6 +722,59 @@ function localizeIssue(issue) {
   const key = `PF2E_CRITICAL_FORGE.CardEditor.ValidationCodes.${issue.code}`;
   const localized = game.i18n.format(key, issue.data ?? {});
   return localized === key ? issue.code : localized;
+}
+
+function localizeConditionWarning(issue) {
+  const key = `PF2E_CRITICAL_FORGE.CardEditor.ConditionWarnings.${issue.code}`;
+  const localized = game.i18n.format(key, issue.data ?? {});
+  return localized === key ? `${issue.code}: ${issue.data?.field ?? ""}` : localized;
+}
+
+function prepareConditionTestView(input, result, fallbackCategory) {
+  const preparedInput = { ...defaultConditionTestInput(fallbackCategory), ...(input ?? {}) };
+  const categories = [
+    "criticalHit",
+    "criticalFumble",
+    "spellCriticalHit",
+    "spellCriticalFumble",
+    "savingThrowCriticalSuccess",
+    "savingThrowCriticalFailure"
+  ];
+  const saveTypes = ["", "fortitude", "reflex", "will"];
+  return {
+    input: preparedInput,
+    categoryOptions: optionList(categories, preparedInput.category, "Categories"),
+    saveTypeOptions: saveTypes.map((value) => ({
+      value,
+      selected: value === preparedInput.saveType,
+      label: value
+        ? game.i18n.localize(`PF2E_CRITICAL_FORGE.CardEditor.SaveTypes.${value.charAt(0).toUpperCase() + value.slice(1)}`)
+        : game.i18n.localize("PF2E_CRITICAL_FORGE.CardEditor.SaveTypes.None")
+    })),
+    hasResult: Boolean(result),
+    matched: result?.evaluation?.matched === true,
+    available: result?.evaluation?.available !== false,
+    summary: result
+      ? game.i18n.format("PF2E_CRITICAL_FORGE.CardEditor.ConditionTestSummary", {
+          matched: result.evaluation.counts?.matched ?? 0,
+          total: result.evaluation.counts?.conditions ?? 0,
+          unavailable: result.evaluation.counts?.unavailable ?? 0
+        })
+      : "",
+    rows: (result?.rows ?? []).map((row) => ({
+      ...row,
+      statusClass: row.matched ? "matched" : row.available === false ? "unavailable" : "failed",
+      operatorLabel: row.operator
+        ? game.i18n.localize(`PF2E_CRITICAL_FORGE.CardEditor.ConditionOperators.${row.operator}`)
+        : "",
+      statusLabel: row.matched
+        ? game.i18n.localize("PF2E_CRITICAL_FORGE.CardEditor.ConditionTestMatched")
+        : row.available === false
+          ? game.i18n.localize("PF2E_CRITICAL_FORGE.CardEditor.ConditionTestUnavailable")
+          : game.i18n.localize("PF2E_CRITICAL_FORGE.CardEditor.ConditionTestFailed")
+    })),
+    snapshotJson: result ? JSON.stringify(result.snapshot, null, 2) : ""
+  };
 }
 
 async function confirmAction(titleKey, promptKey) {

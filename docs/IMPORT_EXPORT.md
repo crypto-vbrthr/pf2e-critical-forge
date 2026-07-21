@@ -19,8 +19,8 @@ Exports are allowed only for Effect Definitions that pass the Validation Engine.
   "exportedAt": "2026-07-15T08:00:00.000Z",
   "generator": {
     "moduleId": "pf2e-critical-forge",
-    "moduleVersion": "0.9.4-dev.2",
-    "apiVersion": "0.9.3",
+    "moduleVersion": "0.9.4-dev.3",
+    "apiVersion": "0.9.4",
     "schemaVersion": 2
   },
   "definition": {},
@@ -103,4 +103,4 @@ The export envelope and the Effect Definition schema are versioned separately. T
 
 ## Critical Card Pack conditions
 
-Card-pack exports preserve optional `conditions` trees without converting or stripping them. Import normalization validates the tree while leaving Critical Card and Card Pack schema versions at `1`. The Phase-2 Card Pack Editor preserves these values even though the visual condition builder is scheduled for Phase 3.
+Card-pack exports preserve optional `conditions` trees without converting or stripping them. Import normalization validates the tree while leaving Critical Card and Card Pack schema versions at `1`. The Phase-3 Card Pack Editor opens these values in the visual condition builder, preserves explicit custom-field operand types through their serialized values, and exports the canonical tree unchanged.

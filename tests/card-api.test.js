@@ -107,6 +107,7 @@ test("public card API exposes additive context-provider capabilities", () => {
   assert.equal(api.capabilities.contextConditions, true);
 
   assert.deepEqual(api.conditions.modes, ["all", "any"]);
+  assert.deepEqual(api.conditions.valueTypes, ["string", "number", "boolean", "stringArray"]);
   assert.equal(api.conditions.operators.includes("lte"), true);
   const condition = api.conditions.normalize({ field: "participants.source.hp.ratio", operator: "lte", value: 0.5 });
   assert.equal(api.conditions.validate(condition).valid, true);
@@ -124,4 +125,24 @@ test("public card API exposes additive context-provider capabilities", () => {
   const resolved = api.contexts.resolve({ marker: true }, { system: "test-system" });
   assert.equal(resolved.context.marker, true);
   assert.equal(api.contexts.unregisterProvider("test-system", "test-provider"), true);
+});
+
+test("public card API exposes the Phase-3 condition editor catalog and simulator", () => {
+  assert.equal(api.capabilities.conditionEditor, true);
+  assert.equal(api.conditions.editor.fields.length > 30, true);
+  assert.equal(api.conditions.editor.getField("participants.source.hp.ratio").type, "number");
+  assert.equal(api.conditions.editor.operatorsForField("participants.source.level").includes("gte"), true);
+
+  const tree = api.conditions.normalize({
+    mode: "all",
+    conditions: [
+      { field: "participants.source.hp.ratio", operator: "lte", value: 0.5 },
+      { field: "battlefield.hostileThreatCount", operator: "gte", value: 2 }
+    ]
+  });
+  const tested = api.conditions.editor.evaluateTest(tree, {
+    sourceHpRatio: 0.4,
+    hostileThreatCount: 2
+  });
+  assert.equal(tested.evaluation.matched, true);
 });

@@ -13,8 +13,13 @@
 - [ ] Copy a protected core card into a custom pack, edit its effect in Effect Forge, save it, export/import the pack, and confirm the card can still be drawn and applied.
 - [ ] Disable and re-enable that custom pack through **Paket aktivieren** and verify selection changes immediately while the pack remains editable.
 - [ ] Register two external test packs through `api.cards.extensions.forModule(moduleId).registerPacks()`, replace one, call `unregisterAll()`, and confirm core and unrelated packs remain untouched.
-- [ ] Open Critical Diagnostics and confirm the toolbar shows `Bedingungs-Engine · 0.9.4-dev.2`, the runtime-context summary, and the raw snapshot.
+- [ ] Open Critical Diagnostics and confirm the toolbar shows `Karteneditor · 0.9.4-dev.3`, the runtime-context summary, and the raw snapshot.
 - [ ] Diagnose one attack and one saving throw; confirm the rolling Actor is `source`, the hostile opponent/origin is `target`, and HP/level data matches the current Actors.
+- [ ] Open an editable card, enable conditions, create a nested `all`/`any` tree, change field types and operators, save, reopen, and confirm the tree is identical.
+- [ ] Test a provider-defined custom path once as a number and once as text; confirm the configured type and value survive rerendering and JSON export/import.
+- [ ] Run the condition test workbench with matching, failing, and unavailable values; confirm no Actor, Token, Combat, or Item data changes.
+- [ ] Create contradictory constraints in an `all` group and confirm the editor warns without blocking deliberately unusual cards.
+- [ ] Verify the editor target-role hints identify `source` as acting/saving Actor and `target` as hostile opponent/origin.
 - [ ] Register a temporary higher-priority Context Provider under a unique id, resolve it explicitly, remove it, and confirm the protected `core-pf2e` provider remains available.
 - [ ] Verify world Item update, copy, Actor application, and unmanaged-rule preservation.
 - [ ] Build an effect with inherited and overridden component durations; verify world creation, Actor application, opening either segment, updating the bundle, expiration, and definition-based removal.

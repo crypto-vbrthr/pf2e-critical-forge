@@ -201,3 +201,16 @@ extension.registerPacks(allPacks, { replace: true });
 ```
 
 Replacement is allowed only for packs already owned by the same extension. A request to replace `core`, a world pack, or another extension’s pack throws and leaves all registries unchanged.
+
+### Optional Phase-3 editor integration
+
+Extensions that only register runtime conditions continue to require Phase 2 (`0.9.4-dev.2`). Extensions that expose authoring workflows may additionally test:
+
+```js
+if (forge.cards.capabilities.conditionEditor) {
+  const fields = forge.cards.conditions.editor.fields;
+  const test = forge.cards.conditions.editor.evaluateTest(tree, sampleInput);
+}
+```
+
+Provider-defined snapshot paths do not need to be added to the core catalog. Authors can enter them as custom fields and select an explicit operand type. Extension documentation should name the provider and describe when each custom field is available.

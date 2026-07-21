@@ -2,7 +2,8 @@ import {
   BLOCKED_CONDITION_PATH_SEGMENTS,
   CONDITION_FIELD_PATTERN,
   CONDITION_GROUP_MODES,
-  CONDITION_OPERATORS
+  CONDITION_OPERATORS,
+  CONDITION_VALUE_TYPES
 } from "./condition-constants.js";
 
 const MAX_CONDITION_DEPTH = 12;
@@ -64,6 +65,10 @@ function validateNode(node, path, depth, state, issues) {
 
   if (!CONDITION_OPERATORS.includes(node.operator)) {
     issues.push(conditionIssue("CARD_CONDITION_OPERATOR_INVALID", `${path}.operator`, { operator: node.operator }));
+  }
+
+  if (node.valueType != null && !CONDITION_VALUE_TYPES.includes(node.valueType)) {
+    issues.push(conditionIssue("CARD_CONDITION_VALUE_TYPE_INVALID", `${path}.valueType`, { valueType: node.valueType }));
   }
 
   const unary = ["exists", "notExists"].includes(node.operator);
