@@ -664,7 +664,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, runtime Context Engine, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev.3.1` adds the visual condition-editor catalog, contradiction analysis, and synthetic simulator on top of the immutable context/provider and Condition Engine foundation while retaining all existing card APIs and schema-version-1 pack compatibility.
+Critical Forge card architecture, the PF2e Context Adapter, runtime Context Engine, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev.4` adds the visual condition-editor catalog, contradiction analysis, and synthetic simulator on top of the immutable context/provider and Condition Engine foundation while retaining all existing card APIs and schema-version-1 pack compatibility.
 
 Capability detection:
 
@@ -1012,3 +1012,24 @@ const imported = editor.parseImport(json);
 ```
 
 World-managed packs are persisted through Foundry settings and registered into the same runtime registries used by automatic card selection.
+
+
+## Diagnostics 2.0 API
+
+Version `0.9.4-dev.4` adds versioned evaluation reports without replacing `api.cards.diagnose`, `listMessages`, or `resolveMessageInput`.
+
+```js
+const resolved = await api.cards.diagnostics.resolveMessageInput(message);
+const diagnostic = api.cards.diagnose(resolved.input);
+const report = api.cards.diagnostics.createReport(diagnostic, {
+  sourceMessage: message,
+  resolverDiagnostics: resolved.diagnostics
+});
+
+api.cards.diagnostics.history.record(report);
+const repeated = api.cards.diagnostics.replaySnapshot(report);
+const simulated = await api.cards.diagnostics.simulateCard(cardId, { input: resolved.input });
+const json = api.cards.diagnostics.serializeReport(report);
+```
+
+Capability flags are `diagnosticReports`, `diagnosticHistory`, and `diagnosticSimulation`. The diagnostic report schema version is available as `api.cards.diagnostics.reportVersion`.

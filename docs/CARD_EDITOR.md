@@ -1,6 +1,6 @@
 # Critical Card Pack Editor
 
-Version `0.9.4-dev.3.1` adds the visual condition builder and synthetic test workbench while retaining the Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
+Version `0.9.4-dev.4` adds the visual condition builder and synthetic test workbench while retaining the Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
 Condition-editor rerenders preserve the package list, card list, and main workspace scroll positions, so enabling conditions or changing the condition tree no longer jumps the editor to the top.
 
 ## Opening the editor

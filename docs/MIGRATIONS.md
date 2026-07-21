@@ -68,6 +68,10 @@ Loaded legacy data is migrated only in memory. The original Foundry Item is not 
 
 Integrations should call `api.effects.migrate()` before validating long-lived stored definitions.
 
+## Critical Forge 0.9.4-dev.4
+
+No migration runs. Diagnostics 2.0 introduces report schema version `1`, which is session-only and independent of Critical Card schema `1`, Card Pack schema `1`, preview schema `4`, and Effect Definition schema `2`. Existing packs and extension modules continue to load unchanged.
+
 ## Critical Forge 0.9.4-dev.3.1
 
 No schema migration is required. The visual condition editor reads and writes the existing optional schema-version-1 `conditions` tree introduced in Phase 2. It may add optional `valueType` metadata only to provider-defined custom field leaves; Phase-2 runtimes do not require this metadata and may discard it when normalizing and resaving a pack; extensions that depend on preserving a unary custom-field type should capability-check `conditionEditor`. The Phase-3 normalizer preserves and validates it. Cards without conditions remain `conditions: null`; opening, testing, or saving a pack does not synthesize conditions unless the author explicitly enables them. Public API version `0.9.4` adds `api.cards.conditions.editor` and the `conditionEditor` capability flag.

@@ -2,6 +2,8 @@ import { MODULE_ID, SETTINGS } from "../../constants.js";
 import { criticalCardSelector } from "../critical-forge.js";
 import { resolveDiagnosticMessageInput } from "../diagnostics/chat-message-resolver.js";
 import { diagnosePf2eCriticalInput } from "../diagnostics/critical-diagnostic-service.js";
+import { criticalDiagnosticHistory } from "../diagnostics/diagnostic-history.js";
+import { createDiagnosticEvaluationReport, withDiagnosticSelection } from "../diagnostics/diagnostic-report.js";
 import { publishCriticalCardPreview } from "../presentation/critical-card-preview.js";
 import { configuredCardProfile } from "../profile/card-profile.js";
 
@@ -50,6 +52,11 @@ export async function processCriticalChatMessage(message, {
       user: null
     });
     const report = diagnose(resolved.input);
+    let evaluationReport = criticalDiagnosticHistory.record(createDiagnosticEvaluationReport(report, {
+      sourceMessage: message,
+      resolverDiagnostics: resolved.diagnostics,
+      origin: "automation"
+    }));
 
     if (!isSupportedCriticalReport(report, resolved.input)) {
       return failure("CRITICAL_AUTOMATION_UNSUPPORTED_ROLL", { report, resolverDiagnostics: resolved.diagnostics });
@@ -111,6 +118,11 @@ export async function processCriticalChatMessage(message, {
       profile,
       drawHistory: history
     });
+    evaluationReport = withDiagnosticSelection(evaluationReport, selection, {
+      method: "weighted-random",
+      previewMessageUuid: previewResult.message?.uuid ?? null
+    });
+    criticalDiagnosticHistory.record(evaluationReport);
     await recordHistory(selection.selected.id);
     processedMessages.add(messageId);
     await safeUpdateSource(updateSourceMessage, message, automationData({

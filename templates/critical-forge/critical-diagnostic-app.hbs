@@ -26,6 +26,14 @@
           <i class="fa-solid fa-eraser"></i>
           {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Clear"}}
         </button>
+        <button type="button" data-action="replaySnapshot" {{#unless hasReport}}disabled{{/unless}}>
+          <i class="fa-solid fa-camera-rotate"></i>
+          {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ReplaySnapshot"}}
+        </button>
+        <button type="button" data-action="replayCurrent" {{#unless report.canReplayCurrent}}disabled{{/unless}}>
+          <i class="fa-solid fa-arrows-rotate"></i>
+          {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ReplayCurrent"}}
+        </button>
       </div>
     </div>
 
@@ -43,7 +51,7 @@
       {{#if targetNames}}<strong>{{targetNames}}</strong>{{/if}}
       <span class="critical-diagnostic-build">
         <i class="fa-solid fa-cubes-stacked"></i>
-        {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.CardEditorPhase"}} · {{moduleVersion}}
+        {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.DiagnosticsPhase"}} · {{moduleVersion}}
       </span>
     </div>
   </section>
@@ -143,6 +151,18 @@
           </div>
         </section>
 
+        <section class="effect-forge-panel critical-diagnostic-phases">
+          <header class="critical-diagnostic-section-header">
+            <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Pipeline"}}</h2>
+            <span class="critical-diagnostic-context-schema">v{{report.reportVersion}} · {{report.originLabel}} · {{report.createdAt}}</span>
+          </header>
+          <div class="critical-diagnostic-phase-grid">
+            <div><i class="fa-solid fa-magnifying-glass"></i><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.PhaseContext"}}</span><strong>{{report.contextPhaseStatus}}</strong></div>
+            <div><i class="fa-solid fa-shuffle"></i><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.PhaseSelection"}}</span><strong>{{report.selectionPhaseStatus}}</strong><small>{{report.selectedCard}}</small></div>
+            <div><i class="fa-solid fa-wand-magic-sparkles"></i><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.PhaseApplication"}}</span><strong>{{report.applicationPhaseStatus}}</strong></div>
+          </div>
+        </section>
+
         <section class="effect-forge-panel critical-diagnostic-runtime">
           <header class="critical-diagnostic-section-header">
             <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.RuntimeContext"}}</h2>
@@ -190,6 +210,64 @@
             <p class="critical-diagnostic-empty">{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.NoRuntimeContext"}}</p>
           {{/if}}
         </section>
+
+        {{#if report.hasReplay}}
+          <section class="effect-forge-panel critical-diagnostic-replay">
+            <header class="critical-diagnostic-section-header">
+              <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ReplayResult"}}</h2>
+              <span class="critical-diagnostic-status {{report.replay.statusClass}}">{{report.replay.statusText}}</span>
+            </header>
+            <p><strong>{{report.replay.modeLabel}}</strong></p>
+            {{#if report.replay.changes.length}}
+              <div class="critical-diagnostic-change-list">
+                {{#each report.replay.changes}}
+                  <div><code>{{field}}</code><span>{{before}}</span><i class="fa-solid fa-arrow-right"></i><span>{{after}}</span></div>
+                {{/each}}
+              </div>
+            {{/if}}
+          </section>
+        {{/if}}
+
+        {{#if report.hasActualApplication}}
+          <section class="effect-forge-panel critical-diagnostic-application-audit">
+            <header class="critical-diagnostic-section-header">
+              <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ApplicationAudit"}}</h2>
+              <span class="critical-diagnostic-status {{report.actualApplication.statusClass}}">{{report.actualApplication.statusLabel}}</span>
+            </header>
+            <div class="critical-diagnostic-facts">
+              <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ApplicationTarget"}}</span><strong>{{report.actualApplication.targetLabel}}</strong></div>
+              <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.AppliedBy"}}</span><strong>{{report.actualApplication.appliedByLabel}}</strong></div>
+              <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.AppliedAt"}}</span><strong>{{report.actualApplication.appliedAtLabel}}</strong></div>
+              <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ApplicationCode"}}</span><strong>{{report.actualApplication.code}}</strong></div>
+            </div>
+            {{#if report.actualApplication.hasEffectIds}}
+              <div class="critical-diagnostic-simulation-components">
+                {{#each report.actualApplication.effectIds}}<span><code>{{this}}</code></span>{{/each}}
+              </div>
+            {{/if}}
+          </section>
+        {{/if}}
+
+        {{#if report.hasSimulation}}
+          <section class="effect-forge-panel critical-diagnostic-simulation">
+            <header class="critical-diagnostic-section-header">
+              <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Simulation"}}</h2>
+              <span class="critical-diagnostic-status {{#if report.simulation.valid}}valid{{else}}invalid{{/if}}">{{report.simulation.statusLabel}}</span>
+            </header>
+            <div class="critical-diagnostic-facts">
+              <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.SimulatedCard"}}</span><strong>{{report.simulation.cardId}}</strong></div>
+              <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.SimulationTarget"}}</span><strong>{{report.simulation.targetLabel}}</strong></div>
+              <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Duration"}}</span><strong>{{report.simulation.duration}}</strong></div>
+              <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.DocumentsChanged"}}</span><strong>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.No"}}</strong></div>
+            </div>
+            {{#if report.simulation.hasComponents}}
+              <div class="critical-diagnostic-simulation-components">
+                {{#each report.simulation.components}}<span><strong>{{type}}:</strong> {{summary}}</span>{{/each}}
+              </div>
+            {{/if}}
+            {{#if report.simulation.code}}<p class="critical-diagnostic-empty"><code>{{report.simulation.code}}</code></p>{{/if}}
+          </section>
+        {{/if}}
 
         <section class="effect-forge-panel critical-diagnostic-candidates">
           <header class="critical-diagnostic-section-header">
@@ -242,6 +320,10 @@
                       <i class="fa-solid fa-comment-medical"></i>
                       {{localize "PF2E_CRITICAL_FORGE.CriticalPreview.ShowInChat"}}
                     </button>
+                    <button type="button" data-action="simulateCard" data-card-id="{{id}}">
+                      <i class="fa-solid fa-flask-vial"></i>
+                      {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Simulate"}}
+                    </button>
                   </div>
                 </article>
               {{/each}}
@@ -291,6 +373,27 @@
       </main>
 
       <aside class="critical-diagnostic-column">
+        <section class="effect-forge-panel critical-diagnostic-history">
+          <header class="critical-diagnostic-section-header">
+            <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.History"}} ({{historyCount}})</h2>
+            <button type="button" data-action="clearHistory" {{#unless hasHistory}}disabled{{/unless}}>
+              <i class="fa-solid fa-trash-can"></i>
+              {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ClearHistory"}}
+            </button>
+          </header>
+          {{#if hasHistory}}
+            <div class="critical-diagnostic-history-list">
+              {{#each history}}
+                <button type="button" class="critical-diagnostic-history-entry {{#if selected}}selected{{/if}}" data-action="loadHistory" data-report-id="{{id}}">
+                  <span class="critical-diagnostic-history-dot {{statusClass}}"></span>
+                  <span><strong>{{label}}</strong><small>{{time}} · {{origin}} · {{eligibleCount}} {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.EligibleShort"}}</small>{{#if selectedCard}}<em>{{selectedCard}}</em>{{/if}}</span>
+                </button>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="critical-diagnostic-empty">{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.NoHistory"}}</p>
+          {{/if}}
+        </section>
         <section class="effect-forge-panel critical-diagnostic-diagnostics">
           <header class="critical-diagnostic-section-header">
             <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Diagnostics"}}</h2>
@@ -350,6 +453,10 @@
     <button type="button" data-action="copyReport" {{#unless hasReport}}disabled{{/unless}}>
       <i class="fa-regular fa-copy"></i>
       {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.CopyReport"}}
+    </button>
+    <button type="button" data-action="exportReport" {{#unless hasReport}}disabled{{/unless}}>
+      <i class="fa-solid fa-file-export"></i>
+      {{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ExportReport"}}
     </button>
     <button type="button" data-action="closeWindow">
       <i class="fa-solid fa-xmark"></i>

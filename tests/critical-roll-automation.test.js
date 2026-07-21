@@ -199,3 +199,25 @@ test("automatic selection and preview receive the diagnostic runtime snapshot", 
   assert.equal(selectorOptions.snapshot, snapshot);
   assert.equal(previewOptions.runtimeSnapshot, snapshot);
 });
+
+test("automatic processing records the selected card in Diagnostics 2.0 history", async () => {
+  const { criticalDiagnosticHistory } = await import("../scripts/critical-forge/diagnostics/diagnostic-history.js");
+  criticalDiagnosticHistory.clear();
+  const message = { id: "diagnostic-history-roll", uuid: "ChatMessage.diagnostic-history-roll", flags: {} };
+  const result = await processCriticalChatMessage(message, baseOptions({
+    selector: {
+      select: () => ({
+        selected: { id: "core.slashing.deep-cut", packId: "core", category: "criticalHit", fallbackTitle: "Deep Cut" },
+        eligible: [{ card: { id: "core.slashing.deep-cut" }, effectiveWeight: 2 }]
+      })
+    }
+  }));
+
+  assert.equal(result.valid, true);
+  const recorded = criticalDiagnosticHistory.findBySourceMessageUuid(message.uuid);
+  assert.equal(recorded.origin, "automation");
+  assert.equal(recorded.phases.selection.status, "selected");
+  assert.equal(recorded.phases.selection.selected.id, "core.slashing.deep-cut");
+  assert.equal(recorded.phases.selection.previewMessageUuid, "ChatMessage.preview");
+  criticalDiagnosticHistory.clear();
+});

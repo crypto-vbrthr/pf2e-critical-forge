@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.4-dev.4
+
+- Added Diagnostics 2.0 with versioned, immutable, JSON-serializable evaluation reports.
+- Split each report into context-resolution, card-selection, and effect-application phases with explicit status values.
+- Added a bounded in-memory session history of up to 100 reports, newest first, with source-message, origin, validity, candidate count, and selected-card summaries.
+- Added exact snapshot replay and current-world-state replay with candidate-pool, validity, and total-weight comparisons.
+- Added safe per-card application simulation that resolves the configured source/target role, validates the materialized Effect Definition against the Actor, summarizes duration and components, and never creates or updates Foundry documents.
+- Added export/copy of the complete report including module/report versions, source references, context, metadata, snapshot, diagnostics, candidates, selection, simulation, actual application audit, and replay comparison.
+- Connected automatic card selection and successful GM-confirmed effect application to the session report history.
+- Added public Diagnostics 2.0 capabilities and APIs under `api.cards.diagnostics` without removing or changing existing diagnostic methods.
+- Kept Critical Card schema `1`, Card Pack schema `1`, Effect Definition schema `2`, and all existing pack/extension APIs unchanged.
+- Added report, history, replay, simulation, UI-contract, automation/application integration, and public-API regression tests.
+- The complete suite contains **275** passing tests.
+
 ## 0.9.4-dev.3.1
 
 - Fixed Card Pack Editor context-condition actions jumping the main workspace back to the top after a rerender.

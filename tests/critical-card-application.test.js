@@ -299,3 +299,87 @@ test("a correct stored save roller is not replaced by an ambiguous live re-resol
   assert.equal(result.actor, defender);
   assert.equal(result.resolvedBy, "preview-metadata");
 });
+
+test("successful application enriches the matching Diagnostics 2.0 report", async () => {
+  const { criticalDiagnosticHistory } = await import("../scripts/critical-forge/diagnostics/diagnostic-history.js");
+  const { createDiagnosticEvaluationReport } = await import("../scripts/critical-forge/diagnostics/diagnostic-report.js");
+  criticalDiagnosticHistory.clear();
+
+  const actor = createActor();
+  const sourceMessageUuid = "ChatMessage.source-for-application-history";
+  const report = createDiagnosticEvaluationReport({
+    valid: true,
+    context: { category: "criticalHit" },
+    metadata: {},
+    snapshot: null,
+    diagnostics: [],
+    eligible: [],
+    rejected: [],
+    totalWeight: 0,
+    profile: null,
+    trigger: null,
+    triggerPolicy: null
+  }, {
+    sourceMessage: { id: "source-for-application-history", uuid: sourceMessageUuid },
+    createdAt: 1000
+  });
+  criticalDiagnosticHistory.record(report);
+
+  const message = createMessage(actor);
+  message.flags["pf2e-critical-forge"].criticalCardPreview.sourceMessageUuid = sourceMessageUuid;
+  const result = await applyCriticalCardEffect(message, {
+    user: game.user,
+    fromUuidFn: async () => ({ documentName: "Token", actor }),
+    analyzeFn: () => ({ valid: true, issues: [] }),
+    applyEffectFn: async () => ({ id: "created-effect", uuid: "Actor.actor-1.Item.created-effect" }),
+    updateMessageFn: async () => null,
+    now: () => 1001
+  });
+
+  assert.equal(result.valid, true);
+  const enriched = criticalDiagnosticHistory.findBySourceMessageUuid(sourceMessageUuid);
+  assert.equal(enriched.phases.application.status, "applied");
+  assert.equal(enriched.phases.application.actual.targetActorName, actor.name);
+  assert.deepEqual(enriched.phases.application.actual.createdEffectIds, ["Actor.actor-1.Item.created-effect"]);
+  criticalDiagnosticHistory.clear();
+});
+
+test("failed application inspection is recorded in Diagnostics 2.0 history", async () => {
+  const { criticalDiagnosticHistory } = await import("../scripts/critical-forge/diagnostics/diagnostic-history.js");
+  const { createDiagnosticEvaluationReport } = await import("../scripts/critical-forge/diagnostics/diagnostic-report.js");
+  criticalDiagnosticHistory.clear();
+
+  const actor = createActor();
+  const sourceMessageUuid = "ChatMessage.source-for-failed-application";
+  criticalDiagnosticHistory.record(createDiagnosticEvaluationReport({
+    valid: true,
+    context: { category: "criticalHit" },
+    metadata: {},
+    snapshot: null,
+    diagnostics: [],
+    eligible: [],
+    rejected: [],
+    totalWeight: 0,
+    profile: null,
+    trigger: null,
+    triggerPolicy: null
+  }, {
+    sourceMessage: { id: "source-for-failed-application", uuid: sourceMessageUuid },
+    createdAt: 2000
+  }));
+
+  const message = createMessage(actor);
+  message.flags["pf2e-critical-forge"].criticalCardPreview.sourceMessageUuid = sourceMessageUuid;
+  const result = await applyCriticalCardEffect(message, {
+    user: game.user,
+    fromUuidFn: async () => null,
+    now: () => 2001
+  });
+
+  assert.equal(result.valid, false);
+  assert.equal(result.code, "CRITICAL_CARD_TARGET_UNRESOLVED");
+  const enriched = criticalDiagnosticHistory.findBySourceMessageUuid(sourceMessageUuid);
+  assert.equal(enriched.phases.application.status, "failed");
+  assert.equal(enriched.phases.application.actual.code, "CRITICAL_CARD_TARGET_UNRESOLVED");
+  criticalDiagnosticHistory.clear();
+});

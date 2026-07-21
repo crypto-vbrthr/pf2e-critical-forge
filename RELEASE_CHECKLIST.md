@@ -13,7 +13,7 @@
 - [ ] Copy a protected core card into a custom pack, edit its effect in Effect Forge, save it, export/import the pack, and confirm the card can still be drawn and applied.
 - [ ] Disable and re-enable that custom pack through **Paket aktivieren** and verify selection changes immediately while the pack remains editable.
 - [ ] Register two external test packs through `api.cards.extensions.forModule(moduleId).registerPacks()`, replace one, call `unregisterAll()`, and confirm core and unrelated packs remain untouched.
-- [ ] Open Critical Diagnostics and confirm the toolbar shows `Karteneditor · 0.9.4-dev.3.1`, the runtime-context summary, and the raw snapshot.
+- [ ] Open Critical Diagnostics and confirm the toolbar shows `Diagnose 2.0 · 0.9.4-dev.4`, the three pipeline phases, session history, replay buttons, runtime-context summary, and raw snapshot.
 - [ ] Diagnose one attack and one saving throw; confirm the rolling Actor is `source`, the hostile opponent/origin is `target`, and HP/level data matches the current Actors.
 - [ ] Open an editable card, enable conditions, create a nested `all`/`any` tree, change field types and operators, save, reopen, and confirm the tree is identical.
 - [ ] Test a provider-defined custom path once as a number and once as text; confirm the configured type and value survive rerendering and JSON export/import.
@@ -37,3 +37,9 @@ The repository URLs for `url`, `manifest`, and `download` should be added to `mo
 - [ ] Point the hosted manifest at the same tagged version and archive.
 - [ ] Record known limitations in the release notes.
 - [ ] Keep the previous stable archive available for rollback.
+
+- [ ] Simulate one eligible mechanical card and confirm no Actor, Token, Item, ChatMessage, combat, or setting is modified.
+- [ ] Repeat the stored snapshot and confirm an unchanged report is marked reproducible.
+- [ ] Change an Actor value, re-evaluate the current state, and confirm differences are listed.
+- [ ] Copy a report and verify the JSON contains report version, phases, candidates, simulation/application, and replay fields.
+- [ ] Confirm closing/reloading the client clears the session-only diagnostic history.

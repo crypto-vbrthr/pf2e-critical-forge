@@ -37,6 +37,15 @@ import { criticalContextProviderRegistry } from "../critical-forge/context/conte
 import { resolveCriticalContext } from "../critical-forge/context/context-resolver.js";
 import { diagnosePf2eCriticalInput } from "../critical-forge/diagnostics/critical-diagnostic-service.js";
 import {
+  CRITICAL_DIAGNOSTIC_REPORT_VERSION,
+  createDiagnosticEvaluationReport,
+  createDiagnosticReportExport,
+  serializeDiagnosticEvaluationReport
+} from "../critical-forge/diagnostics/diagnostic-report.js";
+import { criticalDiagnosticHistory } from "../critical-forge/diagnostics/diagnostic-history.js";
+import { replayDiagnosticSnapshot } from "../critical-forge/diagnostics/diagnostic-replay.js";
+import { simulateDiagnosticCard } from "../critical-forge/diagnostics/diagnostic-simulation.js";
+import {
   listDiagnosticMessages,
   resolveDiagnosticMessageInput
 } from "../critical-forge/diagnostics/chat-message-resolver.js";
@@ -117,6 +126,9 @@ export function createCardApi() {
       contextProviders: true,
       contextConditions: true,
       conditionEditor: true,
+      diagnosticReports: true,
+      diagnosticHistory: true,
+      diagnosticSimulation: true,
       multiDeckPacks: false
     }),
     categories: [...CARD_CATEGORIES],
@@ -238,8 +250,20 @@ export function createCardApi() {
       return diagnosePf2eCriticalInput(input, options);
     },
     diagnostics: Object.freeze({
+      reportVersion: CRITICAL_DIAGNOSTIC_REPORT_VERSION,
       listMessages: (options = {}) => listDiagnosticMessages(options),
-      resolveMessageInput: (message, options = {}) => resolveDiagnosticMessageInput(message, options)
+      resolveMessageInput: (message, options = {}) => resolveDiagnosticMessageInput(message, options),
+      createReport: (diagnostic, options = {}) => createDiagnosticEvaluationReport(diagnostic, options),
+      serializeReport: (report, options = {}) => serializeDiagnosticEvaluationReport(report, options),
+      createExport: (report) => createDiagnosticReportExport(report),
+      replaySnapshot: (report, options = {}) => replayDiagnosticSnapshot(report, options),
+      simulateCard: (cardOrId, options = {}) => simulateDiagnosticCard(cardOrId, options),
+      history: Object.freeze({
+        list: (options = {}) => criticalDiagnosticHistory.list(options),
+        get: (reportId) => criticalDiagnosticHistory.get(reportId),
+        record: (report) => criticalDiagnosticHistory.record(report),
+        clear: () => criticalDiagnosticHistory.clear()
+      })
     }),
     adapters: Object.freeze({
       pf2e: Object.freeze({

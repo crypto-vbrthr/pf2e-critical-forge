@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.9.4-dev.3.1` adds Phase 3 of the Critical Context Engine and preserves the Card Pack Editor scroll position while context conditions are enabled or edited: the Card Pack Editor can build, validate, and simulate nested card conditions visually. The editor exposes typed snapshot fields, provider-defined custom paths, context-safe test data, contradiction warnings, and explicit source/target role guidance. Critical Card and Card Pack schemas remain at version `1`; existing packs require no migration.
+Version `0.9.4-dev.4` adds **Diagnostics 2.0**. Every analysis now produces a versioned, JSON-serializable evaluation report that separates context resolution, candidate selection, and effect application. The GM workbench keeps a bounded session history, can replay the stored snapshot or re-evaluate the current world state, simulates a chosen card without changing Foundry documents, and exports the complete report for regression analysis. Existing Critical Cards, Card Packs, effects, and extension modules remain compatible without migration.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -31,7 +31,7 @@ The current module includes:
 - direct mechanical-effect editing through a dedicated Effect Forge handoff;
 - portable card-pack JSON import and export through files or the clipboard;
 - headless filter matching, optional snapshot conditions, tone/impact profile weighting, and transparent candidate reports;
-- a PF2e Context Adapter, immutable runtime snapshots, and a GM-only diagnostic workbench for real chat messages;
+- a PF2e Context Adapter, immutable runtime snapshots, and a GM-only Diagnostics 2.0 workbench with pipeline reports, session history, replay, simulation, and JSON export;
 - localized result cards with configurable `blind`, `gm`, `public`, or `self` visibility;
 - independent behavior and natural-roll trigger settings for all six supported critical categories;
 - redrawable cards with bounded draw history and no immediate repeats;

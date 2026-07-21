@@ -1,5 +1,5 @@
 export const MODULE_ID = "pf2e-critical-forge";
-export const MODULE_VERSION = "0.9.4-dev.3.1";
+export const MODULE_VERSION = "0.9.4-dev.4";
 export const API_VERSION = "0.9.4";
 export const EFFECT_SCHEMA_VERSION = 2;
 export const CARD_SCHEMA_VERSION = 1;

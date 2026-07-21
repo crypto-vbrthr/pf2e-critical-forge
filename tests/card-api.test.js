@@ -146,3 +146,27 @@ test("public card API exposes the Phase-3 condition editor catalog and simulator
   });
   assert.equal(tested.evaluation.matched, true);
 });
+
+test("public card API exposes Diagnostics 2.0 reports, history, replay, and simulation", async () => {
+  assert.equal(api.capabilities.diagnosticReports, true);
+  assert.equal(api.capabilities.diagnosticHistory, true);
+  assert.equal(api.capabilities.diagnosticSimulation, true);
+  assert.equal(api.diagnostics.reportVersion, 1);
+  assert.equal(typeof api.diagnostics.createReport, "function");
+  assert.equal(typeof api.diagnostics.serializeReport, "function");
+  assert.equal(typeof api.diagnostics.createExport, "function");
+  assert.equal(typeof api.diagnostics.replaySnapshot, "function");
+  assert.equal(typeof api.diagnostics.simulateCard, "function");
+  assert.equal(typeof api.diagnostics.history.list, "function");
+
+  const diagnostic = api.diagnose({
+    category: "criticalHit",
+    damageTypes: ["slashing"],
+    targetTraits: ["humanoid"]
+  });
+  const report = api.diagnostics.createReport(diagnostic, { createdAt: 900 });
+  api.diagnostics.history.record(report);
+  assert.equal(api.diagnostics.history.get(report.id).reportVersion, 1);
+  assert.doesNotThrow(() => JSON.parse(api.diagnostics.serializeReport(report)));
+  api.diagnostics.history.clear();
+});

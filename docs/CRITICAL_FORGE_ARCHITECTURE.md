@@ -1,6 +1,6 @@
 # Critical Forge Architecture
 
-Version `0.9.4-dev.3.1` keeps the Foundry automation shell thin while supporting weapon attacks, spell attacks, and saving throws. The hook owns only message detection, GM prompting, and publication; context adaptation, card matching, trigger policy, profile weighting, presentation, and effect application remain separate services.
+Version `0.9.4-dev.4` keeps the Foundry automation shell thin while supporting weapon attacks, spell attacks, and saving throws. The hook owns only message detection, GM prompting, and publication; context adaptation, card matching, trigger policy, profile weighting, presentation, and effect application remain separate services.
 
 ```text
 Foundry createChatMessage Hook ── new supported PF2e roll messages
@@ -116,3 +116,10 @@ Context Provider → Runtime Snapshot → Condition Engine → Card Matcher → 
 ```
 
 The neutral selection context and existing filters remain intact. A condition is an optional eligibility gate, not a weight source. Preview schema `4` stores the snapshot so redraws remain tied to the original roll context. Phase 3 adds a presentation-only Card Editor layer that edits and simulates the same canonical tree; runtime matching remains inside the Condition Engine.
+
+
+## Diagnostic report flow
+
+`ChatMessage -> resolver -> PF2e adapter/context snapshot -> selector -> evaluation report -> history/UI`
+
+Automation enriches the same report with the selected card and preview UUID. GM-confirmed application can enrich it with the application audit. These additions are observational and do not control the draw or application transaction.

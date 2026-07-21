@@ -1,6 +1,6 @@
 # Critical Context Engine
 
-Version `0.9.4-dev.3.1` retains the Phase-1 snapshot/provider foundation, the Phase-2 Condition Engine, and adds the Phase-3 visual authoring layer. It remains additive: existing Critical Cards, Card Packs, filters, and effect targets continue to use schema version `1`.
+Version `0.9.4-dev.4` retains the Phase-1 snapshot/provider foundation, the Phase-2 Condition Engine, and adds the Phase-3 visual authoring layer. It remains additive: existing Critical Cards, Card Packs, filters, and effect targets continue to use schema version `1`.
 
 This phase makes generic card conditions editable and testable, but it does **not** add multi-deck packs, scene-based threat analysis, or Against All Odds.
 

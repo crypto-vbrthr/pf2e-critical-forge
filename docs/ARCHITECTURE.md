@@ -192,3 +192,8 @@ Context Provider → Runtime Snapshot → Condition Engine → Card Matcher → 
 ```
 
 The neutral selection context and existing filters remain intact. A condition is an optional eligibility gate, not a weight source. Preview schema `4` stores the snapshot so redraws remain tied to the original roll context. Phase 3 adds a presentation-only Card Editor layer that edits and simulates the same canonical tree; runtime matching remains inside the Condition Engine.
+
+
+## Diagnostics 2.0 boundary
+
+Diagnostics 2.0 introduces a serializable report layer above the existing adapter and selector. It does not move matching rules into the UI. The report service freezes context, candidate evidence, selection, simulation, and application audit data. The session-history service stores only cloned reports, and the simulation service calls validation but never the Effect Engine application path.

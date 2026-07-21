@@ -2,6 +2,8 @@ import { MODULE_ID } from "../../constants.js";
 import { applyEffectToTargets } from "../../effect-engine/effect-application.js";
 import { analyzeEffectDefinition } from "../../effect-engine/validation/validation-engine.js";
 import { resolveDiagnosticMessageInput } from "../diagnostics/chat-message-resolver.js";
+import { criticalDiagnosticHistory } from "../diagnostics/diagnostic-history.js";
+import { withDiagnosticApplication } from "../diagnostics/diagnostic-report.js";
 
 export const CRITICAL_CARD_APPLICATION_STATUSES = Object.freeze({
   PENDING: "pending",
@@ -159,7 +161,13 @@ export async function applyCriticalCardEffect(message, {
   applicationLocks.add(messageId);
   try {
     const inspection = await inspectCriticalCardApplication(message, { user, fromUuidFn, analyzeFn });
-    if (!inspection.valid) return inspection;
+    if (!inspection.valid) {
+      recordApplicationDiagnostic(
+        inspection.previewData ?? getCriticalCardPreviewData(message),
+        { valid: false, code: inspection.code, status: "failed", appliedAt: now() }
+      );
+      return inspection;
+    }
 
     const created = await applyEffectFn(inspection.definition, inspection.actor, {
       context: { target: inspection.actor }
@@ -180,6 +188,16 @@ export async function applyCriticalCardEffect(message, {
     };
 
     await updateMessageFn(message, application);
+    recordApplicationDiagnostic(inspection.previewData, {
+      valid: true,
+      code: null,
+      status: application.status,
+      appliedAt: application.appliedAt,
+      appliedBy: application.appliedBy,
+      targetActorUuid: application.targetActorUuid,
+      targetActorName: application.targetActorName,
+      createdEffectIds: application.createdEffectIds
+    });
     return Object.freeze({
       valid: true,
       code: null,
@@ -190,6 +208,12 @@ export async function applyCriticalCardEffect(message, {
     });
   } catch (error) {
     console.error(`${MODULE_ID} | Critical card effect application failed`, error);
+    recordApplicationDiagnostic(getCriticalCardPreviewData(message), {
+      valid: false,
+      code: "CRITICAL_CARD_APPLICATION_FAILED",
+      status: "failed",
+      appliedAt: now()
+    });
     return applicationFailure("CRITICAL_CARD_APPLICATION_FAILED", { error });
   } finally {
     applicationLocks.delete(messageId);
@@ -333,6 +357,14 @@ function sameActor(left, right) {
   const leftId = left.id ?? left._id ?? null;
   const rightId = right.id ?? right._id ?? null;
   return Boolean(leftId && rightId && String(leftId) === String(rightId));
+}
+
+function recordApplicationDiagnostic(previewData, actual) {
+  const sourceMessageUuid = previewData?.sourceMessageUuid;
+  const existing = criticalDiagnosticHistory.findBySourceMessageUuid(sourceMessageUuid);
+  if (!existing) return null;
+  const updated = withDiagnosticApplication(existing, actual);
+  return criticalDiagnosticHistory.record(updated);
 }
 
 function applicationFailure(code, extra = {}) {
