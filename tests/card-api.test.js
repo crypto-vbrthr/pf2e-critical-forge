@@ -170,3 +170,18 @@ test("public card API exposes Diagnostics 2.0 reports, history, replay, and simu
   assert.doesNotThrow(() => JSON.parse(api.diagnostics.serializeReport(report)));
   api.diagnostics.history.clear();
 });
+
+test("public card API exposes multi-deck capabilities without changing schema versions", () => {
+  assert.equal(api.capabilities.multiDeckPacks, true);
+  assert.deepEqual(api.deckTypes, ["default", "attack", "fortitude", "reflex", "will"]);
+  assert.deepEqual(api.decks.specializedTypes, ["attack", "fortitude", "reflex", "will"]);
+  assert.equal(api.decks.requested({ category: "criticalHit" }), "attack");
+  assert.equal(api.decks.requested({
+    category: "savingThrowCriticalSuccess",
+    saveTypes: ["reflex"]
+  }), "reflex");
+  assert.equal(api.decks.resolvePack("core", "attack"), "default");
+  assert.deepEqual(api.decks.listPackTypes("core"), ["default"]);
+  assert.equal(api.decks.supportsCategory("criticalHit", "attack"), true);
+  assert.equal(api.decks.supportsCategory("criticalHit", "will"), false);
+});

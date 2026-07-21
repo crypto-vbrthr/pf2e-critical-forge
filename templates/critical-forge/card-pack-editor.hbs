@@ -29,7 +29,7 @@
             <span class="entry-icon"><i class="fa-solid {{#if entry.editable}}fa-pen-to-square{{else}}fa-lock{{/if}}"></i></span>
             <span class="entry-text">
               <strong>{{entry.title}}</strong>
-              <small>{{entry.id}} · {{entry.cardCount}} {{localize "PF2E_CRITICAL_FORGE.CardEditor.CardsShort"}}</small>
+              <small>{{entry.id}} · {{entry.cardCount}} {{localize "PF2E_CRITICAL_FORGE.CardEditor.CardsShort"}} · {{entry.deckCount}} {{localize "PF2E_CRITICAL_FORGE.CardEditor.DecksShort"}}</small>
             </span>
             {{#unless entry.enabled}}<i class="fa-solid fa-eye-slash"></i>{{/unless}}
           </button>
@@ -41,6 +41,13 @@
       <div class="card-editor-panel-heading">
         <h3>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Cards"}}</h3>
         <button type="button" class="icon" data-action="newCard" title="{{localize 'PF2E_CRITICAL_FORGE.CardEditor.NewCard'}}" {{#unless packEditable}}disabled{{/unless}}><i class="fa-solid fa-plus"></i></button>
+      </div>
+      <div class="card-editor-deck-tabs" role="tablist" aria-label="{{localize 'PF2E_CRITICAL_FORGE.CardEditor.Decks'}}">
+        {{#each deckTabs as |deck|}}
+          <button type="button" role="tab" class="card-editor-deck-tab {{#if deck.selected}}selected{{/if}}" data-action="selectDeck" data-deck-type="{{deck.type}}" aria-selected="{{#if deck.selected}}true{{else}}false{{/if}}" title="{{deck.label}}">
+            <span>{{deck.label}}</span><strong>{{deck.count}}</strong>
+          </button>
+        {{/each}}
       </div>
       <div class="card-editor-scroll-list" data-preserve-scroll data-scroll-key="card-editor-cards">
         {{#each cards as |entry|}}
@@ -88,6 +95,7 @@
 
             <div class="card-editor-grid card-grid">
               <label class="wide"><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Id"}}</span><input name="card.id" value="{{card.id}}" {{#unless packEditable}}disabled{{/unless}}></label>
+              <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Deck"}}</span><select name="card.deckType" data-deck-rerender {{#unless packEditable}}disabled{{/unless}}>{{#each card.deckTypeOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select></label>
               <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Category"}}</span><select name="card.category" {{#unless packEditable}}disabled{{/unless}}>{{#each card.categoryOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select></label>
               <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Tone"}}</span><select name="card.tone" {{#unless packEditable}}disabled{{/unless}}>{{#each card.toneOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select></label>
               <label><span>{{localize "PF2E_CRITICAL_FORGE.CardEditor.Impact"}}</span><select name="card.impact" {{#unless packEditable}}disabled{{/unless}}>{{#each card.impactOptions as |option|}}<option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>{{/each}}</select></label>

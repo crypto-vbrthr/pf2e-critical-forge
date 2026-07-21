@@ -1,21 +1,29 @@
 import { matchCard, normalizeSelectionContext } from "./card-matcher.js";
 import { cardProfileMultiplier, resolveCardProfile } from "../profile/card-profile.js";
+import { resolvePackCardDeck, resolveRequestedCardDeck } from "../decks/card-deck.js";
 
 export class CardSelector {
   #cardRegistry;
+  #packRegistry;
 
-  constructor({ cardRegistry }) {
+  constructor({ cardRegistry, packRegistry }) {
     this.#cardRegistry = cardRegistry;
+    this.#packRegistry = packRegistry;
   }
 
   candidates(context, { excludeCardIds = [], includeRejected = true, profile = null, snapshot = null } = {}) {
     const normalized = normalizeSelectionContext(context);
+    const requestedDeckType = resolveRequestedCardDeck(normalized);
     const excluded = new Set(excludeCardIds.map(String));
     const resolvedProfile = profile ? resolveCardProfile(profile) : null;
     const evaluated = this.#cardRegistry
       .list({ category: normalized.category })
       .map((card) => {
-        const evaluatedCard = matchCard(card, normalized, { snapshot });
+        const pack = this.#packRegistry?.get(card.packId) ?? null;
+        const activeDeckType = pack
+          ? resolvePackCardDeck(pack, requestedDeckType)
+          : ((card.deckType ?? "default") === "default" ? "default" : requestedDeckType);
+        const evaluatedCard = matchCard(card, normalized, { snapshot, activeDeckType });
         const matched = excluded.has(card.id)
           ? Object.freeze({
               ...evaluatedCard,
@@ -38,6 +46,7 @@ export class CardSelector {
 
     return Object.freeze({
       context: normalized,
+      requestedDeckType,
       profile: resolvedProfile,
       eligible: evaluated.filter((entry) => entry.eligible),
       rejected: includeRejected ? evaluated.filter((entry) => !entry.eligible) : [],

@@ -10,7 +10,10 @@ import { createPf2eContextProvider } from "./adapters/pf2e/pf2e-context-provider
 
 export const criticalPackRegistry = new PackRegistry();
 export const criticalCardRegistry = new CardRegistry({ packRegistry: criticalPackRegistry });
-export const criticalCardSelector = new CardSelector({ cardRegistry: criticalCardRegistry });
+export const criticalCardSelector = new CardSelector({
+  cardRegistry: criticalCardRegistry,
+  packRegistry: criticalPackRegistry
+});
 
 let initialized = false;
 

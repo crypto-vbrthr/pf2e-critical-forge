@@ -1,5 +1,13 @@
 import { CARD_PACK_SCHEMA_VERSION, CARD_SCHEMA_VERSION } from "../constants.js";
 import { CARD_CATEGORIES } from "../critical-forge/constants.js";
+import {
+  CARD_DECK_TYPES,
+  SPECIALIZED_CARD_DECK_TYPES,
+  categorySupportsCardDeck,
+  listPackDeckTypes,
+  resolvePackCardDeck,
+  resolveRequestedCardDeck
+} from "../critical-forge/decks/card-deck.js";
 import { CONDITION_GROUP_MODES, CONDITION_OPERATORS, CONDITION_VALUE_TYPES } from "../critical-forge/conditions/condition-constants.js";
 import { normalizeConditionTree, emptyConditionGroup } from "../critical-forge/conditions/condition-normalizer.js";
 import { validateConditionTree } from "../critical-forge/conditions/condition-validator.js";
@@ -129,9 +137,24 @@ export function createCardApi() {
       diagnosticReports: true,
       diagnosticHistory: true,
       diagnosticSimulation: true,
-      multiDeckPacks: false
+      multiDeckPacks: true
     }),
     categories: [...CARD_CATEGORIES],
+    deckTypes: [...CARD_DECK_TYPES],
+    decks: Object.freeze({
+      types: [...CARD_DECK_TYPES],
+      specializedTypes: [...SPECIALIZED_CARD_DECK_TYPES],
+      requested: (context = {}) => resolveRequestedCardDeck(context),
+      resolvePack: (packOrId, requestedDeckType) => {
+        const pack = typeof packOrId === "string" ? criticalPackRegistry.get(packOrId) : packOrId;
+        return resolvePackCardDeck(pack, requestedDeckType);
+      },
+      listPackTypes: (packOrId, options = {}) => {
+        const pack = typeof packOrId === "string" ? criticalPackRegistry.get(packOrId) : packOrId;
+        return listPackDeckTypes(pack, options);
+      },
+      supportsCategory: (category, deckType) => categorySupportsCardDeck(category, deckType)
+    }),
     tones: [...CARD_TONES],
     impacts: [...CARD_IMPACTS],
     profiles: Object.freeze({

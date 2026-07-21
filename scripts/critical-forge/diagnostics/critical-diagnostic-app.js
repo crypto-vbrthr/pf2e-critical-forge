@@ -200,6 +200,8 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
       eligibleCount: selection.counts.eligible,
       rejectedCount: selection.counts.rejected,
       totalWeight: selection.totalWeight,
+      requestedDeckType: selection.requestedDeckType ?? evaluation.context.deckType ?? "default",
+      requestedDeckLabel: this.#localizeDeck(selection.requestedDeckType ?? evaluation.context.deckType ?? "default"),
       profileId: selection.profile?.id ?? null,
       profileLabel: this.#localizeProfile(selection.profile?.id),
       triggerAction: this.#localizeTrigger("Behavior", selection.trigger?.behavior),
@@ -251,6 +253,12 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
       toneLabel: this.#localizeCardAttribute("Tones", entry.tone),
       impact: entry.impact,
       impactLabel: this.#localizeCardAttribute("Impacts", entry.impact),
+      deckType: entry.deckType ?? "default",
+      deckLabel: this.#localizeDeck(entry.deckType ?? "default"),
+      activeDeckType: entry.activeDeckType ?? null,
+      activeDeckLabel: this.#localizeDeck(entry.activeDeckType ?? "default"),
+      requestedDeckType: entry.requestedDeckType ?? "default",
+      requestedDeckLabel: this.#localizeDeck(entry.requestedDeckType ?? "default"),
       conditionEvaluation: prepareDiagnosticConditionEvaluation(entry.conditionEvaluation),
       hasConditions: Boolean(entry.conditionEvaluation?.configured),
       matchedFilters: entry.matchedFilters.map((match) => ({
@@ -360,6 +368,13 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
     const key = `PF2E_CRITICAL_FORGE.CriticalDiagnostic.Diagnostics.${entry.code}`;
     const localized = game.i18n.format(key, entry.data ?? {});
     return { ...entry, icon: DIAGNOSTIC_ICONS[entry.severity] ?? DIAGNOSTIC_ICONS.info, text: localized === key ? entry.code : localized };
+  }
+
+  #localizeDeck(deckType) {
+    const suffix = String(deckType ?? "default").charAt(0).toUpperCase() + String(deckType ?? "default").slice(1);
+    const key = `PF2E_CRITICAL_FORGE.CardEditor.DeckTypes.${suffix}`;
+    const localized = game.i18n.localize(key);
+    return localized === key ? deckType ?? "default" : localized;
   }
 
   #localizeFilter(filter) {

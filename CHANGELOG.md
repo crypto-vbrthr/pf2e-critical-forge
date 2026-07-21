@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.4-dev.5
+
+- Added five fixed Critical Card deck types: `default`, `attack`, `fortitude`, `reflex`, and `will`.
+- Added per-pack deck resolution before normal card matching: a requested specialized deck is used when populated, otherwise that pack falls back to `default`, and a pack with neither contributes no candidates.
+- Preserved complete legacy behavior by normalizing every card without `deckType` and every historical root `cards` array into the `default` deck without changing Critical Card or Card Pack schema version `1`.
+- Added optional authoring input through `pack.decks`, accepting either arrays or `{ cards: [...] }` objects, while normalized packs expose one flattened immutable `cards` list plus a deterministic deck index.
+- Added fixed deck tabs and deck assignment to the Card Pack Editor. New cards are created in the active deck, and incompatible attack/save categories are corrected to a valid default for that deck.
+- Added requested, active, and assigned deck evidence to diagnostics and exported evaluation reports.
+- Added public deck discovery and resolution helpers under `api.cards.decks` plus the `multiDeckPacks` capability flag.
+- Added validation for unknown deck types, category/deck mismatches, duplicate deck membership, missing indexed cards, and inconsistent normalized deck indexes.
+- Updated the Card Schema, Card Packs, selection, editor, diagnostics, extension, import/export, migration, architecture, API, testing, README, changelog, and release-checklist documentation.
+- Added Multi-Deck normalization, fallback, isolation, selection, editor, API, diagnostics, import/export, extension, and legacy-regression tests.
+- The complete suite contains **291** passing tests.
+
 ## 0.9.4-dev.4
 
 - Added Diagnostics 2.0 with versioned, immutable, JSON-serializable evaluation reports.

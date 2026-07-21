@@ -1412,7 +1412,8 @@
         "spellTraditions": "magic tradition",
         "spellTraits": "spell trait",
         "excludedAttackTraits": "excluded attack trait",
-        "conditions": "context conditions"
+        "conditions": "context conditions",
+        "deckType": "deck mismatch"
       },
       "OpenFailed": "Critical diagnostics could not be opened. See the console for details.",
       "CardProfile": "Card profile",
@@ -1456,7 +1457,7 @@
         "notExists": "does not exist"
       },
       "CardEditorPhase": "Card Editor",
-      "DiagnosticsPhase": "Diagnostics 2.0",
+      "DiagnosticsPhase": "Multi-Deck Packs",
       "Pipeline": "Evaluation pipeline",
       "PhaseContext": "Context resolution",
       "PhaseSelection": "Card selection",
@@ -1504,7 +1505,10 @@
       "ApplicationTarget": "Application target",
       "AppliedBy": "Applied by",
       "AppliedAt": "Applied at",
-      "ApplicationCode": "Result code"
+      "ApplicationCode": "Result code",
+      "RequestedDeck": "Resolved deck",
+      "Deck": "Deck",
+      "ActiveDeck": "Active pack deck"
     },
     "CriticalPreview": {
       "ShowInChat": "Show card in chat",
@@ -1764,7 +1768,15 @@
         "CARD_EFFECT_TARGET_INVALID": "The effect target is invalid.",
         "CARD_EFFECT_NAME_KEY_MISSING": "The effect-name localization key is missing.",
         "CARD_EFFECT_DEFINITION_INVALID": "The Effect Definition is invalid.",
-        "CARD_CONDITIONS_INVALID": "The context conditions are invalid."
+        "CARD_CONDITIONS_INVALID": "The context conditions are invalid.",
+        "CARD_DECK_TYPE_INVALID": "Deck type “{deckType}” is invalid.",
+        "CARD_DECK_CATEGORY_MISMATCH": "Category “{category}” is incompatible with deck “{deckType}”.",
+        "CARD_PACK_DECKS_INVALID": "The pack deck definition is invalid.",
+        "CARD_PACK_DECK_INVALID": "Deck “{deckType}” is invalid.",
+        "CARD_PACK_DECK_CARD_ID_INVALID": "Deck “{deckType}” contains an invalid card ID.",
+        "CARD_PACK_DECK_CARD_DUPLICATE": "Card “{cardId}” is assigned to more than one deck.",
+        "CARD_PACK_DECK_CARD_MISMATCH": "Card “{cardId}” does not match deck “{deckType}”.",
+        "CARD_PACK_DECK_CARD_MISSING": "Card “{cardId}” is missing from the deck index."
       },
       "FilterSaveTypes": "Saving throw types",
       "FilterSpellTraditions": "Magic traditions",
@@ -1905,6 +1917,16 @@
         "Number": "Number",
         "Boolean": "True/False",
         "StringArray": "Text list"
+      },
+      "Deck": "Deck",
+      "Decks": "Decks",
+      "DecksShort": "decks",
+      "DeckTypes": {
+        "Default": "Default",
+        "Attack": "Attack",
+        "Fortitude": "Fortitude",
+        "Reflex": "Reflex",
+        "Will": "Will"
       }
     }
   }

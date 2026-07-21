@@ -1,6 +1,6 @@
 # Critical Card Pack Editor
 
-Version `0.9.4-dev.4` adds the visual condition builder and synthetic test workbench while retaining the Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
+Version `0.9.4-dev.5` adds five fixed deck workspaces while retaining the visual condition builder, synthetic test workbench, Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
 Condition-editor rerenders preserve the package list, card list, and main workspace scroll positions, so enabling conditions or changing the condition tree no longer jumps the editor to the top.
 
 ## Opening the editor
@@ -18,6 +18,14 @@ await game.modules.get("pf2e-critical-forge")?.api.ui.openCardPackEditor();
 The bundled `core` pack and packs registered by other modules are read-only. They can be inspected and exported, and any card can be copied into a world-managed pack as a template. Copies receive new world-owned IDs and localization keys; the original protected definitions are never mutated.
 
 World-managed packs are stored in the hidden world setting `criticalCustomCardPacks`. Saving a pack re-registers it in the live Pack Registry and Card Registry, so it immediately participates in selection and automatic draws. New and duplicated cards are checked against every ID already present in the destination pack, rather than trusting random suffixes to be unique.
+
+## Deck workspaces
+
+Every editable pack exposes `Standard`, `Angriff`, `Zähigkeit`, `Reflex`, and `Wille` tabs with independent card counts. Selecting a tab filters the card list to that deck. A new card is created in the active deck, and duplicate/import/export operations preserve its `deckType`.
+
+The card form also exposes deck assignment. When an author changes a card to `attack`, any saving-throw category is corrected to `criticalHit`. When a card is moved to `fortitude`, `reflex`, or `will`, any attack category is corrected to `savingThrowCriticalSuccess`. Authors may then select the corresponding success or failure category. The correction prevents an impossible card from being saved while keeping the deck identity explicit.
+
+Legacy cards open in `Standard` because omitted `deckType` values normalize to `default`. Saving a legacy pack does not require the author to create specialized decks.
 
 ## Card fields
 

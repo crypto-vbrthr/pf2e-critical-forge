@@ -5,6 +5,7 @@ import { validatePackDefinition } from "../schema/card-validator.js";
 import { deepClone } from "../utils.js";
 import {
   cloneCardToPack,
+  coerceCategoryForDeck,
   createEditableCard,
   createEditablePack,
   formatDelimitedList,
@@ -30,6 +31,7 @@ import {
 } from "./card-pack-store.js";
 import { cardEffectToForgeDefinition, forgeDefinitionToCardEffect } from "./card-effect-bridge.js";
 import { captureScrollState, restoreScrollState } from "../../effect-forge/view-state.js";
+import { CARD_DECK_TYPES, categorySupportsCardDeck } from "../decks/card-deck.js";
 import {
   addConditionEditorNode,
   analyzeConditionContradictions,
@@ -72,6 +74,7 @@ const IMPORT_ERROR_KEYS = Object.freeze({
 
 export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2) {
   selectedPackId = "core";
+  selectedDeckType = "default";
   selectedCardId = "";
   draftPack = null;
   originalPackId = null;
@@ -102,6 +105,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
       importClipboard: CardPackEditorApp.#importClipboard,
       exportPack: CardPackEditorApp.#exportPack,
       copyPack: CardPackEditorApp.#copyPack,
+      selectDeck: CardPackEditorApp.#selectDeck,
       selectCard: CardPackEditorApp.#selectCard,
       newCard: CardPackEditorApp.#newCard,
       duplicateCard: CardPackEditorApp.#duplicateCard,
@@ -127,6 +131,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     super(options);
     const initial = hydrateRegisteredPack("core") ?? listHydratedRegisteredPacks()[0] ?? null;
     this.selectedPackId = initial?.id ?? "";
+    this.selectedDeckType = initial?.cards?.[0]?.deckType ?? "default";
     this.selectedCardId = initial?.cards?.[0]?.id ?? "";
     this.#markClean();
   }
@@ -140,10 +145,12 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
 
     const currentPack = this.#currentPack();
     const editable = Boolean(currentPack && isEditorManagedPack(currentPack));
-    const currentCard = currentPack?.cards?.find((card) => card.id === this.selectedCardId)
-      ?? currentPack?.cards?.[0]
+    const activeDeckCards = (currentPack?.cards ?? []).filter((card) => card.deckType === this.selectedDeckType);
+    const currentCard = activeDeckCards.find((card) => card.id === this.selectedCardId)
+      ?? activeDeckCards[0]
       ?? null;
     if (currentCard && currentCard.id !== this.selectedCardId) this.selectedCardId = currentCard.id;
+    if (!currentCard) this.selectedCardId = "";
 
     const validation = currentPack ? this.#validateCurrentPack({ sync: false }) : null;
     const localizedCard = currentCard ? localizeCard(currentCard) : null;
@@ -156,6 +163,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
           title: localizeText(pack.titleKey, pack.fallbackTitle, pack.id),
           description: localizeText(pack.descriptionKey, pack.fallbackDescription, ""),
           cardCount: pack.cards?.length ?? 0,
+          deckCount: new Set((pack.cards ?? []).map((card) => card.deckType ?? "default")).size,
           selected: pack.id === this.selectedPackId,
           editable: isEditorManagedPack(pack),
           enabled: pack.enabled !== false
@@ -167,16 +175,25 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
       packStatusLabel: editable
         ? game.i18n.localize("PF2E_CRITICAL_FORGE.CardEditor.Editable")
         : game.i18n.localize("PF2E_CRITICAL_FORGE.CardEditor.Readonly"),
-      cards: (currentPack?.cards ?? []).map((card) => ({
+      deckTabs: CARD_DECK_TYPES.map((type) => ({
+        type,
+        count: (currentPack?.cards ?? []).filter((card) => card.deckType === type).length,
+        selected: type === this.selectedDeckType,
+        label: localizeDeckType(type)
+      })),
+      selectedDeckType: this.selectedDeckType,
+      cards: activeDeckCards.map((card) => ({
         id: card.id,
         title: localizeCard(card).title,
         category: card.category,
+        deckType: card.deckType,
+        deckLabel: localizeDeckType(card.deckType),
         tone: card.tone,
         impact: card.impact,
         selected: card.id === currentCard?.id,
         hasEffect: Boolean(card.effect)
       })),
-      hasCards: (currentPack?.cards?.length ?? 0) > 0,
+      hasCards: activeDeckCards.length > 0,
       card: currentCard ? this.#prepareCard(currentCard, localizedCard) : null,
       hasCard: Boolean(currentCard),
       isDirty: this.isDirty,
@@ -207,6 +224,15 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     for (const control of root.querySelectorAll("[data-condition-rerender]")) {
       control.addEventListener("change", async () => {
         this.#syncFromForm();
+        this.conditionTestResult = null;
+        await this.#renderPreservingScroll();
+      });
+    }
+    for (const control of root.querySelectorAll("[data-deck-rerender]")) {
+      control.addEventListener("change", async () => {
+        this.#syncFromForm();
+        const card = this.#currentCard();
+        if (card) this.selectedDeckType = card.deckType;
         this.conditionTestResult = null;
         await this.#renderPreservingScroll();
       });
@@ -284,10 +310,15 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
             target: localizeEffectTarget(card.effect.target)
           })
         : game.i18n.localize("PF2E_CRITICAL_FORGE.CardEditor.NoEffect"),
-      categoryOptions: optionList(["criticalHit", "criticalFumble", "spellCriticalHit", "spellCriticalFumble", "savingThrowCriticalSuccess", "savingThrowCriticalFailure"], card.category, "Categories"),
+      categoryOptions: optionList(["criticalHit", "criticalFumble", "spellCriticalHit", "spellCriticalFumble", "savingThrowCriticalSuccess", "savingThrowCriticalFailure"].filter((category) => categorySupportsCardDeck(category, card.deckType)), card.category, "Categories"),
       toneOptions: optionList(["neutral", "serious", "dramatic", "humorous"], card.tone, "Tones"),
       impactOptions: optionList(["narrative", "light", "moderate", "strong"], card.impact, "Impacts"),
-      effectTargetOptions: optionList(["target", "source"], card.effect?.target ?? "target", "EffectTargets")
+      effectTargetOptions: optionList(["target", "source"], card.effect?.target ?? "target", "EffectTargets"),
+      deckTypeOptions: CARD_DECK_TYPES.map((type) => ({
+        value: type,
+        selected: type === card.deckType,
+        label: localizeDeckType(type)
+      }))
     };
   }
 
@@ -315,7 +346,11 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     card.id = sanitizeIdentifier(data.get("card.id"), card.id);
     card.packId = pack.id;
     this.selectedCardId = card.id;
-    card.category = String(data.get("card.category") ?? "criticalHit");
+    card.deckType = String(data.get("card.deckType") ?? card.deckType ?? "default");
+    card.category = coerceCategoryForDeck(
+      String(data.get("card.category") ?? "criticalHit"),
+      card.deckType
+    );
     card.tone = String(data.get("card.tone") ?? "neutral");
     card.impact = String(data.get("card.impact") ?? "narrative");
     card.titleKey = String(data.get("card.titleKey") ?? "").trim();
@@ -369,6 +404,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
   async #loadPack(packId) {
     const pack = hydrateRegisteredPack(packId);
     this.selectedPackId = packId;
+    this.selectedDeckType = pack?.cards?.[0]?.deckType ?? "default";
     this.selectedCardId = pack?.cards?.[0]?.id ?? "";
     this.conditionTestInput = defaultConditionTestInput(pack?.cards?.[0]?.category ?? "criticalHit");
     this.conditionTestResult = null;
@@ -393,6 +429,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     while (ids.has(id)) id = `my-critical-cards-${index++}`;
     this.draftPack = createEditablePack({ id });
     this.selectedPackId = id;
+    this.selectedDeckType = "default";
     this.selectedCardId = "";
     this.originalPackId = null;
     this.isDirty = true;
@@ -418,6 +455,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     });
     this.draftPack = pack;
     this.selectedPackId = id;
+    this.selectedDeckType = pack.cards[0]?.deckType ?? "default";
     this.selectedCardId = pack.cards[0]?.id ?? "";
     this.originalPackId = null;
     this.isDirty = true;
@@ -524,6 +562,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     }
     this.draftPack = pack;
     this.selectedPackId = pack.id;
+    this.selectedDeckType = pack.cards?.[0]?.deckType ?? "default";
     this.selectedCardId = pack.cards?.[0]?.id ?? "";
     this.isDirty = true;
     await this.render({ force: true });
@@ -562,6 +601,17 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     }
   }
 
+  static async #selectDeck(_event, target) {
+    this.#syncFromForm();
+    this.selectedDeckType = String(target.dataset.deckType ?? "default");
+    const pack = this.#currentPack();
+    const card = pack?.cards?.find((entry) => entry.deckType === this.selectedDeckType) ?? null;
+    this.selectedCardId = card?.id ?? "";
+    this.conditionTestInput = defaultConditionTestInput(card?.category ?? "criticalHit");
+    this.conditionTestResult = null;
+    await this.render({ force: true });
+  }
+
   static async #selectCard(_event, target) {
     this.#syncFromForm();
     this.selectedCardId = String(target.dataset.cardId ?? "");
@@ -576,9 +626,11 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     if (!pack || !isEditorManagedPack(pack)) return;
     const card = createEditableCard({
       packId: pack.id,
+      deckType: this.selectedDeckType,
       usedIds: pack.cards.map((entry) => entry.id)
     });
     pack.cards.push(card);
+    this.selectedDeckType = card.deckType ?? "default";
     this.selectedCardId = card.id;
     this.conditionTestInput = defaultConditionTestInput(card.category);
     this.conditionTestResult = null;
@@ -602,6 +654,7 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
       usedIds: pack.cards.map((entry) => entry.id)
     });
     pack.cards.push(card);
+    this.selectedDeckType = card.deckType ?? "default";
     this.selectedCardId = card.id;
     this.conditionTestInput = defaultConditionTestInput(card.category);
     this.conditionTestResult = null;
@@ -616,7 +669,8 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
     const index = pack.cards.findIndex((card) => card.id === this.selectedCardId);
     if (index < 0) return;
     pack.cards.splice(index, 1);
-    this.selectedCardId = pack.cards[Math.max(0, index - 1)]?.id ?? "";
+    const deckCards = pack.cards.filter((card) => card.deckType === this.selectedDeckType);
+    this.selectedCardId = deckCards.at(-1)?.id ?? "";
     this.isDirty = true;
     await this.render({ force: true });
   }
@@ -731,6 +785,13 @@ export class CardPackEditorApp extends HandlebarsApplicationMixin(ApplicationV2)
 function localizeText(key, fallback, finalFallback) {
   const localized = key ? game.i18n.localize(key) : "";
   return localized && localized !== key ? localized : (fallback || finalFallback);
+}
+
+function localizeDeckType(deckType) {
+  const suffix = String(deckType ?? "default").charAt(0).toUpperCase() + String(deckType ?? "default").slice(1);
+  const key = `PF2E_CRITICAL_FORGE.CardEditor.DeckTypes.${suffix}`;
+  const localized = game.i18n.localize(key);
+  return localized === key ? deckType : localized;
 }
 
 function localizeEffectTarget(target) {

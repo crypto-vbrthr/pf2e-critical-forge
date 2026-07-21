@@ -25,6 +25,31 @@ The `enabled` property is the pack-level activation switch. Disabled packs stay 
 
 Card IDs are globally unique. Pack IDs and card IDs use lowercase letters, digits, dots, underscores, and hyphens.
 
+## Multi-Deck input
+
+The historical root `cards` array remains valid and becomes the pack's `default` deck. New packs may additionally or exclusively author specialized decks:
+
+```js
+{
+  schemaVersion: 1,
+  id: "my-module.heroic",
+  titleKey: "MY_MODULE.Packs.Heroic.Title",
+  descriptionKey: "MY_MODULE.Packs.Heroic.Description",
+  version: "1.0.0",
+  enabled: true,
+  decks: {
+    attack: { cards: [attackCardA, attackCardB] },
+    fortitude: [fortitudeCardA],
+    reflex: { cards: [reflexCardA] },
+    will: [willCardA]
+  }
+}
+```
+
+Both array and `{ cards: [...] }` forms are accepted as authoring input. Registration normalizes them into one immutable flat `cards` collection and a deterministic `decks` index containing card IDs for `default`, `attack`, `fortitude`, `reflex`, and `will`. A pack must not repeat the same card ID across decks.
+
+During a draw, Critical Forge first resolves the requested deck for each pack independently. A populated requested deck wins; otherwise that pack uses `default`; otherwise the pack contributes no candidates. Normal filters, context conditions, exclusions, profiles, and weighted selection then run only inside the resolved deck. See [`MULTI_DECK_PACKS.md`](MULTI_DECK_PACKS.md).
+
 ## Optional extension modules
 
 A separate Foundry module should use the module-bound extension API rather than the low-level registry methods. Registration normally happens through `pf2eCriticalForgeReady`:

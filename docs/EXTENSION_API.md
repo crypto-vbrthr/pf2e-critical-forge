@@ -21,9 +21,10 @@ Extensions register card packs during module initialization.
 
 Example:
 
-```javascript
-CriticalForge.api.registerCardPack({
-    ...
+```js
+Hooks.once("pf2eCriticalForgeReady", (forge) => {
+  const extension = forge.cards.extensions.forModule("my-extension");
+  extension.registerPacks([pack]);
 });
 ```
 
@@ -43,14 +44,23 @@ Each pack requires a unique id.
 
 # Cards
 
-Every card contains:
+Every card contains stable identity, localization, category, filters, optional conditions, optional effects, and an optional `deckType`. Omitted deck assignments normalize to `default`.
 
-- id
-- title
-- description
-- trigger
-- filters
-- effects
+# Multi-Deck packs
+
+Extensions may keep the historical `cards` array or provide specialized `decks` for `attack`, `fortitude`, `reflex`, and `will`. The runtime resolves a deck per pack and falls back to `default` only within that same pack. Extensions should capability-check before relying on specialized decks:
+
+```js
+if (!forge.cards.capabilities.multiDeckPacks) {
+  console.warn("This expansion requires a newer Critical Forge version.");
+  return;
+}
+
+console.log(forge.cards.deckTypes);
+console.log(forge.cards.decks.resolvePack(pack, "reflex"));
+```
+
+A specialized deck must contain compatible categories. Attack decks use attack/spell-attack categories; save decks use saving-throw success/failure categories.
 
 ---
 

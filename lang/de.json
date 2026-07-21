@@ -1412,7 +1412,8 @@
         "spellTraditions": "magische Tradition",
         "spellTraits": "Zaubermerkmal",
         "excludedAttackTraits": "ausgeschlossenes Angriffsmerkmal",
-        "conditions": "Kontextbedingungen"
+        "conditions": "Kontextbedingungen",
+        "deckType": "Kartensatz passt nicht"
       },
       "OpenFailed": "Die Krit-Diagnose konnte nicht geöffnet werden. Details stehen in der Konsole.",
       "CardProfile": "Kartenprofil",
@@ -1456,7 +1457,7 @@
         "notExists": "ist nicht vorhanden"
       },
       "CardEditorPhase": "Karteneditor",
-      "DiagnosticsPhase": "Diagnose 2.0",
+      "DiagnosticsPhase": "Multi-Deck-Pakete",
       "Pipeline": "Auswertungspipeline",
       "PhaseContext": "Kontextermittlung",
       "PhaseSelection": "Kartenauswahl",
@@ -1504,7 +1505,10 @@
       "ApplicationTarget": "Anwendungsziel",
       "AppliedBy": "Angewendet von",
       "AppliedAt": "Angewendet um",
-      "ApplicationCode": "Ergebniscode"
+      "ApplicationCode": "Ergebniscode",
+      "RequestedDeck": "Ermittelter Kartensatz",
+      "Deck": "Kartensatz",
+      "ActiveDeck": "Aktiver Paket-Kartensatz"
     },
     "CriticalPreview": {
       "ShowInChat": "Karte im Chat anzeigen",
@@ -1764,7 +1768,15 @@
         "CARD_EFFECT_TARGET_INVALID": "Das Effektziel ist ungültig.",
         "CARD_EFFECT_NAME_KEY_MISSING": "Der Lokalisierungsschlüssel des Effektnamens fehlt.",
         "CARD_EFFECT_DEFINITION_INVALID": "Die Effect Definition ist ungültig.",
-        "CARD_CONDITIONS_INVALID": "Die Kontextbedingungen sind ungültig."
+        "CARD_CONDITIONS_INVALID": "Die Kontextbedingungen sind ungültig.",
+        "CARD_DECK_TYPE_INVALID": "Der Kartensatz „{deckType}“ ist ungültig.",
+        "CARD_DECK_CATEGORY_MISMATCH": "Die Kategorie „{category}“ passt nicht zum Kartensatz „{deckType}“.",
+        "CARD_PACK_DECKS_INVALID": "Die Kartensatzdefinition des Pakets ist ungültig.",
+        "CARD_PACK_DECK_INVALID": "Der Kartensatz „{deckType}“ ist ungültig.",
+        "CARD_PACK_DECK_CARD_ID_INVALID": "Der Kartensatz „{deckType}“ enthält eine ungültige Karten-ID.",
+        "CARD_PACK_DECK_CARD_DUPLICATE": "Die Karte „{cardId}“ ist mehreren Kartensätzen zugeordnet.",
+        "CARD_PACK_DECK_CARD_MISMATCH": "Die Karte „{cardId}“ stimmt nicht mit dem Kartensatz „{deckType}“ überein.",
+        "CARD_PACK_DECK_CARD_MISSING": "Die Karte „{cardId}“ fehlt im Kartensatzindex."
       },
       "FilterSaveTypes": "Rettungswurfarten",
       "FilterSpellTraditions": "Magische Traditionen",
@@ -1905,6 +1917,16 @@
         "Number": "Zahl",
         "Boolean": "Ja/Nein",
         "StringArray": "Textliste"
+      },
+      "Deck": "Kartensatz",
+      "Decks": "Kartensätze",
+      "DecksShort": "Decks",
+      "DeckTypes": {
+        "Default": "Standard",
+        "Attack": "Angriff",
+        "Fortitude": "Zähigkeit",
+        "Reflex": "Reflex",
+        "Will": "Wille"
       }
     }
   }

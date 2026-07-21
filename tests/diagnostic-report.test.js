@@ -96,3 +96,17 @@ test("replay comparison reports changed candidate pools", () => {
   assert.equal(comparison.mode, "current");
   assert.equal(comparison.changes.some((entry) => entry.field === "eligible"), true);
 });
+
+test("diagnostic reports preserve requested, active, and card deck evidence", () => {
+  const input = diagnostic();
+  input.requestedDeckType = "attack";
+  input.eligible[0].card.deckType = "attack";
+  input.eligible[0].requestedDeckType = "attack";
+  input.eligible[0].activeDeckType = "attack";
+  const report = createDiagnosticEvaluationReport(input, { createdAt: 400 });
+
+  assert.equal(report.phases.selection.requestedDeckType, "attack");
+  assert.equal(report.phases.selection.eligible[0].deckType, "attack");
+  assert.equal(report.phases.selection.eligible[0].activeDeckType, "attack");
+  assert.equal(report.phases.selection.eligible[0].requestedDeckType, "attack");
+});

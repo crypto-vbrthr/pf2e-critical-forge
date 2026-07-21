@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.9.4-dev.4` adds **Diagnostics 2.0**. Every analysis now produces a versioned, JSON-serializable evaluation report that separates context resolution, candidate selection, and effect application. The GM workbench keeps a bounded session history, can replay the stored snapshot or re-evaluate the current world state, simulates a chosen card without changing Foundry documents, and exports the complete report for regression analysis. Existing Critical Cards, Card Packs, effects, and extension modules remain compatible without migration.
+Version `0.9.4-dev.5` adds **Multi-Deck Card Packs**. A pack may now keep separate card pools for attacks, Fortitude saves, Reflex saves, and Will saves while retaining the historical `default` deck as a universal per-pack fallback. Deck resolution happens before normal filters, context conditions, profile weighting, and random selection. Existing packs that contain only `cards` normalize into the default deck and continue to work without migration.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -26,11 +26,11 @@ The current module includes:
   - 12 critical spell fumbles;
   - 12 critically successful saving throws;
   - 12 critically failed saving throws;
-- a GM-only Card Pack Editor for world-managed packs, cards, filters, tone, impact, weights, fallback text, localization keys, per-pack activation, and visual nested context conditions;
+- a GM-only Card Pack Editor for world-managed packs, five fixed deck tabs, cards, filters, tone, impact, weights, fallback text, localization keys, per-pack activation, and visual nested context conditions;
 - filters for damage types, weapon groups, required or excluded attack traits, save types, spell traditions, spell traits, source traits, and target traits;
 - direct mechanical-effect editing through a dedicated Effect Forge handoff;
 - portable card-pack JSON import and export through files or the clipboard;
-- headless filter matching, optional snapshot conditions, tone/impact profile weighting, and transparent candidate reports;
+- headless per-pack deck resolution, filter matching, optional snapshot conditions, tone/impact profile weighting, and transparent candidate reports;
 - a PF2e Context Adapter, immutable runtime snapshots, and a GM-only Diagnostics 2.0 workbench with pipeline reports, session history, replay, simulation, and JSON export;
 - localized result cards with configurable `blind`, `gm`, `public`, or `self` visibility;
 - independent behavior and natural-roll trigger settings for all six supported critical categories;
@@ -81,7 +81,7 @@ npm run test:coverage
 npm run quality:check
 ```
 
-The suite covers the Effect Engine and Forge, component-duration inheritance and native Item splitting, Item-bundle updates, card normalization, Card Pack Editor actions and round-trips, the visual condition model and simulator, pack activation, rollback-safe world persistence, external extension-pack lifecycles, spell/save filters, PF2e context adaptation, nested condition normalization/evaluation/validation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
+The suite covers the Effect Engine and Forge, component-duration inheritance and native Item splitting, Item-bundle updates, card normalization, Multi-Deck resolution and legacy fallback, Card Pack Editor deck actions and round-trips, the visual condition model and simulator, pack activation, rollback-safe world persistence, external extension-pack lifecycles, spell/save filters, PF2e context adaptation, nested condition normalization/evaluation/validation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 
@@ -91,6 +91,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/CRITICAL_FORGE_ARCHITECTURE.md`](docs/CRITICAL_FORGE_ARCHITECTURE.md): Critical Forge subsystem boundaries
 - [`docs/CARD_SCHEMA.md`](docs/CARD_SCHEMA.md): Critical Card data model and filter semantics
 - [`docs/CARD_PACKS.md`](docs/CARD_PACKS.md): pack registration and extension model
+- [`docs/MULTI_DECK_PACKS.md`](docs/MULTI_DECK_PACKS.md): attack/save deck resolution, legacy fallback, authoring, and extension guidance
 - [`docs/EXTENSION_MODULES.md`](docs/EXTENSION_MODULES.md): complete optional-module integration contract and example
 - [`docs/CARD_EDITOR.md`](docs/CARD_EDITOR.md): visual pack editor, protected templates, Effect Forge handoff, and JSON transfer
 - [`docs/CARD_SELECTION.md`](docs/CARD_SELECTION.md): candidate evaluation and weighted selection

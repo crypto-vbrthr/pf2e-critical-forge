@@ -55,6 +55,7 @@ export function createDiagnosticEvaluationReport(diagnostic, {
           diagnostics: combinedDiagnostics.length
         },
         totalWeight: Number(diagnostic.totalWeight ?? 0),
+        requestedDeckType: diagnostic.requestedDeckType ?? diagnostic.context?.deckType ?? "default",
         eligible,
         rejected,
         method: "analysis",
@@ -80,6 +81,7 @@ export function withDiagnosticSelection(report, selection, {
         id: selection.selected.id,
         packId: selection.selected.packId,
         category: selection.selected.category,
+        deckType: selection.selected.deckType ?? "default",
         title: selection.selected.fallbackTitle ?? selection.selected.id,
         effectiveWeight: Number(selection.eligible?.find?.((entry) => entry.card?.id === selection.selected.id)?.effectiveWeight ?? 0)
       }
@@ -181,6 +183,9 @@ function serializeCandidate(entry) {
     id: card.id ?? entry.id ?? "",
     packId: card.packId ?? entry.packId ?? "",
     category: card.category ?? entry.category ?? "",
+    deckType: card.deckType ?? entry.deckType ?? "default",
+    requestedDeckType: entry.requestedDeckType ?? "default",
+    activeDeckType: entry.activeDeckType ?? null,
     title: localized.title ?? entry.title ?? card.fallbackTitle ?? card.id ?? "",
     description: localized.description ?? entry.description ?? card.fallbackDescription ?? "",
     tone: card.tone ?? entry.tone ?? "neutral",

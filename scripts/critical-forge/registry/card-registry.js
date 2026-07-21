@@ -40,11 +40,12 @@ export class CardRegistry {
     return this.#cards.has(String(id));
   }
 
-  list({ packId = null, category = null, tags = [], enabledPacksOnly = true } = {}) {
+  list({ packId = null, category = null, deckType = null, tags = [], enabledPacksOnly = true } = {}) {
     const requiredTags = new Set(tags);
     return [...this.#cards.values()]
       .filter((card) => !packId || card.packId === packId)
       .filter((card) => !category || card.category === category)
+      .filter((card) => !deckType || card.deckType === deckType)
       .filter((card) => [...requiredTags].every((tag) => card.tags.includes(tag)))
       .filter((card) => !enabledPacksOnly || this.#packRegistry.get(card.packId)?.enabled)
       .sort((left, right) => left.id.localeCompare(right.id));

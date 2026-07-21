@@ -10,6 +10,7 @@ Critical Forge cards are immutable, versioned data objects. They contain localiz
   id: "core.spell-hit.arcane-resonance",
   packId: "core",
   category: "spellCriticalHit",
+  deckType: "attack",
   tone: "dramatic",
   impact: "moderate",
 
@@ -75,6 +76,20 @@ Schema version 1 supports six categories:
 - `savingThrowCriticalFailure`
 
 The four newer categories are additive values within the existing schema. Existing packs remain compatible because unknown or omitted filter arrays normalize safely.
+
+## Deck assignment
+
+`deckType` is optional in Critical Card schema version `1` and accepts:
+
+- `default`
+- `attack`
+- `fortitude`
+- `reflex`
+- `will`
+
+An omitted value normalizes to `default`. The `attack` deck accepts the four attack and spell-attack categories. The three save decks accept `savingThrowCriticalSuccess` and `savingThrowCriticalFailure`; their Fortitude, Reflex, or Will identity comes from the deck itself. `default` accepts every category because it is the compatibility and fallback deck.
+
+Deck assignment is resolved per pack before filters and conditions. It is not a filter, tag, specificity bonus, or weight multiplier. See [`MULTI_DECK_PACKS.md`](MULTI_DECK_PACKS.md).
 
 ## Tone and impact
 

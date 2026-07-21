@@ -38,6 +38,7 @@ export function diagnosePf2eCriticalInput(input = {}, {
     eligible,
     rejected,
     totalWeight: candidateReport.totalWeight,
+    requestedDeckType: candidateReport.requestedDeckType ?? candidateReport.context?.deckType ?? "default",
     profile: candidateReport.profile,
     triggerPolicy,
     trigger,
@@ -56,6 +57,8 @@ function prepareCandidate(entry, localize) {
     eligible: entry.eligible,
     rejectedBy: [...entry.rejectedBy],
     conditionEvaluation: entry.conditionEvaluation,
+    requestedDeckType: entry.requestedDeckType ?? "default",
+    activeDeckType: entry.activeDeckType ?? null,
     matchedFilters: entry.matchedFilters.map((match) => ({
       filter: match.filter,
       values: [...match.values]

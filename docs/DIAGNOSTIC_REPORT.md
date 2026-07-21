@@ -15,7 +15,7 @@ The report schema is additive and separate from all card and effect schemas.
   reportVersion: 1,
   id: "critical-diagnostic-...",
   createdAt: 0,
-  moduleVersion: "0.9.4-dev.4",
+  moduleVersion: "0.9.4-dev.5",
   origin: "manual",
   source: {
     messageId: null,

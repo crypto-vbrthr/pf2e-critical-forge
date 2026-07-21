@@ -664,7 +664,7 @@ The compiler emits `{ key: "BaseSpeed", selector: "fly", value: 30 }`. See [`BAS
 
 ## Critical cards
 
-Critical Forge card architecture, the PF2e Context Adapter, runtime Context Engine, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev.4` adds the visual condition-editor catalog, contradiction analysis, and synthetic simulator on top of the immutable context/provider and Condition Engine foundation while retaining all existing card APIs and schema-version-1 pack compatibility.
+Critical Forge card architecture, the PF2e Context Adapter, runtime Context Engine, manual diagnostics, configurable result chat cards, card profiles, trigger policies, automatic attack, spell-attack, and saving-throw processing, redraws, GM-confirmed effect application, world-persistent custom packs, and external pack registration are available through `api.cards`. Version `0.9.4-dev.5` adds per-pack `default`, `attack`, `fortitude`, `reflex`, and `will` decks while retaining all existing APIs and schema-version-1 pack compatibility.
 
 Capability detection:
 
@@ -672,10 +672,23 @@ Capability detection:
 api.cards.capabilities.contextSnapshots; // true
 api.cards.capabilities.contextProviders; // true
 api.cards.capabilities.contextConditions; // true
-api.cards.capabilities.conditionEditor; // true in phase 3
-api.cards.capabilities.multiDeckPacks; // false in phase 3
+api.cards.capabilities.conditionEditor; // true
+api.cards.capabilities.multiDeckPacks; // true
 ```
 
+### Multi-Deck helpers
+
+```js
+api.cards.deckTypes;                    // default, attack, fortitude, reflex, will
+api.cards.decks.types;
+api.cards.decks.specializedTypes;       // attack, fortitude, reflex, will
+api.cards.decks.requested(context);      // requested deck for a neutral context
+api.cards.decks.resolvePack(packOrId, "reflex");
+api.cards.decks.listPackTypes(packOrId, { populatedOnly: true });
+api.cards.decks.supportsCategory("savingThrowCriticalSuccess", "will");
+```
+
+Deck resolution is per pack. A populated requested deck is used first, then that pack's `default` deck, then no cards from that pack. The helpers do not mutate or register pack data. See [`MULTI_DECK_PACKS.md`](MULTI_DECK_PACKS.md).
 
 ### Condition editor helpers
 
@@ -735,7 +748,7 @@ api.cards.getPack("my-pack");
 api.cards.listPacks();
 ```
 
-Pack registration is transactional. Use `{ replace: true }` to replace an existing pack only after the complete replacement has validated. The low-level methods are retained for advanced integrations and internal use. Optional modules should prefer the ownership-safe extension API.
+Pack registration is transactional. A legacy root `cards` array becomes the `default` deck; optional `pack.decks` authoring input is flattened and indexed during normalization. Use `{ replace: true }` to replace an existing pack only after the complete replacement has validated. The low-level methods are retained for advanced integrations and internal use. Optional modules should prefer the ownership-safe extension API.
 
 ### Extension card-pack modules
 
@@ -917,7 +930,7 @@ const result = api.cards.select(context, {
 });
 ```
 
-The selection result contains the selected card plus eligible and rejected candidate reports. Optional conditions read only `options.snapshot`; filters continue to read the supplied neutral context. The selector never reads Foundry documents directly.
+The selection result contains `requestedDeckType`, the selected card, and eligible/rejected candidate reports. Each candidate records its assigned `deckType` and resolved `activeDeckType`. Deck resolution occurs before filters and optional conditions. Conditions read only `options.snapshot`; filters continue to read the supplied neutral context. The selector never reads Foundry documents directly.
 
 ### Localization
 
@@ -1016,7 +1029,7 @@ World-managed packs are persisted through Foundry settings and registered into t
 
 ## Diagnostics 2.0 API
 
-Version `0.9.4-dev.4` adds versioned evaluation reports without replacing `api.cards.diagnose`, `listMessages`, or `resolveMessageInput`.
+Version `0.9.4-dev.5` retains versioned evaluation reports and adds deck evidence without replacing `api.cards.diagnose`, `listMessages`, or `resolveMessageInput`.
 
 ```js
 const resolved = await api.cards.diagnostics.resolveMessageInput(message);

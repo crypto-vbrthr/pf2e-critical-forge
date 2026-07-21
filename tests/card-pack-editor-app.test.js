@@ -259,3 +259,48 @@ test("condition editor rerenders preserve all Card Pack Editor scroll positions"
   }
 });
 
+
+test("Card Pack Editor switches decks and creates cards in the active deck", async () => {
+  const pack = createEditablePack({ id: "deck-editor" });
+  const card = createEditableCard({ packId: pack.id, id: "deck-editor.default" });
+  pack.cards.push(card);
+
+  const app = new CardPackEditorApp();
+  app.draftPack = pack;
+  app.selectedPackId = pack.id;
+  app.selectedCardId = card.id;
+  app.selectedDeckType = "default";
+  app.element = new MockFormElement({
+    "pack.id": pack.id,
+    "pack.titleKey": pack.titleKey,
+    "pack.descriptionKey": pack.descriptionKey,
+    "pack.fallbackTitle": pack.fallbackTitle,
+    "pack.fallbackDescription": pack.fallbackDescription,
+    "pack.version": pack.version,
+    "pack.priority": String(pack.priority),
+    "pack.enabled": "on",
+    "card.id": card.id,
+    "card.deckType": "reflex",
+    "card.category": "criticalHit",
+    "card.tone": card.tone,
+    "card.impact": card.impact,
+    "card.titleKey": card.titleKey,
+    "card.descriptionKey": card.descriptionKey,
+    "card.fallbackTitle": card.fallbackTitle,
+    "card.fallbackDescription": card.fallbackDescription,
+    "card.weight": String(card.weight),
+    "card.tags": ""
+  });
+
+  const actions = CardPackEditorApp.DEFAULT_OPTIONS.actions;
+  await actions.selectDeck.call(app, null, { dataset: { deckType: "reflex" } });
+  assert.equal(card.deckType, "reflex");
+  assert.equal(card.category, "savingThrowCriticalSuccess");
+  assert.equal(app.selectedDeckType, "reflex");
+
+  app.element = null;
+  await actions.newCard.call(app);
+  assert.equal(pack.cards.length, 2);
+  assert.equal(pack.cards[1].deckType, "reflex");
+  assert.equal(pack.cards[1].category, "savingThrowCriticalSuccess");
+});

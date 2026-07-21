@@ -150,3 +150,33 @@ test("Card Pack Editor exposes the visual condition builder and test workbench",
   assert.match(template, /data-scroll-key="card-editor-workspace"/u);
   assert.equal((template.match(/data-preserve-scroll/gu) ?? []).length, 3);
 });
+
+test("editor cards and exports preserve multi-deck assignments", () => {
+  const pack = createEditablePack({ id: "deck-roundtrip" });
+  pack.cards.push(createEditableCard({
+    packId: pack.id,
+    id: "deck-roundtrip.reflex",
+    deckType: "reflex"
+  }));
+  pack.cards.push(createEditableCard({
+    packId: pack.id,
+    id: "deck-roundtrip.attack",
+    deckType: "attack"
+  }));
+
+  const imported = parseCardPackImport(serializeCardPackExport(pack));
+  assert.deepEqual(imported.cards.map((card) => card.deckType), ["reflex", "attack"]);
+  assert.deepEqual(imported.decks.reflex.cardIds, ["deck-roundtrip.reflex"]);
+  assert.deepEqual(imported.decks.attack.cardIds, ["deck-roundtrip.attack"]);
+  assert.equal(imported.cards[0].category, "savingThrowCriticalSuccess");
+  assert.equal(imported.cards[1].category, "criticalHit");
+});
+
+test("Card Pack Editor exposes deck tabs and deck assignment", () => {
+  const root = dirname(dirname(fileURLToPath(import.meta.url)));
+  const template = readFileSync(join(root, "templates/critical-forge/card-pack-editor.hbs"), "utf8");
+  assert.match(template, /data-action="selectDeck"/u);
+  assert.match(template, /data-deck-type="\{\{deck\.type\}\}"/u);
+  assert.match(template, /name="card\.deckType"/u);
+  assert.match(template, /data-deck-rerender/u);
+});

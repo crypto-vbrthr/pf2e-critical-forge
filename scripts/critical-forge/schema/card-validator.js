@@ -8,6 +8,7 @@ import { CARD_CATEGORIES, CARD_ID_PATTERN, EFFECT_TARGETS } from "../constants.j
 import { CARD_IMPACTS, CARD_TONES } from "../profile/card-profile.js";
 import { CARD_FILTER_KEYS } from "./card-normalizer.js";
 import { validateConditionTree } from "../conditions/condition-validator.js";
+import { CARD_DECK_TYPES, categorySupportsCardDeck } from "../decks/card-deck.js";
 
 function issue(code, data = {}, severity = "error") {
   return Object.freeze({ severity, code, data: structuredClone(data) });
@@ -46,6 +47,15 @@ export function validateCardDefinition(card) {
 
   if (!CARD_CATEGORIES.includes(card.category)) {
     issues.push(issue("CARD_CATEGORY_INVALID", { category: card.category }));
+  }
+  const deckType = card.deckType ?? "default";
+  if (!CARD_DECK_TYPES.includes(deckType)) {
+    issues.push(issue("CARD_DECK_TYPE_INVALID", { deckType }));
+  } else if (!categorySupportsCardDeck(card.category, deckType)) {
+    issues.push(issue("CARD_DECK_CATEGORY_MISMATCH", {
+      deckType,
+      category: card.category
+    }));
   }
   if (!CARD_TONES.includes(card.tone)) {
     issues.push(issue("CARD_TONE_INVALID", { tone: card.tone }));
@@ -112,6 +122,14 @@ export function validatePackDefinition(pack) {
     issues.push(issue("CARD_PACK_PRIORITY_INVALID", { priority: pack.priority }));
   }
 
+  if (pack.decks != null) {
+    if (typeof pack.decks !== "object" || Array.isArray(pack.decks)) {
+      issues.push(issue("CARD_PACK_DECKS_INVALID"));
+    } else {
+      validatePackDeckIndex(pack, issues);
+    }
+  }
+
   if (!Array.isArray(pack.cards)) {
     issues.push(issue("CARD_PACK_CARDS_INVALID"));
   } else {
@@ -133,6 +151,37 @@ export function validatePackDefinition(pack) {
   }
 
   return report(issues);
+}
+
+function validatePackDeckIndex(pack, issues) {
+  const indexedIds = new Set();
+  for (const type of CARD_DECK_TYPES) {
+    const deck = pack.decks?.[type];
+    if (!deck || deck.type !== type || !Array.isArray(deck.cardIds)) {
+      issues.push(issue("CARD_PACK_DECK_INVALID", { deckType: type }));
+      continue;
+    }
+    for (const cardId of deck.cardIds) {
+      if (typeof cardId !== "string" || !cardId) {
+        issues.push(issue("CARD_PACK_DECK_CARD_ID_INVALID", { deckType: type, cardId }));
+        continue;
+      }
+      if (indexedIds.has(cardId)) {
+        issues.push(issue("CARD_PACK_DECK_CARD_DUPLICATE", { cardId }));
+      }
+      indexedIds.add(cardId);
+      const card = pack.cards?.find?.((entry) => entry.id === cardId);
+      if (!card || card.deckType !== type) {
+        issues.push(issue("CARD_PACK_DECK_CARD_MISMATCH", { deckType: type, cardId }));
+      }
+    }
+  }
+
+  for (const card of pack.cards ?? []) {
+    if (!indexedIds.has(card.id)) {
+      issues.push(issue("CARD_PACK_DECK_CARD_MISSING", { cardId: card.id, deckType: card.deckType }));
+    }
+  }
 }
 
 function validateEffect(card, issues) {

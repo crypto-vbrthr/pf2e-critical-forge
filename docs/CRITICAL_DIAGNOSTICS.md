@@ -1,13 +1,13 @@
 # Critical Diagnostics 2.0
 
-Version `0.9.4-dev.4` promotes the diagnostic workbench from a candidate inspector to the central test cockpit of Critical Forge. It remains GM-only and never applies an effect without a separate explicit action.
+Version `0.9.4-dev.5` keeps the diagnostic workbench as the central test cockpit and adds requested, active, and assigned deck evidence to the existing Diagnostics 2.0 pipeline. It remains GM-only and never applies an effect without a separate explicit action.
 
 ## Evaluation pipeline
 
 Every analysis produces one immutable evaluation report with three phases:
 
 1. **Context resolution** records the PF2e adapter result, resolver diagnostics, provider, runtime snapshot, participants, health, conditions, combat references, and battlefield placeholders.
-2. **Card selection** records the trigger policy, profile, eligible and rejected cards, weights, matched filters, context-condition evidence, and any actual automated selection.
+2. **Card selection** records the requested deck, each pack's active deck, every card's assigned deck, trigger policy, profile, eligible and rejected cards, weights, matched filters, context-condition evidence, and any actual automated selection.
 3. **Effect application** records an optional safe simulation and, when an automated preview is later applied, the successful application audit.
 
 The report has its own `reportVersion`. It is independent of Critical Card, Card Pack, Effect Definition, and module versions.
@@ -71,7 +71,7 @@ This tracking is session-local and additive. Existing preview flags remain the p
 - source-message references;
 - context, metadata, and snapshot;
 - resolver and adapter diagnostics;
-- eligible and rejected cards with weights and condition evidence;
+- eligible and rejected cards with requested, active, and assigned deck evidence, weights, and conditions;
 - trigger and profile details;
 - selected card and preview reference;
 - simulation and actual-application results;

@@ -1,8 +1,8 @@
 {
   "id": "pf2e-critical-forge",
   "title": "PF2E Critical Forge",
-  "description": "A modular PF2e Effect Engine, polished Effect Forge, and Critical Forge for critical attacks, spell attacks, and saving throws with localized cards, automation, and a visual card-pack editor.",
-  "version": "0.9.4-dev.4",
+  "description": "A modular PF2e Effect Engine, polished Effect Forge, and Critical Forge for critical attacks, spell attacks, and saving throws with localized multi-deck card packs, automation, diagnostics, and a visual card-pack editor.",
+  "version": "0.9.4-dev.5",
   "authors": [
     {
       "name": "crypto-vbrthr"

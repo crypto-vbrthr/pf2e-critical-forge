@@ -1,6 +1,6 @@
 # Critical Condition Engine
 
-Version `0.9.4-dev.4` retains the generic, document-agnostic eligibility engine from Phase 2 and adds a visual authoring and simulation layer in the Card Pack Editor. Against All Odds, multi-deck packs, and scene-based threat analysis remain deliberately outside this phase.
+Version `0.9.4-dev.5` retains the generic, document-agnostic eligibility engine and its visual authoring layer. Multi-Deck resolution now runs before this engine; Against All Odds and scene-based threat analysis remain deliberately outside this phase.
 
 ## Design guarantees
 

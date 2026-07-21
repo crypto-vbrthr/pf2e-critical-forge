@@ -1,5 +1,6 @@
 import { normalizeStringArray, intersect } from "../utils.js";
 import { evaluateConditionTree } from "../conditions/condition-evaluator.js";
+import { resolveRequestedCardDeck } from "../decks/card-deck.js";
 
 export function normalizeSelectionContext(context = {}) {
   if (!context || typeof context !== "object" || Array.isArray(context)) {
@@ -20,14 +21,20 @@ export function normalizeSelectionContext(context = {}) {
   });
 }
 
-export function matchCard(card, rawContext = {}, { snapshot = null } = {}) {
+export function matchCard(card, rawContext = {}, { snapshot = null, activeDeckType = undefined } = {}) {
   const context = normalizeSelectionContext(rawContext);
   const rejectedBy = [];
   const matchedFilters = [];
   const conditionEvaluation = evaluateConditionTree(card.conditions ?? null, snapshot);
+  const requestedDeckType = resolveRequestedCardDeck(context);
+  const cardDeckType = card.deckType ?? "default";
   let specificity = 0;
 
   if (card.category !== context.category) rejectedBy.push("category");
+  const resolvedDeckType = activeDeckType === undefined
+    ? (cardDeckType === "default" ? "default" : requestedDeckType)
+    : activeDeckType;
+  if (resolvedDeckType == null || cardDeckType !== resolvedDeckType) rejectedBy.push("deckType");
   matchAny("damageTypes", card.filters.damageTypes, context.damageTypes);
   matchAny("weaponGroups", card.filters.weaponGroups, context.weaponGroups);
   matchAll("attackTraits", card.filters.attackTraits, context.attackTraits);
@@ -52,6 +59,8 @@ export function matchCard(card, rawContext = {}, { snapshot = null } = {}) {
     rejectedBy,
     matchedFilters,
     conditionEvaluation,
+    requestedDeckType,
+    activeDeckType: resolvedDeckType,
     specificity,
     baseWeight: card.weight,
     effectiveWeight

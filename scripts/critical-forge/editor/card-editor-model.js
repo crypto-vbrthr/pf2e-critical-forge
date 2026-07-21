@@ -5,6 +5,7 @@ import {
   MODULE_ID
 } from "../../constants.js";
 import { deepClone, normalizeString, normalizeStringArray } from "../utils.js";
+import { categorySupportsCardDeck, normalizeCardDeckType } from "../decks/card-deck.js";
 
 const DEFAULT_PACK_ID = "my-critical-cards";
 
@@ -26,15 +27,27 @@ export function createEditablePack({ id = DEFAULT_PACK_ID, title = "My Critical 
   };
 }
 
-export function createEditableCard({ packId, id = null, title = "New Critical Card", usedIds = [] } = {}) {
+export function createEditableCard({
+  packId,
+  id = null,
+  title = "New Critical Card",
+  usedIds = [],
+  deckType = "default",
+  category = null
+} = {}) {
   const normalizedPackId = sanitizeIdentifier(packId, DEFAULT_PACK_ID);
   const fallbackId = `${normalizedPackId}.card-${randomSuffix()}`;
   const cardId = ensureUniqueIdentifier(id ?? fallbackId, usedIds, fallbackId);
+  const normalizedDeckType = normalizeCardDeckType(deckType, "default");
+  const normalizedCategory = category && categorySupportsCardDeck(category, normalizedDeckType)
+    ? category
+    : defaultCategoryForDeck(normalizedDeckType);
   return {
     schemaVersion: CARD_SCHEMA_VERSION,
     id: cardId,
     packId: normalizedPackId,
-    category: "criticalHit",
+    category: normalizedCategory,
+    deckType: normalizedDeckType,
     tone: "neutral",
     impact: "narrative",
     titleKey: userLocalizationKey(cardId, "Title"),
@@ -74,6 +87,18 @@ export function ensurePackCardOwnership(pack) {
   const result = deepClone(pack);
   result.cards = (result.cards ?? []).map((card) => ({ ...card, packId: result.id }));
   return result;
+}
+
+export function defaultCategoryForDeck(deckType) {
+  return ["fortitude", "reflex", "will"].includes(String(deckType))
+    ? "savingThrowCriticalSuccess"
+    : "criticalHit";
+}
+
+export function coerceCategoryForDeck(category, deckType) {
+  return category && categorySupportsCardDeck(category, deckType)
+    ? category
+    : defaultCategoryForDeck(deckType);
 }
 
 export function parseDelimitedList(value) {

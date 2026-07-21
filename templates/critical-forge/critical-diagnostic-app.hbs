@@ -82,6 +82,10 @@
               <strong>{{report.eligibleCount}}</strong>
             </div>
             <div>
+              <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.RequestedDeck"}}</span>
+              <strong>{{report.requestedDeckLabel}}</strong>
+            </div>
+            <div>
               <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.TotalWeight"}}</span>
               <strong>{{report.totalWeight}}</strong>
             </div>
@@ -295,6 +299,7 @@
                     <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ProfileMultiplier"}}: {{profileMultiplier}}</span>
                     <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Tone"}}: {{toneLabel}}</span>
                     <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Impact"}}: {{impactLabel}}</span>
+                    <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Deck"}}: {{deckLabel}}</span>
                   </div>
                   {{#if hasMatches}}
                     <div class="critical-diagnostic-match-list">
@@ -348,6 +353,10 @@
                       <code>{{id}}</code>
                     </div>
                   </header>
+                  <div class="critical-diagnostic-card-meta">
+                    <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.Deck"}}: {{deckLabel}}</span>
+                    <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ActiveDeck"}}: {{activeDeckLabel}}</span>
+                  </div>
                   <div class="critical-diagnostic-reasons">
                     {{#each rejectedReasons}}<span>{{this}}</span>{{/each}}
                   </div>

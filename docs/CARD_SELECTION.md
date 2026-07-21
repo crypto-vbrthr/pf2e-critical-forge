@@ -20,6 +20,16 @@ The selection service is headless and deterministic when supplied with a determi
 }
 ```
 
+## Deck resolution
+
+The selector derives one requested deck from the neutral context:
+
+- attack and spell-attack categories request `attack`;
+- saving-throw categories request `fortitude`, `reflex`, or `will` when exactly one normalized save type is known;
+- ambiguous or unsupported contexts request `default`.
+
+Resolution then occurs independently for every enabled pack. A populated requested deck is active for that pack. If it is absent, a populated `default` deck is active. If neither exists, all cards from that pack are rejected by deck resolution. This order prevents a specialized Reflex deck from leaking into Fortitude or Will rolls while allowing unrelated legacy packs to remain in the same global candidate pool.
+
 ## Candidate evaluation
 
 Each card receives:
@@ -33,6 +43,8 @@ Each card receives:
 - `profileMultiplier`
 - `effectiveWeight`
 - `conditionEvaluation`
+- `requestedDeckType`
+- `activeDeckType`
 
 Without a profile, `effectiveWeight` is:
 
@@ -58,6 +70,7 @@ const result = api.cards.select(context, {
   random: Math.random
 });
 
+console.log(result.requestedDeckType);
 console.log(result.selected);
 console.log(result.eligible);
 console.log(result.rejected);
@@ -65,7 +78,7 @@ console.log(result.rejected);
 
 A card may combine positive and negative attack filters. For example, `attackTraits: ["ranged"]` together with `excludedAttackTraits: ["spell"]` matches ranged weapon attacks but rejects ranged spell attacks.
 
-The returned report makes the choice auditable. Repetition prevention is supplied by the caller through `excludeCardIds`; the architecture stores no campaign history by itself.
+The returned report makes the choice auditable. Rejected entries identify `deckType` when their assigned deck is not the pack's active deck. Repetition prevention is supplied by the caller through `excludeCardIds`; the architecture stores no campaign history by itself.
 
 ## Building a context from PF2e data
 

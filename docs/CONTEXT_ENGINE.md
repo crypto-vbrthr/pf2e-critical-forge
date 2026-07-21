@@ -1,8 +1,8 @@
 # Critical Context Engine
 
-Version `0.9.4-dev.4` retains the Phase-1 snapshot/provider foundation, the Phase-2 Condition Engine, and adds the Phase-3 visual authoring layer. It remains additive: existing Critical Cards, Card Packs, filters, and effect targets continue to use schema version `1`.
+Version `0.9.4-dev.5` retains the snapshot/provider foundation, Condition Engine, and visual authoring layer. Multi-Deck packs are additive and continue to use Critical Card and Card Pack schema version `1`.
 
-This phase makes generic card conditions editable and testable, but it does **not** add multi-deck packs, scene-based threat analysis, or Against All Odds.
+The context snapshot now also drives requested deck resolution through the existing neutral category and save-type fields. Scene-based threat analysis and Against All Odds remain outside this phase.
 
 ## Pipeline
 
@@ -174,7 +174,7 @@ Providers must return a report compatible with the existing adapter contract:
 api.cards.capabilities.contextSnapshots; // true
 api.cards.capabilities.contextProviders; // true
 api.cards.capabilities.contextConditions; // true in phase 2
-api.cards.capabilities.multiDeckPacks; // false in phase 2
+api.cards.capabilities.multiDeckPacks; // true in phase 5
 ```
 
 Extensions should test capabilities rather than infer them from module-version strings.

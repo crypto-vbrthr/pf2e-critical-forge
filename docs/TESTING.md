@@ -31,6 +31,7 @@ tests/
 ├─ builder.test.js
 ├─ card-api.test.js
 ├─ card-condition-integration.test.js
+├─ card-deck.test.js
 ├─ card-editor-roundtrip.test.js
 ├─ card-localization.test.js
 ├─ card-pack-editor-app.test.js
@@ -72,6 +73,7 @@ tests/
 ├─ gui-state.test.js
 ├─ item-editing.test.js
 ├─ migration.test.js
+├─ multi-deck-selection.test.js
 ├─ pf2e-context-adapter.test.js
 ├─ pf2e-context-snapshot.test.js
 ├─ release-metadata.test.js
@@ -83,7 +85,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 275 tests covering:
+The suite contains 291 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -106,6 +108,7 @@ The suite contains 275 tests covering:
 - headless PF2e context translation from weapon attacks, spell attacks, saving throws, chat flags, items, actors, tokens, and roll options;
 - immutable runtime-snapshot normalization, participant health and conditions, reference-only fallbacks, battlefield placeholders, Context Provider priority/replacement/protection, and public Context Builder/Resolver capabilities;
 - optional immutable card conditions, nested `all`/`any` groups, all ten operators, safe field resolution, schema validation, eligibility gating, full diagnostic evidence, automation snapshot propagation, redraw snapshot reuse, and editor/import/export preservation;
+- five fixed deck types, legacy default normalization, nested deck input, deterministic indexes, per-pack specialized/default fallback, attack/save isolation, category compatibility, editor deck actions, API discovery, diagnostics evidence, and extension/import/export round-trips;
 - the visual condition-tree model, typed and provider-defined fields, type-dependent operator controls, contradiction analysis, synthetic snapshot simulation, Card Pack Editor action wiring, and dirty-state isolation for test inputs;
 - manual diagnostic candidate evaluation, versioned evaluation reports, three-phase pipeline status, session history, snapshot/current replay comparison, JSON export, safe effect simulation, actual application audits, runtime-snapshot presentation data, chat-message discovery, Item UUID resolution, target handling, and drop validation;
 - localized critical-card effect summaries, preview presentation data, ChatMessage payloads, structured preview flags, and public preview APIs;
@@ -114,7 +117,7 @@ The suite contains 275 tests covering:
 - dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation;
 - pack activation semantics, transactional world-setting rollback, protected-data startup guards, module-bound extension ownership, atomic multi-pack registration, change hooks, and optional extension-module lifecycles.
 
-Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.4` measures 92.80% line coverage across all files loaded by the Node coverage run, including the Effect Engine, Critical Forge domain, Card Pack Editor application services and condition model, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
+Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.5` measures 92.95% line coverage across all files loaded by the Node coverage run, including the Effect Engine, Critical Forge domain, Multi-Deck resolver, Card Pack Editor application services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
 
 ## Foundry mock
 

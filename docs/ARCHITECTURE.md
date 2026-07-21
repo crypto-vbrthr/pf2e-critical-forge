@@ -194,6 +194,10 @@ Context Provider → Runtime Snapshot → Condition Engine → Card Matcher → 
 The neutral selection context and existing filters remain intact. A condition is an optional eligibility gate, not a weight source. Preview schema `4` stores the snapshot so redraws remain tied to the original roll context. Phase 3 adds a presentation-only Card Editor layer that edits and simulates the same canonical tree; runtime matching remains inside the Condition Engine.
 
 
+## Multi-Deck boundary
+
+Multi-Deck resolution is additive to Critical Card and Card Pack schema version `1`. The normalized pack owns one deterministic deck index, while the selector derives a requested deck from the neutral category/save context and resolves a specialized or default deck independently per pack. Cards outside the active deck are rejected before normal filters and conditions, and deck choice never changes specificity or weight.
+
 ## Diagnostics 2.0 boundary
 
 Diagnostics 2.0 introduces a serializable report layer above the existing adapter and selector. It does not move matching rules into the UI. The report service freezes context, candidate evidence, selection, simulation, and application audit data. The session-history service stores only cloned reports, and the simulation service calls validation but never the Effect Engine application path.

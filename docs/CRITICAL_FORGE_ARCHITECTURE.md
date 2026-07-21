@@ -1,6 +1,6 @@
 # Critical Forge Architecture
 
-Version `0.9.4-dev.4` keeps the Foundry automation shell thin while supporting weapon attacks, spell attacks, and saving throws. The hook owns only message detection, GM prompting, and publication; context adaptation, card matching, trigger policy, profile weighting, presentation, and effect application remain separate services.
+Version `0.9.4-dev.5` keeps the Foundry automation shell thin while supporting weapon attacks, spell attacks, and saving throws. The hook owns only message detection, GM prompting, and publication; context adaptation, card matching, trigger policy, profile weighting, presentation, and effect application remain separate services.
 
 ```text
 Foundry createChatMessage Hook ── new supported PF2e roll messages
@@ -18,6 +18,9 @@ PF2e Context Adapter
         │                                      │
         ▼                                      │
 Selection Context ─────────────────────────────┘
+        │
+        ▼
+Requested Deck → Per-Pack Deck Resolver
         │
         ▼
 Card Matcher → Candidate Report → Weighted Selector
@@ -42,6 +45,7 @@ critical-forge/
 ├─ adapters/pf2e/       PF2e data readers, provider, adapter, and snapshot reduction
 ├─ context/              snapshot builder, provider registry, and resolver
 ├─ conditions/           condition normalization, validation, and evaluation
+├─ decks/                deck types, requested-deck mapping, indexes, and per-pack fallback
 ├─ automation/           primary-GM supported-roll pipeline
 ├─ diagnostics/          manual message resolution, diagnostic service, and workbench UI
 ├─ editor/               world-managed pack store, transfer, UI, and Effect Forge bridge
@@ -63,7 +67,7 @@ critical-forge/
 
 - Cards contain no rendered HTML.
 - The selector consumes plain JavaScript data only.
-- Existing filters consume the neutral selection context; optional conditions consume a separately supplied runtime snapshot.
+- Deck resolution consumes only the neutral category and save types, then existing filters consume the neutral selection context and optional conditions consume a separately supplied runtime snapshot.
 - Runtime snapshots are immutable, JSON-serializable observations and never contain Foundry documents.
 - Context providers are additive and selected by system, explicit id, and priority.
 - The selector never reads Foundry documents directly.
@@ -105,6 +109,18 @@ The trigger policy knows behavior (`disabled`, `prompt`, `automatic`) and scope 
 
 The profile service weights `tone` and `impact` metadata. It never compiles effects and never changes eligibility produced by mechanical filters.
 
+
+## Multi-Deck boundary
+
+Multi-Deck resolution is a headless eligibility boundary between context adaptation and card matching. It derives one requested deck, resolves one active deck independently for each pack, and then lets only that deck proceed to ordinary matching.
+
+```text
+Selection Context → Requested Deck → Per-Pack specialized/default fallback
+                                      ↓
+                             Card Matcher / Conditions
+```
+
+The resolver does not inspect Foundry documents, modify weights, or create a global fallback pool. Legacy packs normalize to `default` and remain ordinary participants. Diagnostics consume the same requested/active/assigned deck evidence returned by the selector.
 
 ## Phase-2 Condition Engine boundary
 

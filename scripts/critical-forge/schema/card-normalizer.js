@@ -5,6 +5,7 @@ import {
 } from "../../constants.js";
 import { deepClone, deepFreeze, normalizeString, normalizeStringArray } from "../utils.js";
 import { normalizeConditionTree } from "../conditions/condition-normalizer.js";
+import { createPackDeckIndex, normalizeCardDeckType } from "../decks/card-deck.js";
 
 const FILTER_KEYS = Object.freeze([
   "damageTypes",
@@ -20,7 +21,7 @@ const FILTER_KEYS = Object.freeze([
   "excludedTargetTraits"
 ]);
 
-export function normalizeCardDefinition(card, { packId = null } = {}) {
+export function normalizeCardDefinition(card, { packId = null, deckType = null } = {}) {
   if (!card || typeof card !== "object" || Array.isArray(card)) {
     throw new TypeError("Critical card definition must be an object.");
   }
@@ -36,6 +37,7 @@ export function normalizeCardDefinition(card, { packId = null } = {}) {
     id: normalizeString(card.id),
     packId: normalizeString(packId ?? card.packId),
     category: normalizeString(card.category),
+    deckType: normalizeCardDeckType(deckType ?? card.deckType, "default"),
     tone: normalizeString(card.tone, "neutral"),
     impact: normalizeString(card.impact, normalizedEffect ? "moderate" : "narrative"),
     titleKey: normalizeString(card.titleKey),
@@ -59,9 +61,8 @@ export function normalizePackDefinition(pack) {
   }
 
   const id = normalizeString(pack.id);
-  const cards = Array.isArray(pack.cards)
-    ? pack.cards.map((card) => normalizeCardDefinition(card, { packId: id }))
-    : [];
+  const cards = collectPackCards(pack, id);
+  const decks = createPackDeckIndex(cards);
 
   return deepFreeze({
     schemaVersion: Number(pack.schemaVersion ?? CARD_PACK_SCHEMA_VERSION),
@@ -75,8 +76,26 @@ export function normalizePackDefinition(pack) {
     priority: Number(pack.priority ?? 0),
     enabled: pack.enabled !== false,
     metadata: deepClone(pack.metadata ?? {}),
+    decks,
     cards
   });
+}
+
+function collectPackCards(pack, packId) {
+  const cards = [];
+  if (Array.isArray(pack.cards)) {
+    cards.push(...pack.cards.map((card) => normalizeCardDefinition(card, { packId })));
+  }
+
+  if (pack.decks && typeof pack.decks === "object" && !Array.isArray(pack.decks)) {
+    for (const [deckType, deck] of Object.entries(pack.decks)) {
+      const deckCards = Array.isArray(deck) ? deck : Array.isArray(deck?.cards) ? deck.cards : null;
+      if (!deckCards) continue;
+      cards.push(...deckCards.map((card) => normalizeCardDefinition(card, { packId, deckType })));
+    }
+  }
+
+  return cards;
 }
 
 function normalizeEffectTemplate(effect) {

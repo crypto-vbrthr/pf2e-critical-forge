@@ -19,7 +19,7 @@ Exports are allowed only for Effect Definitions that pass the Validation Engine.
   "exportedAt": "2026-07-15T08:00:00.000Z",
   "generator": {
     "moduleId": "pf2e-critical-forge",
-    "moduleVersion": "0.9.4-dev.4",
+    "moduleVersion": "0.9.4-dev.5",
     "apiVersion": "0.9.4",
     "schemaVersion": 2
   },
@@ -101,6 +101,8 @@ console.log(imported.migration);
 The export envelope and the Effect Definition schema are versioned separately. The Migration Engine upgrades older definitions without changing the outer transfer format. Future schema versions are rejected safely until a matching migration path exists.
 
 
-## Critical Card Pack conditions
+## Critical Card Pack conditions and decks
 
-Card-pack exports preserve optional `conditions` trees without converting or stripping them. Import normalization validates the tree while leaving Critical Card and Card Pack schema versions at `1`. The Phase-3 Card Pack Editor opens these values in the visual condition builder, preserves explicit custom-field operand types through their serialized values, and exports the canonical tree unchanged.
+Card-pack exports preserve optional `conditions` trees and card `deckType` assignments without converting or stripping them. Import normalization validates both while leaving Critical Card and Card Pack schema versions at `1`. The Card Pack Editor opens conditions in the visual builder and cards in their assigned deck tab.
+
+Historical exports with only a root `cards` array remain valid and normalize to `default`. New exports use the normalized flat `cards` collection with explicit `deckType` values; the derived deck index is rebuilt during normalization. Authoring input may also use `pack.decks` with arrays or `{ cards: [...] }` objects. No migration or destructive source rewrite occurs.

@@ -68,6 +68,10 @@ Loaded legacy data is migrated only in memory. The original Foundry Item is not 
 
 Integrations should call `api.effects.migrate()` before validating long-lived stored definitions.
 
+## Critical Forge 0.9.4-dev.5
+
+No migration runs. `deckType` and `pack.decks` are optional authoring fields within Critical Card and Card Pack schema version `1`. Cards without `deckType` normalize to `default`; historical packs with only a root `cards` array become one default deck in memory. Original source objects are not rewritten. Diagnostics report schema remains `1`, preview schema remains `4`, Effect Definition schema remains `2`, and public API version remains `0.9.4`.
+
 ## Critical Forge 0.9.4-dev.4
 
 No migration runs. Diagnostics 2.0 introduces report schema version `1`, which is session-only and independent of Critical Card schema `1`, Card Pack schema `1`, preview schema `4`, and Effect Definition schema `2`. Existing packs and extension modules continue to load unchanged.
