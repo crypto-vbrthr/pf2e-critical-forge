@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.9.4-dev.7.1` keeps the **PF2e battlefield threat evaluation** from Phase 7 and improves its diagnostic presentation with a high-contrast Forge-themed threat panel. Runtime snapshots can now determine which Party/Opposition tokens immediately threaten the executing Actor through a ready, in-range melee Strike, known position, and clear attack path. Diagnostics explains every counted or rejected token. Existing packs, explicit threat-count providers, and all schema-version-1 cards and packs continue to work without migration.
+Version `1.0.0-rc` keeps the **PF2e battlefield threat evaluation** from Phase 7 and improves its diagnostic presentation with a high-contrast Forge-themed threat panel. Runtime snapshots can now determine which Party/Opposition tokens immediately threaten the executing Actor through a ready, in-range melee Strike, known position, and clear attack path. Diagnostics explains every counted or rejected token. Existing packs, explicit threat-count providers, and all schema-version-1 cards and packs continue to work without migration.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 

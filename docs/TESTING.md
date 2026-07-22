@@ -120,7 +120,7 @@ The suite contains 325 tests covering:
 - pack activation semantics, transactional world-setting rollback, protected-data startup guards, module-bound extension ownership, atomic multi-pack registration, change hooks, and optional extension-module lifecycles;
 - extension contract version checks, capability requirements, bound pack/provider ownership, typed editor fields, isolated diagnostic-provider evidence, stable conflict codes, session registration diagnostics, and complete cleanup.
 
-Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.7.1` measures 92.98% line coverage across all files loaded by the Node coverage run, including the Effect Engine, Critical Forge domain, Multi-Deck resolver, Card Pack Editor application services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, extension compatibility, provider registries, and extension-pack integration.
+Coverage is a diagnostic rather than a release gate. Version `1.0.0-rc` measures 92.98% line coverage across all files loaded by the Node coverage run, including the Effect Engine, Critical Forge domain, Multi-Deck resolver, Card Pack Editor application services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, extension compatibility, provider registries, and extension-pack integration.
 
 ## Foundry mock
 

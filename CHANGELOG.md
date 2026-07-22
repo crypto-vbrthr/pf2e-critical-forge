@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0-rc
+
+- Promoted the complete `0.9.4-dev.7.1` battlefield-threat and diagnostics build to release-candidate status.
+- Synchronized the Foundry manifest, runtime API, package metadata, documentation, and release download tag.
+- No card, schema, API-contract, or gameplay behavior changes compared with `0.9.4-dev.7.1`.
+
+
 ## 0.9.4-dev.7.1
 
 - Fixed unreadable battlefield-threat entries caused by mixing Foundry's light option background with the Forge's light-on-dark text palette.

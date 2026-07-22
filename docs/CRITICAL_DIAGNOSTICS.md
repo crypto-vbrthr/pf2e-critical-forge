@@ -1,6 +1,6 @@
 # Critical Diagnostics 2.0
 
-Version `0.9.4-dev.7.1` keeps the diagnostic workbench as the central test cockpit, retains per-token PF2e battlefield threat evidence, and renders those entries with an explicit high-contrast Forge palette. It remains GM-only and never applies an effect without a separate explicit action.
+Version `1.0.0-rc` keeps the diagnostic workbench as the central test cockpit, retains per-token PF2e battlefield threat evidence, and renders those entries with an explicit high-contrast Forge palette. It remains GM-only and never applies an effect without a separate explicit action.
 
 ## Evaluation pipeline
 
