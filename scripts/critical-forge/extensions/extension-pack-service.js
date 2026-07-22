@@ -46,7 +46,7 @@ export function registerExtensionPacks(sourceModule, rawPacks, { replace = false
     const existing = criticalPackRegistry.get(pack.id);
     if (!existing) continue;
     assertOwnedBy(existing, owner, pack.id);
-    if (!replace) throw new Error(`Critical card pack already registered: ${pack.id}`);
+    if (!replace) throw extensionError("EXTENSION_PACK_CONFLICT", `Critical card pack already registered: ${pack.id}`);
     snapshots.push(hydratePack(pack.id));
     replacedPackIds.push(pack.id);
   }
@@ -142,7 +142,7 @@ function prepareExtensionPack(owner, rawPack) {
   });
   const validation = validatePackDefinition(pack);
   if (!validation.valid) {
-    const error = new Error(`Extension card pack is invalid: ${pack.id || "unknown"}`);
+    const error = extensionError("EXTENSION_PACK_INVALID", `Extension card pack is invalid: ${pack.id || "unknown"}`);
     error.validation = validation;
     throw error;
   }
@@ -154,11 +154,11 @@ function assertBatchIsInternallyUnique(packs) {
   const cardIds = new Set();
 
   for (const pack of packs) {
-    if (packIds.has(pack.id)) throw new Error(`Duplicate extension card pack id: ${pack.id}`);
+    if (packIds.has(pack.id)) throw extensionError("EXTENSION_PACK_DUPLICATE", `Duplicate extension card pack id: ${pack.id}`);
     packIds.add(pack.id);
 
     for (const card of pack.cards) {
-      if (cardIds.has(card.id)) throw new Error(`Duplicate extension card id: ${card.id}`);
+      if (cardIds.has(card.id)) throw extensionError("EXTENSION_CARD_DUPLICATE", `Duplicate extension card id: ${card.id}`);
       cardIds.add(card.id);
     }
   }
@@ -175,7 +175,7 @@ function assertNoForeignCardCollisions(packs, targetIds, owner, replace) {
         && targetIds.has(existingCard.packId)
         && existingPack?.sourceModule === owner;
       if (!replaceable) {
-        throw new Error(`Critical card already registered: ${card.id}`);
+        throw extensionError("EXTENSION_CARD_CONFLICT", `Critical card already registered: ${card.id}`);
       }
     }
   }
@@ -183,7 +183,8 @@ function assertNoForeignCardCollisions(packs, targetIds, owner, replace) {
 
 function assertOwnedBy(pack, owner, packId) {
   if (pack.sourceModule !== owner) {
-    throw new Error(
+    throw extensionError(
+      "EXTENSION_PACK_OWNERSHIP",
       `Critical card pack ${packId} is owned by ${pack.sourceModule || "an unknown source"}, not ${owner}.`
     );
   }
@@ -200,7 +201,7 @@ function hydratePack(packId) {
   };
 }
 
-function normalizeSourceModule(value) {
+export function normalizeSourceModule(value) {
   const owner = normalizeString(value);
   if (!owner || !CARD_ID_PATTERN.test(owner)) {
     throw new TypeError(`Invalid extension module id: ${value ?? ""}`);
@@ -225,4 +226,10 @@ function emitPacksChanged(data) {
     replacedPackIds: [...(data.replacedPackIds ?? [])]
   });
   globalThis.Hooks?.callAll?.(CRITICAL_FORGE_PACKS_CHANGED_HOOK, payload);
+}
+
+function extensionError(code, message) {
+  const error = new Error(message);
+  error.code = code;
+  return error;
 }

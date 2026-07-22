@@ -1,6 +1,6 @@
 # Critical Forge Architecture
 
-Version `0.9.4-dev.5` keeps the Foundry automation shell thin while supporting weapon attacks, spell attacks, and saving throws. The hook owns only message detection, GM prompting, and publication; context adaptation, card matching, trigger policy, profile weighting, presentation, and effect application remain separate services.
+Version `0.9.4-dev.6` keeps the Foundry automation shell thin and adds an ownership-bound extension contract above the existing pack, context, condition, and diagnostic services.
 
 ```text
 Foundry createChatMessage Hook ── new supported PF2e roll messages

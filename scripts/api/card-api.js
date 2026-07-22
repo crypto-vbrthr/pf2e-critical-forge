@@ -19,7 +19,8 @@ import {
   conditionFieldDefinition,
   conditionOperatorsForField,
   createConditionTestSnapshot,
-  evaluateConditionEditorTest
+  evaluateConditionEditorTest,
+  listConditionFieldDefinitions
 } from "../critical-forge/editor/condition-editor-model.js";
 import {
   criticalCardRegistry,
@@ -42,6 +43,8 @@ import {
   createCriticalContextBuilder
 } from "../critical-forge/context/context-builder.js";
 import { criticalContextProviderRegistry } from "../critical-forge/context/context-provider-registry.js";
+import { criticalConditionProviderRegistry } from "../critical-forge/conditions/condition-provider-registry.js";
+import { criticalDiagnosticProviderRegistry } from "../critical-forge/diagnostics/diagnostic-provider-registry.js";
 import { resolveCriticalContext } from "../critical-forge/context/context-resolver.js";
 import { diagnosePf2eCriticalInput } from "../critical-forge/diagnostics/critical-diagnostic-service.js";
 import {
@@ -115,6 +118,8 @@ import {
   unregisterExtensionPack,
   unregisterExtensionPacks
 } from "../critical-forge/extensions/extension-pack-service.js";
+import { createCriticalForgeExtensionApi } from "../critical-forge/extensions/extension-service.js";
+import { CRITICAL_EXTENSION_CONTRACT_VERSION } from "../critical-forge/extensions/extension-compatibility.js";
 
 export function createCardApi() {
   const resolveCard = (cardOrId) => {
@@ -137,7 +142,11 @@ export function createCardApi() {
       diagnosticReports: true,
       diagnosticHistory: true,
       diagnosticSimulation: true,
-      multiDeckPacks: true
+      multiDeckPacks: true,
+      extensionContracts: true,
+      conditionProviders: true,
+      diagnosticProviders: true,
+      registrationDiagnostics: true
     }),
     categories: [...CARD_CATEGORIES],
     deckTypes: [...CARD_DECK_TYPES],
@@ -183,7 +192,8 @@ export function createCardApi() {
     unregisterPack: (packId) => unregisterCriticalPack(packId),
     extensions: Object.freeze({
       changedHook: CRITICAL_FORGE_PACKS_CHANGED_HOOK,
-      forModule: (sourceModule) => createExtensionPackApi(sourceModule),
+      contractVersion: CRITICAL_EXTENSION_CONTRACT_VERSION,
+      forModule: (sourceModule, options = {}) => createCriticalForgeExtensionApi(sourceModule, options),
       registerPack: (sourceModule, pack, options = {}) => registerExtensionPack(sourceModule, pack, options),
       registerPacks: (sourceModule, packs, options = {}) => registerExtensionPacks(sourceModule, packs, options),
       unregisterPack: (sourceModule, packId) => unregisterExtensionPack(sourceModule, packId),
@@ -247,9 +257,16 @@ export function createCardApi() {
       },
       evaluate: (tree, snapshot) => evaluateConditionTree(normalizeConditionTree(tree), snapshot),
       resolveField: (snapshot, field) => resolveConditionField(snapshot, field),
+      providers: Object.freeze({
+        register: (provider, options = {}) => criticalConditionProviderRegistry.register(provider, options),
+        unregister: (providerId, options = {}) => criticalConditionProviderRegistry.unregister(providerId, options),
+        get: (providerId) => criticalConditionProviderRegistry.get(providerId),
+        list: (options = {}) => criticalConditionProviderRegistry.list(options),
+        listFields: (options = {}) => criticalConditionProviderRegistry.listFields(options)
+      }),
       editor: Object.freeze({
         fieldTypes: Object.freeze({ ...CONDITION_FIELD_TYPES }),
-        fields: Object.freeze(CONDITION_FIELD_CATALOG.map((entry) => Object.freeze({ ...entry }))),
+        get fields() { return Object.freeze(listConditionFieldDefinitions().map((entry) => Object.freeze({ ...entry }))); },
         getField: (path) => conditionFieldDefinition(path),
         operatorsForField: (path, type = null) => conditionOperatorsForField(path, type),
         analyzeContradictions: (tree) => analyzeConditionContradictions(normalizeConditionTree(tree)),
@@ -281,6 +298,12 @@ export function createCardApi() {
       createExport: (report) => createDiagnosticReportExport(report),
       replaySnapshot: (report, options = {}) => replayDiagnosticSnapshot(report, options),
       simulateCard: (cardOrId, options = {}) => simulateDiagnosticCard(cardOrId, options),
+      providers: Object.freeze({
+        register: (provider, options = {}) => criticalDiagnosticProviderRegistry.register(provider, options),
+        unregister: (providerId, options = {}) => criticalDiagnosticProviderRegistry.unregister(providerId, options),
+        get: (providerId) => criticalDiagnosticProviderRegistry.get(providerId),
+        list: (options = {}) => criticalDiagnosticProviderRegistry.list(options)
+      }),
       history: Object.freeze({
         list: (options = {}) => criticalDiagnosticHistory.list(options),
         get: (reportId) => criticalDiagnosticHistory.get(reportId),

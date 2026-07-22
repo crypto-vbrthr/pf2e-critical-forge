@@ -1457,7 +1457,7 @@
         "notExists": "does not exist"
       },
       "CardEditorPhase": "Card Editor",
-      "DiagnosticsPhase": "Multi-Deck Packs",
+      "DiagnosticsPhase": "Extension API",
       "Pipeline": "Evaluation pipeline",
       "PhaseContext": "Context resolution",
       "PhaseSelection": "Card selection",
@@ -1508,7 +1508,10 @@
       "ApplicationCode": "Result code",
       "RequestedDeck": "Resolved deck",
       "Deck": "Deck",
-      "ActiveDeck": "Active pack deck"
+      "ActiveDeck": "Active pack deck",
+      "ExtensionDiagnostics": "Extension diagnostics",
+      "ExtensionProviderOk": "Ready",
+      "ExtensionProviderError": "Error"
     },
     "CriticalPreview": {
       "ShowInChat": "Show card in chat",

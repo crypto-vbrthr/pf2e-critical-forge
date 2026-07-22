@@ -185,3 +185,20 @@ test("public card API exposes multi-deck capabilities without changing schema ve
   assert.equal(api.decks.supportsCategory("criticalHit", "attack"), true);
   assert.equal(api.decks.supportsCategory("criticalHit", "will"), false);
 });
+
+
+test("public card API exposes the Phase-6 extension contract and provider registries", () => {
+  assert.equal(api.capabilities.extensionContracts, true);
+  assert.equal(api.capabilities.conditionProviders, true);
+  assert.equal(api.capabilities.diagnosticProviders, true);
+  assert.equal(api.extensions.contractVersion, 1);
+  const extension = api.extensions.forModule("card-api-contract-test", {
+    requirements: { capabilities: ["extensions.contracts"] }
+  });
+  assert.equal(extension.checkCompatibility().compatible, true);
+  assert.equal(typeof extension.registerContextProvider, "function");
+  assert.equal(typeof extension.registerConditionProvider, "function");
+  assert.equal(typeof extension.registerDiagnosticProvider, "function");
+  assert.equal(typeof api.conditions.providers.list, "function");
+  assert.equal(typeof api.diagnostics.providers.list, "function");
+});

@@ -12,8 +12,8 @@
 - [ ] Verify JSON file export in the Foundry desktop client.
 - [ ] Copy a protected core card into a custom pack, edit its effect in Effect Forge, save it, export/import the pack, and confirm the card can still be drawn and applied.
 - [ ] Disable and re-enable that custom pack through **Paket aktivieren** and verify selection changes immediately while the pack remains editable.
-- [ ] Register two external test packs through `api.cards.extensions.forModule(moduleId).registerPacks()`, replace one, call `unregisterAll()`, and confirm core and unrelated packs remain untouched.
-- [ ] Open Critical Diagnostics and confirm the toolbar shows `Multi-Deck-Pakete · 0.9.4-dev.5`, the three pipeline phases, session history, replay buttons, runtime-context summary, requested deck, and raw snapshot.
+- [ ] Register a test extension through `api.extensions.forModule(moduleId, { requirements })`, add two Multi-Deck packs and all three provider types, replace one owned resource, call `unregisterAll()`, and confirm core, unowned, and unrelated resources remain untouched.
+- [ ] Open Critical Diagnostics and confirm the toolbar shows `Erweiterungs-API · 0.9.4-dev.6`, the three pipeline phases, session history, replay buttons, runtime-context summary, requested deck, and raw snapshot.
 - [ ] Diagnose one attack and one saving throw; confirm the rolling Actor is `source`, the hostile opponent/origin is `target`, and HP/level data matches the current Actors.
 - [ ] Open an editable pack and verify all five deck tabs (`Standard`, `Angriff`, `Zähigkeit`, `Reflex`, `Wille`) show independent card counts and lists.
 - [ ] Move or create one card in each specialized deck; verify attack cards cannot retain a saving-throw category and save-deck cards cannot retain an attack category.
@@ -25,6 +25,10 @@
 - [ ] Create contradictory constraints in an `all` group and confirm the editor warns without blocking deliberately unusual cards.
 - [ ] Verify the editor target-role hints identify `source` as acting/saving Actor and `target` as hostile opponent/origin.
 - [ ] Register a temporary higher-priority Context Provider under a unique id, resolve it explicitly, remove it, and confirm the protected `core-pf2e` provider remains available.
+- [ ] Register a typed Condition Provider and confirm its number and enum fields appear in the visual Card Editor with the supplied fallback labels.
+- [ ] Register one successful and one deliberately failing Diagnostic Provider; confirm both appear in the Diagnostics GUI and the failing provider does not block card analysis.
+- [ ] Attempt a foreign pack/provider replacement and a core condition-field collision; confirm the registries remain unchanged and `extension.diagnostics.list({ status: "error" })` contains stable conflict codes.
+- [ ] Verify an incompatible capability requirement fails before any pack or provider is registered.
 - [ ] Verify world Item update, copy, Actor application, and unmanaged-rule preservation.
 - [ ] Build an effect with inherited and overridden component durations; verify world creation, Actor application, opening either segment, updating the bundle, expiration, and definition-based removal.
 - [ ] Create the ZIP with a single top-level `pf2e-critical-forge/` directory.

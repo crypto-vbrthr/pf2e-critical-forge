@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.4-dev.6
+
+- Added extension contract version `1` with immutable environment discovery and version, schema, and capability requirement checks.
+- Added `api.extensions.forModule(moduleId, options)` as the ownership-bound extension controller while preserving the historical `api.cards.extensions` pack methods.
+- Added safe registration and ownership isolation for external Context, Condition, and Diagnostic Providers.
+- Added typed Condition Provider fields that appear dynamically in the visual Card Editor, including enum values and localized fallbacks.
+- Added Diagnostic Provider enrichment to versioned evaluation reports and the Diagnostics GUI; individual provider failures are isolated and serialized.
+- Added a session-only extension diagnostic journal with stable conflict codes and `error.extensionDiagnostic` evidence.
+- Added stable conflict codes for pack, card, provider, ownership, core-field, and compatibility failures.
+- Hardened provider replacement so extensions cannot take ownership of protected, foreign, or unowned providers.
+- Added complete contract tests for a realistic Multi-Deck extension, provider lifecycle, compatibility failures, rollback, diagnostics, and legacy API behavior.
+- Preserved Critical Card schema `1`, Critical Card Pack schema `1`, Effect Definition schema `2`, and public API version `0.9.4`.
+- The complete suite contains **307** passing tests with **92.94%** measured line coverage.
+
 ## 0.9.4-dev.5
 
 - Added five fixed Critical Card deck types: `default`, `attack`, `fortitude`, `reflex`, and `will`.

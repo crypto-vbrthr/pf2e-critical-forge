@@ -1,6 +1,6 @@
 # Critical Diagnostics 2.0
 
-Version `0.9.4-dev.5` keeps the diagnostic workbench as the central test cockpit and adds requested, active, and assigned deck evidence to the existing Diagnostics 2.0 pipeline. It remains GM-only and never applies an effect without a separate explicit action.
+Version `0.9.4-dev.6` keeps the diagnostic workbench as the central test cockpit and adds isolated extension-provider evidence to the existing Diagnostics 2.0 pipeline. It remains GM-only and never applies an effect without a separate explicit action.
 
 ## Evaluation pipeline
 

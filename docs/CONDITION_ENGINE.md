@@ -1,6 +1,6 @@
 # Critical Condition Engine
 
-Version `0.9.4-dev.5` retains the generic, document-agnostic eligibility engine and its visual authoring layer. Multi-Deck resolution now runs before this engine; Against All Odds and scene-based threat analysis remain deliberately outside this phase.
+Version `0.9.4-dev.6` retains the generic, document-agnostic eligibility engine and adds typed extension field providers to its visual authoring layer. Against All Odds and scene-based threat analysis remain deliberately outside this phase.
 
 ## Design guarantees
 
@@ -205,3 +205,21 @@ Preview flag version `4` stores `runtimeSnapshot`. A redraw passes that stored s
 Phase 3 exposes the canonical condition tree through a visual builder. It provides nested `all`/`any` groups, a typed snapshot-field catalog, operator filtering, provider-defined custom paths with explicit operand types, contradiction warnings, and a synthetic test workbench. The UI calls the same normalizer and evaluator used during live selection; it does not maintain a second condition language.
 
 Imported or extension-authored trees remain canonical data. Opening them in the editor does not migrate the schema, and cards with `conditions: null` remain on the legacy unconditional path. See [`CARD_EDITOR.md`](CARD_EDITOR.md).
+
+## Condition Providers
+
+Version `0.9.4-dev.6` adds typed field publication for extension snapshots:
+
+```js
+extension.registerConditionProvider({
+  id: "my-expansion.fields",
+  fields: [{
+    path: "extensions.myExpansion.dangerScore",
+    type: "number",
+    fallbackLabel: "Danger score",
+    fallbackGroup: "My Expansion"
+  }]
+});
+```
+
+Registered fields appear dynamically in the visual Card Editor and use the existing Condition Engine for safe resolution and evaluation. Supported provider types are `string`, `number`, `boolean`, `stringArray`, and `enum`. Providers cannot shadow core fields or fields owned by another provider.

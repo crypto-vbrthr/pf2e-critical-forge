@@ -19,7 +19,7 @@ Exports are allowed only for Effect Definitions that pass the Validation Engine.
   "exportedAt": "2026-07-15T08:00:00.000Z",
   "generator": {
     "moduleId": "pf2e-critical-forge",
-    "moduleVersion": "0.9.4-dev.5",
+    "moduleVersion": "0.9.4-dev.6",
     "apiVersion": "0.9.4",
     "schemaVersion": 2
   },

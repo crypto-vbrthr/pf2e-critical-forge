@@ -8,18 +8,33 @@ export class ContextProviderRegistry {
     const key = providerKey(provider.system, provider.id);
     const existing = this.#providers.get(key);
     if (existing && !replace) {
-      throw new Error(`Critical context provider already registered: ${provider.system}/${provider.id}`);
+      throw registryError("CONTEXT_PROVIDER_CONFLICT", `Critical context provider already registered: ${provider.system}/${provider.id}`);
     }
     if (existing?.protected && replace) {
-      throw new Error(`Protected Critical context provider cannot be replaced: ${provider.system}/${provider.id}`);
+      throw registryError("CONTEXT_PROVIDER_PROTECTED", `Protected Critical context provider cannot be replaced: ${provider.system}/${provider.id}`);
+    }
+    if (existing && provider.sourceModule && existing.sourceModule !== provider.sourceModule) {
+      throw registryError(
+        "CONTEXT_PROVIDER_OWNERSHIP",
+        `Critical context provider ${provider.system}/${provider.id} is owned by ${existing.sourceModule}, not ${provider.sourceModule}.`
+      );
     }
     this.#providers.set(key, provider);
     return provider;
   }
 
-  unregister(system, providerId) {
+  unregister(system, providerId, { sourceModule = null } = {}) {
     const key = providerKey(system, providerId);
-    if (this.#providers.get(key)?.protected) return false;
+    const existing = this.#providers.get(key);
+    if (!existing) return false;
+    if (existing.protected) return false;
+    const owner = String(sourceModule ?? "").trim();
+    if (owner && existing.sourceModule !== owner) {
+      throw registryError(
+        "CONTEXT_PROVIDER_OWNERSHIP",
+        `Critical context provider ${existing.system}/${existing.id} is owned by ${existing.sourceModule}, not ${owner}.`
+      );
+    }
     return this.#providers.delete(key);
   }
 
@@ -29,10 +44,12 @@ export class ContextProviderRegistry {
     return this.list({ system: normalizedSystem })[0] ?? null;
   }
 
-  list({ system = null } = {}) {
+  list({ system = null, sourceModule = null } = {}) {
     const normalizedSystem = system == null ? null : normalizeIdentifier(system);
+    const owner = String(sourceModule ?? "").trim();
     return [...this.#providers.values()]
       .filter((provider) => !normalizedSystem || provider.system === normalizedSystem)
+      .filter((provider) => !owner || provider.sourceModule === owner)
       .sort((left, right) => right.priority - left.priority || left.id.localeCompare(right.id));
   }
 
@@ -74,4 +91,10 @@ function providerKey(system, providerId) {
 
 function normalizeIdentifier(value) {
   return String(value ?? "").trim().toLowerCase();
+}
+
+function registryError(code, message) {
+  const error = new Error(message);
+  error.code = code;
+  return error;
 }

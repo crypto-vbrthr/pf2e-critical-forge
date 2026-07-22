@@ -21,7 +21,7 @@ Declare Critical Forge as a required module dependency so the extension is never
         "id": "pf2e-critical-forge",
         "type": "module",
         "compatibility": {
-          "minimum": "0.9.4-dev.2"
+          "minimum": "0.9.4-dev.6"
         }
       }
     ],
@@ -49,7 +49,15 @@ import { DARK_FANTASY_PACK } from "./packs/dark-fantasy.js";
 import { HEROIC_PACK } from "./packs/heroic.js";
 
 Hooks.once("pf2eCriticalForgeReady", (forge) => {
-  const extension = forge.cards.extensions.forModule("my-critical-expansion");
+  const extension = forge.extensions.forModule("my-critical-expansion", {
+    version: "1.0.0",
+    requirements: {
+      apiVersion: ">=0.9.4",
+      extensionContractVersion: ">=1",
+      capabilities: ["cards.multiDeckPacks"]
+    }
+  });
+  extension.assertCompatible();
 
   extension.registerPacks([
     DARK_FANTASY_PACK,
@@ -142,7 +150,7 @@ The extension must use fields that can be present in the selected Context Provid
 ## Controller contract
 
 ```js
-const extension = forge.cards.extensions.forModule("my-critical-expansion");
+const extension = forge.extensions.forModule("my-critical-expansion");
 
 extension.registerPack(pack);
 extension.registerPacks([packA, packB]);
@@ -204,7 +212,7 @@ Replacement is allowed only for packs already owned by the same extension. A req
 
 ### Optional Phase-3 editor integration
 
-Extensions that only register runtime conditions continue to require Phase 2 (`0.9.4-dev.2`). Extensions that expose authoring workflows may additionally test:
+Legacy extensions that only register runtime conditions may still target Phase 2. Extensions that expose authoring workflows or typed provider fields should target `0.9.4-dev.6` and may test:
 
 ```js
 if (forge.cards.capabilities.conditionEditor) {
@@ -214,3 +222,8 @@ if (forge.cards.capabilities.conditionEditor) {
 ```
 
 Provider-defined snapshot paths do not need to be added to the core catalog. Authors can enter them as custom fields and select an explicit operand type. Extension documentation should name the provider and describe when each custom field is available.
+
+
+## Phase-6 providers and diagnostics
+
+The same bound controller can register Context, Condition, and Diagnostic Providers. Provider registration is ownership-isolated and every operation is written to a session-only diagnostic journal. See [`EXTENSION_CONTRACT.md`](EXTENSION_CONTRACT.md) for the complete contract and provider schemas.

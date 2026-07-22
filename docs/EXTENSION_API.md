@@ -1,144 +1,68 @@
 # Critical Forge Extension API
 
-## Introduction
+The normative Phase-6 contract is documented in [`EXTENSION_CONTRACT.md`](EXTENSION_CONTRACT.md). This document summarizes the intended architecture.
 
-Critical Forge supports external extensions that register additional card packs.
+## Principle
 
-Extensions may provide:
+Extension modules contribute content and context while Critical Forge remains responsible for normalization, validation, selection, diagnostics, presentation, and effect application. Extensions must not patch Critical Forge internals.
 
-- new card packs
-- localized content
-- new effects
-- helper utilities
-
-Extensions should not modify the internal behavior of Critical Forge.
-
----
-
-# Registration
-
-Extensions register card packs during module initialization.
-
-Example:
+## Registration
 
 ```js
 Hooks.once("pf2eCriticalForgeReady", (forge) => {
-  const extension = forge.cards.extensions.forModule("my-extension");
-  extension.registerPacks([pack]);
+  const extension = forge.extensions.forModule("my-extension", {
+    version: "1.0.0",
+    requirements: {
+      apiVersion: ">=0.9.4",
+      extensionContractVersion: ">=1",
+      capabilities: ["cards.multiDeckPacks"]
+    }
+  });
+
+  extension.assertCompatible();
+  extension.registerPacks(PACKS);
 });
 ```
 
----
-
-# Card Pack
-
-A card pack consists of:
-
-- metadata
-- localization
-- cards
-
-Each pack requires a unique id.
-
----
-
-# Cards
-
-Every card contains stable identity, localization, category, filters, optional conditions, optional effects, and an optional `deckType`. Omitted deck assignments normalize to `default`.
-
-# Multi-Deck packs
-
-Extensions may keep the historical `cards` array or provide specialized `decks` for `attack`, `fortitude`, `reflex`, and `will`. The runtime resolves a deck per pack and falls back to `default` only within that same pack. Extensions should capability-check before relying on specialized decks:
+The historical pack-only controller remains valid:
 
 ```js
-if (!forge.cards.capabilities.multiDeckPacks) {
-  console.warn("This expansion requires a newer Critical Forge version.");
-  return;
-}
-
-console.log(forge.cards.deckTypes);
-console.log(forge.cards.decks.resolvePack(pack, "reflex"));
+forge.cards.extensions.forModule("my-extension").registerPacks(PACKS);
 ```
 
-A specialized deck must contain compatible categories. Attack decks use attack/spell-attack categories; save decks use saving-throw success/failure categories.
+## Resources
 
----
+A bound extension may own:
 
-# Triggers
+- Critical Card packs, including specialized attack/Fortitude/Reflex/Will decks;
+- Context Providers that build runtime snapshots;
+- Condition Providers that publish typed snapshot fields to the Card Editor;
+- Diagnostic Providers that add serializable evidence to evaluation reports.
 
-Supported trigger types include:
+Every resource id must be globally unique. Namespace ids and snapshot paths with the Foundry module id.
 
-- attack
-- spell attack
-- saving throw
+## Compatibility
 
-Additional trigger types may be added in future versions.
+Use requirements rather than guessing by module version alone. The contract can check:
 
----
+- module version;
+- public API version;
+- extension contract version;
+- Effect, Card, and Card Pack schema versions;
+- named capabilities.
 
-# Filters
+Unsupported requirements fail before registries are changed.
 
-Current filters include:
+## Ownership and transactions
 
-- attackTraits
-- excludedAttackTraits
-- damageTypes
-- weaponGroups
-- saveTypes
-- spellTraits
-- spellTraditions
-- sourceTraits
-- excludedSourceTraits
-- targetTraits
-- excludedTargetTraits
+The bound controller may replace or remove only resources registered by the same module id. Pack batches are atomic. Provider collisions leave existing providers untouched. `unregisterAll()` removes only the bound module's resources.
 
----
+## Diagnostics
 
-# Effects
+Registration operations are recorded in a session-only journal. Errors contain stable codes and attach the matching record as `error.extensionDiagnostic`.
 
-Effects are built from reusable components.
+Diagnostic Providers are isolated. A provider exception becomes provider evidence with `status: "error"` and does not stop the core diagnostic pipeline.
 
-Each component may define its own duration.
+## Compatibility guarantee
 
-Components should remain independent whenever possible.
-
----
-
-# Localization
-
-All player-facing text should be localized.
-
-Avoid hardcoded English strings.
-
----
-
-# Validation
-
-Critical Forge validates:
-
-- pack structure
-- card structure
-- effect schema
-
-Extensions should pass validation without warnings.
-
----
-
-# Compatibility
-
-Extensions should:
-
-- declare their required Critical Forge version
-- avoid using undocumented APIs
-- remain forward compatible whenever possible
-
----
-
-# Best Practices
-
-- Keep packs focused.
-- Avoid duplicate mechanics.
-- Prefer reusable effect components.
-- Write clear descriptions.
-- Test every trigger.
-- Validate every release.
+Version `0.9.4-dev.6` does not change Critical Card schema `1`, Critical Card Pack schema `1`, Effect Definition schema `2`, or public API version `0.9.4`. Existing packs and pack-only extension modules require no migration.

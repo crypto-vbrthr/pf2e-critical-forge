@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.9.4-dev.5` adds **Multi-Deck Card Packs**. A pack may now keep separate card pools for attacks, Fortitude saves, Reflex saves, and Will saves while retaining the historical `default` deck as a universal per-pack fallback. Deck resolution happens before normal filters, context conditions, profile weighting, and random selection. Existing packs that contain only `cards` normalize into the default deck and continue to work without migration.
+Version `0.9.4-dev.6` stabilizes the **Critical Forge Extension Contract**. Optional modules can now bind ownership once, verify API/schema/capability requirements, register Multi-Deck packs plus Context, Condition, and Diagnostic Providers, and inspect structured session diagnostics for conflicts. Existing pack-only extensions and all schema-version-1 cards and packs continue to work without migration.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -38,7 +38,7 @@ The current module includes:
 - GM-confirmed effect application to the stored source or target Actor;
 - target re-resolution, target-aware validation, duplicate protection, and application audit flags;
 - a primary-GM-owned `createChatMessage` hook that detects supported PF2e critical rolls, asks or draws according to world settings, and never applies effects automatically.
-- a module-bound extension API that lets optional Foundry modules atomically register, replace, list, and remove their own protected card packs without touching the core or another module’s packs;
+- a versioned module-bound extension contract with capability checks, ownership isolation, transactional Multi-Deck pack registration, Context/Condition/Diagnostic Providers, and structured conflict diagnostics;
 - an additive Context Provider API and public Condition Engine API with capability detection for context-sensitive extensions.
 
 ## API access
@@ -81,7 +81,7 @@ npm run test:coverage
 npm run quality:check
 ```
 
-The suite covers the Effect Engine and Forge, component-duration inheritance and native Item splitting, Item-bundle updates, card normalization, Multi-Deck resolution and legacy fallback, Card Pack Editor deck actions and round-trips, the visual condition model and simulator, pack activation, rollback-safe world persistence, external extension-pack lifecycles, spell/save filters, PF2e context adaptation, nested condition normalization/evaluation/validation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
+The suite covers the Effect Engine and Forge, component-duration inheritance and native Item splitting, Item-bundle updates, card normalization, Multi-Deck resolution and legacy fallback, Card Pack Editor deck actions and round-trips, the visual condition model and simulator, pack activation, rollback-safe world persistence, external extension contracts and provider lifecycles, spell/save filters, PF2e context adaptation, nested condition normalization/evaluation/validation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 
@@ -92,6 +92,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/CARD_SCHEMA.md`](docs/CARD_SCHEMA.md): Critical Card data model and filter semantics
 - [`docs/CARD_PACKS.md`](docs/CARD_PACKS.md): pack registration and extension model
 - [`docs/MULTI_DECK_PACKS.md`](docs/MULTI_DECK_PACKS.md): attack/save deck resolution, legacy fallback, authoring, and extension guidance
+- [`docs/EXTENSION_CONTRACT.md`](docs/EXTENSION_CONTRACT.md): versioned compatibility checks, bound ownership, providers, and registration diagnostics
 - [`docs/EXTENSION_MODULES.md`](docs/EXTENSION_MODULES.md): complete optional-module integration contract and example
 - [`docs/CARD_EDITOR.md`](docs/CARD_EDITOR.md): visual pack editor, protected templates, Effect Forge handoff, and JSON transfer
 - [`docs/CARD_SELECTION.md`](docs/CARD_SELECTION.md): candidate evaluation and weighted selection

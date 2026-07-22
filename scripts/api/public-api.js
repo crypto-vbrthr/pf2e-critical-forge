@@ -9,6 +9,7 @@ import {
 import { componentRegistry } from "../effect-engine/component-registry.js";
 import { createEffectApi } from "./effect-api.js";
 import { createCardApi } from "./card-api.js";
+import { createExtensionPublicApi } from "../critical-forge/extensions/extension-service.js";
 import { openEffectForge, openEffectForgeDefinition } from "../effect-forge/effect-forge.js";
 import { openCriticalDiagnostics } from "../critical-forge/diagnostics/critical-diagnostic-ui.js";
 import { openCardPackEditor } from "../critical-forge/editor/card-pack-editor-ui.js";
@@ -78,6 +79,7 @@ export function initializePublicApi() {
     cardSchemaVersion: CARD_SCHEMA_VERSION,
     cardPackSchemaVersion: CARD_PACK_SCHEMA_VERSION,
     effects: createEffectApi(),
+    extensions: createExtensionPublicApi(),
 
     builders: Object.freeze({
       effect: () => createEffectBuilder(),

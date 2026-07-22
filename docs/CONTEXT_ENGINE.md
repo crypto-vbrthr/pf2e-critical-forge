@@ -1,6 +1,6 @@
 # Critical Context Engine
 
-Version `0.9.4-dev.5` retains the snapshot/provider foundation, Condition Engine, and visual authoring layer. Multi-Deck packs are additive and continue to use Critical Card and Card Pack schema version `1`.
+Version `0.9.4-dev.6` retains the snapshot/provider foundation and adds ownership-bound provider registration through the stable extension contract. Critical Card and Card Pack schema version `1` remain unchanged.
 
 The context snapshot now also drives requested deck resolution through the existing neutral category and save-type fields. Scene-based threat analysis and Against All Odds remain outside this phase.
 
@@ -190,3 +190,14 @@ Extensions should test capabilities rather than infer them from module-version s
 - The diagnostic report includes the snapshot and the exact condition evidence that affected eligible-card calculation.
 - Redraws reuse the original stored snapshot rather than reading changed Actor or scene state.
 - Missing fields are represented as unavailable evidence and never guessed.
+
+## Phase-6 ownership contract
+
+Version `0.9.4-dev.6` keeps the raw Context Provider registry available and adds the recommended ownership-bound route:
+
+```js
+const extension = forge.extensions.forModule("my-expansion");
+extension.registerContextProvider(provider);
+```
+
+The controller stamps `sourceModule`, prevents extensions from replacing protected, foreign, or unowned providers, and removes only owned providers through `unregisterContextProvider()` or `unregisterAll()`. Existing direct `api.cards.contexts.registerProvider()` calls remain valid as a low-level compatibility API.

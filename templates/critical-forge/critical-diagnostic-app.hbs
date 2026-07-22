@@ -215,6 +215,27 @@
           {{/if}}
         </section>
 
+        {{#if report.hasExtensionDiagnostics}}
+          <section class="effect-forge-panel critical-diagnostic-extension-providers">
+            <header class="critical-diagnostic-section-header">
+              <h2>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ExtensionDiagnostics"}}</h2>
+              <span class="critical-diagnostic-context-schema">{{report.extensionDiagnostics.length}}</span>
+            </header>
+            <div class="critical-diagnostic-extension-list">
+              {{#each report.extensionDiagnostics}}
+                <details class="critical-diagnostic-extension-entry">
+                  <summary>
+                    <strong>{{label}}</strong>
+                    <span class="critical-diagnostic-status {{statusClass}}">{{statusLabel}}</span>
+                  </summary>
+                  {{#if errorMessage}}<p class="critical-diagnostic-empty">{{errorMessage}}</p>{{/if}}
+                  {{#if dataJson}}<pre>{{dataJson}}</pre>{{/if}}
+                </details>
+              {{/each}}
+            </div>
+          </section>
+        {{/if}}
+
         {{#if report.hasReplay}}
           <section class="effect-forge-panel critical-diagnostic-replay">
             <header class="critical-diagnostic-section-header">

@@ -1,5 +1,6 @@
 import { MODULE_VERSION } from "../../constants.js";
 import { deepClone, deepFreeze } from "../utils.js";
+import { criticalDiagnosticProviderRegistry } from "./diagnostic-provider-registry.js";
 
 export const CRITICAL_DIAGNOSTIC_REPORT_VERSION = 1;
 
@@ -10,7 +11,8 @@ export function createDiagnosticEvaluationReport(diagnostic, {
   resolverDiagnostics = [],
   origin = "manual",
   createdAt = Date.now(),
-  id = null
+  id = null,
+  providerRegistry = criticalDiagnosticProviderRegistry
 } = {}) {
   if (!diagnostic || typeof diagnostic !== "object") {
     throw new TypeError("A Critical Forge diagnostic result is required.");
@@ -21,6 +23,7 @@ export function createDiagnosticEvaluationReport(diagnostic, {
     .map((entry) => serializableDiagnostic(entry));
   const eligible = (diagnostic.eligible ?? []).map(serializeCandidate);
   const rejected = (diagnostic.rejected ?? []).map(serializeCandidate);
+  const providerDiagnostics = providerRegistry?.collect?.(diagnostic, { sourceMessage, origin, createdAt }) ?? [];
 
   return deepFreeze({
     reportVersion: CRITICAL_DIAGNOSTIC_REPORT_VERSION,
@@ -38,7 +41,8 @@ export function createDiagnosticEvaluationReport(diagnostic, {
         status: diagnostic.valid ? "ready" : "invalid",
         diagnostics: combinedDiagnostics,
         provider: diagnostic.snapshot?.provider ?? null,
-        snapshotVersion: diagnostic.snapshot?.schemaVersion ?? null
+        snapshotVersion: diagnostic.snapshot?.schemaVersion ?? null,
+        extensionProviders: deepClone(providerDiagnostics)
       },
       selection: {
         status: !diagnostic.valid
@@ -67,6 +71,9 @@ export function createDiagnosticEvaluationReport(diagnostic, {
         simulation: null,
         actual: null
       }
+    },
+    extensions: {
+      diagnostics: deepClone(providerDiagnostics)
     },
     replay: null
   });

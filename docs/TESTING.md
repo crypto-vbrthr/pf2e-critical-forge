@@ -68,8 +68,10 @@ tests/
 ├─ effect-forge-card-handoff.test.js
 ├─ effect-item-drop.test.js
 ├─ effect-transfer.test.js
+├─ extension-compatibility.test.js
 ├─ extension-pack-api.test.js
 ├─ extension-pack-integration.test.js
+├─ extension-provider-contract.test.js
 ├─ gui-state.test.js
 ├─ item-editing.test.js
 ├─ migration.test.js
@@ -85,7 +87,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 291 tests covering:
+The suite contains 307 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -115,9 +117,10 @@ The suite contains 291 tests covering:
 - the complete card-editor roundtrip from protected template through Effect Forge, JSON transfer, persistence, selection, preview, and compilation;
 - deterministic collision-free IDs for new cards, duplicated cards, duplicated packs, and imported protected packs;
 - dedicated spell/save categories, filters, natural-result trigger semantics, automatic processing, localization, and core-card compilation;
-- pack activation semantics, transactional world-setting rollback, protected-data startup guards, module-bound extension ownership, atomic multi-pack registration, change hooks, and optional extension-module lifecycles.
+- pack activation semantics, transactional world-setting rollback, protected-data startup guards, module-bound extension ownership, atomic multi-pack registration, change hooks, and optional extension-module lifecycles;
+- extension contract version checks, capability requirements, bound pack/provider ownership, typed editor fields, isolated diagnostic-provider evidence, stable conflict codes, session registration diagnostics, and complete cleanup.
 
-Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.5` measures 92.95% line coverage across all files loaded by the Node coverage run, including the Effect Engine, Critical Forge domain, Multi-Deck resolver, Card Pack Editor application services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, and extension-pack integration.
+Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.6` measures 92.94% line coverage across all files loaded by the Node coverage run, including the Effect Engine, Critical Forge domain, Multi-Deck resolver, Card Pack Editor application services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, extension compatibility, provider registries, and extension-pack integration.
 
 ## Foundry mock
 

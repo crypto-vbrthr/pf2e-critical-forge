@@ -171,6 +171,16 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
     const simulation = evaluation.phases.application.simulation;
     const actual = evaluation.phases.application.actual;
     const replay = evaluation.replay;
+    const extensionDiagnostics = (evaluation.extensions?.diagnostics ?? []).map((entry) => ({
+      ...entry,
+      label: entry.sourceModule ? `${entry.sourceModule} · ${entry.id}` : entry.id,
+      statusClass: entry.status === "ok" ? "valid" : "invalid",
+      statusLabel: game.i18n.localize(entry.status === "ok"
+        ? "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ExtensionProviderOk"
+        : "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ExtensionProviderError"),
+      dataJson: entry.data == null ? "" : JSON.stringify(entry.data, null, 2),
+      errorMessage: entry.error?.message ?? ""
+    }));
 
     return {
       reportId: evaluation.id,
@@ -195,6 +205,8 @@ export class CriticalDiagnosticApp extends HandlebarsApplicationMixin(Applicatio
       reportJson: serializeDiagnosticEvaluationReport(evaluation),
       diagnostics,
       hasDiagnostics: diagnostics.length > 0,
+      extensionDiagnostics,
+      hasExtensionDiagnostics: extensionDiagnostics.length > 0,
       eligible: selection.eligible.map((entry) => this.#prepareCandidate(entry)),
       rejected: selection.rejected.map((entry) => this.#prepareCandidate(entry)),
       eligibleCount: selection.counts.eligible,

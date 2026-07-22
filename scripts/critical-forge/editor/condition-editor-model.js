@@ -2,6 +2,7 @@ import { CONDITION_GROUP_MODES, CONDITION_OPERATORS, CONDITION_VALUE_TYPES } fro
 import { emptyConditionGroup } from "../conditions/condition-normalizer.js";
 import { evaluateConditionTree } from "../conditions/condition-evaluator.js";
 import { deepClone } from "../utils.js";
+import { criticalConditionProviderRegistry } from "../conditions/condition-provider-registry.js";
 
 export const CONDITION_CUSTOM_FIELD = "__custom__";
 
@@ -65,8 +66,16 @@ export const CONDITION_FIELD_CATALOG = Object.freeze([
 
 const FIELD_BY_PATH = new Map(CONDITION_FIELD_CATALOG.map((entry) => [entry.path, entry]));
 
+export function listConditionFieldDefinitions() {
+  return Object.freeze([
+    ...CONDITION_FIELD_CATALOG,
+    ...criticalConditionProviderRegistry.listFields()
+  ]);
+}
+
 export function conditionFieldDefinition(path) {
-  return FIELD_BY_PATH.get(String(path ?? "")) ?? null;
+  const normalized = String(path ?? "");
+  return FIELD_BY_PATH.get(normalized) ?? criticalConditionProviderRegistry.getField(normalized) ?? null;
 }
 
 export function conditionOperatorsForField(path, type = null) {
@@ -179,8 +188,8 @@ export function prepareConditionEditor(tree, { localize = defaultLocalize } = {}
         ? optionList(definition.values, String(node.value ?? ""), (value) => localizeEnumValue(definition.path, value, localize))
         : [],
       booleanOptions: optionList(["true", "false"], String(Boolean(node.value)), (value) => localize(`PF2E_CRITICAL_FORGE.CardEditor.BooleanValues.${capitalize(value)}`)),
-      label: definition ? localize(`PF2E_CRITICAL_FORGE.CardEditor.ConditionFields.${definition.labelKey}`) : node.field,
-      groupLabel: definition ? localize(`PF2E_CRITICAL_FORGE.CardEditor.ConditionFieldGroups.${definition.groupKey}`) : localize("PF2E_CRITICAL_FORGE.CardEditor.ConditionFieldGroups.Custom")
+      label: definition ? localizeConditionField(definition, localize) : node.field,
+      groupLabel: definition ? localizeConditionGroup(definition, localize) : localize("PF2E_CRITICAL_FORGE.CardEditor.ConditionFieldGroups.Custom")
     };
   });
 
@@ -383,10 +392,10 @@ function parseConditionPath(path) {
 
 function conditionFieldOptions(selected, { localize }) {
   const byGroup = new Map();
-  for (const field of CONDITION_FIELD_CATALOG) {
-    const group = localize(`PF2E_CRITICAL_FORGE.CardEditor.ConditionFieldGroups.${field.groupKey}`);
+  for (const field of listConditionFieldDefinitions()) {
+    const group = localizeConditionGroup(field, localize);
     const values = byGroup.get(group) ?? [];
-    values.push({ value: field.path, label: localize(`PF2E_CRITICAL_FORGE.CardEditor.ConditionFields.${field.labelKey}`), selected: field.path === selected });
+    values.push({ value: field.path, label: localizeConditionField(field, localize), selected: field.path === selected });
     byGroup.set(group, values);
   }
   const groups = [...byGroup.entries()].map(([label, options]) => ({ label, options }));
@@ -395,10 +404,26 @@ function conditionFieldOptions(selected, { localize }) {
     options: [{
       value: CONDITION_CUSTOM_FIELD,
       label: localize("PF2E_CRITICAL_FORGE.CardEditor.ConditionFields.Custom"),
-      selected: !FIELD_BY_PATH.has(selected)
+      selected: !conditionFieldDefinition(selected)
     }]
   });
   return groups;
+}
+
+function localizeConditionField(definition, localize) {
+  if (!definition?.extension) return localize(`PF2E_CRITICAL_FORGE.CardEditor.ConditionFields.${definition.labelKey}`);
+  return localizeOptional(definition.labelKey, definition.fallbackLabel ?? definition.path, localize);
+}
+
+function localizeConditionGroup(definition, localize) {
+  if (!definition?.extension) return localize(`PF2E_CRITICAL_FORGE.CardEditor.ConditionFieldGroups.${definition.groupKey}`);
+  return localizeOptional(definition.groupKey, definition.fallbackGroup ?? definition.providerId, localize);
+}
+
+function localizeOptional(key, fallback, localize) {
+  if (!key) return fallback;
+  const localized = localize(key);
+  return localized && localized !== key ? localized : fallback;
 }
 
 function parseConditionValue(raw, type, definition) {

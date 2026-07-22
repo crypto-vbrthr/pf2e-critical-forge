@@ -201,3 +201,17 @@ Multi-Deck resolution is additive to Critical Card and Card Pack schema version 
 ## Diagnostics 2.0 boundary
 
 Diagnostics 2.0 introduces a serializable report layer above the existing adapter and selector. It does not move matching rules into the UI. The report service freezes context, candidate evidence, selection, simulation, and application audit data. The session-history service stores only cloned reports, and the simulation service calls validation but never the Effect Engine application path.
+
+## Extension contract layer
+
+Version `0.9.4-dev.6` adds an ownership and compatibility boundary above the existing registries:
+
+```text
+Foundry extension module
+  -> Extension compatibility check
+  -> Bound extension controller
+  -> Pack / Context / Condition / Diagnostic registries
+  -> Structured registration journal
+```
+
+The controller is an adapter, not a second runtime. Pack normalization, Context resolution, Condition evaluation, diagnostic reporting, and card selection continue to be owned by their existing domain services. Legacy low-level APIs remain available, while new modules should use the bound controller for isolation and conflict evidence.

@@ -15,7 +15,7 @@ The report schema is additive and separate from all card and effect schemas.
   reportVersion: 1,
   id: "critical-diagnostic-...",
   createdAt: 0,
-  moduleVersion: "0.9.4-dev.5",
+  moduleVersion: "0.9.4-dev.6",
   origin: "manual",
   source: {
     messageId: null,
@@ -65,3 +65,18 @@ The report schema is additive and separate from all card and effect schemas.
 - candidate evidence preserved for later comparison;
 - simulation explicitly records `mutatedDocuments: false`;
 - legacy cards and extension packs require no report-schema awareness.
+
+## Extension diagnostics
+
+Version `0.9.4-dev.6` adds two extension-facing diagnostic channels.
+
+Diagnostic Providers contribute serializable report evidence under:
+
+```js
+report.extensions.diagnostics
+report.phases.context.extensionProviders
+```
+
+A provider result contains its id, version, source module, `ok`/`error` status, data, and isolated error metadata. The Diagnostics GUI renders each result in a collapsible section.
+
+Registration conflicts are recorded separately in the session-only extension journal exposed through `api.extensions.diagnostics` and bound controller `extension.diagnostics`. These entries are not persisted in world settings.

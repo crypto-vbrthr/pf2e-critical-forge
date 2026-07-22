@@ -1,6 +1,6 @@
 # Critical Card Pack Editor
 
-Version `0.9.4-dev.5` adds five fixed deck workspaces while retaining the visual condition builder, synthetic test workbench, Effect Forge return workflow, deterministic collision-free card IDs, pack activation, and the tested end-to-end pack roundtrip.
+Version `0.9.4-dev.6` retains the five deck workspaces and visual condition builder while allowing registered extension fields to appear dynamically with typed controls and localized fallbacks.
 Condition-editor rerenders preserve the package list, card list, and main workspace scroll positions, so enabling conditions or changing the condition tree no longer jumps the editor to the top.
 
 ## Opening the editor

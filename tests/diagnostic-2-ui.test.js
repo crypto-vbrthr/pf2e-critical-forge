@@ -13,4 +13,6 @@ test("Diagnostics 2.0 template exposes history, replay, simulation, and pipeline
   assert.match(template, /CriticalDiagnostic\.Pipeline/);
   assert.match(template, /CriticalDiagnostic\.ApplicationAudit/);
   assert.match(template, /CriticalDiagnostic\.DiagnosticsPhase/);
+  assert.match(template, /CriticalDiagnostic\.ExtensionDiagnostics/);
+  assert.match(template, /report\.extensionDiagnostics/);
 });

@@ -1457,7 +1457,7 @@
         "notExists": "ist nicht vorhanden"
       },
       "CardEditorPhase": "Karteneditor",
-      "DiagnosticsPhase": "Multi-Deck-Pakete",
+      "DiagnosticsPhase": "Erweiterungs-API",
       "Pipeline": "Auswertungspipeline",
       "PhaseContext": "Kontextermittlung",
       "PhaseSelection": "Kartenauswahl",
@@ -1508,7 +1508,10 @@
       "ApplicationCode": "Ergebniscode",
       "RequestedDeck": "Ermittelter Kartensatz",
       "Deck": "Kartensatz",
-      "ActiveDeck": "Aktiver Paket-Kartensatz"
+      "ActiveDeck": "Aktiver Paket-Kartensatz",
+      "ExtensionDiagnostics": "Erweiterungsdiagnose",
+      "ExtensionProviderOk": "Bereit",
+      "ExtensionProviderError": "Fehler"
     },
     "CriticalPreview": {
       "ShowInChat": "Karte im Chat anzeigen",

@@ -2736,3 +2736,32 @@
 .card-editor-deck-tab.selected {
   box-shadow: inset 0 -2px 0 var(--ef-orange);
 }
+
+.critical-diagnostic-extension-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.critical-diagnostic-extension-entry {
+  border: 1px solid var(--ef-border-soft);
+  border-radius: 5px;
+  background: var(--ef-field);
+}
+
+.critical-diagnostic-extension-entry > summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.55rem 0.65rem;
+  cursor: pointer;
+}
+
+.critical-diagnostic-extension-entry pre {
+  max-height: 18rem;
+  margin: 0;
+  padding: 0.65rem;
+  overflow: auto;
+  border-top: 1px solid var(--ef-border-soft);
+  white-space: pre-wrap;
+}

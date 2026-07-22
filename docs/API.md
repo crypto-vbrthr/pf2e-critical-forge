@@ -1046,3 +1046,48 @@ const json = api.cards.diagnostics.serializeReport(report);
 ```
 
 Capability flags are `diagnosticReports`, `diagnosticHistory`, and `diagnosticSimulation`. The diagnostic report schema version is available as `api.cards.diagnostics.reportVersion`.
+
+## Extension contract (0.9.4-dev.6)
+
+The top-level extension API is available as:
+
+```js
+api.extensions.contractVersion;       // 1
+api.extensions.capabilities;
+api.extensions.environment;
+api.extensions.checkCompatibility(requirements);
+api.extensions.assertCompatible(requirements);
+api.extensions.forModule(moduleId, options);
+api.extensions.diagnostics.list(options);
+```
+
+`api.cards.extensions.forModule(moduleId, options)` is a compatible alias that returns the same ownership-bound controller. Historical direct pack methods remain available.
+
+A controller can register packs plus Context, Condition, and Diagnostic Providers:
+
+```js
+const extension = api.extensions.forModule("my-expansion", {
+  version: "1.0.0",
+  requirements: {
+    apiVersion: ">=0.9.4",
+    extensionContractVersion: ">=1",
+    capabilities: ["cards.multiDeckPacks"]
+  }
+});
+
+extension.registerPacks(packs);
+extension.registerContextProvider(provider);
+extension.registerConditionProvider(provider);
+extension.registerDiagnosticProvider(provider);
+```
+
+Provider discovery is also exposed through:
+
+```js
+api.cards.contexts.listProviders();
+api.cards.conditions.providers.list();
+api.cards.conditions.providers.listFields();
+api.cards.diagnostics.providers.list();
+```
+
+The complete contract, supported requirement expressions, ownership rules, provider definitions, and diagnostic codes are documented in [`EXTENSION_CONTRACT.md`](EXTENSION_CONTRACT.md).
