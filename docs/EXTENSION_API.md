@@ -66,3 +66,8 @@ Diagnostic Providers are isolated. A provider exception becomes provider evidenc
 ## Compatibility guarantee
 
 Version `0.9.4-dev.6` does not change Critical Card schema `1`, Critical Card Pack schema `1`, Effect Definition schema `2`, or public API version `0.9.4`. Existing packs and pack-only extension modules require no migration.
+
+
+## Battlefield threat capability
+
+Version `0.9.4-dev.7` exposes `cards.battlefieldThreatEvaluation` to compatibility checks. Extensions may consume the built-in snapshot field `battlefield.hostileThreatCount` or call `api.cards.battlefield` helpers. The core evaluator and explicit compatibility override are documented in [`BATTLEFIELD_THREATS.md`](BATTLEFIELD_THREATS.md).

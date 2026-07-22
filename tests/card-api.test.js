@@ -41,7 +41,7 @@ test("public card API selects, localizes, and materializes cards", () => {
 });
 
 test("public card API exposes the headless PF2e context adapter", () => {
-  assert.equal(api.adapters.pf2e.version, "1.3.0");
+  assert.equal(api.adapters.pf2e.version, "1.4.0");
   const direct = api.adapters.pf2e.createContext({
     category: "criticalHit",
     damageTypes: ["slashing"]
@@ -201,4 +201,16 @@ test("public card API exposes the Phase-6 extension contract and provider regist
   assert.equal(typeof extension.registerDiagnosticProvider, "function");
   assert.equal(typeof api.conditions.providers.list, "function");
   assert.equal(typeof api.diagnostics.providers.list, "function");
+});
+
+test("public card API exposes battlefield threat evaluation helpers", () => {
+  assert.equal(api.capabilities.battlefieldThreatEvaluation, true);
+  assert.equal(api.battlefield.threatEvaluatorVersion, "1.0.0");
+  assert.equal(typeof api.battlefield.evaluateThreats, "function");
+  assert.equal(typeof api.battlefield.evaluateToken, "function");
+  assert.equal(typeof api.battlefield.collectMeleeAttacks, "function");
+  assert.equal(typeof api.battlefield.measureDistance, "function");
+  assert.equal(typeof api.battlefield.resolvePerception, "function");
+  assert.equal(typeof api.battlefield.testLineOfSight, "function");
+  assert.equal(api.adapters.pf2e.version, "1.4.0");
 });

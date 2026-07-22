@@ -15,7 +15,7 @@ The report schema is additive and separate from all card and effect schemas.
   reportVersion: 1,
   id: "critical-diagnostic-...",
   createdAt: 0,
-  moduleVersion: "0.9.4-dev.6",
+  moduleVersion: "0.9.4-dev.7",
   origin: "manual",
   source: {
     messageId: null,
@@ -80,3 +80,8 @@ report.phases.context.extensionProviders
 A provider result contains its id, version, source module, `ok`/`error` status, data, and isolated error metadata. The Diagnostics GUI renders each result in a collapsible section.
 
 Registration conflicts are recorded separately in the session-only extension journal exposed through `api.extensions.diagnostics` and bound controller `extension.diagnostics`. These entries are not persisted in world settings.
+
+
+## Battlefield evidence
+
+Version `0.9.4-dev.7` adds `snapshot.battlefield.hostileThreats` and `threatSummary` to the existing report schema. Each entry is plain serializable evidence for alliance, attack readiness, perception, distance, selected Strike, wall collision, counted status, and rejection reasons. The report schema version remains `1` because the fields are additive.

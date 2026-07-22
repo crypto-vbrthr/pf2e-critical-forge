@@ -1,8 +1,8 @@
 # Critical Context Engine
 
-Version `0.9.4-dev.6` retains the snapshot/provider foundation and adds ownership-bound provider registration through the stable extension contract. Critical Card and Card Pack schema version `1` remain unchanged.
+Version `0.9.4-dev.7` retains the snapshot/provider foundation and adds automatic PF2e battlefield threat evaluation. Critical Card and Card Pack schema version `1` remain unchanged.
 
-The context snapshot now also drives requested deck resolution through the existing neutral category and save-type fields. Scene-based threat analysis and Against All Odds remain outside this phase.
+The context snapshot drives requested deck resolution and optional card conditions. For resolvable scene tokens it now records immediate Party/Opposition melee threats, while Against All Odds itself remains a separate extension.
 
 ## Pipeline
 
@@ -42,7 +42,7 @@ The snapshot contains only serializable plain data:
   schemaVersion: 1,
   system: "pf2e",
   provider: "core-pf2e",
-  providerVersion: "1.0.0",
+  providerVersion: "1.1.0",
   capturedAt: 1234567890,
   message: {},
   roll: {
@@ -78,8 +78,16 @@ The snapshot contains only serializable plain data:
     round: 4,
     turn: 2,
     selectedTargetCount: 1,
-    hostileThreatCount: null,
-    threatEvaluation: "not-evaluated"
+    hostileThreatCount: 2,
+    threatEvaluation: "scene-analysis",
+    hostileThreats: [],
+    threatSummary: {
+      candidateCount: 4,
+      evaluatedCount: 4,
+      countedCount: 2,
+      rejectedCount: 2,
+      reason: null
+    }
   },
   selection: {},
   provenance: {},
@@ -89,7 +97,7 @@ The snapshot contains only serializable plain data:
 
 For saving throws, `source` remains the creature that rolled the save and `target` remains the originating hostile Actor or effect when known. The explicit role aliases make that legacy convention visible without changing existing card behavior.
 
-`hostileThreatCount` is intentionally `null` in this phase unless a caller supplies an explicit value. Scene-based threat detection belongs to a later implementation step and is never guessed.
+When the rolling Actor, its unique scene token, and the scene can be resolved, the built-in PF2e provider evaluates Party/Opposition melee threats automatically. It records every candidate, ready melee Strike reach, occupied-space distance, relative perception, wall result, and rejection reason. If the scene context cannot be resolved, `hostileThreatCount` remains `null`; unknown information is never guessed as zero. An explicitly supplied `hostileThreatCount` remains authoritative for compatibility. See [`BATTLEFIELD_THREATS.md`](BATTLEFIELD_THREATS.md).
 
 ## Builder API
 
@@ -99,7 +107,7 @@ Providers can create compatible immutable snapshots through the public builder:
 const builder = api.cards.contexts.createBuilder({
   system: "my-system",
   provider: "my-provider",
-  providerVersion: "1.0.0"
+  providerVersion: "1.1.0"
 });
 
 const snapshot = builder
@@ -124,7 +132,7 @@ The built-in provider is registered as:
 ```text
 system:  pf2e
 id:      core-pf2e
-version: 1.0.0
+version: 1.1.0
 ```
 
 Public API:
@@ -174,7 +182,8 @@ Providers must return a report compatible with the existing adapter contract:
 api.cards.capabilities.contextSnapshots; // true
 api.cards.capabilities.contextProviders; // true
 api.cards.capabilities.contextConditions; // true in phase 2
-api.cards.capabilities.multiDeckPacks; // true in phase 5
+api.cards.capabilities.multiDeckPacks; // true
+api.cards.capabilities.battlefieldThreatEvaluation; // true
 ```
 
 Extensions should test capabilities rather than infer them from module-version strings.
@@ -201,3 +210,8 @@ extension.registerContextProvider(provider);
 ```
 
 The controller stamps `sourceModule`, prevents extensions from replacing protected, foreign, or unowned providers, and removes only owned providers through `unregisterContextProvider()` or `unregisterAll()`. Existing direct `api.cards.contexts.registerProvider()` calls remain valid as a low-level compatibility API.
+
+
+## Phase-7 battlefield context
+
+The core PF2e provider now fills `battlefield.hostileThreatCount`, `hostileThreats`, and `threatSummary` from the active scene when enough data is available. The analyzer is also exposed under `api.cards.battlefield`. Its output remains plain, deeply frozen snapshot data and therefore participates in condition evaluation, diagnostic replay, and JSON export without retaining Foundry documents.

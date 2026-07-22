@@ -8,7 +8,7 @@ PF2E Critical Forge consists of two optional user-facing tools built on one alwa
 
 ## Status
 
-Version `0.9.4-dev.6` stabilizes the **Critical Forge Extension Contract**. Optional modules can now bind ownership once, verify API/schema/capability requirements, register Multi-Deck packs plus Context, Condition, and Diagnostic Providers, and inspect structured session diagnostics for conflicts. Existing pack-only extensions and all schema-version-1 cards and packs continue to work without migration.
+Version `0.9.4-dev.7.1` keeps the **PF2e battlefield threat evaluation** from Phase 7 and improves its diagnostic presentation with a high-contrast Forge-themed threat panel. Runtime snapshots can now determine which Party/Opposition tokens immediately threaten the executing Actor through a ready, in-range melee Strike, known position, and clear attack path. Diagnostics explains every counted or rejected token. Existing packs, explicit threat-count providers, and all schema-version-1 cards and packs continue to work without migration.
 
 The module targets **Foundry VTT 14** with **PF2e 8.1.2 or newer**.
 
@@ -40,6 +40,7 @@ The current module includes:
 - a primary-GM-owned `createChatMessage` hook that detects supported PF2e critical rolls, asks or draws according to world settings, and never applies effects automatically.
 - a versioned module-bound extension contract with capability checks, ownership isolation, transactional Multi-Deck pack registration, Context/Condition/Diagnostic Providers, and structured conflict diagnostics;
 - an additive Context Provider API and public Condition Engine API with capability detection for context-sensitive extensions.
+- automatic PF2e melee-threat analysis using alliances, ready Strike reach, occupied token spaces, elevation, relative perception, and wall collision, with complete per-token diagnostic evidence.
 
 ## API access
 
@@ -81,7 +82,7 @@ npm run test:coverage
 npm run quality:check
 ```
 
-The suite covers the Effect Engine and Forge, component-duration inheritance and native Item splitting, Item-bundle updates, card normalization, Multi-Deck resolution and legacy fallback, Card Pack Editor deck actions and round-trips, the visual condition model and simulator, pack activation, rollback-safe world persistence, external extension contracts and provider lifecycles, spell/save filters, PF2e context adaptation, nested condition normalization/evaluation/validation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
+The suite covers the Effect Engine and Forge, component-duration inheritance and native Item splitting, Item-bundle updates, card normalization, Multi-Deck resolution and legacy fallback, Card Pack Editor deck actions and round-trips, the visual condition model and simulator, pack activation, rollback-safe world persistence, external extension contracts and provider lifecycles, spell/save filters, PF2e context adaptation, battlefield melee-threat evaluation, nested condition normalization/evaluation/validation, natural-roll trigger policies, automatic supported-roll processing, diagnostics, redraw history, result-card visibility, target resolution, validation, duplicate protection, and manual effect application.
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strategy.
 
@@ -98,6 +99,7 @@ See [`docs/TESTING.md`](docs/TESTING.md) for the test layout and mocking strateg
 - [`docs/CARD_SELECTION.md`](docs/CARD_SELECTION.md): candidate evaluation and weighted selection
 - [`docs/CORE_CARD_LIBRARY.md`](docs/CORE_CARD_LIBRARY.md): bundled 96-card test-library matrix and content boundaries
 - [`docs/CONTEXT_ENGINE.md`](docs/CONTEXT_ENGINE.md): runtime snapshots, Context Builder, provider registry, resolver, and compatibility guarantees
+- [`docs/BATTLEFIELD_THREATS.md`](docs/BATTLEFIELD_THREATS.md): Party/Opposition melee-threat rules, reach, perception, walls, diagnostics, and public API
 - [`docs/CONDITION_ENGINE.md`](docs/CONDITION_ENGINE.md): card conditions, operators, evaluation evidence, API, and compatibility rules
 - [`docs/PF2E_CONTEXT_ADAPTER.md`](docs/PF2E_CONTEXT_ADAPTER.md): PF2e document-to-context translation and diagnostics
 - [`docs/CRITICAL_DIAGNOSTICS.md`](docs/CRITICAL_DIAGNOSTICS.md): manual chat-message diagnostic workbench and report format

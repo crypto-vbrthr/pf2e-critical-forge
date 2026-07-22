@@ -210,6 +210,38 @@
                 <strong>{{report.hostileThreatCount}} · {{report.threatEvaluation}}</strong>
               </div>
             </div>
+
+            {{#if report.hasHostileThreatDetails}}
+              <div class="critical-diagnostic-threats">
+                <header class="critical-diagnostic-threats-header">
+                  <h3>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ThreatDetails"}}</h3>
+                  <span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ThreatSummary" candidates=report.threatCandidateCount counted=report.threatCountedCount rejected=report.threatRejectedCount}}</span>
+                </header>
+                <div class="critical-diagnostic-threat-list">
+                  {{#each report.hostileThreats}}
+                    <details class="critical-diagnostic-threat-entry {{statusClass}}" {{#if counted}}open{{/if}}>
+                      <summary>
+                        <strong>{{name}}</strong>
+                        <span class="critical-diagnostic-status {{statusClass}}">{{localize statusKey}}</span>
+                      </summary>
+                      <div class="critical-diagnostic-threat-facts">
+                        <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ThreatAlliance"}}</span><strong>{{alliance}}</strong></div>
+                        <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ThreatPerception"}}</span><strong>{{localize perceptionKey}}</strong><small>{{perceptionSource}}</small></div>
+                        <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ThreatDistance"}}</span><strong>{{distance}}</strong></div>
+                        <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ThreatAttack"}}</span><strong>{{attackName}}</strong><small>{{attackReach}}</small></div>
+                        <div><span>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ThreatLineOfSight"}}</span><strong>{{localize lineOfSightKey}}</strong><small>{{lineOfSightMethod}}</small></div>
+                      </div>
+                      {{#if hasRejections}}
+                        <div class="critical-diagnostic-threat-reasons">
+                          <strong>{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ThreatReasons"}}</strong>
+                          <ul>{{#each rejectionKeys}}<li>{{localize this}}</li>{{/each}}</ul>
+                        </div>
+                      {{/if}}
+                    </details>
+                  {{/each}}
+                </div>
+              </div>
+            {{/if}}
           {{else}}
             <p class="critical-diagnostic-empty">{{localize "PF2E_CRITICAL_FORGE.CriticalDiagnostic.NoRuntimeContext"}}</p>
           {{/if}}

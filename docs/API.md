@@ -1091,3 +1091,27 @@ api.cards.diagnostics.providers.list();
 ```
 
 The complete contract, supported requirement expressions, ownership rules, provider definitions, and diagnostic codes are documented in [`EXTENSION_CONTRACT.md`](EXTENSION_CONTRACT.md).
+
+
+## PF2e battlefield threat evaluation (0.9.4-dev.7)
+
+The built-in PF2e Context Provider evaluates immediate melee threats when the rolling Actor, its scene token, and the scene are resolvable. The result is stored in `snapshot.battlefield` and can be consumed by ordinary card conditions.
+
+```js
+api.cards.capabilities.battlefieldThreatEvaluation; // true
+api.cards.battlefield.threatEvaluatorVersion;       // "1.0.0"
+
+const result = api.cards.battlefield.evaluateThreats({
+  actor,
+  token,
+  scene
+});
+
+api.cards.battlefield.evaluateToken(candidateToken, sourceToken, options);
+api.cards.battlefield.collectMeleeAttacks(actor);
+api.cards.battlefield.measureDistance(sourceToken, targetToken, scene);
+api.cards.battlefield.resolvePerception(sourceActor, sourceToken, observerActor, observerToken, input);
+api.cards.battlefield.testLineOfSight(observerToken, sourceToken, options);
+```
+
+An explicit `hostileThreatCount` remains authoritative. Full counting, perception, reach, collision, evidence, and compatibility rules are documented in [`BATTLEFIELD_THREATS.md`](BATTLEFIELD_THREATS.md).

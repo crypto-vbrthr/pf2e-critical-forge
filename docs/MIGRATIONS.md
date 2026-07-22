@@ -92,3 +92,8 @@ No data migration is required.
 - Existing `api.cards.extensions.forModule(moduleId)` pack registration remains valid.
 
 Extension authors may adopt `api.extensions.forModule()` incrementally to gain compatibility checks, provider ownership, and structured diagnostics.
+
+
+## Critical Forge 0.9.4-dev.7
+
+No data migration is required. Battlefield threat data is generated only in immutable runtime snapshots and diagnostic reports. Existing explicit `hostileThreatCount` callers remain authoritative, cards without battlefield conditions behave unchanged, and all persistent schema and public API versions remain unchanged.

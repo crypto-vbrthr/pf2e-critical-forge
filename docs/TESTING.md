@@ -87,7 +87,7 @@ tests/
    └─ foundry-mock.js
 ```
 
-The suite contains 307 tests covering:
+The suite contains 325 tests covering:
 
 - Builder normalization, cloning, immutable output, and invalid input;
 - selector, condition, damage, IWR, and movement catalogs;
@@ -108,7 +108,7 @@ The suite contains 307 tests covering:
 - updating only Forge-managed Item fields;
 - synchronized release metadata, manifest paths, localization parity, and archive hygiene;
 - headless PF2e context translation from weapon attacks, spell attacks, saving throws, chat flags, items, actors, tokens, and roll options;
-- immutable runtime-snapshot normalization, participant health and conditions, reference-only fallbacks, battlefield placeholders, Context Provider priority/replacement/protection, and public Context Builder/Resolver capabilities;
+- immutable runtime-snapshot normalization, participant health and conditions, reference-only fallbacks, automatic PF2e Party/Opposition melee-threat analysis, occupied-space reach and elevation, relative perception, wall collision, explicit-count fallback, Context Provider priority/replacement/protection, and public Context Builder/Resolver capabilities;
 - optional immutable card conditions, nested `all`/`any` groups, all ten operators, safe field resolution, schema validation, eligibility gating, full diagnostic evidence, automation snapshot propagation, redraw snapshot reuse, and editor/import/export preservation;
 - five fixed deck types, legacy default normalization, nested deck input, deterministic indexes, per-pack specialized/default fallback, attack/save isolation, category compatibility, editor deck actions, API discovery, diagnostics evidence, and extension/import/export round-trips;
 - the visual condition-tree model, typed and provider-defined fields, type-dependent operator controls, contradiction analysis, synthetic snapshot simulation, Card Pack Editor action wiring, and dirty-state isolation for test inputs;
@@ -120,7 +120,7 @@ The suite contains 307 tests covering:
 - pack activation semantics, transactional world-setting rollback, protected-data startup guards, module-bound extension ownership, atomic multi-pack registration, change hooks, and optional extension-module lifecycles;
 - extension contract version checks, capability requirements, bound pack/provider ownership, typed editor fields, isolated diagnostic-provider evidence, stable conflict codes, session registration diagnostics, and complete cleanup.
 
-Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.6` measures 92.94% line coverage across all files loaded by the Node coverage run, including the Effect Engine, Critical Forge domain, Multi-Deck resolver, Card Pack Editor application services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, extension compatibility, provider registries, and extension-pack integration.
+Coverage is a diagnostic rather than a release gate. Version `0.9.4-dev.7.1` measures 92.98% line coverage across all files loaded by the Node coverage run, including the Effect Engine, Critical Forge domain, Multi-Deck resolver, Card Pack Editor application services, the 96-card core library, PF2e attack/spell/save adaptation, diagnostics, automatic roll pipeline, result-card visibility, manual application services, extension compatibility, provider registries, and extension-pack integration.
 
 ## Foundry mock
 

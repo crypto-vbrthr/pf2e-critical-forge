@@ -1,8 +1,9 @@
 import { CriticalContextBuilder } from "../../context/context-builder.js";
 import { getPath } from "./context-utils.js";
+import { evaluatePf2eBattlefieldThreats } from "./battlefield/battlefield-threat-evaluator.js";
 
 export const PF2E_CONTEXT_SNAPSHOT_PROVIDER_ID = "core-pf2e";
-export const PF2E_CONTEXT_SNAPSHOT_PROVIDER_VERSION = "1.0.0";
+export const PF2E_CONTEXT_SNAPSHOT_PROVIDER_VERSION = "1.1.0";
 
 export function createPf2eContextSnapshot({
   input = {},
@@ -23,6 +24,29 @@ export function createPf2eContextSnapshot({
     ?? globalThis.canvas?.scene
     ?? null;
   const selectedTargets = input.targetTokens ?? globalThis.game?.user?.targets ?? null;
+  const explicitThreatCount = nonNegativeInteger(input.hostileThreatCount);
+  const threatReport = explicitThreatCount == null
+    ? evaluatePf2eBattlefieldThreats({
+        actor: sourceActor,
+        token: sourceToken,
+        scene,
+        input,
+        tokens: input.sceneTokens,
+        lineOfSightTest: input.lineOfSightTest,
+        perceptionResolver: input.perceptionResolver
+      })
+    : {
+        count: explicitThreatCount,
+        evaluation: "explicit",
+        threats: Array.isArray(input.hostileThreats) ? input.hostileThreats : [],
+        summary: {
+          candidateCount: Array.isArray(input.hostileThreats) ? input.hostileThreats.length : 0,
+          evaluatedCount: 0,
+          countedCount: explicitThreatCount,
+          rejectedCount: 0,
+          reason: null
+        }
+      };
 
   const builder = new CriticalContextBuilder({
     system: "pf2e",
@@ -70,8 +94,10 @@ export function createPf2eContextSnapshot({
       round: combat?.round,
       turn: combat?.turn,
       selectedTargetCount: collectionSize(selectedTargets),
-      hostileThreatCount: input.hostileThreatCount,
-      threatEvaluation: input.hostileThreatCount == null ? "not-evaluated" : "explicit"
+      hostileThreatCount: threatReport.count,
+      threatEvaluation: threatReport.evaluation,
+      hostileThreats: threatReport.threats,
+      threatSummary: threatReport.summary
     })
     .setSelection(context)
     .setProvenance({
@@ -153,6 +179,12 @@ function participantProvenance(actor, token, metadata = {}) {
   if (actor || token) return "resolved-document";
   if (metadata?.uuid || metadata?.token) return "pf2e-reference";
   return null;
+}
+
+function nonNegativeInteger(value) {
+  if (value == null || value === "") return null;
+  const number = Number(value);
+  return Number.isInteger(number) && number >= 0 ? number : null;
 }
 
 function collectionContents(collection) {

@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.9.4-dev.7.1
+
+- Fixed unreadable battlefield-threat entries caused by mixing Foundry's light option background with the Forge's light-on-dark text palette.
+- Restyled threat summaries, fact cells, status details, and rejection reasons with explicit Forge theme colors and stronger contrast.
+- Added a UI regression test that prevents the threat panel from falling back to `--color-bg-option`.
+- The complete suite contains **325** passing tests with **92.98%** measured line coverage.
+
+## 0.9.4-dev.7
+
+- Added automatic PF2e battlefield threat evaluation for runtime snapshots.
+- A candidate counts only for a strict Party/Opposition pairing when it is not dead or defeated, can attack, has a ready melee Strike in reach, knows the executing Actor's position, and has an unblocked attack path.
+- Added occupied-token-space distance with elevation and creature-height support instead of center-to-center measurement.
+- Added relative perception handling: observed, concealed, and hidden count; undetected and unnoticed do not. Invisibility without a more precise relative state conservatively falls back to undetected.
+- Added per-Strike reach resolution and prevented ranged-only Actors from acquiring phantom melee threats through generic Actor reach.
+- Added complete per-token threat evidence to runtime snapshots, Diagnostics 2.0, replay, and JSON export.
+- Added public battlefield helpers and the `battlefieldThreatEvaluation` capability under `api.cards.battlefield`.
+- Kept explicit `hostileThreatCount` input as an authoritative compatibility override.
+- Updated the PF2e Context Adapter to `1.4.0` and the built-in snapshot provider to `1.1.0`.
+- Preserved Critical Card schema `1`, Critical Card Pack schema `1`, Effect Definition schema `2`, diagnostic report schema `1`, and public API version `0.9.4`.
+- Added evaluator, snapshot, condition-selection, diagnostics, API, perception, reach, wall, token-size, elevation, and legacy-override regression tests.
+- The complete suite contains **324** passing tests with **92.98%** measured line coverage.
+
 ## 0.9.4-dev.6
 
 - Added extension contract version `1` with immutable environment discovery and version, schema, and capability requirement checks.

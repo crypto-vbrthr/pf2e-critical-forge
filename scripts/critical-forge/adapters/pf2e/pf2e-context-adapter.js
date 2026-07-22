@@ -8,7 +8,7 @@ import { readRollResult, resolveCriticalCategory } from "./roll-result-reader.js
 import { readSaveContext } from "./save-context-reader.js";
 import { createPf2eContextSnapshot } from "./pf2e-context-snapshot.js";
 
-export const PF2E_CONTEXT_ADAPTER_VERSION = "1.3.0";
+export const PF2E_CONTEXT_ADAPTER_VERSION = "1.4.0";
 
 export function createPf2eSelectionContext(input = {}) {
   if (!input || typeof input !== "object" || Array.isArray(input)) {

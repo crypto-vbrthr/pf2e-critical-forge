@@ -253,3 +253,8 @@ forge.cards.contexts.registerProvider(provider);
 ```
 
 The low-level APIs remain available for compatibility and core tooling. Third-party modules should prefer the bound controller because it supplies ownership isolation, compatibility checks, and structured diagnostics.
+
+
+## Battlefield threat capability
+
+Version `0.9.4-dev.7` exposes `cards.battlefieldThreatEvaluation` to compatibility checks. Extensions may consume the built-in snapshot field `battlefield.hostileThreatCount` or call `api.cards.battlefield` helpers. The core evaluator and explicit compatibility override are documented in [`BATTLEFIELD_THREATS.md`](BATTLEFIELD_THREATS.md).

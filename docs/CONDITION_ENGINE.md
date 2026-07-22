@@ -1,6 +1,6 @@
 # Critical Condition Engine
 
-Version `0.9.4-dev.6` retains the generic, document-agnostic eligibility engine and adds typed extension field providers to its visual authoring layer. Against All Odds and scene-based threat analysis remain deliberately outside this phase.
+Version `0.9.4-dev.7` retains the generic, document-agnostic eligibility engine and now receives scene-derived PF2e melee-threat counts from the runtime snapshot. Against All Odds remains a separate extension.
 
 ## Design guarantees
 
@@ -110,7 +110,7 @@ battlefield.hostileThreatCount
 
 Providers may add compatible serializable fields. Package authors should test `api.cards.capabilities.contextConditions` and document any provider-specific requirements.
 
-`null` is treated as unavailable. Thus a Phase-1 `battlefield.hostileThreatCount: null` fails `gte 3` and produces `reason: "field-unavailable"`; it does not become zero. `notExists` can intentionally match that state.
+`null` is treated as unavailable. When the PF2e scene evaluator can resolve the rolling token, `battlefield.hostileThreatCount` contains the automatic count. If actor, token, or scene resolution is unavailable, the field remains `null`, fails `gte 3` with `reason: "field-unavailable"`, and never becomes zero. `notExists` can intentionally match that state.
 
 ## Evaluation report
 
@@ -223,3 +223,6 @@ extension.registerConditionProvider({
 ```
 
 Registered fields appear dynamically in the visual Card Editor and use the existing Condition Engine for safe resolution and evaluation. Supported provider types are `string`, `number`, `boolean`, `stringArray`, and `enum`. Providers cannot shadow core fields or fields owned by another provider.
+
+
+Scene-derived threat evidence and its exact rules are documented in [`BATTLEFIELD_THREATS.md`](BATTLEFIELD_THREATS.md).

@@ -1,6 +1,6 @@
 # Critical Forge Architecture
 
-Version `0.9.4-dev.6` keeps the Foundry automation shell thin and adds an ownership-bound extension contract above the existing pack, context, condition, and diagnostic services.
+Version `0.9.4-dev.7` keeps the Foundry automation shell thin, retains the ownership-bound extension contract, and adds a PF2e battlefield evaluator at the context-capture boundary.
 
 ```text
 Foundry createChatMessage Hook ── new supported PF2e roll messages
@@ -14,6 +14,7 @@ Context Provider Registry
         │
         ▼
 PF2e Context Adapter
+        ├── Battlefield Threat Evaluator
         ├── Runtime Snapshot → Condition Engine → Diagnostics
         │                                      │
         ▼                                      │
@@ -139,3 +140,8 @@ The neutral selection context and existing filters remain intact. A condition is
 `ChatMessage -> resolver -> PF2e adapter/context snapshot -> selector -> evaluation report -> history/UI`
 
 Automation enriches the same report with the selected card and preview UUID. GM-confirmed application can enrich it with the application audit. These additions are observational and do not control the draw or application transaction.
+
+
+## Phase-7 battlefield threat boundary
+
+The PF2e battlefield evaluator lives under `critical-forge/adapters/pf2e/battlefield/`. It reads PF2e Actor/Token/Scene state at context-capture time and immediately reduces it to plain immutable evidence. Card selection, the Condition Engine, Diagnostics 2.0, and extension modules consume only the snapshot result; they never retain Foundry documents or recompute threat rules independently. See [`BATTLEFIELD_THREATS.md`](BATTLEFIELD_THREATS.md).

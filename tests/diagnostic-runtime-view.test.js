@@ -33,3 +33,54 @@ test("runtime diagnostic view has stable placeholders without a snapshot", () =>
   assert.equal(view.rollerHp, "—");
   assert.equal(view.hostileThreatCount, "—");
 });
+
+test("runtime diagnostic view prepares per-token battlefield threat evidence", () => {
+  const view = prepareRuntimeContextView({
+    roles: { roller: "source" },
+    participants: { source: { name: "Hero" } },
+    battlefield: {
+      hostileThreatCount: 1,
+      threatEvaluation: "scene-analysis",
+      threatSummary: { candidateCount: 2, countedCount: 1, rejectedCount: 1 },
+      hostileThreats: [
+        {
+          actorId: "goblin",
+          name: "Goblin",
+          sourceAlliance: "party",
+          alliance: "opposition",
+          enemy: true,
+          dead: false,
+          canAttack: true,
+          perception: { state: "concealed", source: "actor-status", knownPosition: true },
+          distance: { value: 5, units: "ft" },
+          lineOfSight: { clear: true, blocked: false, method: "token-sight-collision" },
+          selectedAttack: { name: "Dogslicer", reach: 5 },
+          counted: true,
+          rejectedBy: []
+        },
+        {
+          actorId: "archer",
+          name: "Archer",
+          sourceAlliance: "party",
+          alliance: "opposition",
+          enemy: true,
+          dead: false,
+          canAttack: true,
+          perception: { state: "hidden", source: "explicit", knownPosition: true },
+          distance: { value: 15, units: "ft" },
+          lineOfSight: { clear: true, blocked: false, method: "token-sight-collision" },
+          selectedAttack: null,
+          counted: false,
+          rejectedBy: ["out-of-reach"]
+        }
+      ]
+    }
+  });
+
+  assert.equal(view.hasHostileThreatDetails, true);
+  assert.equal(view.threatCandidateCount, "2");
+  assert.equal(view.hostileThreats[0].statusClass, "valid");
+  assert.equal(view.hostileThreats[0].distance, "5 ft");
+  assert.equal(view.hostileThreats[0].attackName, "Dogslicer");
+  assert.equal(view.hostileThreats[1].rejectionKeys[0], "PF2E_CRITICAL_FORGE.CriticalDiagnostic.ThreatReasonOutOfReach");
+});

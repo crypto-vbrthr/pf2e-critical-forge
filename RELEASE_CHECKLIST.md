@@ -13,8 +13,12 @@
 - [ ] Copy a protected core card into a custom pack, edit its effect in Effect Forge, save it, export/import the pack, and confirm the card can still be drawn and applied.
 - [ ] Disable and re-enable that custom pack through **Paket aktivieren** and verify selection changes immediately while the pack remains editable.
 - [ ] Register a test extension through `api.extensions.forModule(moduleId, { requirements })`, add two Multi-Deck packs and all three provider types, replace one owned resource, call `unregisterAll()`, and confirm core, unowned, and unrelated resources remain untouched.
-- [ ] Open Critical Diagnostics and confirm the toolbar shows `Erweiterungs-API · 0.9.4-dev.6`, the three pipeline phases, session history, replay buttons, runtime-context summary, requested deck, and raw snapshot.
+- [ ] Open Critical Diagnostics and confirm the toolbar shows `Schlachtfeldanalyse · 0.9.4-dev.7.1`, the three pipeline phases, session history, replay buttons, runtime-context summary, requested deck, and raw snapshot.
 - [ ] Diagnose one attack and one saving throw; confirm the rolling Actor is `source`, the hostile opponent/origin is `target`, and HP/level data matches the current Actors.
+- [ ] Place Party and Opposition tokens at 5-foot and extended melee reach, diagnose a roll, and confirm the threat count and selected Strike are correct.
+- [ ] Verify an ally, neutral token, dead/defeated enemy, ranged-only enemy, out-of-reach enemy, undetected/unnoticed roller, and wall-blocked enemy are rejected with the expected diagnostic reason.
+- [ ] Verify concealed and hidden rollers still count as threatened, while an invisible roller without an explicit relative state does not.
+- [ ] Verify Tiny, Large, and elevated tokens use occupied spaces rather than token centers.
 - [ ] Open an editable pack and verify all five deck tabs (`Standard`, `Angriff`, `Zähigkeit`, `Reflex`, `Wille`) show independent card counts and lists.
 - [ ] Move or create one card in each specialized deck; verify attack cards cannot retain a saving-throw category and save-deck cards cannot retain an attack category.
 - [ ] Draw an attack, Fortitude, Reflex, and Will result; verify each specialized deck is isolated, and verify a legacy `cards`-only pack remains eligible through its default deck.

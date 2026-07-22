@@ -2765,3 +2765,118 @@
   border-top: 1px solid var(--ef-border-soft);
   white-space: pre-wrap;
 }
+
+/* Phase 7: battlefield threat diagnostics */
+.critical-diagnostic-threats {
+  margin-top: 0.75rem;
+  border-top: 1px solid var(--ef-border-soft);
+  padding-top: 0.65rem;
+}
+
+.critical-diagnostic-threats-header,
+.critical-diagnostic-threat-entry > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.critical-diagnostic-threats-header h3 {
+  margin: 0;
+  color: var(--ef-orange);
+}
+
+.critical-diagnostic-threats-header span {
+  color: var(--ef-muted);
+  font-size: 0.85em;
+}
+
+.critical-diagnostic-threat-list {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.55rem;
+}
+
+.critical-diagnostic-threat-entry {
+  overflow: hidden;
+  border: 1px solid var(--ef-border);
+  border-left-width: 4px;
+  border-radius: 6px;
+  padding: 0;
+  color: var(--ef-text);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent), var(--ef-field);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
+}
+
+.critical-diagnostic-threat-entry.valid {
+  border-left-color: var(--ef-green);
+}
+
+.critical-diagnostic-threat-entry.invalid {
+  border-left-color: var(--ef-red);
+}
+
+.critical-diagnostic-threat-entry > summary {
+  min-height: 2.3rem;
+  padding: 0.5rem 0.65rem;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--ef-panel-alt) 72%, transparent);
+}
+
+.critical-diagnostic-threat-entry > summary::marker {
+  color: var(--ef-muted);
+}
+
+.critical-diagnostic-threat-entry > summary > strong {
+  color: var(--ef-text);
+  font-size: 0.9rem;
+}
+
+.critical-diagnostic-threat-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.45rem;
+  padding: 0.6rem;
+  border-top: 1px solid var(--ef-border-soft);
+}
+
+.critical-diagnostic-threat-facts > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+  padding: 0.48rem 0.55rem;
+  border: 1px solid var(--ef-border-soft);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--ef-panel) 70%, var(--ef-field));
+}
+
+.critical-diagnostic-threat-facts span {
+  color: var(--ef-muted);
+  font-size: 0.71rem;
+}
+
+.critical-diagnostic-threat-facts strong {
+  color: var(--ef-text);
+  font-size: 0.86rem;
+  overflow-wrap: anywhere;
+}
+
+.critical-diagnostic-threat-facts small {
+  color: color-mix(in srgb, var(--ef-muted) 82%, transparent);
+  font-size: 0.68rem;
+  overflow-wrap: anywhere;
+}
+
+.critical-diagnostic-threat-reasons {
+  margin: 0 0.6rem 0.6rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--ef-red) 45%, var(--ef-border));
+  border-radius: 5px;
+  color: var(--ef-text);
+  background: color-mix(in srgb, var(--ef-red) 8%, var(--ef-panel));
+}
+
+.critical-diagnostic-threat-reasons ul {
+  margin: 0.25rem 0 0 1.15rem;
+}

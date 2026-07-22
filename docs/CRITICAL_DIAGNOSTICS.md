@@ -1,16 +1,22 @@
 # Critical Diagnostics 2.0
 
-Version `0.9.4-dev.6` keeps the diagnostic workbench as the central test cockpit and adds isolated extension-provider evidence to the existing Diagnostics 2.0 pipeline. It remains GM-only and never applies an effect without a separate explicit action.
+Version `0.9.4-dev.7.1` keeps the diagnostic workbench as the central test cockpit, retains per-token PF2e battlefield threat evidence, and renders those entries with an explicit high-contrast Forge palette. It remains GM-only and never applies an effect without a separate explicit action.
 
 ## Evaluation pipeline
 
 Every analysis produces one immutable evaluation report with three phases:
 
-1. **Context resolution** records the PF2e adapter result, resolver diagnostics, provider, runtime snapshot, participants, health, conditions, combat references, and battlefield placeholders.
+1. **Context resolution** records the PF2e adapter result, resolver diagnostics, provider, runtime snapshot, participants, health, conditions, combat references, and complete battlefield threat evidence.
 2. **Card selection** records the requested deck, each pack's active deck, every card's assigned deck, trigger policy, profile, eligible and rejected cards, weights, matched filters, context-condition evidence, and any actual automated selection.
 3. **Effect application** records an optional safe simulation and, when an automated preview is later applied, the successful application audit.
 
 The report has its own `reportVersion`. It is independent of Critical Card, Card Pack, Effect Definition, and module versions.
+
+## Battlefield threat evidence
+
+When scene analysis is available, the runtime-context panel lists each candidate token separately. Every row records alliance, attack-capable/dead state, relative perception, occupied-space distance, selected ready melee Strike and reach, collision result, counted status, and localized rejection reasons. The same data is retained in snapshot replay and JSON export. A missing scene or source token remains visibly `not-evaluated` rather than appearing as zero threats.
+
+The exact counting contract is documented in [`BATTLEFIELD_THREATS.md`](BATTLEFIELD_THREATS.md).
 
 ## Session history
 

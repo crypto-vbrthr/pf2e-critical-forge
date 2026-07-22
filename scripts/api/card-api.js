@@ -120,6 +120,15 @@ import {
 } from "../critical-forge/extensions/extension-pack-service.js";
 import { createCriticalForgeExtensionApi } from "../critical-forge/extensions/extension-service.js";
 import { CRITICAL_EXTENSION_CONTRACT_VERSION } from "../critical-forge/extensions/extension-compatibility.js";
+import {
+  PF2E_BATTLEFIELD_THREAT_EVALUATOR_VERSION,
+  collectPf2eMeleeThreatAttacks,
+  evaluatePf2eBattlefieldThreats,
+  evaluatePf2eThreatToken,
+  measurePf2eTokenDistance,
+  resolvePf2eThreatPerception,
+  testPf2eThreatLineOfSight
+} from "../critical-forge/adapters/pf2e/battlefield/battlefield-threat-evaluator.js";
 
 export function createCardApi() {
   const resolveCard = (cardOrId) => {
@@ -146,7 +155,8 @@ export function createCardApi() {
       extensionContracts: true,
       conditionProviders: true,
       diagnosticProviders: true,
-      registrationDiagnostics: true
+      registrationDiagnostics: true,
+      battlefieldThreatEvaluation: true
     }),
     categories: [...CARD_CATEGORIES],
     deckTypes: [...CARD_DECK_TYPES],
@@ -276,6 +286,16 @@ export function createCardApi() {
     }),
 
     createContext: (input, options = {}) => resolveCriticalContext(input, options),
+    battlefield: Object.freeze({
+      threatEvaluatorVersion: PF2E_BATTLEFIELD_THREAT_EVALUATOR_VERSION,
+      evaluateThreats: (options = {}) => evaluatePf2eBattlefieldThreats(options),
+      evaluateToken: (candidateToken, sourceToken, options = {}) => evaluatePf2eThreatToken(candidateToken, sourceToken, options),
+      collectMeleeAttacks: (actor) => collectPf2eMeleeThreatAttacks(actor),
+      measureDistance: (sourceToken, targetToken, scene = null) => measurePf2eTokenDistance(sourceToken, targetToken, scene),
+      resolvePerception: (sourceActor, sourceToken, observerActor, observerToken, input = {}) =>
+        resolvePf2eThreatPerception(sourceActor, sourceToken, observerActor, observerToken, input),
+      testLineOfSight: (observerToken, sourceToken, options = {}) => testPf2eThreatLineOfSight(observerToken, sourceToken, options)
+    }),
     contexts: Object.freeze({
       snapshotVersion: CRITICAL_CONTEXT_SNAPSHOT_VERSION,
       createBuilder: (options = {}) => createCriticalContextBuilder(options),

@@ -2,7 +2,7 @@
 
 The PF2e Context Adapter is a headless translation boundary. It accepts PF2e/Foundry objects explicitly supplied by a caller and returns the neutral context consumed by Critical Forge card matching.
 
-Adapter version `1.3.0` supports weapon attacks, spell attacks, and saving throws. The adapter itself does not register hooks, choose cards, render HTML, or apply effects. The separate automation service supplies newly created PF2e messages to it.
+Adapter version `1.4.0` supports weapon attacks, spell attacks, and saving throws. The adapter itself does not register hooks, choose cards, render HTML, or apply effects. The separate automation service supplies newly created PF2e messages to it.
 
 ## API
 
@@ -47,7 +47,7 @@ const report = api.cards.createContext(input, { system: "pf2e" });
   },
   metadata: {
     adapter: "pf2e",
-    adapterVersion: "1.3.0",
+    adapterVersion: "1.4.0",
     degreeOfSuccess: {
       index: 0,
       key: "criticalFailure",
@@ -78,7 +78,7 @@ const report = api.cards.createContext(input, { system: "pf2e" });
     schemaVersion: 1,
     system: "pf2e",
     provider: "core-pf2e",
-    providerVersion: "1.0.0",
+    providerVersion: "1.1.0",
     roll: {},
     participants: {},
     roles: {},
@@ -121,6 +121,7 @@ Explicit fields supplied by the caller are combined with discovered PF2e data. T
 - source and target traits from Actors or roll options;
 - actor identity, level, size, token references, item identity, range mode, and alternative usage;
 - current/max/temporary Hit Points, HP ratio, selected common conditions, token position and disposition, scene/combat references, and provenance for the runtime snapshot.
+- automatic Party/Opposition melee-threat evidence from ready Strikes, occupied-space reach, relative perception, elevation, and wall collision.
 
 A selected versatile or modular damage type replaces the weapon's base damage type for the primary attack context.
 
@@ -159,7 +160,7 @@ if (adapted.valid) {
 }
 ```
 
-The adapter and selector remain separate so callers can inspect, cache, or reject a context before selection. Runtime snapshots and provider registration are documented in [`CONTEXT_ENGINE.md`](CONTEXT_ENGINE.md).
+The adapter and selector remain separate so callers can inspect, cache, or reject a context before selection. Runtime snapshots and provider registration are documented in [`CONTEXT_ENGINE.md`](CONTEXT_ENGINE.md). Battlefield evaluation is documented in [`BATTLEFIELD_THREATS.md`](BATTLEFIELD_THREATS.md).
 
 ## Natural d20 metadata
 

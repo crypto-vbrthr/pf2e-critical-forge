@@ -215,3 +215,8 @@ Foundry extension module
 ```
 
 The controller is an adapter, not a second runtime. Pack normalization, Context resolution, Condition evaluation, diagnostic reporting, and card selection continue to be owned by their existing domain services. Legacy low-level APIs remain available, while new modules should use the bound controller for isolation and conflict evidence.
+
+
+## Phase-7 battlefield threat boundary
+
+The PF2e battlefield evaluator lives under `critical-forge/adapters/pf2e/battlefield/`. It reads PF2e Actor/Token/Scene state at context-capture time and immediately reduces it to plain immutable evidence. Card selection, the Condition Engine, Diagnostics 2.0, and extension modules consume only the snapshot result; they never retain Foundry documents or recompute threat rules independently. See [`BATTLEFIELD_THREATS.md`](BATTLEFIELD_THREATS.md).

@@ -108,7 +108,9 @@ export class CriticalContextBuilder {
       turn: finiteNumber(battlefield.turn),
       selectedTargetCount: nonNegativeInteger(battlefield.selectedTargetCount),
       hostileThreatCount: nonNegativeInteger(battlefield.hostileThreatCount),
-      threatEvaluation: nullableString(battlefield.threatEvaluation) ?? "not-evaluated"
+      threatEvaluation: nullableString(battlefield.threatEvaluation) ?? "not-evaluated",
+      hostileThreats: normalizeThreats(battlefield.hostileThreats),
+      threatSummary: normalizeThreatSummary(battlefield.threatSummary)
     };
     return this;
   }
@@ -233,7 +235,30 @@ function emptyBattlefield() {
     turn: null,
     selectedTargetCount: null,
     hostileThreatCount: null,
-    threatEvaluation: "not-evaluated"
+    threatEvaluation: "not-evaluated",
+    hostileThreats: [],
+    threatSummary: {
+      candidateCount: 0,
+      evaluatedCount: 0,
+      countedCount: 0,
+      rejectedCount: 0,
+      reason: null
+    }
+  };
+}
+
+function normalizeThreats(value) {
+  const entries = Array.isArray(value) ? value : [];
+  return entries.map((entry) => plainClone(entry));
+}
+
+function normalizeThreatSummary(value = {}) {
+  return {
+    candidateCount: nonNegativeInteger(value?.candidateCount) ?? 0,
+    evaluatedCount: nonNegativeInteger(value?.evaluatedCount) ?? 0,
+    countedCount: nonNegativeInteger(value?.countedCount) ?? 0,
+    rejectedCount: nonNegativeInteger(value?.rejectedCount) ?? 0,
+    reason: nullableString(value?.reason)
   };
 }
 

@@ -227,3 +227,8 @@ Provider-defined snapshot paths do not need to be added to the core catalog. Aut
 ## Phase-6 providers and diagnostics
 
 The same bound controller can register Context, Condition, and Diagnostic Providers. Provider registration is ownership-isolated and every operation is written to a session-only diagnostic journal. See [`EXTENSION_CONTRACT.md`](EXTENSION_CONTRACT.md) for the complete contract and provider schemas.
+
+
+## Battlefield threat capability
+
+Version `0.9.4-dev.7` exposes `cards.battlefieldThreatEvaluation` to compatibility checks. Extensions may consume the built-in snapshot field `battlefield.hostileThreatCount` or call `api.cards.battlefield` helpers. The core evaluator and explicit compatibility override are documented in [`BATTLEFIELD_THREATS.md`](BATTLEFIELD_THREATS.md).
